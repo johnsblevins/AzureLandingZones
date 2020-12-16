@@ -17,7 +17,7 @@ Select scenario:
 
 ## Step 3 - Deploy App Landing Zones
 Select scenario:
-* [Deploy FedRAMP Moderate App Landing Zone](Templates\applz\fedrampmod-hubspoke)
+* [Deploy FedRAMP Moderate App Landing Zone](Templates/applz/fedrampmod-hubspoke)
 
 
 
