@@ -15,12 +15,12 @@ login-azaccount -environment AzureUSGovernment
 
 Install-Module -Name Az.Blueprint
 
-Import-AzBlueprintWithArtifact -Name fedrampmodlz -ManagementGroupId <ManagementGroup Id> -InputPath  <blueprint path> -Force
+Import-AzBlueprintWithArtifact -Name fedrampmodlz -ManagementGroupId "insert id" -InputPath  "insert path" -Force
 
 ## Step 2 - Create Subscription
-Create new subscription in the appropriate management group.
+Create new subscription in the appropriate Enterprise Scale management group.
 
 ## Step 3 - Assign Blueprint to subscription
-Assign blueprint with appropriate parameters to subscription.
+Assign Blueprint to subscription.
 
 
