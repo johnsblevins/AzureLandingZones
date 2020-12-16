@@ -1,4 +1,4 @@
-# Deploy Enterprise-Scale with hub and spoke architecture
+# Deploy Enterprise-Scale with VNET Hub and Spoke Architecture
 
 The Enterprise-Scale architecture is modular by design and allow organizations to start with foundational landing zones that support their application portfolios and add hybrid connectivity with ExpressRoute or VPN when required. Alternatively, organizations can start with an Enterprise-Scale architecture based on the traditional hub and spoke network topology if customers require hybrid connectivity to on-premises locations from the begining.  
 
