@@ -1,0 +1,34 @@
+{
+    "properties": {
+        "displayName": "NSG X on every nic",
+        "description": "This policy enforces a specific NSG on every virtual network interface",
+        "parameters": {
+            "nsgId": {
+                "type": "string",
+                "metadata": {
+                    "description": "Resource Id of the Network Security Group",
+                    "displayName": "Network Security Group Id"
+                }
+            }
+        },
+        "policyRule": {
+            "if": {
+                "allOf": [
+                    {
+                        "field": "type",
+                        "equals": "Microsoft.Network/networkInterfaces"
+                    },
+                    {
+                        "not": {
+                            "field": "Microsoft.Network/networkInterfaces/networkSecurityGroup.id",
+                            "equals": "[parameters('nsgId')]"
+                        }
+                    }
+                ]
+            },
+            "then": {
+                "effect": "deny"
+            }
+        }
+    }
+}

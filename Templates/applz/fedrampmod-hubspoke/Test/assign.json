@@ -1,0 +1,15 @@
+{
+    "identity": {
+        "type": "SystemAssigned"
+    },
+    "location": "usgovvirginia",
+    "properties": {
+        "blueprintId": "",
+        "resourceGroups": {},
+        "locks": {
+            "mode": "none"
+        },
+        "parameters": {
+        }
+    }
+}
