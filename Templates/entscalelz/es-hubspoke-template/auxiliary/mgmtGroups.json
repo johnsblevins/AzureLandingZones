@@ -32,8 +32,8 @@
         "sandboxMgs": {
             "type": "array",
             "defaultValue": [
-                "management",
-                "landingzones"
+                "sandbox-management",
+                "sandbox-landingzones"
             ],
             "metadata": {
                 "description": "These are the sandbox landing zone management groups."
