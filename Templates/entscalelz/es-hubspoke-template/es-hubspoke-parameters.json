@@ -2,6 +2,9 @@
   "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
+    "artifactURI": {
+      "value": "https://raw.githubusercontent.com/johnsblevins/AzureLandingZones/master/Templates/entscalelz/es-hubspoke-template"
+    },
     "enterpriseScaleCompanyPrefix": {
       "value": ""
     },
