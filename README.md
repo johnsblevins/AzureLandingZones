@@ -1,5 +1,5 @@
 # Azure Landing Zones for MAG
-Azure landing zones are the output of a multisubscription Azure environment that accounts for scale, security, governance, networking, and identity. Azure landing zones enable application migrations and greenfield development at enterprise scale in Azure. These zones consider all platform resources that are required to support the customer's application portfolio and don't differentiate between infrastructure as a service or platform as a service. See https://docs.microsoft.com/en-us/azure/cloud-adoption-framework/ready/landing-zone/.  It is recommended that you take the training path at https://docs.microsoft.com/en-us/learn/paths/enterprise-scale-architecture/ before deploying your first landing zone.
+Azure landing zones are the output of a multisubscription Azure environment that accounts for scale, security, governance, networking, and identity. Azure landing zones enable application migrations and greenfield development at enterprise scale in Azure. These zones consider all platform resources that are required to support the customer's application portfolio and don't differentiate between infrastructure as a service or platform as a service. See https://docs.microsoft.com/en-us/azure/cloud-adoption-framework/ready/landing-zone/.  It is recommended that you take the training path at https://docs.microsoft.com/en-us/learn/paths/enterprise-scale-architecture/ before deploying your first landing zone.  For more information on the Cloud Adoption Framework (CAF) see https://docs.microsoft.com/en-us/azure/cloud-adoption-framework/.  For CAF learning see https://docs.microsoft.com/en-us/learn/modules/microsoft-cloud-adoption-framework-for-azure/.
 
 
 Landing Zones are deployed using Blueprints or with custom Azure Resource Manager (ARM) or Terraform Templates.  See https://docs.microsoft.com/en-us/azure/cloud-adoption-framework/ready/enterprise-scale/.  These are CAF aligned with additional governance implemented at the Management Group Level and meant for enterprise deployments in advanced cloud hosting scenarios.  The orginal source for the ARM based solutions can be found on GitHub at https://github.com/Azure/Enterprise-Scale and the Terraform based solutions at https://github.com/azure/caf-terraform-landingzones.  Each Azure landing zone implementation option provides a deployment approach and defined design principles. Before choosing an implementation option, use the article at https://docs.microsoft.com/en-us/azure/cloud-adoption-framework/ready/landing-zone/design-areas to gain an understanding of the design areas for each implementation. 
@@ -19,7 +19,9 @@ Select scenario:
 Select scenario:
 * [Deploy FedRAMP Moderate App Landing Zone](Templates/applz/fedrampmod-hubspoke)
 
-
+# Additional Resources
+## Microsoft Well-Architected Framework
+The Azure Well-Architected Framework is a set of guiding tenets that can be used to improve the quality of a workload. The framework consists of five pillars of architecture excellence: Cost Optimization, Operational Excellence, Performance Efficiency, Reliability, and Security.  See https://docs.microsoft.com/en-us/azure/architecture/framework/.
 
 
 

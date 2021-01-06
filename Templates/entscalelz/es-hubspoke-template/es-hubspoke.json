@@ -2,6 +2,13 @@
     "$schema": "https://schema.management.azure.com/schemas/2019-08-01/tenantDeploymentTemplate.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
+        "artifactURI": {
+            "type": "string",
+            "defaultvalue": "https://raw.githubusercontent.com/johnsblevins/AzureLandingZones/master/Templates/entscalelz/es-hubspoke-template",
+            "metadata": {
+                "description": "Provide the prefix (max 5 characters) to the management group hierarchy that will be created"
+            }
+        },
         "enterpriseScaleCompanyPrefix": {
             "type": "string",
             "maxLength": 5,
@@ -340,14 +347,14 @@
         },
         "azEnvPolicy": "[variables('azPolicyEnvMapping')[environment().resourceManager]]",
         "deploymentUris": {
-            "managementGroups": "https://raw.githubusercontent.com/johnsblevins/AzureLandingZones/master/Templates/ARM/es-hubspoke/cicd/armTemplates/auxiliary/mgmtGroups.json",
-            "policyDefinitions": "https://raw.githubusercontent.com/johnsblevins/AzureLandingZones/master/Templates/ARM/es-hubspoke/cicd/armTemplates/auxiliary/policies.json",
-            "monitoring": "https://raw.githubusercontent.com/johnsblevins/AzureLandingZones/master/Templates/ARM/es-hubspoke/cicd/armTemplates/auxiliary/logAnalytics.json",
-            "monitoringSolutions": "https://raw.githubusercontent.com/johnsblevins/AzureLandingZones/master/Templates/ARM/es-hubspoke/cicd/armTemplates/auxiliary/logAnalyticsSolutions.json",
-            "connectivity": "https://raw.githubusercontent.com/johnsblevins/AzureLandingZones/master/Templates/ARM/es-hubspoke/cicd/armTemplates/auxiliary/hubspoke-connectivity.json",
-            "diagnosticsAndSecurity": "https://raw.githubusercontent.com/johnsblevins/AzureLandingZones/master/Templates/ARM/es-hubspoke/cicd/armTemplates/auxiliary/diagnosticsAndSecurity.json",
-            "landingZone": "https://raw.githubusercontent.com/johnsblevins/AzureLandingZones/master/Templates/ARM/es-hubspoke/cicd/armTemplates/auxiliary/lz.json",
-            "identity": "https://raw.githubusercontent.com/johnsblevins/AzureLandingZones/master/Templates/ARM/es-hubspoke/cicd/armTemplates/auxiliary/identity.json"
+            "managementGroups": "[concat(parameters('ArtifactURI'),'/auxiliary/mgmtGroups.json')]",
+            "policyDefinitions": "[concat(parameters('ArtifactURI'),'/auxiliary/policies.json')]",
+            "monitoring": "[concat(parameters('ArtifactURI'),'/auxiliary/logAnalytics.json')]",
+            "monitoringSolutions": "[concat(parameters('ArtifactURI'),'/auxiliary/logAnalyticsSolutions.json')]",
+            "connectivity": "[concat(parameters('ArtifactURI'),'/auxiliary/hubspoke-connectivity.json')]",
+            "diagnosticsAndSecurity": "[concat(parameters('ArtifactURI'),'/auxiliary/diagnosticsAndSecurity.json')]",
+            "landingZone": "[concat(parameters('ArtifactURI'),'/auxiliary/lz.json')]",
+            "identity": "[concat(parameters('ArtifactURI'),'/auxiliary/identity.json')]"
         },
         "moveSubscription": "[concat(parameters('enterpriseScaleCompanyPrefix'), '-management', '/', parameters('managementSubscriptionId'))]",
         "noSubscription": "[concat(parameters('enterpriseScaleCompanyPrefix'), '-management', '/', 'na')]",

@@ -39,13 +39,13 @@
       "value": "30"
     },
     "enableAsc": {
-      "value": "Yes"
+      "value": "No"
     },
     "enableAksPolicy": {
-      "value": "Yes"
+      "value": "No"
     },
     "enableArcMonitoring": {
-      "value": "Yes"
+      "value": "No"
     },
     "enableVmMonitoring": {
       "value": "Yes"
@@ -102,7 +102,7 @@
       "value": "Yes"
     },
     "addressPrefix": {
-      "value": "10.100.0.0/16"
+      "value": ""
     },
     "enableVpnGw": {
       "value": "Yes"
@@ -123,10 +123,10 @@
       "value": "RouteBased"
     },
     "subnetMaskForAzFw": {
-      "value": "10.100.0.0/24"
+      "value": ""
     },
     "subnetMaskForGw": {
-      "value": "10.100.1.0/24"
+      "value": ""
     }
   }
 }

@@ -28,6 +28,16 @@
             "metadata": {
                 "description": "These are the landing zone management groups."
             }
+        },
+        "sandboxMgs": {
+            "type": "array",
+            "defaultValue": [
+                "management",
+                "landingzones"
+            ],
+            "metadata": {
+                "description": "These are the sandbox landing zone management groups."
+            }
         }
     },
     "variables": {
@@ -154,6 +164,28 @@
                 "details": {
                     "parent": {
                         "id": "[tenantResourceId('Microsoft.Management/managementGroups/', variables('enterpriseScaleManagementGroups').landingZone)]"
+                    }
+                }
+            }
+        },
+        {
+            // Create child management groups for sandbox resources
+            "condition": "[not(empty(parameters('sandboxMgs')))]",
+            "type": "Microsoft.Management/managementGroups",
+            "apiVersion": "2020-05-01",
+            "name": "[concat(parameters('topLevelManagementGroupPrefix'), '-', parameters('sandboxMgs')[copyIndex()])]",
+            "dependsOn": [
+                "[tenantResourceId('Microsoft.Management/managementGroups', variables('enterpriseScaleManagementGroups').sandboxes)]"
+            ],
+            "copy": {
+                "name": "sandboxMgCopy",
+                "count": "[length(parameters('sandboxMgs'))]"
+            },
+            "properties": {
+                "displayName": "[concat(parameters('topLevelManagementGroupPrefix'), '-', parameters('sandboxMgs')[copyIndex()])]",
+                "details": {
+                    "parent": {
+                        "id": "[tenantResourceId('Microsoft.Management/managementGroups/', variables('enterpriseScaleManagementGroups').sandboxes)]"
                     }
                 }
             }
