@@ -55,7 +55,7 @@
                     "description": "Location for all resources."
                     }
                 },
-                "AppName": {
+                "SandboxName": {
                     "type": "string",                    
                     "metadata": {
                     "description": "Name of the virtual machine."
@@ -66,7 +66,7 @@
                 "vmName": "winJump",                
                 "nicName": "[concat(variables('vmName'),'nic')]",
                 "subnetName": "app",
-                "SandboxVnetName": "[concat(parameters('AppName'),'-vnet')]",
+                "SandboxVnetName": "[concat(parameters('SandboxName'),'-vnet')]",
                 "subnetRef": "[resourceId('SandboxNetworkRG','Microsoft.Network/virtualNetworks/subnets', variables('SandboxVnetName'), variables('subnetName'))]"
             },
             "resources": [
@@ -149,8 +149,8 @@
         },
         "resourceGroup": "SandboxMgtRG",
         "parameters": {
-            "AppName":{
-                "value": "[parameters('AppName')]"
+            "SandboxName":{
+                "value": "[parameters('SandboxName')]"
             },
             "adminUsername": {
                 "value": "[parameters('adminUsername')]"
