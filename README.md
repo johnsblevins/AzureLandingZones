@@ -44,6 +44,7 @@ Select a scenario:
 Select a scenario:
 * [Active Directory Zonal Deployment](Templates/entsvcs/active-directory-new-domain-ha-2-dc-zones/)
 * [Red Hat OpenShift Private Cluster Deployment on MAG](Templates/entsvcs/openshift/README.md)
+* [DISA STIG Image Factory on MAG](Templates/entsvcs/stig-image-factory/README.md)
 # Additional Resources
 ## Microsoft Well-Architected Framework
 The Azure Well-Architected Framework is a set of guiding tenets that can be used to improve the quality of a workload. The framework consists of five pillars of architecture excellence: Cost Optimization, Operational Excellence, Performance Efficiency, Reliability, and Security.  See https://docs.microsoft.com/en-us/azure/architecture/framework/.
