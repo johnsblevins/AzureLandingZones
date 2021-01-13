@@ -1,0 +1,115 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "definitions": {
+        "type": "array",
+        "defaultValue":
+            [
+                {
+                    "imageDefinitionName": "Win10WVDw365_STIG",
+                    "osType": "Windows",
+                    "osState": "Generalized",
+                    "publisher": "AzureGlobalDesktop",
+                    "offer": "office-365",
+                    "sku": "20h1-evd-o365pp-stig",
+                    "minRecommendedvCPUs": "2",
+                    "maxRecommendedvCPUs": "8",
+                    "minRecommendedMemory": "32",
+                    "maxRecommendedMemory": "48"
+                },
+                {
+                    "imageDefinitionName": "Win2019_STIG",
+                    "osType": "Windows",
+                    "osState": "Generalized",
+                    "publisher": "MicrosoftWindowsServer",
+                    "offer": "WindowsServer",
+                    "sku": "2019-Datacenter-Stig",
+                    "minRecommendedvCPUs": "2",
+                    "maxRecommendedvCPUs": "8",
+                    "minRecommendedMemory": "32",
+                    "maxRecommendedMemory": "48"
+                },
+                {
+                    "imageDefinitionName": "Win2019DC_STIG",
+                    "osType": "Windows",
+                    "osState": "Generalized",
+                    "publisher": "MicrosoftWindowsServer",
+                    "offer": "WindowsServer",
+                    "sku": "2019-Datacenter-DC-Stig",
+                    "minRecommendedvCPUs": "2",
+                    "maxRecommendedvCPUs": "8",
+                    "minRecommendedMemory": "32",
+                    "maxRecommendedMemory": "48"
+                },
+                {
+                    "imageDefinitionName": "Win2016_STIG",
+                    "osType": "Windows",
+                    "osState": "Generalized",
+                    "publisher": "MicrosoftWindowsServer",
+                    "offer": "WindowsServer",
+                    "sku": "2016-Datacenter-Stig",
+                    "minRecommendedvCPUs": "2",
+                    "maxRecommendedvCPUs": "8",
+                    "minRecommendedMemory": "32",
+                    "maxRecommendedMemory": "48"
+                },
+                {
+                    "imageDefinitionName": "Win2016DC_STIG",
+                    "osType": "Windows",
+                    "osState": "Generalized",
+                    "publisher": "MicrosoftWindowsServer",
+                    "offer": "WindowsServer",
+                    "sku": "2016-Datacenter-DC-Stig",
+                    "minRecommendedvCPUs": "2",
+                    "maxRecommendedvCPUs": "8",
+                    "minRecommendedMemory": "32",
+                    "maxRecommendedMemory": "48"
+                }
+            ]
+        },
+        "galleryName": {
+            "type": "string"
+        },
+        "hyperVGeneration": {
+            "type": "string",
+            "defaultValue": "V1"
+        }
+    },
+    "variables": {},
+    "resources": [
+        {
+            "type": "Microsoft.Compute/galleries/images",
+            "name": "[concat(parameters('galleryName'), '/', parameters('definitions')[copyIndex()].imageDefinitionName)]",
+            "apiVersion": "2019-07-01",
+            "location": "[resourceGroup().location]",
+            "copy":
+            {
+                "name": "Image Definition Copy",
+                "count": "[length(parameters('definitions'))]"
+            },
+            "properties": {
+                "osType": "[parameters('definitions')[copyIndex()].osType]",
+                "osState": "[parameters('definitions')[copyIndex()].osState]",
+                "identifier": {
+                    "publisher": "[parameters('definitions')[copyIndex()].publisher]",
+                    "offer": "[parameters('definitions')[copyIndex()].offer]",
+                    "sku": "[parameters('definitions')[copyIndex()].sku]"
+                },
+                "recommended": {
+                    "vCPUs": {
+                        "min": "[parameters('definitions')[copyIndex()].minRecommendedvCPUs]",
+                        "max": "[parameters('definitions')[copyIndex()].maxRecommendedvCPUs]"
+                    },
+                    "memory": {
+                        "min": "[parameters('definitions')[copyIndex()].minRecommendedMemory]",
+                        "max": "[parameters('definitions')[copyIndex()].maxRecommendedMemory]"
+                    }
+                },
+                "hyperVGeneration": "[parameters('hyperVGeneration')]"
+            },
+            "tags": {}
+        }
+    ],
+    "outputs": {}
+}

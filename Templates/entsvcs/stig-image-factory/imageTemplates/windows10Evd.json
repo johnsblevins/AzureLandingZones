@@ -1,0 +1,126 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+      "mofUrl":{
+          "type": "string"
+      },
+      "identityId": {
+        "type": "string"
+      },
+      "galleryName": {
+        "type": "string"
+      },
+      "workspaceName": {
+        "type": "string"
+      },
+      "imageTemplateName": {
+        "type": "string"
+      },
+      "powerStigVersion": {
+        "type": "string"
+      },
+      "stigVersion" : {
+        "type": "string"
+      },
+      "osVersion" : {
+        "type": "string"
+      }
+    },
+    "variables": {
+      "setPowerStigUrl": "https://raw.githubusercontent.com/shawngib/project-stig/master/scripts/setPowerStig.ps1",
+      "setAuditingStigUrl": "https://raw.githubusercontent.com/shawngib/project-stig/master/scripts/auditStig.ps1",
+      "wsResourceId": "[concat('/subscriptions/', subscription().subscriptionId, '/resourceGroups/',resourceGroup().name, '/providers/','Microsoft.OperationalInsights/workspaces/', parameters('workspaceName'))]"
+    },
+    "resources": [
+      {
+        "name": "[parameters('imageTemplateName')]",
+        "type": "Microsoft.VirtualMachineImages/imageTemplates",
+        "apiVersion": "2020-02-14",
+        "location": "[resourceGroup().location]",
+        "dependsOn": [],
+        "tags": {
+          "imagebuilderTemplate": "AzureImageBuilderSIG",
+          "userIdentity": "enabled"
+        },
+        "identity": {
+          "type": "UserAssigned",
+          "userAssignedIdentities": {
+            "[resourceID('Microsoft.ManagedIdentity/userAssignedIdentities/',parameters('identityId'))]": {
+              
+            }
+          }
+        },
+        "properties": {
+          "buildTimeoutInMinutes": 100,
+          "vmProfile": {
+            "vmSize": "Standard_D1_v2",
+            "osDiskSizeGB": 127
+          },
+          "source": {
+            "type": "PlatformImage",
+            "publisher": "MicrosoftWindowsDesktop",
+            "offer": "office-365",
+            "sku": "20h1-evd-o365pp",
+            "version": "latest"
+          },
+          "customize": [
+            {
+                "type": "PowerShell",
+                "name": "setEnvVariables",
+                "inline": [
+                  "[concat('[System.Environment]::SetEnvironmentVariable(''WORKSPACE_ID'',''',reference(resourceId('Microsoft.OperationalInsights/workspaces', parameters('workspaceName')),'2017-03-15-preview').customerId,''',[System.EnvironmentVariableTarget]::Machine)')]",
+                  "[concat('[System.Environment]::SetEnvironmentVariable(''WORKSPACE_KEY'',''',listKeys(variables('wsResourceId'), '2015-11-01-preview').primarySharedKey,''', [System.EnvironmentVariableTarget]::Machine)')]",
+                  "[concat('[System.Environment]::SetEnvironmentVariable(''POWERSTIG_VER'',''',parameters('powerStigVersion'),''', [System.EnvironmentVariableTarget]::Machine)')]",
+                  "[concat('[System.Environment]::SetEnvironmentVariable(''STIG_OSVER'',''',parameters('osVersion'),''', [System.EnvironmentVariableTarget]::Machine)')]",
+                  "[concat('[System.Environment]::SetEnvironmentVariable(''STIG_VER'',''',parameters('stigVersion'),''', [System.EnvironmentVariableTarget]::Machine)')]"
+                ]
+            },
+            {
+              "type": "File",
+              "name": "mofFileDownload",
+              "sourceUri": "[parameters('mofUrl')]",
+              "destination": "c:\\localhost.mof"
+            },
+            {
+              "type": "File",
+              "name": "SuditScriptDownload",
+              "sourceUri": "[variables('setAuditingStigUrl')]",
+              "destination": "c:\\auditStig.ps1"
+            },
+            {
+              "type": "PowerShell",
+              "name": "SetUpPowerStig",
+              "runElevated": true,
+              "scriptUri": "[variables('setPowerStigUrl')]"
+            },            
+            {
+              "type": "WindowsUpdate",
+              "searchCriteria": "IsInstalled=0",
+              "filters": [
+                "exclude:$_.Title -like '*Preview*'",
+                "include:$true"
+              ],
+              "updateLimit": 40
+            }
+          ],
+          "distribute": [
+            {
+              "type": "SharedImage",
+              "galleryImageId": "[concat(resourceGroup().id,'/providers/Microsoft.Compute/galleries/',parameters('galleryName'),'/images/', parameters('imageTemplateName'),'/versions/1.23.0')]",
+              "runOutputName": "[parameters('imageTemplateName')]",
+              "artifactTags": {
+                "source": "azureVmImageBuilder",
+                "baseosimg": "windowsclient"
+              },
+              "replicationRegions": [
+                "eastus",
+                "eastus2",
+                "southcentralus"
+              ]
+            }
+          ]
+        }
+      }
+    ]
+  }
