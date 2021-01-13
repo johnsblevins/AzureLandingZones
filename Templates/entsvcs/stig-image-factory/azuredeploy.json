@@ -4,7 +4,7 @@
     "parameters": {
         "artifactURI": {
             "type": "string",
-            "defaultvalue": "https://raw.githubusercontent.com/johnsblevins/AzureLandingZones/master/Templates/entsvcs/stig-image-factory",
+            "defaultvalue": "https://raw.githubusercontent.com/johnsblevins/AzureLandingZones/master/Templates/entsvcs/stig-image-factory/",
             "metadata": {
                 "description": "Provide the prefix (max 5 characters) to the management group hierarchy that will be created"
             }
