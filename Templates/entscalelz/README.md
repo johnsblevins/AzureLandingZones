@@ -2,13 +2,44 @@
 
 The Enterprise-Scale architecture is modular by design and allow organizations to start with foundational landing zones that support their application portfolios and add hybrid connectivity with ExpressRoute or VPN when required. Alternatively, organizations can start with an Enterprise-Scale architecture based on the traditional hub and spoke network topology if customers require hybrid connectivity to on-premises locations from the begining.  
 
-## Required Modifications for Microsoft Azure Government (MAG)
+## CICD
 The original source for the Enterprise Scale Landing Zones can be found on GitHub at:
 * [Hybrid Connectivity with VWAN Hub and Spoke (Contoso)](https://github.com/Azure/Enterprise-Scale/blob/main/docs/reference/contoso/Readme.md)
 * [Hybrid Connectivity with VNET Hub-and-Spoke (AdventureWorks)](https://github.com/Azure/Enterprise-Scale/blob/main/docs/reference/adventureworks/README.md)
 * [No Hybrid Connectivity (WingTip)](https://github.com/Azure/Enterprise-Scale/blob/main/docs/reference/wingtip/README.md)
 
+In order to deploy these templates through a CICD pipeline internal to the organization:
+1. Clone the source repo from GitHub to a temp location
+2. Create a new local repo for the solution
+3. Copy the **armTemplates** directory from source repo to solution repo
+4. Modify the Templates as required (see below section for modifications required for MAG)
+5. Add a **Parameters** file in the solution repo and checkin
+6. Configure CICD Tool to Connect to Azure Subscription (See below sections for GitHub, GitLabs and ADO for instructions)
+7. Create a YAML CICD pipeline (See below sections for GitHub, GitLabs and ADO YAML Samples)
+
+### 
+
+## Required Modifications for Microsoft Azure Government (MAG)
+
 The version of source code tested on MAG was pulled on **01/20/2021**.  In order to deploy any of these templates to Microsoft Azure Government (MAG) the following modifications must be made:
+
+### US Government 
+In the variables section of the **es-hubspoke.json** template file Azure Government is not referenced properly which breaks the policy assignment.  To correct this change the following code:
+```
+    "variables": {
+        "azPolicyEnvMapping": {
+            "https://management.azure.com/": "auxiliary/policies.json",
+            "https://management.chinacloudapi.cn": "auxiliary/mkPolicies.json",
+            "https://management.azgov.com": "auxiliary/"
+```
+to:
+```
+    "variables": {
+        "azPolicyEnvMapping": {
+            "https://management.azure.com/": "auxiliary/policies.json",
+            "https://management.chinacloudapi.cn": "auxiliary/mkPolicies.json",
+            "https://management.usgovcloudapi.net/": "auxiliary/policies.json"
+```
 
 ### Asc Configuration for AppServices and KeyVaults
 The diagnosticsAndSecurity.json template attempts to enable Asc for AppServices and KeyVaults.  While these services are available in MAG, the Asc extensions for them are not.  As a result the following errors are received "The name 'AppServices' is not a valid name. Possible pricing bundle names: VirtualMachines, SqlServers, StorageAccounts, KubernetesService, ContainerRegistry." and "The name 'KeyVaults' is not a valid name. Possible pricing bundle names: VirtualMachines, SqlServers, StorageAccounts, KubernetesService, ContainerRegistry."  The workaround involves removing ASC references to AppServices and KeyVaults in the **diagnosticsAndSecurity.json** template file as described below:
