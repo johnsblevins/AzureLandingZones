@@ -2428,12 +2428,6 @@
                               "description": "pricingTierSqlServers"
                             }
                           },
-                          "pricingTierAppServices": {
-                            "type": "string",
-                            "metadata": {
-                              "description": "pricingTierAppServices"
-                            }
-                          },
                           "pricingTierStorageAccounts": {
                             "type": "string",
                             "metadata": {
@@ -2445,13 +2439,7 @@
                             "metadata": {
                               "description": "ContainerRegistry"
                             }
-                          },
-                          "pricingTierKeyVaults": {
-                            "type": "string",
-                            "metadata": {
-                              "description": "KeyVaults"
-                            }
-                          },
+                          },                          
                           "pricingTierKubernetesService": {
                             "type": "string",
                             "metadata": {
