@@ -27,7 +27,7 @@
       "value": "Yes"
     },
     "enableVmBackupForIdentity": {
-      "value": "No"
+      "value": "Yes"
     },
     "onlineLzSubscriptionId": {
       "value": []
@@ -42,13 +42,49 @@
       "value": "30"
     },
     "enableAsc": {
-      "value": "No"
+      "value": "Yes"
     },
     "enableAksPolicy": {
-      "value": "No"
+      "value": "Yes"
+    },
+    "enableAscForServers": {
+      "value": "Yes"
+    },
+    "enableAscForAppServices": {
+      "value": "Yes"
+    },
+    "enableAscForStorage": {
+      "value": "Yes"
+    },
+    "enableAscForSql": {
+      "value": "Yes"
+    },
+    "enableAscForKeyVault": {
+      "value": "Yes"
+    },
+    "enableAscForArm": {
+      "value": "Yes"
+    },
+    "enableAscForDns": {
+      "value": "Yes"
+    },
+    "enableAscForKubernetes": {
+      "value": "Yes"
+    },
+    "enableAscForRegistries": {
+      "value": "Yes"
+    },
+    "denyAksPrivileged": {
+      "value": "Yes"
+    },
+    "denyAksPrivilegedEscalation": {
+      "value": "Yes"
+    },
+    "denyHttpIngressForAks": {
+      "value": "Yes"
     },
     "enableArcMonitoring": {
-      "value": "No"
+      "value": "Yes"
     },
     "enableVmMonitoring": {
       "value": "Yes"
