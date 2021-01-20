@@ -86,24 +86,81 @@ While Arc is available in MAG the **lz.json** template references Policy Definit
 
 ### Asc Configuration for AppServices and KeyVaults
 The **policies.json** template attempts to enable Asc for AppServices and KeyVaults.  While these services are available in MAG, the Asc extensions for them are not.  As a result the following errors are received "The name 'AppServices' is not a valid name. Possible pricing bundle names: VirtualMachines, SqlServers, StorageAccounts, KubernetesService, ContainerRegistry." and "The name 'KeyVaults' is not a valid name. Possible pricing bundle names: VirtualMachines, SqlServers, StorageAccounts, KubernetesService, ContainerRegistry."  The workaround involves removing ASC references to AppServices and KeyVaults in the **policies.json** template file as described below:
-1. Remove the following code blocks:
+1. Replace the following code block:
 ```
-    "pricingTierAppServices": {
-      "type": "string",
-      "metadata": {
-        "description": "pricingTierAppServices"
-      }
-    },
+  {
+    "type": "Microsoft.Security/pricings",
+    "apiVersion": "2018-06-01",
+    "name": "AppServices",
+    "dependsOn": [
+      "[[concat('Microsoft.Security/pricings/StorageAccounts')]"
+    ],
+    "properties": {
+      "pricingTier": "[[parameters('pricingTierAppServices')]"
+    }
+  },
+  {
+    "type": "Microsoft.Security/pricings",
+    "apiVersion": "2018-06-01",
+    "name": "SqlServers",
+    "dependsOn": [
+      "[[concat('Microsoft.Security/pricings/AppServices')]"
+    ],
+    "properties": {
+      "pricingTier": "[[parameters('pricingTierSqlServers')]"
+    }
+  },
 ```
-as well as
+with:
 ```
-    "pricingTierKeyVaults": {
-      "type": "string",
-      "metadata": {
-        "description": "KeyVaults"
-      }
-    },
-```
+  {
+    "type": "Microsoft.Security/pricings",
+    "apiVersion": "2018-06-01",
+    "name": "SqlServers",
+    "dependsOn": [
+      "[[concat('Microsoft.Security/pricings/StorageAccounts')]"
+    ],
+    "properties": {
+      "pricingTier": "[[parameters('pricingTierSqlServers')]"
+    }
+  },
 
-
-
+2. Replace the following code block:
+```
+{
+  "type": "Microsoft.Security/pricings",
+  "apiVersion": "2018-06-01",
+  "name": "KeyVaults",
+  "dependsOn": [
+    "[[concat('Microsoft.Security/pricings/SqlServers')]"
+  ],
+  "properties": {
+    "pricingTier": "[[parameters('pricingTierKeyVaults')]"
+  }
+},
+{
+  "type": "Microsoft.Security/pricings",
+  "apiVersion": "2018-06-01",
+  "name": "KubernetesService",
+  "dependsOn": [
+    "[[concat('Microsoft.Security/pricings/KeyVaults')]"
+  ],
+  "properties": {
+    "pricingTier": "[[parameters('pricingTierKubernetesService')]"
+  }
+},
+```
+with:
+```
+{
+  "type": "Microsoft.Security/pricings",
+  "apiVersion": "2018-06-01",
+  "name": "KubernetesService",
+  "dependsOn": [
+    "[[concat('Microsoft.Security/pricings/SqlServers')]"
+  ],
+  "properties": {
+    "pricingTier": "[[parameters('pricingTierKubernetesService')]"
+  }
+},
+```
