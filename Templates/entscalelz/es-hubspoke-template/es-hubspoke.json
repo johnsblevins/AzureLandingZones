@@ -431,7 +431,7 @@
         "azPolicyEnvMapping": {
             "https://management.azure.com/": "auxiliary/policies.json",
             "https://management.chinacloudapi.cn": "auxiliary/mkPolicies.json",
-            "https://management.usgovcloudapi.net/": "auxiliary/policies.json"
+            "https://management.usgovcloudapi.net": "auxiliary/policies.json"
         },
         "azEnvPolicy": "[variables('azPolicyEnvMapping')[environment().resourceManager]]",
         "deploymentUris": {
