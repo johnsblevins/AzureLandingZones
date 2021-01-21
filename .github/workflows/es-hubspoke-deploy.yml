@@ -32,7 +32,7 @@ jobs:
             azcliversion: 2.17.1
             inlineScript: |
                 # Management Group Deployment
-                #az deployment tenant create --name "EntScale-Mgs-${{ env.LOCATION }}" --location ${{ env.LOCATION }} --template-file Templates/entscalelz/es-hubspoke-template/auxiliary/mgmtGroups.json --parameters topLevelManagementGroupPrefix=${{ env.ENTERPRISE_SCALE_COMPANY_PREFIX }}
+                az deployment tenant create --name "EntScale-Mgs-${{ env.LOCATION }}" --location ${{ env.LOCATION }} --template-file Templates/entscalelz/es-hubspoke-template/auxiliary/mgmtGroups.json --parameters topLevelManagementGroupPrefix=${{ env.ENTERPRISE_SCALE_COMPANY_PREFIX }}
 
                 # Policy Deployment
                 az deployment mg create --name "EntScale-Policy-${{ env.LOCATION }}" --location ${{ env.LOCATION }} --management-group-id ${{ env.ENTERPRISE_SCALE_COMPANY_PREFIX }} --template-file Templates/entscalelz/es-hubspoke-template/auxiliary/policies.json --parameters topLevelManagementGroupPrefix=${{ env.ENTERPRISE_SCALE_COMPANY_PREFIX }}
