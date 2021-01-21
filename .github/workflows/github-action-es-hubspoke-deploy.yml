@@ -1,30 +1,14 @@
 name: es-hubspoke-deploy
 
-inputs:
-  LOCATION:  # id of input
-    required: true
-    default: 'usgovvirginia'
-  
-  ENTERPRISE_SCALE_COMPANY_PREFIX:  # id of input
-    required: true
-    default: 'jsb'
-
-  MANAGEMENT_SUB_ID:  # id of input
-    required: true
-    default: ''
-
-  IDENTITY_SUB_ID:  # id of input
-    required: true
-    default: ''
-
-  CONNECTIVITY_SUB_ID:  # id of input
-    required: true
-    default: ''
 
 # Controls when the action will run. 
 on:
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
+
+env:
+  LOCATION: usgovvirginia  
+  ENTERPRISE_SCALE_COMPANY_PREFIX: jsb
 
 jobs:
     build-and-deploy:
@@ -46,16 +30,16 @@ jobs:
                 az account list
 
                 # Management Group Deployment
-                az deployment tenant create --name "EntScale-Mgs-${{ inputs.LOCATION }}" --location ${{ inputs.LOCATION }} --template-file Templates/entscalelz/es-hubspoke-template/auxiliary/mgmtGroups.json --parameters Templates/entscalelz/es-hubspoke-template/auxiliary/mgmtGroups-parameters.json
+                az deployment tenant create --name "EntScale-Mgs-${{ env.LOCATION }}" --location ${{ env.LOCATION }} --template-file Templates/entscalelz/es-hubspoke-template/auxiliary/mgmtGroups.json --parameters Templates/entscalelz/es-hubspoke-template/auxiliary/mgmtGroups-parameters.json
 
                 # Policy Deployment
-                az deployment mg create --name "EntScale-Policy-${{ inputs.LOCATION }}" --location ${{ inputs.LOCATION }} --management-group-id ${{ inputs.ENTERPRISE_SCALE_COMPANY_PREFIX }} --template-file Templates/entscalelz/es-hubspoke-template/auxiliary/policies.json --parameters Templates/entscalelz/es-hubspoke-template/auxiliary/policies-parameters.json
+                az deployment mg create --name "EntScale-Policy-${{ env.LOCATION }}" --location ${{ env.LOCATION }} --management-group-id ${{ env.ENTERPRISE_SCALE_COMPANY_PREFIX }} --template-file Templates/entscalelz/es-hubspoke-template/auxiliary/policies.json --parameters Templates/entscalelz/es-hubspoke-template/auxiliary/policies-parameters.json
 
                 # Move Management Sub
-                az account management-group subscription add --name "${{ inputs.ENTERPRISE_SCALE_COMPANY_PREFIX }}-management" --subscription ${{ inputs.MANAGEMENT_SUB_ID }}
+                az account management-group subscription add --name "${{ env.ENTERPRISE_SCALE_COMPANY_PREFIX }}-management" --subscription ${{ secrets.MANAGEMENT_SUB_ID }}
 
                 # Move Identity Sub
-                az account management-group subscription add --name "${{ inputs.ENTERPRISE_SCALE_COMPANY_PREFIX }}-identity" --subscription ${{ inputs.IDENTITY_SUB_ID }}
+                az account management-group subscription add --name "${{ env.ENTERPRISE_SCALE_COMPANY_PREFIX }}-identity" --subscription ${{ secrets.IDENTITY_SUB_ID }}
 
                 # Move Online Subs
                 #Skip for now
@@ -67,22 +51,22 @@ jobs:
                 sleep 20
 
                 # Monitoring Deployment
-                az deployment mg create --name "EntScale-Monitoring-${{ inputs.LOCATION }}" --location ${{ inputs.LOCATION }} --management-group-id "${{ inputs.ENTERPRISE_SCALE_COMPANY_PREFIX }}-management" --template-file Templates/entscalelz/es-hubspoke-template/auxiliary/logAnalytics.json --parameters Templates/entscalelz/es-hubspoke-template/auxiliary/logAnalytics-parameters.json
+                az deployment mg create --name "EntScale-Monitoring-${{ env.LOCATION }}" --location ${{ env.LOCATION }} --management-group-id "${{ env.ENTERPRISE_SCALE_COMPANY_PREFIX }}-management" --template-file Templates/entscalelz/es-hubspoke-template/auxiliary/logAnalytics.json --parameters Templates/entscalelz/es-hubspoke-template/auxiliary/logAnalytics-parameters.json
 
                 # Identity Deployment
-                az deployment mg create --name "EntScale-ID-${{ inputs.LOCATION }}" --location ${{ inputs.LOCATION }} --management-group-id "${{ inputs.ENTERPRISE_SCALE_COMPANY_PREFIX }}-identity" --template-file Templates/entscalelz/es-hubspoke-template/auxiliary/identity.json --parameters Templates/entscalelz/es-hubspoke-template/auxiliary/identity-parameters.json
+                az deployment mg create --name "EntScale-ID-${{ env.LOCATION }}" --location ${{ env.LOCATION }} --management-group-id "${{ env.ENTERPRISE_SCALE_COMPANY_PREFIX }}-identity" --template-file Templates/entscalelz/es-hubspoke-template/auxiliary/identity.json --parameters Templates/entscalelz/es-hubspoke-template/auxiliary/identity-parameters.json
 
                 # Landing Zone Deployment
-                az deployment mg create --name "EntScale-LZ-${{ inputs.LOCATION }}" --location ${{ inputs.LOCATION }} --management-group-id "${{ inputs.ENTERPRISE_SCALE_COMPANY_PREFIX }}-landingzones" --template-file Templates/entscalelz/es-hubspoke-template/auxiliary/lz.json --parameters Templates/entscalelz/es-hubspoke-template/auxiliary/lz-parameters.json
+                az deployment mg create --name "EntScale-LZ-${{ env.LOCATION }}" --location ${{ env.LOCATION }} --management-group-id "${{ env.ENTERPRISE_SCALE_COMPANY_PREFIX }}-landingzones" --template-file Templates/entscalelz/es-hubspoke-template/auxiliary/lz.json --parameters Templates/entscalelz/es-hubspoke-template/auxiliary/lz-parameters.json
 
                 # Move Connectivity Sub
-                az account management-group subscription add --name "${{ inputs.ENTERPRISE_SCALE_COMPANY_PREFIX }}-connectivity" --subscription ${{ inputs.CONNECTIVITY_SUB_ID }}
+                az account management-group subscription add --name "${{ env.ENTERPRISE_SCALE_COMPANY_PREFIX }}-connectivity" --subscription ${{ secrets.CONNECTIVITY_SUB_ID }}
 
                 # Monitoring Solutions Deployment
-                az deployment sub create --name "EntScale-Solutions-${{ inputs.LOCATION }}" --location ${{ inputs.LOCATION }} --sub "${MANAGEMENT_SUB_ID}" --template-file Templates/entscalelz/es-hubspoke-template/auxiliary/logAnalyticsSolutions.json --parameters Templates/entscalelz/es-hubspoke-template/auxiliary/logAnalyticsSolutions-parameters.json
+                az deployment sub create --name "EntScale-Solutions-${{ env.LOCATION }}" --location ${{ env.LOCATION }} --sub "${{ secrets.MANAGEMENT_SUB_ID }}" --template-file Templates/entscalelz/es-hubspoke-template/auxiliary/logAnalyticsSolutions.json --parameters Templates/entscalelz/es-hubspoke-template/auxiliary/logAnalyticsSolutions-parameters.json
 
                 # Diagnostics and Security
-                az deployment mg create --name "EntScale-Solutions-${{ inputs.LOCATION }}" --location ${{ inputs.LOCATION }} --management-group-id "${{ inputs.ENTERPRISE_SCALE_COMPANY_PREFIX }}" --template-file Templates/entscalelz/es-hubspoke-template/auxiliary/diagnosticsAndSecurity.json --parameters Templates/entscalelz/es-hubspoke-template/auxiliary/diagnosticsAndSecurity-parameters.json
+                az deployment mg create --name "EntScale-Solutions-${{ env.LOCATION }}" --location ${{ env.LOCATION }} --management-group-id "${{ env.ENTERPRISE_SCALE_COMPANY_PREFIX }}" --template-file Templates/entscalelz/es-hubspoke-template/auxiliary/diagnosticsAndSecurity.json --parameters Templates/entscalelz/es-hubspoke-template/auxiliary/diagnosticsAndSecurity-parameters.json
 
                 # Connectivity Deployment
-                az deployment mg create --name "EntScale-conn-${{ inputs.LOCATION }}" --location ${{ inputs.LOCATION }} --management-group-id "${{ inputs.ENTERPRISE_SCALE_COMPANY_PREFIX }}-connectivity" --template-file Templates/entscalelz/es-hubspoke-template/auxiliary/hubspoke-connectivity.json --parameters Templates/entscalelz/es-hubspoke-template/auxiliary/hubspoke-connectivity-parameters.json    
+                az deployment mg create --name "EntScale-conn-${{ env.LOCATION }}" --location ${{ env.LOCATION }} --management-group-id "${{ env.ENTERPRISE_SCALE_COMPANY_PREFIX }}-connectivity" --template-file Templates/entscalelz/es-hubspoke-template/auxiliary/hubspoke-connectivity.json --parameters Templates/entscalelz/es-hubspoke-template/auxiliary/hubspoke-connectivity-parameters.json    
