@@ -1,7 +1,7 @@
 # Enforce VM Backup Policy and Assignment
 Perform the following steps to add a custom policy to enforce VM Backup on the Enterprise Scale Landing Zone template.  The policy is enforced on the Identity and Landing Zone Managements groups by default.
 
-1. Add the following Policy Definition to the Policies variable in the **policies.json** template:
+1. Add the following Policy Definition to the Policies.PolicyDefinitions variable array in the **policies.json** template:
 ```
 {
     "properties": {
