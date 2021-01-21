@@ -2528,20 +2528,9 @@
                           {
                             "type": "Microsoft.Security/pricings",
                             "apiVersion": "2018-06-01",
-                            "name": "Dns",
-                            "dependsOn": [
-                              "[[concat('Microsoft.Security/pricings/ContainerRegistry')]"
-                            ],
-                            "properties": {
-                              "pricingTier": "[[parameters('pricingTierDns')]"
-                            }
-                          },
-                          {
-                            "type": "Microsoft.Security/pricings",
-                            "apiVersion": "2018-06-01",
                             "name": "Arm",
                             "dependsOn": [
-                              "[[concat('Microsoft.Security/pricings/Dns')]"
+                              "[[concat('Microsoft.Security/pricings/ContainerRegistry')]"
                             ],
                             "properties": {
                               "pricingTier": "[[parameters('pricingTierArm')]"

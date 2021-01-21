@@ -86,7 +86,7 @@ While Arc is available in MAG the **lz.json** template references Policy Definit
 
 ### Asc Configuration for AppServices and KeyVaults
 The **policies.json** template attempts to enable Asc for AppServices and KeyVaults.  While these services are available in MAG, the Asc extensions for them are not.  As a result the following errors are received "The name 'AppServices' is not a valid name. Possible pricing bundle names: VirtualMachines, SqlServers, StorageAccounts, KubernetesService, ContainerRegistry." and "The name 'KeyVaults' is not a valid name. Possible pricing bundle names: VirtualMachines, SqlServers, StorageAccounts, KubernetesService, ContainerRegistry."  The workaround involves removing ASC references to AppServices and KeyVaults in the **policies.json** template file as described below:
-1. Replace the following code block:
+1. Replace the following code block for AppServices ASC Reference:
 ```
   {
     "type": "Microsoft.Security/pricings",
@@ -125,7 +125,7 @@ with:
     }
   },
 
-2. Replace the following code block:
+2. Replace the following code block for SqlServers ASC Reference:
 ```
 {
   "type": "Microsoft.Security/pricings",
@@ -163,4 +163,44 @@ with:
     "pricingTier": "[[parameters('pricingTierKubernetesService')]"
   }
 },
+```
+
+3. Replace the following code block for DNS ASC Reference:
+```
+{
+  "type": "Microsoft.Security/pricings",
+  "apiVersion": "2018-06-01",
+  "name": "Dns",
+  "dependsOn": [
+    "[[concat('Microsoft.Security/pricings/ContainerRegistry')]"
+  ],
+  "properties": {
+    "pricingTier": "[[parameters('pricingTierDns')]"
+  }
+},
+{
+  "type": "Microsoft.Security/pricings",
+  "apiVersion": "2018-06-01",
+  "name": "Arm",
+  "dependsOn": [
+    "[[concat('Microsoft.Security/pricings/Dns')]"
+  ],
+  "properties": {
+    "pricingTier": "[[parameters('pricingTierArm')]"
+  }
+}
+```
+with:
+```
+{
+  "type": "Microsoft.Security/pricings",
+  "apiVersion": "2018-06-01",
+  "name": "Arm",
+  "dependsOn": [
+    "[[concat('Microsoft.Security/pricings/ContainerRegistry')]"
+  ],
+  "properties": {
+    "pricingTier": "[[parameters('pricingTierArm')]"
+  }
+}
 ```
