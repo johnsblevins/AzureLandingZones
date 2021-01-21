@@ -1,4 +1,4 @@
-name: AzureGovLoginSample
+name: es-hubspoke-deploy
 
 inputs:
   LOCATION:  # id of input
