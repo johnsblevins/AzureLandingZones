@@ -62,9 +62,11 @@ The **lz.json** template references Policy Definition ID /providers/Microsoft.Au
 as well as:
 ```
     "enableVmBackupForIdentity": {
-      "value": "Yes"
+      "value": "No"
     },
 ```
+2. Alternatively you can Update the Policy Definition to support enforcing VM Backups
+The default Ent Scale templates can be updated to include a custom policy definition to enforce Vm Backup.  See the following [article](policies/enforce-vm-backup/README.md) for instructions on how to implement the VM Backup solution.
 
 ### Disable AKS Policy in Template Parameters File
 While AKS is available in MAG the **lz.json** template references Policy Definition ID /providers/Microsoft.Authorization/policyDefinitions/**a8eff44f-8c92-45c3-a3fb-9880802d67a7** with name **Deploy Azure Policy Add-on to Azure Kubernetes Service clusters**.  This Policy definition is not available in MAG.  The AKS policy can be enabled in the parameters file with no changes to any other template files.
