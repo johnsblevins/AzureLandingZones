@@ -25,7 +25,7 @@ jobs:
         - name: Azure CLI script
           uses: azure/CLI@v1
           with:
-            azcliversion: 2.0.72
+            azcliversion: 2.17.1
             inlineScript: |
                 az account list
 
