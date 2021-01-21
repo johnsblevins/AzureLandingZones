@@ -79,7 +79,7 @@ to:
 ```
 
 ### Enable VM Backup Policy Definition Unavailable
-The **lz.json** template references Policy Definition ID /providers/Microsoft.Authorization/policyDefinitions/**98d0b9f8-fd90-49c9-88e2-d3baf3b0dd86** with name **[Preview]: Configure backup on VMs without a given tag to a new recovery services vault with a default policy**.  This Policy definition is not available in MAG.
+The **lz.json** and **identity.json** templates reference Policy Definition ID /providers/Microsoft.Authorization/policyDefinitions/**98d0b9f8-fd90-49c9-88e2-d3baf3b0dd86** with name **[Preview]: Configure backup on VMs without a given tag to a new recovery services vault with a default policy**.  This Policy definition is not available in MAG.
 1. Disable VM Backup
 ```
     "enableVmBackup": {

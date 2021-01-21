@@ -458,7 +458,7 @@ Perform the following steps to add a custom policy to enforce VM Backup on the E
 }
 ```
 
-2. Modify the policy Definition for deployVmBackup in the **lz.json** template. 
+2. Modify the policy Definition for deployVmBackup in the **lz.json** and **identity.json** template. 
 ```
 "policyDefinitions": {
     "deployVmBackup": "[concat('/providers/Microsoft.Management/managementGroups/', parameters('topLevelManagementGroupPrefix'), '/providers/Microsoft.Authorization/policyDefinitions/Deploy-AzureBackup-on-VM')]", ...
