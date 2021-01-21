@@ -464,3 +464,16 @@ Perform the following steps to add a custom policy to enforce VM Backup on the E
     "deployVmBackup": "[concat('/providers/Microsoft.Management/managementGroups/', parameters('topLevelManagementGroupPrefix'), '/providers/Microsoft.Authorization/policyDefinitions/Deploy-AzureBackup-on-VM')]", ...
 } ...
 ```
+
+3. Ensure VM Backups are enabled in the Enterprise Scale Parameters file:
+```
+    ...
+    "enableVmBackup": {
+      "value": "Yes"
+    },
+    ...
+    "enableVmBackupForIdentity": {
+      "value": "Yes"
+    },
+    ...
+```

@@ -206,3 +206,20 @@ with:
   }
 }
 ```
+
+4. Remove the following code block for ARM ASC Reference:
+
+```
+  ,
+  {
+  "type": "Microsoft.Security/pricings",
+  "apiVersion": "2018-06-01",
+  "name": "Arm",
+  "dependsOn": [
+  "[[concat('Microsoft.Security/pricings/ContainerRegistry')]"
+  ],
+  "properties": {
+  "pricingTier": "[[parameters('pricingTierArm')]"
+  }
+  }
+```

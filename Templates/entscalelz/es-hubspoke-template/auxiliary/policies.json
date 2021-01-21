@@ -2977,17 +2977,6 @@
                             "properties": {
                               "pricingTier": "[[parameters('pricingTierContainerRegistry')]"
                             }
-                          },
-                          {
-                            "type": "Microsoft.Security/pricings",
-                            "apiVersion": "2018-06-01",
-                            "name": "Arm",
-                            "dependsOn": [
-                              "[[concat('Microsoft.Security/pricings/ContainerRegistry')]"
-                            ],
-                            "properties": {
-                              "pricingTier": "[[parameters('pricingTierArm')]"
-                            }
                           }
                         ],
                         "outputs": {}
