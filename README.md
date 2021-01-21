@@ -20,7 +20,10 @@ The following three templates for deploying the Enterprise Scale Landing Zone ex
 * [Hybrid Connectivity with VNET Hub-and-Spoke (AdventureWorks)](https://github.com/Azure/Enterprise-Scale/blob/main/docs/reference/adventureworks/README.md)
 * [No Hybrid Connectivity (WingTip)](https://github.com/Azure/Enterprise-Scale/blob/main/docs/reference/wingtip/README.md)
 
-These templates are identical except for the hybrid connectivity components which are deployed along with the solution.  For assistance determining what type of Hybrid Connectivity to select see https://docs.microsoft.com/en-us/azure/cloud-adoption-framework/ready/enterprise-scale/network-topology-and-connectivity#define-an-azure-network-topology.  Once a template has been selected see the following link for information about deploying the template using a CICD pipeline to a Microsoft Azure Government (MAG) environment.
+These templates are identical except for the hybrid connectivity components which are deployed along with the solution.  For assistance determining what type of Hybrid Connectivity to select see https://docs.microsoft.com/en-us/azure/cloud-adoption-framework/ready/enterprise-scale/network-topology-and-connectivity#define-an-azure-network-topology.  
+
+Once a template has been selected see the following link for information about deploying to a Microsoft Azure Government (MAG) environment using CICD pipeline.
+[Deploy Enterprise Scale Templates to MAG using CICD Pipeline](Templates/entscalelz/README.md)
 
 ## Step 2 - Deploy App Landing Zones
 Select a scenario:
