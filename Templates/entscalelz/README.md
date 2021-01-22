@@ -1,16 +1,16 @@
 # Deploy Enterprise Scale Landing Zone from CICD Pipeline in MAG
 
-The Enterprise-Scale architecture is modular by design and allow organizations to start with foundational landing zones that support their application portfolios and add hybrid connectivity with ExpressRoute or VPN when required. Alternatively, organizations can start with an Enterprise-Scale architecture based on the traditional hub and spoke network topology if customers require hybrid connectivity to on-premises locations from the begining.  
+If is recommended to deploy the CAF Aligned Enterprise Scale Landing Zone templates to a Microsoft Azure Government (MAG) environment using a CICD build and release pipeline.  The templates must be modified from their original source to deploy successfully to MAG.  This article describes how to deploy the templates from a customer managed CICD pipeline as well as the updates needed to the templates to deploy them to MAG.
 
-## CICD
+## Deploying Enterprise Scale Landing Zones using CICD Pipeline
 The original source for the Enterprise Scale Landing Zones can be found on GitHub at:
 * [Hybrid Connectivity with VWAN Hub and Spoke (Contoso)](https://github.com/Azure/Enterprise-Scale/blob/main/docs/reference/contoso/Readme.md)
 * [Hybrid Connectivity with VNET Hub-and-Spoke (AdventureWorks)](https://github.com/Azure/Enterprise-Scale/blob/main/docs/reference/adventureworks/README.md)
 * [No Hybrid Connectivity (WingTip)](https://github.com/Azure/Enterprise-Scale/blob/main/docs/reference/wingtip/README.md)
 
-These templates each consist of a master ARM (json) template file that contain URI references to publicly accessible linked templates from the same GitHub repository.  In order to customize the linked templates, which is required to deploy the solution to Microsoft Azure Government, the source repos must be cloned to new publicly accessible repositories where the ARM deployment service can reach the linked templates by public URI paths.  This works well when the source GIT repos can be kept publicly accessible however when the repos must be made private an alternative solution must be employed.  
+These templates each consist of a master ARM (json) template file that contain URI references to publicly accessible linked templates from the same GitHub repository.  In order to customize the linked templates, which is required to deploy the solution to Microsoft Azure Government, the source repos must be cloned to a new publicly accessible repository where the ARM deployment service which runs in Azure can reach the linked templates by public URI paths.  ARM cannot connect to a GitHub, Azure DevOps or GitLab repository which requires authentication.  This works well when the source GIT repos can be kept publicly accessible however when the repos must be made private an alternative solution must be employed.  
 
-### Option 1 - Sequence Artifacts in CICD Pipeline
+### Private Repo Option 1 - Sequence Artifacts in CICD Pipeline
 The following shows the deployment steps sequenced by resource deployments from the master ARM template.  
 
 1a. Management Group Deployment - auxiliary\mgmtGroups.json - Tenant Level
@@ -48,7 +48,7 @@ A CICD pipeline can be created which mimics the deployment sequence above.  See 
 * [Sample GitHub Pipeline for Enterprise Scale Hub and Spoke Landing Zone](es-hubspoke-template/cicd/github-sample.yml)
 
 
-### Option 2 - Utilize Storage Account with SAS Key for Artifacts
+### Private Repo Option 2 - Utilize Storage Account with SAS Key for Artifacts
 As an alternative to sequencing the deployments using a pipeline, the master arm template can be refactored to include storage account URI and SAS token parameters.  A CICD pipeline can then be created, which creates an Azure storage account with SAS token, copies the source repo to the storage account and executes the master template passing in the storage account URI and SAS token.  The ARM deployment service will use the SAS URI to access the storage account over the Azure backbone network allowing the deployment to complete in the same fashion as having the files in publicly accessible GIT repository.  As a final step the pipeline should remove the storage account.
 
 ## Required Modifications for Microsoft Azure Government (MAG)
