@@ -2948,20 +2948,9 @@
                           {
                             "type": "Microsoft.Security/pricings",
                             "apiVersion": "2018-06-01",
-                            "name": "AppServices",
-                            "dependsOn": [
-                              "[[concat('Microsoft.Security/pricings/StorageAccounts')]"
-                            ],
-                            "properties": {
-                              "pricingTier": "[[parameters('pricingTierAppServices')]"
-                            }
-                          },
-                          {
-                            "type": "Microsoft.Security/pricings",
-                            "apiVersion": "2018-06-01",
                             "name": "SqlServers",
                             "dependsOn": [
-                              "[[concat('Microsoft.Security/pricings/AppServices')]"
+                              "[[concat('Microsoft.Security/pricings/StorageAccounts')]"
                             ],
                             "properties": {
                               "pricingTier": "[[parameters('pricingTierSqlServers')]"
@@ -2970,20 +2959,9 @@
                           {
                             "type": "Microsoft.Security/pricings",
                             "apiVersion": "2018-06-01",
-                            "name": "KeyVaults",
-                            "dependsOn": [
-                              "[[concat('Microsoft.Security/pricings/SqlServers')]"
-                            ],
-                            "properties": {
-                              "pricingTier": "[[parameters('pricingTierKeyVaults')]"
-                            }
-                          },
-                          {
-                            "type": "Microsoft.Security/pricings",
-                            "apiVersion": "2018-06-01",
                             "name": "KubernetesService",
                             "dependsOn": [
-                              "[[concat('Microsoft.Security/pricings/KeyVaults')]"
+                              "[[concat('Microsoft.Security/pricings/SqlServers')]"
                             ],
                             "properties": {
                               "pricingTier": "[[parameters('pricingTierKubernetesService')]"
@@ -2999,29 +2977,7 @@
                             "properties": {
                               "pricingTier": "[[parameters('pricingTierContainerRegistry')]"
                             }
-                          },
-                          {
-                            "type": "Microsoft.Security/pricings",
-                            "apiVersion": "2018-06-01",
-                            "name": "Dns",
-                            "dependsOn": [
-                              "[[concat('Microsoft.Security/pricings/ContainerRegistry')]"
-                            ],
-                            "properties": {
-                              "pricingTier": "[[parameters('pricingTierDns')]"
-                            }
-                          },
-                          {
-                            "type": "Microsoft.Security/pricings",
-                            "apiVersion": "2018-06-01",
-                            "name": "Arm",
-                            "dependsOn": [
-                              "[[concat('Microsoft.Security/pricings/Dns')]"
-                            ],
-                            "properties": {
-                              "pricingTier": "[[parameters('pricingTierArm')]"
-                            }
-                          }
+                          }                          
                         ],
                         "outputs": {}
                       }

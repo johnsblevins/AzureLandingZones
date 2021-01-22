@@ -8,39 +8,34 @@ The original source for the Enterprise Scale Landing Zones can be found on GitHu
 * [Hybrid Connectivity with VNET Hub-and-Spoke (AdventureWorks)](https://github.com/Azure/Enterprise-Scale/blob/main/docs/reference/adventureworks/README.md)
 * [No Hybrid Connectivity (WingTip)](https://github.com/Azure/Enterprise-Scale/blob/main/docs/reference/wingtip/README.md)
 
-These templates each consist of a master ARM (json) template file that contains references to linked templates which are public URI references.  This works well for CICD pipelines where the source GIT repos are kept publicly accessible however when the repos must be kept private an alternative solution must be employed.  
+These templates each consist of a master ARM (json) template file that contain URI references to publicly accessible linked templates from the same GitHub repository.  In order to customize the linked templates, which is required to deploy the solution to Microsoft Azure Government, the source repos must be cloned to new publicly accessible repositories where the ARM deployment service can reach the linked templates by public URI paths.  This works well when the source GIT repos can be kept publicly accessible however when the repos must be made private an alternative solution must be employed.  
 
-### Option 1 - Utilize Storage Account with SAS Key for Artifacts
-
-### Option 2 - Sequence Artifacts in Pipeline
+### Option 1 - Sequence Artifacts in CICD Pipeline
 The following shows the deployment steps sequenced by resource deployments from the master ARM template.  
-```
-1. Management Group Deployment - auxiliary\mgmtGroups.json - Tenant Level
-2a. Policy Deployment (Depends on 1) - auxiliary\policies.json - CAF Root MG Level
-2b. Move Management Sub (Depends on 1)
-2c. Move Identity Sub (Depends on 1)
-2d. Move Online Subs (Depends on 1)
-2e. Move Corp Subs (Depends on 1)
-1. Delay 20 (Depends on 2a)   
-4a. Monitoring Deployment (Depends on 2a and 3) - auxiliary\logAnalytics.json - Management MG Level
-4b. Identity Deployment (Depends on 2a and 3) - auxiliary\identity.json - Identity MG Level
-4c. Landing Zone Deployment (Depends on 2a and 3) - lz.json - Landing Zones MG Level
-4d. Move Connectivity Sub (Depends on 3)
+
+1a. Management Group Deployment - auxiliary\mgmtGroups.json - Tenant Level
+2a. Policy Deployment (Depends on 1a) - auxiliary\policies.json - CAF Root MG Level
+2b. Move Management Sub (Depends on 1a)
+2c. Move Identity Sub (Depends on 1a)
+2d. Move Online Subs (Depends on 1a)
+2e. Move Corp Subs (Depends on 1a)
+3a. Delay 20 (Depends on 2a)   
+4a. Monitoring Deployment (Depends on 2a and 3a) - auxiliary\logAnalytics.json - Management MG Level
+4b. Identity Deployment (Depends on 2a and 3a) - auxiliary\identity.json - Identity MG Level
+4c. Landing Zone Deployment (Depends on 2a and 3a) - lz.json - Landing Zones MG Level
+4d. Move Connectivity Sub (Depends on 3a)
 5a. Monitoring Solutions Deployment (Depends on 4a) - auxiliary\logAnalyticsSolutions.json - Management Sub Level
-5b. Diagnostics and Security (Depends on 3 and 4a) - auxiliary\diagnosticsAndSecurity.json - CAF Root MG Level
-6. Connectivity Deployment (Depends on 3 and 5b) - auxiliary\hubspoke-connectivity.json - Connectivity MG Level
-```
+5b. Diagnostics and Security (Depends on 3a and 4a) - auxiliary\diagnosticsAndSecurity.json - CAF Root MG Level
+6a. Connectivity Deployment (Depends on 3a and 5b) - auxiliary\hubspoke-connectivity.json - Connectivity MG Level
 
-[Sample GitLab Pipeline](es-hubspoke-template/cicd/gitlab-sample.yml)
+A CICD pipeline can be created which mimics the deployment sequence above.  See below for some samples.
 
-### Public Repo Option
-In order to deploy these templates through a CICD pipeline internal to the organization:
-1. Clone the source repo from GitHub to a temp location
-2. Create a new local repo for the solution
-3. Copy the **armTemplates** directory from source repo to solution repo
-4. Modify the Templates as required (see below section for modifications required for MAG)
-5. Add a customized **Parameters** file in the solution repo and check in to source control (Click here for a sample)
-6. Configure CICD Tool and Pipline to Deploy Template to Azure (See below sections for GitHub, GitLabs and ADO for connection instructions)
+* [Sample GitLab Pipeline for Enterprise Scale Hub and Spoke Landing Zone](es-hubspoke-template/cicd/gitlab-sample.yml)
+* [Sample GitHub Pipeline for Enterprise Scale Hub and Spoke Landing Zone](es-hubspoke-template/cicd/github-sample.yml)
+
+
+### Option 2 - Utilize Storage Account with SAS Key for Artifacts
+As an alternative to sequencing the deployments using a pipeline, the master arm template can be refactored to include storage account URI and SAS token parameters.  A CICD pipeline can then be created, which creates an Azure storage account with SAS token, copies the source repo to the storage account and executes the master template passing in the storage account URI and SAS token.  The ARM deployment service will use the SAS URI to access the storage account over the Azure backbone network allowing the deployment to complete in the same fashion as having the files in publicly accessible GIT repository.  As a final step the pipeline should remove the storage account.
 
 ## Required Modifications for Microsoft Azure Government (MAG)
 
