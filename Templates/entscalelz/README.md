@@ -14,19 +14,33 @@ These templates each consist of a master ARM (json) template file that contain U
 The following shows the deployment steps sequenced by resource deployments from the master ARM template.  
 
 1a. Management Group Deployment - auxiliary\mgmtGroups.json - Tenant Level
+
 2a. Policy Deployment (Depends on 1a) - auxiliary\policies.json - CAF Root MG Level
+
 2b. Move Management Sub (Depends on 1a)
+
 2c. Move Identity Sub (Depends on 1a)
+
 2d. Move Online Subs (Depends on 1a)
+
 2e. Move Corp Subs (Depends on 1a)
+
 3a. Delay 20 (Depends on 2a)   
+
 4a. Monitoring Deployment (Depends on 2a and 3a) - auxiliary\logAnalytics.json - Management MG Level
+
 4b. Identity Deployment (Depends on 2a and 3a) - auxiliary\identity.json - Identity MG Level
+
 4c. Landing Zone Deployment (Depends on 2a and 3a) - lz.json - Landing Zones MG Level
+
 4d. Move Connectivity Sub (Depends on 3a)
+
 5a. Monitoring Solutions Deployment (Depends on 4a) - auxiliary\logAnalyticsSolutions.json - Management Sub Level
+
 5b. Diagnostics and Security (Depends on 3a and 4a) - auxiliary\diagnosticsAndSecurity.json - CAF Root MG Level
+
 6a. Connectivity Deployment (Depends on 3a and 5b) - auxiliary\hubspoke-connectivity.json - Connectivity MG Level
+
 
 A CICD pipeline can be created which mimics the deployment sequence above.  See below for some samples.
 
