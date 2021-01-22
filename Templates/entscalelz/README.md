@@ -29,12 +29,11 @@ The following shows the deployment steps sequenced by resource deployments from 
 5a. Monitoring Solutions Deployment (Depends on 4a) - auxiliary\logAnalyticsSolutions.json - Management Sub Level
 5b. Diagnostics and Security (Depends on 3 and 4a) - auxiliary\diagnosticsAndSecurity.json - CAF Root MG Level
 6. Connectivity Deployment (Depends on 3 and 5b) - auxiliary\hubspoke-connectivity.json - Connectivity MG Level
-
+```
 
 [Sample GitLab Pipeline](es-hubspoke-template/cicd/gitlab-sample.yml)
 
-
-
+### Public Repo Option
 In order to deploy these templates through a CICD pipeline internal to the organization:
 1. Clone the source repo from GitHub to a temp location
 2. Create a new local repo for the solution
@@ -43,19 +42,6 @@ In order to deploy these templates through a CICD pipeline internal to the organ
 5. Add a customized **Parameters** file in the solution repo and check in to source control (Click here for a sample)
 6. Configure CICD Tool and Pipline to Deploy Template to Azure (See below sections for GitHub, GitLabs and ADO for connection instructions)
 
-### CICD Tools
-
-#### GitHub
-Deploy Azure Resource Manager (ARM) Template - https://github.com/marketplace/actions/deploy-azure-resource-manager-arm-template
-
-#### GitLabs
-1. Create a Connection
-2. YAML Pipeline Sample to Deploy ARM Template
-   
-#### Azure DevOps
-1. Create a Connection
-2. YAML Pipeline Sample to Deploy ARM Template
-   
 ## Required Modifications for Microsoft Azure Government (MAG)
 
 The version of source code tested on MAG was pulled on **01/20/2021**.  In order to deploy any of these templates to Microsoft Azure Government (MAG) the following modifications must be made:
