@@ -722,6 +722,7 @@
                   "/providers/Microsoft.Authorization/roleDefinitions/b24988ac-6180-42a0-ab88-20f7382dd24c"
                 ],
                 "deployment": {
+                  "location": "[[parameters('location')]",
                   "properties": {
                     "mode": "incremental",
                     "parameters": {
@@ -1073,6 +1074,7 @@
                     ]
                   },
                   "deployment": {
+                    "location": "[[parameters('location')]",
                     "properties": {
                       "mode": "incremental",
                       "template": {
@@ -1436,7 +1438,7 @@
                   ]
                 },
                 "deployment": {
-                  "location": "northeurope",
+                  "location": "[[parameters('location')]",
                   "properties": {
                     "mode": "incremental",
                     "parameters": {
@@ -2831,6 +2833,7 @@
                     ]
                   },
                   "deployment": {
+                    "location": "[[parameters('location')]",
                     "properties": {
                       "mode": "incremental",
                       "parameters": {
@@ -6672,6 +6675,7 @@
                     "/providers/Microsoft.Authorization/roleDefinitions/4d97b98b-1d4f-4787-a291-c67834d212e7"
                   ],
                   "deployment": {
+                    "location": "[[parameters('location')]",
                     "properties": {
                       "mode": "incremental",
                       "parameters": {
@@ -8463,6 +8467,7 @@
                     ]
                   },
                   "deployment": {
+                    "location": "[[parameters('location')]",
                     "properties": {
                       "mode": "incremental",
                       "parameters": {
@@ -9655,6 +9660,7 @@
                     "/providers/Microsoft.Authorization/roleDefinitions/4d97b98b-1d4f-4787-a291-c67834d212e7"
                   ],
                   "deployment": {
+                    "location": "[[parameters('location')]",
                     "properties": {
                       "mode": "incremental",
                       "parameters": {
@@ -14041,6 +14047,7 @@
                     "/providers/Microsoft.Authorization/roleDefinitions/4d97b98b-1d4f-4787-a291-c67834d212e7"
                   ],
                   "deployment": {
+                    "location": "[[parameters('location')]",
                     "properties": {
                       "mode": "incremental",
                       "parameters": {
@@ -14432,6 +14439,7 @@
                     ]
                   },
                   "deployment": {
+                    "location": "[[parameters('location')]",
                     "properties": {
                       "mode": "incremental",
                       "parameters": {
@@ -14772,6 +14780,7 @@
                     "/providers/Microsoft.Authorization/roleDefinitions/4d97b98b-1d4f-4787-a291-c67834d212e7"
                   ],
                   "deployment": {
+                    "location": "[[parameters('location')]",
                     "properties": {
                       "mode": "incremental",
                       "parameters": {
@@ -14949,6 +14958,7 @@
                     "/providers/Microsoft.Authorization/roleDefinitions/4d97b98b-1d4f-4787-a291-c67834d212e7"
                   ],
                   "deployment": {
+                    "location": "[[parameters('location')]",
                     "properties": {
                       "mode": "incremental",
                       "parameters": {

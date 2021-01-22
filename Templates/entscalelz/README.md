@@ -255,9 +255,13 @@ Templates\entscalelz\es-template\auxiliary\mkPolicies.json
 
 6. Remove references to 'northerneurope' and 'westeurope' in policies.json
 
-Remove the line:  
+Replace the lines:  
 ```
 "location": "northerneurope",
+```
+with
+```
+"location": "[[parameters('location')]",
 ```
 
 from the following Policy Definitions:
