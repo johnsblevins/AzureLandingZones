@@ -139,6 +139,7 @@ with:
       "pricingTier": "[[parameters('pricingTierSqlServers')]"
     }
   },
+```
 
 2. Replace the following code block for SqlServers ASC Reference:
 ```

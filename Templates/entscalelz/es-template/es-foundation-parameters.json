@@ -8,28 +8,7 @@
     "managementSubscriptionId": {
       "value": ""
     },
-    "connectivitySubscriptionId": {
-      "value": ""
-    },
-    "identitySubscriptionId": {
-      "value": ""
-    },
-    "denySubnetWithoutNsgForIdentity": {
-      "value": "Yes"
-    },
-    "denyRdpForIdentity": {
-      "value": "Yes"
-    },
-    "denyPipForIdentity": {
-      "value": "Yes"
-    },
-    "enableVmBackupForIdentity": {
-      "value": "Yes"
-    },
-    "onlineLzSubscriptionId": {
-      "value": []
-    },
-    "corpLzSubscriptionId": {
+    "lzSubscriptionId": {
       "value": []
     },
     "enableLogAnalytics": {
@@ -40,10 +19,7 @@
     },
     "enableAsc": {
       "value": "Yes"
-    },
-    "enableAksPolicy": {
-      "value": "No"
-    },
+    },    
     "enableAscForServers": {
       "value": "Yes"
     },
@@ -71,6 +47,9 @@
     "enableAscForRegistries": {
       "value": "Yes"
     },
+    "enableAksPolicy": {
+      "value": "No"
+    },
     "denyAksPrivileged": {
       "value": "Yes"
     },
@@ -79,16 +58,7 @@
     },
     "denyHttpIngressForAks": {
       "value": "Yes"
-    },
-    "enableArcMonitoring": {
-      "value": "No"
-    },
-    "enableVmMonitoring": {
-      "value": "Yes"
-    },
-    "enableVmssMonitoring": {
-      "value": "Yes"
-    },
+    },    
     "enableSecuritySolution": {
       "value": "Yes"
     },
@@ -122,6 +92,15 @@
     "enableSqlEncryption": {
       "value": "Yes"
     },
+    "enableArcMonitoring": {
+      "value": "No"
+    },
+    "enableVmMonitoring": {
+      "value": "Yes"
+    },
+    "enableVmssMonitoring": {
+      "value": "Yes"
+    },
     "enableVmBackup": {
       "value": "Yes"
     },
@@ -136,33 +115,6 @@
     },
     "denySubnetWithoutNsg": {
       "value": "Yes"
-    },
-    "addressPrefix": {
-      "value": ""
-    },
-    "enableVpnGw": {
-      "value": "Yes"
-    },
-    "enableErGw": {
-      "value": "No"
-    },
-    "location": {
-      "value": ""
-    },
-    "enableHub": {
-      "value": "Yes"
-    },
-    "enableAzFw": {
-      "value": "Yes"
-    },
-    "vpnGwType": {
-      "value": "RouteBased"
-    },
-    "subnetMaskForAzFw": {
-      "value": ""
-    },
-    "subnetMaskForGw": {
-      "value": ""
     }
   }
 }
