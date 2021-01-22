@@ -722,7 +722,6 @@
                   "/providers/Microsoft.Authorization/roleDefinitions/b24988ac-6180-42a0-ab88-20f7382dd24c"
                 ],
                 "deployment": {
-                  "location": "northeurope",
                   "properties": {
                     "mode": "incremental",
                     "parameters": {
@@ -1074,7 +1073,6 @@
                     ]
                   },
                   "deployment": {
-                    "location": "northeurope",
                     "properties": {
                       "mode": "incremental",
                       "template": {
@@ -2833,7 +2831,6 @@
                     ]
                   },
                   "deployment": {
-                    "location": "northeurope",
                     "properties": {
                       "mode": "incremental",
                       "parameters": {
@@ -6675,7 +6672,6 @@
                     "/providers/Microsoft.Authorization/roleDefinitions/4d97b98b-1d4f-4787-a291-c67834d212e7"
                   ],
                   "deployment": {
-                    "location": "northeurope",
                     "properties": {
                       "mode": "incremental",
                       "parameters": {
@@ -8467,7 +8463,6 @@
                     ]
                   },
                   "deployment": {
-                    "location": "northeurope",
                     "properties": {
                       "mode": "incremental",
                       "parameters": {
@@ -9660,7 +9655,6 @@
                     "/providers/Microsoft.Authorization/roleDefinitions/4d97b98b-1d4f-4787-a291-c67834d212e7"
                   ],
                   "deployment": {
-                    "location": "northeurope",
                     "properties": {
                       "mode": "incremental",
                       "parameters": {
@@ -14047,7 +14041,6 @@
                     "/providers/Microsoft.Authorization/roleDefinitions/4d97b98b-1d4f-4787-a291-c67834d212e7"
                   ],
                   "deployment": {
-                    "location": "northeurope",
                     "properties": {
                       "mode": "incremental",
                       "parameters": {
@@ -14439,7 +14432,6 @@
                     ]
                   },
                   "deployment": {
-                    "location": "northeurope",
                     "properties": {
                       "mode": "incremental",
                       "parameters": {
@@ -14453,39 +14445,6 @@
                         "contentVersion": "1.0.0.0",
                         "parameters": {
                           "ipam": {
-                            "defaultValue": [
-                              {
-                                "name": "bu1-weu-msx3-vNet1",
-                                "location": "westeurope",
-                                "virtualNetworks": {
-                                  "properties": {
-                                    "addressSpace": {
-                                      "addressPrefixes": [
-                                        "10.51.217.0/24"
-                                      ]
-                                    }
-                                  }
-                                },
-                                "networkSecurityGroups": {
-                                  "properties": {
-                                    "securityRules": []
-                                  }
-                                },
-                                "routeTables": {
-                                  "properties": {
-                                    "routes": []
-                                  }
-                                },
-                                "hubVirtualNetworkConnection": {
-                                  "vWanVhubResourceId": "/subscriptions/99c2838f-a548-4884-a6e2-38c1f8fb4c0b/resourceGroups/contoso-global-vwan/providers/Microsoft.Network/virtualHubs/contoso-vhub-weu",
-                                  "properties": {
-                                    "allowHubToRemoteVnetTransit": true,
-                                    "allowRemoteVnetToUseHubVnetGateways": false,
-                                    "enableInternetSecurity": true
-                                  }
-                                }
-                              }
-                            ],
                             "type": "Array"
                           }
                         },
@@ -14813,7 +14772,6 @@
                     "/providers/Microsoft.Authorization/roleDefinitions/4d97b98b-1d4f-4787-a291-c67834d212e7"
                   ],
                   "deployment": {
-                    "location": "northeurope",
                     "properties": {
                       "mode": "incremental",
                       "parameters": {
@@ -14991,7 +14949,6 @@
                     "/providers/Microsoft.Authorization/roleDefinitions/4d97b98b-1d4f-4787-a291-c67834d212e7"
                   ],
                   "deployment": {
-                    "location": "northeurope",
                     "properties": {
                       "mode": "incremental",
                       "parameters": {

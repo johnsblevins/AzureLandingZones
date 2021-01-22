@@ -246,3 +246,77 @@ with:
   }
   }
 ```
+
+5. Remove the following unused policy file.
+  
+```
+Templates\entscalelz\es-template\auxiliary\mkPolicies.json
+```
+
+6. Remove references to 'northerneurope' and 'westeurope' in policies.json
+
+Remove the line:  
+```
+"location": "northerneurope",
+```
+
+from the following Policy Definitions:
+```
+Deploy-Budget
+Deploy-Diagnostics-ActivityLog
+Deploy-VNET-HubSpoke
+Deploy-ASC-Standard
+Deploy-FirewallPolicy
+Deploy-Log-Analytics
+Deploy-DDoSProtection
+Deploy-HUB
+Deploy-vNet
+Deploy-vWAN
+Deploy-vHUB
+```
+
+7. Remove default value for IPAM parameter with westeurope reference
+   
+Remove the following block from **policies.json**
+```
+"defaultValue": [
+                              {
+                                "name": "bu1-weu-msx3-vNet1",
+                                "location": "westeurope",
+                                "virtualNetworks": {
+                                  "properties": {
+                                    "addressSpace": {
+                                      "addressPrefixes": [
+                                        "10.51.217.0/24"
+                                      ]
+                                    }
+                                  }
+                                },
+                                "networkSecurityGroups": {
+                                  "properties": {
+                                    "securityRules": []
+                                  }
+                                },
+                                "routeTables": {
+                                  "properties": {
+                                    "routes": []
+                                  }
+                                },
+                                "hubVirtualNetworkConnection": {
+                                  "vWanVhubResourceId": "/subscriptions/99c2838f-a548-4884-a6e2-38c1f8fb4c0b/resourceGroups/contoso-global-vwan/providers/Microsoft.Network/virtualHubs/contoso-vhub-weu",
+                                  "properties": {
+                                    "allowHubToRemoteVnetTransit": true,
+                                    "allowRemoteVnetToUseHubVnetGateways": false,
+                                    "enableInternetSecurity": true
+                                  }
+                                }
+                              }
+                            ],
+
+
+8. Remove reference to China Cloud and mkPolicies.json in **es-hubspoke.json**, **es-foundation.json** and **es-vwan.json** Master Templates
+
+Remove the following line:
+```
+"https://management.chinacloudapi.cn": "auxiliary/mkPolicies.json",
+```
