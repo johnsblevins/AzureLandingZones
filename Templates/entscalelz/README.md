@@ -253,7 +253,7 @@ with:
 Templates\entscalelz\es-template\auxiliary\mkPolicies.json
 ```
 
-6. Remove references to 'northerneurope' and 'westeurope' in policies.json
+6. Remove references to 'northerneurope'' in **policies.json**.  The related location reference is where the deployment metadata is stored not the location of the deployment itself.
 
 Replace the lines:  
 ```
@@ -261,7 +261,7 @@ Replace the lines:
 ```
 with
 ```
-"location": "[[parameters('location')]",
+"location": "usgovvirginia",
 ```
 
 from the following Policy Definitions:
