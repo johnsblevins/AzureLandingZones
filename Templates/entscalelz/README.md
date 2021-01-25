@@ -108,7 +108,7 @@ While Arc is available in MAG the **lz.json** template references Policy Definit
     }
 ```
 
-### Asc Configuration for AppServices and KeyVaults
+### Asc Configuration for AppServices, KeyVaults, DNS and ARM
 The **policies.json** template attempts to enable Asc for AppServices, KeyVaults, DNS and ARM.  While these services are available in MAG, the Asc extensions for them are not.  As a result the following errors are received "The name 'AppServices' is not a valid name. Possible pricing bundle names: VirtualMachines, SqlServers, StorageAccounts, KubernetesService, ContainerRegistry." and "The name 'KeyVaults' is not a valid name. Possible pricing bundle names: VirtualMachines, SqlServers, StorageAccounts, KubernetesService, ContainerRegistry."  The workaround involves removing ASC references to AppServices and KeyVaults in the **policies.json** template file as described below:
 1. Replace the following code block for AppServices ASC Reference:
 ```
