@@ -109,7 +109,7 @@ While Arc is available in MAG the **lz.json** template references Policy Definit
 ```
 
 ### Asc Configuration for AppServices and KeyVaults
-The **policies.json** template attempts to enable Asc for AppServices and KeyVaults.  While these services are available in MAG, the Asc extensions for them are not.  As a result the following errors are received "The name 'AppServices' is not a valid name. Possible pricing bundle names: VirtualMachines, SqlServers, StorageAccounts, KubernetesService, ContainerRegistry." and "The name 'KeyVaults' is not a valid name. Possible pricing bundle names: VirtualMachines, SqlServers, StorageAccounts, KubernetesService, ContainerRegistry."  The workaround involves removing ASC references to AppServices and KeyVaults in the **policies.json** template file as described below:
+The **policies.json** template attempts to enable Asc for AppServices, KeyVaults, DNS and ARM.  While these services are available in MAG, the Asc extensions for them are not.  As a result the following errors are received "The name 'AppServices' is not a valid name. Possible pricing bundle names: VirtualMachines, SqlServers, StorageAccounts, KubernetesService, ContainerRegistry." and "The name 'KeyVaults' is not a valid name. Possible pricing bundle names: VirtualMachines, SqlServers, StorageAccounts, KubernetesService, ContainerRegistry."  The workaround involves removing ASC references to AppServices and KeyVaults in the **policies.json** template file as described below:
 1. Replace the following code block for AppServices ASC Reference:
 ```
   {
@@ -150,7 +150,7 @@ with:
   },
 ```
 
-2. Replace the following code block for SqlServers ASC Reference:
+2. Replace the following code block for Key Vault ASC Reference:
 ```
 {
   "type": "Microsoft.Security/pricings",
@@ -253,18 +253,8 @@ with:
 Templates\entscalelz\es-template\auxiliary\mkPolicies.json
 ```
 
-6. Remove references to 'northerneurope'' in **policies.json**.  The related location reference is where the deployment metadata is stored not the location of the deployment itself.
-
-Replace the lines:  
-```
-"location": "northerneurope",
-```
-with
-```
-"location": "usgovvirginia",
-```
-
-from the following Policy Definitions:
+6. Change references to 'northerneurope' in **policies.json**.  
+The following Policy Definitions in **policies.json** are scoped to the subscription level and require a location for deployment metadata (not resources) to be stored:
 ```
 Deploy-Budget
 Deploy-Diagnostics-ActivityLog
@@ -277,9 +267,18 @@ Deploy-HUB
 Deploy-vNet
 Deploy-vWAN
 Deploy-vHUB
+``` 
+
+The references to 'northerneurope' should be replaced by 'usgovvirginia'.  Replace all instances of:
+```
+"location": "northerneurope",
+```
+with:
+```
+"location": "usgovvirginia",
 ```
 
-7. Remove default value for IPAM parameter with westeurope reference
+7. Remove default value for IPAM parameter with 'westeurope' reference
    
 Remove the following block from **policies.json**
 ```
@@ -316,7 +315,7 @@ Remove the following block from **policies.json**
                                 }
                               }
                             ],
-
+```
 
 8. Remove reference to China Cloud and mkPolicies.json in **es-hubspoke.json**, **es-foundation.json** and **es-vwan.json** Master Templates
 
