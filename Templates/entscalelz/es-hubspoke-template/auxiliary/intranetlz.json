@@ -1,0 +1,110 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-08-01/tenantDeploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "topLevelManagementGroupPrefix": {
+            "type": "string",
+            "maxLength": 5
+        }        
+    },
+    "variables": {
+        "intranetScope": "[concat('/providers/Microsoft.Management/managementGroups/', parameters('topLevelManagementGroupPrefix'), '-intranet')]",
+        "policyDefinitions": {
+            "allowedIntranetResourceTypes": "/providers/Microsoft.Authorization/policyDefinitions/a08ec900-254a-4555-9bf5-e42af04b5c5c",
+            "denyIntranetPublicPaaSEndpoints": "[concat('/providers/Microsoft.Management/managementGroups/', parameters('topLevelManagementGroupPrefix'), '/providers/Microsoft.Authorization/policySetDefinitions/Deny-PublicEndpoints')]",
+            "enforceIntranetSubnetRouteTable": "[concat('/providers/Microsoft.Management/managementGroups/', parameters('topLevelManagementGroupPrefix'), '/providers/Microsoft.Authorization/policyDefinitions/Enforce-Subn-RouteTable')]"
+        },
+        "policyAssignmentNames": {
+            "allowedIntranetResourceTypes": "Allowed-Intra-Resources",
+            "denyIntranetPublicPaaSEndpoints": "Deny-Intra-PaaS-Endpoint",
+            "enforceIntranetSubnetRouteTable": "Enforce-Intra-RouteTable"
+        }
+    },
+    "resources": [
+        {
+            "type": "Microsoft.Authorization/policyAssignments",
+            "apiVersion": "2018-05-01",
+            "name": "[variables('policyAssignmentNames').allowedIntranetResourceTypes]",
+            "location": "[deployment().location]",
+            "identity": {
+                "type": "SystemAssigned"
+            },
+            "properties": {
+                "description": "Allowed-Intra-Resources",
+                "displayName": "Allowed-Intra-Resources",
+                "policyDefinitionId": "[variables('policyDefinitions').allowedIntranetResourceTypes]",
+                "scope": "[variables('intranetScope')]",
+                "parameters": {
+                    "listOfResourceTypesAllowed": {
+                        "value": ["microsoft.compute/availabilitySets","microsoft.compute/virtualMachines","microsoft.compute/virtualMachines/extensions","microsoft.compute/virtualMachineScaleSets","microsoft.compute/virtualMachineScaleSets/extensions","microsoft.compute/virtualMachineScaleSets/virtualMachines","microsoft.compute/virtualMachineScaleSets/virtualMachines/extensions","microsoft.compute/virtualMachineScaleSets/networkInterfaces","microsoft.compute/virtualMachineScaleSets/virtualMachines/networkInterfaces","microsoft.compute/virtualMachineScaleSets/publicIPAddresses","microsoft.compute/locations","microsoft.compute/locations/operations","microsoft.compute/locations/vmSizes","microsoft.compute/locations/runCommands","microsoft.compute/locations/usages","microsoft.compute/locations/virtualMachines","microsoft.compute/locations/virtualMachineScaleSets","microsoft.compute/locations/publishers","microsoft.compute/operations","microsoft.compute/restorePointCollections","microsoft.compute/restorePointCollections/restorePoints","microsoft.compute/proximityPlacementGroups","microsoft.compute/sshPublicKeys","microsoft.compute/locations/spotEvictionRates","microsoft.compute/locations/spotPriceHistory","microsoft.compute/sharedVMImages","microsoft.compute/sharedVMImages/versions","microsoft.compute/locations/artifactPublishers","microsoft.compute/locations/capsoperations","microsoft.compute/galleries","microsoft.compute/galleries/images","microsoft.compute/galleries/images/versions","microsoft.compute/locations/galleries","microsoft.compute/disks","microsoft.compute/snapshots","microsoft.compute/locations/diskoperations","microsoft.compute/diskEncryptionSets","microsoft.compute/diskAccesses","microsoft.compute/images","microsoft.compute/hostGroups","microsoft.compute/hostGroups/hosts"]
+                    }
+                }
+            }
+        },
+        {
+            "type": "Microsoft.Authorization/policyAssignments",
+            "apiVersion": "2018-05-01",
+            "name": "[variables('policyAssignmentNames').denyIntranetPublicPaaSEndpoints]",
+            "location": "[deployment().location]",
+            "identity": {
+                "type": "SystemAssigned"
+            },
+            "properties": {
+                "description": "Deny-Intra-PaaS-Endpoint",
+                "displayName": "Deny-Intra-PaaS-Endpoint",
+                "policyDefinitionId": "[variables('policyDefinitions').denyIntranetPublicPaaSEndpoints]",
+                "scope": "[variables('intranetScope')]",
+                "parameters": {
+                    "CosmosPublicIpDenyEffect": {
+                        "value": "Deny"
+                    },
+                    "MariaDBPublicIpDenyEffect": {
+                        "value": "Deny"
+                    },
+                    "MySQLPublicIpDenyEffect": {
+                        "value": "Deny"
+                    },
+                    "PostgreSQLPublicIpDenyEffect": {
+                        "value": "Deny"
+                    },
+                    "KeyVaultPublicIpDenyEffect": {
+                        "value": "Deny"
+                    },
+                    "SqlServerPublicIpDenyEffect": {
+                        "value": "Deny"
+                    },
+                    "StoragePublicIpDenyEffect": {
+                        "value": "Deny"
+                    },
+                    "AKSPublicIpDenyEffect": {
+                        "value": "Deny"
+                    }
+                }
+            }
+        },
+        {
+            "type": "Microsoft.Authorization/policyAssignments",
+            "apiVersion": "2018-05-01",
+            "name": "[variables('policyAssignmentNames').enforceIntranetSubnetRouteTable]",
+            "location": "[deployment().location]",
+            "identity": {
+                "type": "SystemAssigned"
+            },
+            "properties": {
+                "description": "Enforce-Intra-RouteTable",
+                "displayName": "Enforce-Intra-RouteTable",
+                "policyDefinitionId": "[variables('policyDefinitions').enforceIntranetSubnetRouteTable]",
+                "scope": "[variables('intranetScope')]",
+                "parameters": {
+                    "routeTableResourceGroup": {
+                        "value": "Locked"
+                    },
+                    "routeTableName": {
+                        "value": "RouteTable"
+                    }
+                }
+            }
+        }
+    ],
+    "outputs": {}
+}

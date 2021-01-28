@@ -7,7 +7,7 @@ The Enterprise-Scale architecture is modular by design and allow organizations t
 ## Please NOTE this is a Custom Solution Repository
 The orginal source for this solution can be found on GitHub at https://github.com/Azure/Enterprise-Scale/tree/main/docs/reference/adventureworks.  The version contained in this repository includes a cloned copy of the original templates, as well as an added set of CICD script and template files for use by DevOps teams to customize the solution and make the deployment repeatable in their environment.  It also includes modifications for deployment of the template in Microsoft Azure Government (MAG).
 
-# List of Modifications from Original Template
+# List of Modifications from Original Templates
 ## Changes required for MAG
 The templates must be modified from their original source to deploy successfully to MAG as described at:
 * [Deploy Enterprise Scale Landing Zone from CICD Pipeline in MAG](../README.md)
@@ -33,13 +33,20 @@ The management group hierarchy declared in **mgmtGroups.json** has been modified
                     CAF-Sandbox-LandingZones
 
 ## Policy Definitions
-The policy following Policy Definitions have been added/modified in **policies.json**:
+The following Policy Definitions have been added/modified in **policies.json**:
 * **Enforce-Subn-RouteTable** Enforce Route Table on All Subnets. Takes the following parameters:
+  
         RouteTableResourceGroup (Default: Locked)
         RouteTableName (Default: RouteTable)
 
-## Policy Assignments
-The policy assignments have been added/modified in **lz.json**:
+* **Deploy-AzureBackup-on-VM** Deploys if not exist a backup vault in the resourcegroup of  the virtual machine and enabled the backup for the virtual machine with defaultPolicy enabled.
+
+## Landing Zone Policy Assignments
+The policy assignments have been added/modified in a new template file called **lz.json**:
+* **Deploy-VM-Backup** Deploys if not exist a backup vault in the resourcegroup of  the virtual machine and enabled the backup for the virtual machine with defaultPolicy enabled at **CAF-LandingZone** MG Scope. 
+
+## Intranet Landing Zone Policy Assignments
+The policy assignments have been added/modified in a new template file called **intranetlz.json**:
 * **Deny-Intranet-Public-PaaS-Endpoints** Public network access should be disabled for PAAS services (Initiative) assigned at **CAF-Intranet** MG Scope.  This policy applies to the following PaaS Services:  
   
         Cosmos

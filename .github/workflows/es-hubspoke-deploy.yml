@@ -61,6 +61,9 @@ jobs:
                 # Landing Zone Deployment
                 az deployment mg create --name "EntScale-LZ-${{ env.LOCATION }}" --location ${{ env.LOCATION }} --management-group-id "${{ env.ENTERPRISE_SCALE_COMPANY_PREFIX }}-landingzones" --template-file Templates/entscalelz/es-hubspoke-template/auxiliary/lz.json --parameters topLevelManagementGroupPrefix=${{ env.ENTERPRISE_SCALE_COMPANY_PREFIX }} enableSqlAudit=Yes denyAksPrivileged=Yes denyAksPrivilegedEscalation=Yes denyHttpIngressForAks=Yes enableSqlEncryption=Yes enableVmBackup=Yes denyRdp=Yes enableStorageHttps=Yes denyIpForwarding=Yes denySubnetWithoutNsg=Yes
 
+                # Intranet Landing Zone Deployment
+                az deployment mg create --name "EntScale-IntranetLZ-${{ env.LOCATION }}" --location ${{ env.LOCATION }} --management-group-id "${{ env.ENTERPRISE_SCALE_COMPANY_PREFIX }}-intranet" --template-file Templates/entscalelz/es-hubspoke-template/auxiliary/intranetlz.json --parameters topLevelManagementGroupPrefix=${{ env.ENTERPRISE_SCALE_COMPANY_PREFIX }}
+
                 # Move Connectivity Sub
                 az account management-group subscription add --name "${{ env.ENTERPRISE_SCALE_COMPANY_PREFIX }}-connectivity" --subscription ${{ secrets.CONNECTIVITY_SUB_ID }}
 
