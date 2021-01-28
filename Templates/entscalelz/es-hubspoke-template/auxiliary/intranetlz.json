@@ -169,7 +169,24 @@
                             "Microsoft.Network/locations/bareMetalTenants",
                             "Microsoft.Network/virtualWans",
                             "Microsoft.Network/virtualHubs",
-                            "Microsoft.Network/networkExperimentProfiles"
+                            "Microsoft.Network/networkExperimentProfiles",
+                            "Microsoft.RecoveryServices/vaults",
+                            "Microsoft.RecoveryServices/operations",
+                            "Microsoft.RecoveryServices/locations",
+                            "Microsoft.RecoveryServices/locations/backupStatus",
+                            "Microsoft.RecoveryServices/locations/checkNameAvailability",
+                            "Microsoft.RecoveryServices/locations/backupValidateFeatures",
+                            "Microsoft.RecoveryServices/locations/backupPreValidateProtection",
+                            "Microsoft.RecoveryServices/locations/allocatedStamp",
+                            "Microsoft.RecoveryServices/locations/allocateStamp",
+                            "Microsoft.RecoveryServices/locations/backupCrrJobs",
+                            "Microsoft.RecoveryServices/locations/backupCrrJob",
+                            "Microsoft.RecoveryServices/locations/backupAadProperties",
+                            "Microsoft.RecoveryServices/locations/backupCrossRegionRestore",
+                            "Microsoft.RecoveryServices/locations/backupCrrOperationResults",
+                            "Microsoft.RecoveryServices/locations/backupCrrOperationsStatus",
+                            "Microsoft.RecoveryServices/backupProtectedItems",
+                            "Microsoft.RecoveryServices/replicationEligibilityResults"
                         ]
                     }
                 }
