@@ -57,7 +57,7 @@
             "landingZone": "[concat(parameters('topLevelManagementGroupPrefix'), '-', 'landingzones')]",
             "decommissioned": "[concat(parameters('topLevelManagementGroupPrefix'), '-', 'decommissioned')]",
             "sandboxes": "[concat(parameters('topLevelManagementGroupPrefix'), '-', 'sandboxes')]",
-            "intranet": "[concat(parameters('topLevelManagementGroupPrefix'), '-', 'sandboxes')]"
+            "intranet": "[concat(parameters('topLevelManagementGroupPrefix'), '-', 'intranet')]"
         }
     },
     "resources": [

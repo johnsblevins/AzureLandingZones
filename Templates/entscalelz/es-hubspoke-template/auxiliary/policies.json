@@ -18,21 +18,25 @@
             "mode": "All",            
             "parameters": {
               "routeTableResourceGroup": {
-              "type": "string",
-              "defaultValue": "Locked",
-              "metadata": {
-                  "displayName": "Route Table Resource Group",
-                  "description": "Resource Group in which Route Table Resource is located"
-              }
+                "type": "string",
+                "defaultValue": "Locked",
+                "metadata": {
+                    "displayName": "Route Table Resource Group",
+                    "description": "Resource Group in which Route Table Resource is located"
+                }
               },
               "routeTableName": {
-              "type": "string",
-              "defaultValue": "RouteTable",
-              "metadata": {
-                  "displayName": "Route Table Name",
-                  "description": "Route Table Resource name"
+                "type": "string",
+                "defaultValue": "RouteTable",
+                "metadata": {
+                    "displayName": "Route Table Name",
+                    "description": "Route Table Resource name"
+                }
               }
-              }
+            },
+            "metadata": {
+              "version": "1.0.0",
+              "category": "Network"
             },
             "policyRule": {
               "if": {
@@ -46,7 +50,7 @@
                       {
                         "not": {
                           "field": "Microsoft.Network/virtualNetworks/subnets[*].routeTable.id",
-                          "equals": "[[concat('/subscriptions/',subscription().subscriptionId,'/resourceGroups/', parameters('RouteTableResourceGroup'),'/providers/Microsoft.Network/routeTables/, parameters('RouteTableResourceGroup')')]"
+                          "equals": "[concat('/subscriptions/',subscription().subscriptionId,'/resourceGroups/', parameters('RouteTableResourceGroup'),'/providers/Microsoft.Network/routeTables/', parameters('RouteTableResourceGroup'))]"
                         }
                       }
                     ]
