@@ -50,7 +50,7 @@
                       {
                         "not": {
                           "field": "Microsoft.Network/virtualNetworks/subnets[*].routeTable.id",
-                          "equals": "[[concat('/subscriptions/',subscription().subscriptionId,'/resourceGroups/locked/providers/Microsoft.Network/routeTables/RouteTable')]"
+                          "equals": "[[concat('/subscriptions/',subscription().subscriptionId,'/resourceGroups/', parameters('routeTableResourceGroup'), '/providers/Microsoft.Network/routeTables/', parameters('routeTableName'))]"
                         }
                       }
                     ]
@@ -64,7 +64,7 @@
                       {
                         "not": {
                           "field": "Microsoft.Network/virtualNetworks/subnets/routeTable.id",
-                          "equals": "[[concat('/subscriptions/',subscription().subscriptionId,'/resourceGroups/locked/providers/Microsoft.Network/routeTables/RouteTable')]"
+                          "equals": "[[concat('/subscriptions/',subscription().subscriptionId,'/resourceGroups/', parameters('routeTableResourceGroup'), '/providers/Microsoft.Network/routeTables/', parameters('routeTableName'))]"
                         }
                       }
                     ]
