@@ -32,6 +32,12 @@ The management group hierarchy declared in **mgmtGroups.json** has been modified
                     CAF-Sandbox-Management
                     CAF-Sandbox-LandingZones
 
+## Policy Definitions
+The policy following Policy Definitions have been added/modified in **policies.json**:
+* **Enforce-Subn-RouteTable** Enforce Route Table on All Subnets. Takes the following parameters:
+        RouteTableResourceGroup (Default: Locked)
+        RouteTableName (Default: RouteTable)
+
 ## Policy Assignments
 The policy assignments have been added/modified in **lz.json**:
 * **Deny-Intranet-Public-PaaS-Endpoints** Public network access should be disabled for PAAS services (Initiative) assigned at **CAF-Intranet** MG Scope.  This policy applies to the following PaaS Services:  
@@ -49,3 +55,4 @@ The policy assignments have been added/modified in **lz.json**:
         
         Microsoft.Compute (All)
 
+* **Enforce-Subn-RouteTable** Enforce Route Table on All Subnets assigned at **CAF-Intranet** MG Scope.

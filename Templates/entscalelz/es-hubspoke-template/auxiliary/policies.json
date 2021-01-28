@@ -13,6 +13,71 @@
       "policyDefinitions": [
         {
           "properties": {
+            "description": "Enforce route table on all subnets",
+            "displayName": "Enforce route table on all subnets",
+            "mode": "All",            
+            "parameters": {
+              "routeTableResourceGroup": {
+              "type": "string",
+              "defaultValue": "Locked",
+              "metadata": {
+                  "displayName": "Route Table Resource Group",
+                  "description": "Resource Group in which Route Table Resource is located"
+              }
+              },
+              "routeTableName": {
+              "type": "string",
+              "defaultValue": "RouteTable",
+              "metadata": {
+                  "displayName": "Route Table Name",
+                  "description": "Route Table Resource name"
+              }
+              }
+            },
+            "policyRule": {
+              "if": {
+                "anyOf": [
+                  {
+                    "allOf": [
+                      {
+                        "field": "type",
+                        "equals": "Microsoft.Network/virtualNetworks"
+                      },
+                      {
+                        "not": {
+                          "field": "Microsoft.Network/virtualNetworks/subnets[*].routeTable.id",
+                          "equals": "[[concat('/subscriptions/',subscription().subscriptionId,'/resourceGroups/', parameters('RouteTableResourceGroup'),'/providers/Microsoft.Network/routeTables/, parameters('RouteTableResourceGroup')')]"
+                        }
+                      }
+                    ]
+                  },
+                  {
+                    "allOf": [
+                      {
+                        "field": "type",
+                        "equals": "Microsoft.Network/virtualNetworks/subnets"
+                      },
+                      {
+                        "not": {
+                          "field": "Microsoft.Network/virtualNetworks/subnets/routeTable.id",
+                          "equals": "[[concat('/subscriptions/',subscription().subscriptionId,'/resourceGroups/', parameters('RouteTableResourceGroup'),'/providers/Microsoft.Network/routeTables/, parameters('RouteTableResourceGroup')')]"
+                        }
+                      }
+                    ]
+                  }
+                ]
+              },
+              "then": {
+                "effect": "deny"
+              }
+            }
+          },
+          "id": "/providers/Microsoft.Management/managementGroups/hs2-corp/providers/Microsoft.Authorization/policyDefinitions/c2397e91-77a3-464d-b942-97ed5be2d5f0",
+          "type": "Microsoft.Authorization/policyDefinitions",
+          "name": "Enforce-Subn-RouteTable"
+        },
+        {
+          "properties": {
           "Description": "Deploys if not exist a backup vault in the resourcegroup of  the virtual machine and enabled the backup for the virtual machine with defaultPolicy enabled.",
           "DisplayName": "Deploy Azure Backup on virtual machines",
           "Mode": "Indexed",
