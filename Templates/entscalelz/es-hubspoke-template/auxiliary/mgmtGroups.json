@@ -22,11 +22,32 @@
         "landingZoneMgs": {
             "type": "array",
             "defaultValue": [
-                "online",
-                "corp"
+                "intranet",
+                "extranet"
             ],
             "metadata": {
                 "description": "These are the landing zone management groups."
+            }
+        },
+        "intranetMgs": {
+            "type": "array",
+            "defaultValue": [
+                "program1",
+                "program2",
+                "program3"
+            ],
+            "metadata": {
+                "description": "These are the intranet landing zone management groups."
+            }
+        },
+        "sandboxMgs": {
+            "type": "array",
+            "defaultValue": [
+                "Sandbox-Management",
+                "Sandbox-LandingZones"
+            ],
+            "metadata": {
+                "description": "These are the intranet landing zone management groups."
             }
         }
     },
@@ -35,7 +56,8 @@
             "platform": "[concat(parameters('topLevelManagementGroupPrefix'), '-', 'platform')]",
             "landingZone": "[concat(parameters('topLevelManagementGroupPrefix'), '-', 'landingzones')]",
             "decommissioned": "[concat(parameters('topLevelManagementGroupPrefix'), '-', 'decommissioned')]",
-            "sandboxes": "[concat(parameters('topLevelManagementGroupPrefix'), '-', 'sandboxes')]"
+            "sandboxes": "[concat(parameters('topLevelManagementGroupPrefix'), '-', 'sandboxes')]",
+            "intranet": "[concat(parameters('topLevelManagementGroupPrefix'), '-', 'sandboxes')]"
         }
     },
     "resources": [
@@ -154,6 +176,50 @@
                 "details": {
                     "parent": {
                         "id": "[tenantResourceId('Microsoft.Management/managementGroups/', variables('enterpriseScaleManagementGroups').landingZone)]"
+                    }
+                }
+            }
+        },
+        {
+            // Create child management groups for intranet landing zones
+            "condition": "[not(empty(parameters('intranetMgs')))]",
+            "type": "Microsoft.Management/managementGroups",
+            "apiVersion": "2020-05-01",
+            "name": "[concat(parameters('topLevelManagementGroupPrefix'), '-', parameters('intranetMgs')[copyIndex()])]",
+            "dependsOn": [
+                "[tenantResourceId('Microsoft.Management/managementGroups/', variables('enterpriseScaleManagementGroups').intranet)]"
+            ],
+            "copy": {
+                "name": "intranetMgCopy",
+                "count": "[length(parameters('intranetMgs'))]"
+            },
+            "properties": {
+                "displayName": "[concat(parameters('topLevelManagementGroupPrefix'), '-', parameters('intranetMgs')[copyIndex()])]",
+                "details": {
+                    "parent": {
+                        "id": "[tenantResourceId('Microsoft.Management/managementGroups/', variables('enterpriseScaleManagementGroups').intranet)]"
+                    }
+                }
+            }
+        },
+        {
+            // Create child management groups for sandboxes
+            "condition": "[not(empty(parameters('sandboxMgs')))]",
+            "type": "Microsoft.Management/managementGroups",
+            "apiVersion": "2020-05-01",
+            "name": "[concat(parameters('topLevelManagementGroupPrefix'), '-', parameters('sandboxMgs')[copyIndex()])]",
+            "dependsOn": [
+                "[tenantResourceId('Microsoft.Management/managementGroups/', variables('enterpriseScaleManagementGroups').sandboxes)]"
+            ],
+            "copy": {
+                "name": "sandboxMgCopy",
+                "count": "[length(parameters('sandboxMgs'))]"
+            },
+            "properties": {
+                "displayName": "[concat(parameters('topLevelManagementGroupPrefix'), '-', parameters('sandboxMgs')[copyIndex()])]",
+                "details": {
+                    "parent": {
+                        "id": "[tenantResourceId('Microsoft.Management/managementGroups/', variables('enterpriseScaleManagementGroups').sandboxes)]"
                     }
                 }
             }

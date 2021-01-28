@@ -20,10 +20,18 @@ The following three templates for deploying the Enterprise Scale Landing Zone ex
 * [Hybrid Connectivity with VNET Hub-and-Spoke (AdventureWorks)](https://github.com/Azure/Enterprise-Scale/blob/main/docs/reference/adventureworks/README.md)
 * [No Hybrid Connectivity (WingTip)](https://github.com/Azure/Enterprise-Scale/blob/main/docs/reference/wingtip/README.md)
 
-These templates are identical except for the hybrid connectivity components which are deployed along with the solution.  For assistance determining what type of Hybrid Connectivity to select see https://docs.microsoft.com/en-us/azure/cloud-adoption-framework/ready/enterprise-scale/network-topology-and-connectivity#define-an-azure-network-topology.  
+These templates are identical except for the hybrid connectivity components which are deployed along with the solution.  For assistance determining what type of Hybrid Connectivity to select see:
+* [Define an Azure Network Topology](https://docs.microsoft.com/en-us/azure/cloud-adoption-framework/ready/enterprise-scale/network-topology-and-connectivity#define-an-azure-network-topology)  
 
-Once a template has been selected see the following link for guidance on deploying these templates to a Microsoft Azure Government (MAG) environment using CICD pipeline.
-[Deploy Enterprise Scale Templates to MAG using CICD Pipeline](Templates/entscalelz/README.md)
+### Deploy to MAG with CICD Pipeline
+Once a template has been selected see the following link for guidance on deploying these templates to a Microsoft Azure Government (MAG) environment using CICD pipeline:
+* [Deploy Enterprise Scale Templates to MAG using CICD Pipeline](Templates/entscalelz/README.md).
+
+### Customizing the Default Templates
+The default templates are intended to be a good starting point for organizations but as their cloud portfolios grow and requirements change the templates will need to be updated accordingly.  It is recommended to establish a Platform DevOps Team responsible for incorporating changes to the Enterprise Scale Architecture through the use of Infrastructure-as-Code and Agile development process.  Manual changes to the environment either through the Azure Portal or management APIs should be strictly limited and a CICD build and release pipeline should be utilized to incorporate modifications to the environment.  This repository contains the following sample customized implementations:
+* [Custom Implementation of Hybrid Connectivity with VWAN Hub and Spoke](Templates/es-hubspoke-template)
+* [Custom Implementation of Hybrid Connectivity with VNET Hub-and-Spoke](Templates/es-vwan-template)
+* [Custom Implementation with No Hybrid Connectivity](Templates/es-template)
 
 ## Step 2 - Deploy App Landing Zones
 Select a scenario:

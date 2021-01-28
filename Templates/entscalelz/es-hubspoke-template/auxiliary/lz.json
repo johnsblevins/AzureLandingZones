@@ -97,6 +97,7 @@
     },
     "variables": {
         "scope": "[concat('/providers/Microsoft.Management/managementGroups/', parameters('topLevelManagementGroupPrefix'), '-landingzones')]",
+        "intranetScope": "[concat('/providers/Microsoft.Management/managementGroups/', parameters('topLevelManagementGroupPrefix'), '-intranet')]",
         "policyDefinitions": {
             "deployVmBackup": "[concat('/providers/Microsoft.Management/managementGroups/', parameters('topLevelManagementGroupPrefix'), '/providers/Microsoft.Authorization/policyDefinitions/Deploy-AzureBackup-on-VM')]",
             "denySubnetWithoutNsg": "[concat('/providers/Microsoft.Management/managementGroups/', parameters('topLevelManagementGroupPrefix'), '/providers/Microsoft.Authorization/policyDefinitions/Deny-Subnet-Without-Nsg')]",
@@ -110,7 +111,9 @@
             "deployAks": "/providers/Microsoft.Authorization/policyDefinitions/a8eff44f-8c92-45c3-a3fb-9880802d67a7",
             "denyAksPriv": "/providers/Microsoft.Authorization/policyDefinitions/95edb821-ddaf-4404-9732-666045e056b4",
             "denyAksNoPrivEsc": "/providers/Microsoft.Authorization/policyDefinitions/1c6e92c9-99f0-4e55-9cf2-0c234dc48f99",
-            "denyHttpIngressAks": "/providers/Microsoft.Authorization/policyDefinitions/1a5b4dca-0b6f-4cf5-907c-56316bc1bf3d"
+            "denyHttpIngressAks": "/providers/Microsoft.Authorization/policyDefinitions/1a5b4dca-0b6f-4cf5-907c-56316bc1bf3d",
+            "allowedIntranetResourceTypes": "/providers/Microsoft.Authorization/policyDefinitions/a08ec900-254a-4555-9bf5-e42af04b5c5c",
+            "denyIntranetPublicPaaSEndpoints": "[concat('/providers/Microsoft.Management/managementGroups/', parameters('topLevelManagementGroupPrefix'), '/providers/Microsoft.Authorization/policySetDefinitions/Deny-PublicEndpoints')]"
         },
         "policyAssignmentNames": {
             "deployVmBackup": "Deploy-VM-Backup",
@@ -125,7 +128,9 @@
             "deployAks": "Deploy-AKS-Policy",
             "denyAksPriv": "Deny-Privileged-AKS",
             "denyAksNoPrivEsc": "Deny-Priv-Esc-AKS",
-            "denyHttpIngressAks": "Enforce-AKS-HTTPS"
+            "denyHttpIngressAks": "Enforce-AKS-HTTPS",
+            "allowedIntranetResourceTypes": "Allowed-Intranet-Resource-Types",
+            "denyIntranetPublicPaaSEndpoints": "Deny-Intranet-Public-PaaS-Endpoints"
         },
         "rbacOwner": "8e3af657-a8ff-443c-a75c-2fe8c4bcb635",
         "roleAssignmentNames": {
@@ -403,6 +408,67 @@
                 "displayName": "Deny-Subnet-Without-Nsg",
                 "policyDefinitionId": "[variables('policyDefinitions').denySubnetWithoutNsg]",
                 "scope": "[variables('scope')]"
+            }
+        },
+        {
+            "type": "Microsoft.Authorization/policyAssignments",
+            "apiVersion": "2018-05-01",
+            "name": "[variables('policyAssignmentNames').allowedIntranetResourceTypes]",
+            "location": "[deployment().location]",
+            "identity": {
+                "type": "SystemAssigned"
+            },
+            "properties": {
+                "description": "Allowed-Intranet-Resource-Types",
+                "displayName": "Allowed-Intranet-Resource-Types",
+                "policyDefinitionId": "[variables('policyDefinitions').allowedIntranetResourceTypes]",
+                "scope": "[variables('intranetScope')]",
+                "parameters": {
+                    "listOfResourceTypesAllowed": {
+                        "value": ["microsoft.compute/availabilitySets","microsoft.compute/virtualMachines","microsoft.compute/virtualMachines/extensions","microsoft.compute/virtualMachineScaleSets","microsoft.compute/virtualMachineScaleSets/extensions","microsoft.compute/virtualMachineScaleSets/virtualMachines","microsoft.compute/virtualMachineScaleSets/virtualMachines/extensions","microsoft.compute/virtualMachineScaleSets/networkInterfaces","microsoft.compute/virtualMachineScaleSets/virtualMachines/networkInterfaces","microsoft.compute/virtualMachineScaleSets/publicIPAddresses","microsoft.compute/locations","microsoft.compute/locations/operations","microsoft.compute/locations/vmSizes","microsoft.compute/locations/runCommands","microsoft.compute/locations/usages","microsoft.compute/locations/virtualMachines","microsoft.compute/locations/virtualMachineScaleSets","microsoft.compute/locations/publishers","microsoft.compute/operations","microsoft.compute/restorePointCollections","microsoft.compute/restorePointCollections/restorePoints","microsoft.compute/proximityPlacementGroups","microsoft.compute/sshPublicKeys","microsoft.compute/locations/spotEvictionRates","microsoft.compute/locations/spotPriceHistory","microsoft.compute/sharedVMImages","microsoft.compute/sharedVMImages/versions","microsoft.compute/locations/artifactPublishers","microsoft.compute/locations/capsoperations","microsoft.compute/galleries","microsoft.compute/galleries/images","microsoft.compute/galleries/images/versions","microsoft.compute/locations/galleries","microsoft.compute/disks","microsoft.compute/snapshots","microsoft.compute/locations/diskoperations","microsoft.compute/diskEncryptionSets","microsoft.compute/diskAccesses","microsoft.compute/images","microsoft.compute/hostGroups","microsoft.compute/hostGroups/hosts"]
+                    }
+                }
+            }
+        },
+        {
+            "type": "Microsoft.Authorization/policyAssignments",
+            "apiVersion": "2018-05-01",
+            "name": "[variables('policyAssignmentNames').denyIntranetPublicPaaSEndpoints]",
+            "location": "[deployment().location]",
+            "identity": {
+                "type": "SystemAssigned"
+            },
+            "properties": {
+                "description": "Deny-Intranet-Public-PaaS-Endpoints",
+                "displayName": "Deny-Intranet-Public-PaaS-Endpoints",
+                "policyDefinitionId": "[variables('policyDefinitions').denyIntranetPublicPaaSEndpoints]",
+                "scope": "[variables('intranetScope')]",
+                "parameters": {
+                    "CosmosPublicIpDenyEffect": {
+                        "value": "Deny"
+                    },
+                    "MariaDBPublicIpDenyEffect": {
+                        "value": "Deny"
+                    },
+                    "MySQLPublicIpDenyEffect": {
+                        "value": "Deny"
+                    },
+                    "PostgreSQLPublicIpDenyEffect": {
+                        "value": "Deny"
+                    },
+                    "KeyVaultPublicIpDenyEffect": {
+                        "value": "Deny"
+                    },
+                    "SqlServerPublicIpDenyEffect": {
+                        "value": "Deny"
+                    },
+                    "StoragePublicIpDenyEffect": {
+                        "value": "Deny"
+                    },
+                    "AKSPublicIpDenyEffect": {
+                        "value": "Deny"
+                    }
+                }
             }
         }        
     ],
