@@ -47,11 +47,6 @@
                             "microsoft.compute/virtualMachineScaleSets/virtualMachines/extensions",
                             "microsoft.compute/virtualMachineScaleSets/networkInterfaces",
                             "microsoft.compute/virtualMachineScaleSets/virtualMachines/networkInterfaces",
-                            "microsoft.compute/locations","microsoft.compute/locations/operations",
-                            "microsoft.compute/locations/vmSizes","microsoft.compute/locations/runCommands",
-                            "microsoft.compute/locations/usages","microsoft.compute/locations/virtualMachines",
-                            "microsoft.compute/locations/virtualMachineScaleSets",
-                            "microsoft.compute/locations/publishers",
                             "microsoft.compute/operations",
                             "microsoft.compute/restorePointCollections",
                             "microsoft.compute/restorePointCollections/restorePoints",
@@ -186,7 +181,24 @@
                             "Microsoft.RecoveryServices/locations/backupCrrOperationResults",
                             "Microsoft.RecoveryServices/locations/backupCrrOperationsStatus",
                             "Microsoft.RecoveryServices/backupProtectedItems",
-                            "Microsoft.RecoveryServices/replicationEligibilityResults"
+                            "Microsoft.RecoveryServices/replicationEligibilityResults",
+                            "Microsoft.Storage/deletedAccounts",
+                            "Microsoft.Storage/locations/deletedAccounts",
+                            "Microsoft.Storage/storageAccounts",
+                            "Microsoft.Storage/storageAccounts/listAccountSas",
+                            "Microsoft.Storage/storageAccounts/listServiceSas",
+                            "Microsoft.Storage/operations",
+                            "Microsoft.Storage/usages",
+                            "Microsoft.Storage/checkNameAvailability",
+                            "Microsoft.Storage/locations/checkNameAvailability",
+                            "Microsoft.Storage/locations",
+                            "Microsoft.Storage/locations/asyncoperations",
+                            "Microsoft.Storage/locations/usages",
+                            "Microsoft.Storage/locations/deleteVirtualNetworkOrSubnets",
+                            "Microsoft.Storage/storageAccounts/blobServices",
+                            "Microsoft.Storage/storageAccounts/tableServices",
+                            "Microsoft.Storage/storageAccounts/queueServices",
+                            "Microsoft.Storage/storageAccounts/fileServices"
                         ]
                     }
                 }
