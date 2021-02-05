@@ -1,6 +1,3 @@
-## Please NOTE this is a Custom Solution Repository
-The orginal source for this solution can be found on GitHub at https://github.com/Azure/Enterprise-Scale/tree/main/docs/reference/lzs.  The version contained in this repository includes a cloned copy of the original templates, as well as an added set of CICD script and template files for use by DevOps teams to customize the solution and make the deployment repeatable in their environment.
-
 # Create Landing Zone(s)
 
 It is now time to turn the lights ON :bulb:
@@ -8,6 +5,10 @@ It is now time to turn the lights ON :bulb:
 At this point you have necessary platform setup and configured to support one or many Landing Zone(s) with required definitions (Roles, Policies and PolicySet) and assignments (Roles and Policies).
 
 Provisioning Landing Zone(s) will mean either **creating new subscription** or **moving existing subscription** to desired management group and platform will do the rest. In large environments with 10s and 100s of Landing Zones, platform team can also delegate Landing Zone(s) to respective business units and/or application portfolio owners while being confident of security, compliance and monitoring. Furthermore, platform team may also delegate necessary access permissions 1) IAM roles to create new subscription and 2) place subscription in the appropriate management groups for business units and/or application portfolio owners to provide self-service access to create their own Landing Zone(s).
+
+## Please NOTE this is a Custom Solution Repository
+The orginal source for this solution can be found on GitHub at https://github.com/Azure/Enterprise-Scale/tree/main/docs/reference/lzs.  The version contained in this repository includes a cloned copy of the original templates, as well as an added set of CICD script and template files for use by DevOps teams to customize the solution and make the deployment repeatable in their environment.
+
 
 ## Create or move a Subscription under the Landing Zone Management Group
 
