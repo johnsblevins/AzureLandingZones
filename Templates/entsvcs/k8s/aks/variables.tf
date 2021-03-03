@@ -1,7 +1,9 @@
 variable "resource_group_name" {
- description = "RG1"
+ description = "reosurce group name"
+ default = "myrg1"
 }
 
 variable "location" { 
- description = "usgovvirginia"
+ description = "location"
+ default = "usgovvirginia"
 }
