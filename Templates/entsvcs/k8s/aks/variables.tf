@@ -7,3 +7,4 @@ variable "location" {
  description = "location"
  default = "usgovvirginia"
 }
+
