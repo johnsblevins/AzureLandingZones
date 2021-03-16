@@ -74,7 +74,6 @@
         "SecurityVNETName": "[concat(parameters('topLevelManagementGroupPrefix'), '-Security-', parameters('location'))]",
         "SecurityVnettoHubVnetPeeringName": "[concat(variables('SecurityVnetName'),'-HubVnet')]",
         "HubVnettoSecurityVnetPeeringName": "[concat('HubVnet-',variables('SecurityVnetName'))]",
-        "SecurityVnetSubId": "[subscription().subscriptionId]",
         "SecurityVnetRG": "[resourceGroup().name]",
         "hubResourceGroupName": "[concat(parameters('topLevelManagementGroupPrefix'), '-connectivity')]",
         "hubvNetName": "[concat(parameters('topLevelManagementGroupPrefix'), '-hub-', parameters('location'))]"
@@ -266,7 +265,7 @@
                                 "allowGatewayTransit": "false",
                                 "useRemoteGateways": "false",
                                 "remoteVirtualNetwork": {
-                                    "id": "[resourceId(variables('SecurityVnetSubId'), variables('SecurityVnetRG'), 'Microsoft.Network/virtualNetworks', variables('SecurityVnetName'))]"
+                                    "id": "[resourceId(parameters('securitySubscriptionId'), variables('SecurityVnetRG'), 'Microsoft.Network/virtualNetworks', variables('SecurityVnetName'))]"
                                 }
                             }
                         }

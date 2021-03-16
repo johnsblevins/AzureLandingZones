@@ -6,6 +6,10 @@
             "type": "string",
             "maxLength": 5
         },
+        "IdentitySubscriptionId": {
+            "type": "string",
+            "maxLength": 36
+        },
         "denyRdpForIdentity": {
             "type": "string",
             "defaultValue": "No",
@@ -94,7 +98,6 @@
         "IdentityVNETName": "[concat(parameters('topLevelManagementGroupPrefix'), '-identity-', parameters('location'))]",
         "IdentityVnettoHubVnetPeeringName": "[concat(variables('IdentityVnetName'),'-HubVnet')]",
         "HubVnettoIdentityVnetPeeringName": "[concat('HubVnet-',variables('IdentityVnetName'))]",
-        "IdentityVnetSubId": "[subscription().subscriptionId]",
         "IdentityVnetRG": "[resourceGroup().name]",
         "hubResourceGroupName": "[concat(parameters('topLevelManagementGroupPrefix'), '-connectivity')]",
         "hubvNetName": "[concat(parameters('topLevelManagementGroupPrefix'), '-hub-', parameters('location'))]"
@@ -292,7 +295,7 @@
                                 "allowGatewayTransit": "false",
                                 "useRemoteGateways": "false",
                                 "remoteVirtualNetwork": {
-                                    "id": "[resourceId(variables('IdentityVnetSubId'), variables('IdentityVnetRG'), 'Microsoft.Network/virtualNetworks', variables('IdentityVnetName'))]"
+                                    "id": "[resourceId(parameters('IdentitySubscriptionId'), variables('IdentityVnetRG'), 'Microsoft.Network/virtualNetworks', variables('IdentityVnetName'))]"
                                 }
                             }
                         }
