@@ -30,13 +30,13 @@
             "deployLogAnalytics": "[concat('/providers/Microsoft.Management/managementGroups/', parameters('topLevelManagementGroupPrefix'), '/providers/Microsoft.Authorization/policyDefinitions/Deploy-Log-Analytics')]"
         },
         "policyAssignmentNames": {
-            "logAnalytics": "Deploy-Log-Analytics"
+            "logAnalytics": "Deploy-Log-Analytics-Security"
         },
         "rbacOwner": "8e3af657-a8ff-443c-a75c-2fe8c4bcb635",
         "roleAssignmentNames": {
             "deployLogAnalytics": "[guid(concat(parameters('topLevelManagementGroupPrefix'), variables('policyAssignmentNames').logAnalytics))]"
         },
-        "resourceDeploymentName": "[take(concat('mgmt', deployment().location, deployment().name), 64)]"
+        "resourceDeploymentName": "[take(concat('security', deployment().location, deployment().name), 64)]"
     },
     "resources": [
         {
