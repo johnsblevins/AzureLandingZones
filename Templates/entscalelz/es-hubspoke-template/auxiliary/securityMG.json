@@ -30,7 +30,7 @@
             "deployLogAnalytics": "[concat('/providers/Microsoft.Management/managementGroups/', parameters('topLevelManagementGroupPrefix'), '/providers/Microsoft.Authorization/policyDefinitions/Deploy-Log-Analytics')]"
         },
         "policyAssignmentNames": {
-            "logAnalytics": "Deploy-Log-Analytics-Security"
+            "logAnalytics": "Deploy-Log-Analytics-Sec"
         },
         "rbacOwner": "8e3af657-a8ff-443c-a75c-2fe8c4bcb635",
         "roleAssignmentNames": {
