@@ -170,7 +170,9 @@
         "ManagementVNETName": "[concat(parameters('topLevelManagementGroupPrefix'), '-Management-', parameters('location'))]",
         "ManagementVnettoHubVnetPeeringName": "[concat(variables('ManagementVnetName'),'-HubVnet')]",
         "HubVnettoManagementVnetPeeringName": "[concat('HubVnet-',variables('ManagementVnetName'))]",
-        "ManagementVnetRG": "[concat(parameters('topLevelManagementGroupPrefix'), '-management-connectivity')]",
+        "ManagementVnetRG": "[concat(parameters('topLevelManagementGroupPrefix'), '-mgmt-connectivity')]",
+        "ManagementNSGName": "ManagementNSG",
+        "ManagementRouteTableName": "ManagementRouteTable",
         "hubResourceGroupName": "[concat(parameters('topLevelManagementGroupPrefix'), '-connectivity')]",
         "hubvNetName": "[concat(parameters('topLevelManagementGroupPrefix'), '-hub-', parameters('location'))]"
     },
@@ -179,7 +181,7 @@
             "type": "Microsoft.Resources/deployments",
             "apiVersion": "2018-05-01",
             "name": "[take(concat('EntScale-', 'solutions-', guid(deployment().name)), 63)]",
-            "resourceGroup": "[concat(parameters('topLevelManagementGroupPrefix'), '-management')]",
+            "resourceGroup": "[concat(parameters('topLevelManagementGroupPrefix'), '-mgmt')]",
             "properties": {
                 "mode": "Incremental",
                 "template": {
@@ -353,10 +355,20 @@
             }
         },
         {
+            "name": "[concat(parameters('topLevelManagementGroupPrefix'), '-mgmt-connectivity')]",
+            "type": "Microsoft.Resources/resourceGroups",
+            "apiVersion": "2020-06-01",
+            "location": "[parameters('location')]",
+            "tags": {},
+            "properties": {
+            }
+        },
+        {
             "type": "Microsoft.Resources/deployments",
             "apiVersion": "2018-05-01",
+            "dependsOn": ["[concat(parameters('topLevelManagementGroupPrefix'), '-mgmt-connectivity')]"],
             "name": "[take(concat('EntScale-', 'connectivity-', guid(deployment().name)), 63)]",
-            "resourceGroup": "[concat(parameters('topLevelManagementGroupPrefix'), '-management-connectivity')]",
+            "resourceGroup": "[variables('ManagementVnetRG')]",
             "properties": {
                 "mode": "Incremental",
                 "template": {
@@ -367,7 +379,7 @@
                     "resources": [
                         {
                             "type": "Microsoft.Network/networkSecurityGroups",
-                            "name": "DefaultNSG",
+                            "name": "[variables('ManagementNSGName')]",
                             "apiVersion": "2018-08-01",
                             "location": "[parameters('location')]",
                             "scale": null,
@@ -390,7 +402,7 @@
                             }                    
                         },
                         {
-                            "name": "DefaultRouteTable",
+                            "name": "[variables('ManagementRouteTableName')]",
                             "type": "Microsoft.Network/routeTables",
                             "apiVersion": "2020-06-01",
                             "location": "[parameters('location')]",
@@ -414,7 +426,7 @@
                             "type": "Microsoft.Network/virtualNetworks",
                             "name": "[variables('ManagementVnetName')]",
                             "location": "[parameters('location')]",
-                            "dependsOn": ["DefaultNSG","DefaultRouteTable"],
+                            "dependsOn": ["[variables('ManagementNSGName')]","[variables('ManagementRouteTableName')]"],
                             "properties": {
                                 "addressSpace": {
                                     "addressPrefixes": [
@@ -427,10 +439,10 @@
                                         "properties": {
                                             "addressPrefix": "[parameters('management_subnet_address_prefix')]",
                                             "networkSecurityGroup": {
-                                                "id": "[resourceId('Microsoft.Network/networkSecurityGroups', 'DefaultNSG')]"
+                                                "id": "[concat(subscription().id,'/resourceGroups/',variables('ManagementVnetRG'),'/provider/Microsoft.Network/networkSecurityGroups/', variables('ManagementNSGName'))]"
                                             },
                                             "routeTable": {
-                                                "id": "[resourceId('Microsoft.Network/routeTables', 'DefaultRouteTable')]"
+                                                "id": "[concat(subscription().id,'/resourceGroups/',variables('ManagementVnetRG'),'/provider/Microsoft.Network/routeTables/', variables('ManagementRouteTableName'))]"
                                             }
                                         }
                                     }
@@ -452,7 +464,7 @@
                                         "allowGatewayTransit": "false",
                                         "useRemoteGateways": "false",
                                         "remoteVirtualNetwork": {
-                                            "id": "[resourceId(parameters('hubSubscriptionId'), variables('hubResourceGroupName'), 'Microsoft.Network/virtualNetworks', variables('hubvNetName'))]"
+                                            "id": "[concat('/subscriptions/',parameters('hubSubscriptionId'),'/resourceGroups/',variables('hubResourceGroupName'),'/provider/Microsoft.Network/virtualNetworks/',  variables('hubvNetName'))]"
                                         }
                                     }
                                 }
@@ -485,7 +497,7 @@
                                                 "allowGatewayTransit": "false",
                                                 "useRemoteGateways": "false",
                                                 "remoteVirtualNetwork": {
-                                                    "id": "[resourceId(variables('ManagementVnetRG'), 'Microsoft.Network/virtualNetworks', variables('ManagementVnetName'))]"
+                                                    "id": "[concat(subscription().id,'/resourceGroups/',variables('ManagementVnetRG'),'/provider/Microsoft.Network/virtualNetworks/',  variables('ManagementvNetName'))]"
                                                 }
                                             }
                                         }

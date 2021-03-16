@@ -91,6 +91,8 @@
         "securityVnettoHubVnetPeeringName": "[concat(variables('securityVnetName'),'-HubVnet')]",
         "HubVnettosecurityVnetPeeringName": "[concat('HubVnet-',variables('securityVnetName'))]",
         "securityVnetRG": "[concat(parameters('topLevelManagementGroupPrefix'), '-security-connectivity')]",
+        "SecurityNSGName": "SecurityNSG",
+        "SecurityRouteTableName": "SecurityRouteTable",
         "hubResourceGroupName": "[concat(parameters('topLevelManagementGroupPrefix'), '-connectivity')]",
         "hubvNetName": "[concat(parameters('topLevelManagementGroupPrefix'), '-hub-', parameters('location'))]"
     },
@@ -99,7 +101,7 @@
             "type": "Microsoft.Resources/deployments",
             "apiVersion": "2018-05-01",
             "name": "[take(concat('EntScale-', 'security-', guid(deployment().name)), 63)]",
-            "resourceGroup": "[concat(parameters('topLevelManagementGroupPrefix'), '-security-connectivity')]",
+            "resourceGroup": "[variables('SecurityVnetRG')]",
             "properties": {
                 "mode": "Incremental",
                 "template": {
@@ -110,7 +112,7 @@
                     "resources": [
                         {
                             "type": "Microsoft.Network/networkSecurityGroups",
-                            "name": "DefaultNSG",
+                            "name": "[variables('SecurityNSGName')]",
                             "apiVersion": "2018-08-01",
                             "location": "[parameters('location')]",
                             "scale": null,
@@ -133,7 +135,7 @@
                             }                    
                         },
                         {
-                            "name": "DefaultRouteTable",
+                            "name": "[variables('SecurityRouteTableName')]",
                             "type": "Microsoft.Network/routeTables",
                             "apiVersion": "2020-06-01",
                             "location": "[parameters('location')]",
@@ -157,7 +159,7 @@
                             "type": "Microsoft.Network/virtualNetworks",
                             "name": "[variables('securityVnetName')]",
                             "location": "[parameters('location')]",
-                            "dependsOn": ["DefaultNSG","DefaultRouteTable"],
+                            "dependsOn": ["[variables('SecurityNSGName')]","[variables('SecurityRouteTableName')]"],
                             "properties": {
                                 "addressSpace": {
                                     "addressPrefixes": [
@@ -170,10 +172,10 @@
                                         "properties": {
                                             "addressPrefix": "[parameters('security_subnet_address_prefix')]",
                                             "networkSecurityGroup": {
-                                                "id": "[resourceId('Microsoft.Network/networkSecurityGroups', 'DefaultNSG')]"
+                                                "id": "[concat(subscription().id,'/resourceGroups/',variables('SecurityVnetRG'),'/provider/Microsoft.Network/networkSecurityGroups/', variables('SecurityNSGName'))]"
                                             },
                                             "routeTable": {
-                                                "id": "[resourceId('Microsoft.Network/routeTables', 'DefaultRouteTable')]"
+                                                "id": "[concat(subscription().id,'/resourceGroups/',variables('SecurityVnetRG'),'/provider/Microsoft.Network/routeTables/', variables('SecurityRouteTableName'))]"
                                             }
                                         }
                                     }
@@ -195,7 +197,7 @@
                                         "allowGatewayTransit": "false",
                                         "useRemoteGateways": "false",
                                         "remoteVirtualNetwork": {
-                                            "id": "[resourceId(parameters('hubSubscriptionId'), variables('hubResourceGroupName'), 'Microsoft.Network/virtualNetworks', variables('hubvNetName'))]"
+                                            "id": "[concat('/subscriptions/',parameters('hubSubscriptionId'),'/resourceGroups/',variables('hubResourceGroupName'),'/provider/Microsoft.Network/virtualNetworks/',  variables('hubvNetName'))]"
                                         }
                                     }
                                 }
@@ -228,7 +230,7 @@
                                                 "allowGatewayTransit": "false",
                                                 "useRemoteGateways": "false",
                                                 "remoteVirtualNetwork": {
-                                                    "id": "[resourceId(parameters('securitySubscriptionId'), variables('securityVnetRG'), 'Microsoft.Network/virtualNetworks', variables('securityVnetName'))]"
+                                                    "id": "[concat(subscription().id,'/resourceGroups/',variables('SecurityVnetRG'),'/provider/Microsoft.Network/virtualNetworks/',  variables('SecurityvNetName'))]"
                                                 }
                                             }
                                         }
