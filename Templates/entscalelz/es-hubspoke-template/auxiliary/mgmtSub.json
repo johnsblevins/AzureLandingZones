@@ -179,7 +179,7 @@
             "type": "Microsoft.Resources/deployments",
             "apiVersion": "2018-05-01",
             "name": "[take(concat('EntScale-', 'solutions-', guid(deployment().name)), 63)]",
-            "resourceGroup": "[concat(parameters('topLevelManagementGroupPrefix'), '-mgmt')]",
+            "resourceGroup": "[concat(parameters('topLevelManagementGroupPrefix'), '-management')]",
             "properties": {
                 "mode": "Incremental",
                 "template": {
@@ -356,7 +356,7 @@
             "type": "Microsoft.Resources/deployments",
             "apiVersion": "2018-05-01",
             "name": "[take(concat('EntScale-', 'connectivity-', guid(deployment().name)), 63)]",
-            "resourceGroup": "[concat(parameters('topLevelManagementGroupPrefix'), '-mgmt-connectivity')]",
+            "resourceGroup": "[concat(parameters('topLevelManagementGroupPrefix'), '-management-connectivity')]",
             "properties": {
                 "mode": "Incremental",
                 "template": {
@@ -485,7 +485,7 @@
                                                 "allowGatewayTransit": "false",
                                                 "useRemoteGateways": "false",
                                                 "remoteVirtualNetwork": {
-                                                    "id": "[resourceId(parameters('managementSubscriptionId'), variables('ManagementVnetRG'), 'Microsoft.Network/virtualNetworks', variables('ManagementVnetName'))]"
+                                                    "id": "[resourceId(variables('ManagementVnetRG'), 'Microsoft.Network/virtualNetworks', variables('ManagementVnetName'))]"
                                                 }
                                             }
                                         }
