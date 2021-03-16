@@ -94,8 +94,8 @@ jobs:
                 denyIpForwarding=Yes denySubnetWithoutNsg=Yes
 
                 # Internal Landing Zone MG Deployment
-                az deployment mg create --name "EntScale-IntranetLZ-${{ secrets.LOCATION }}" --location ${{ secrets.LOCATION }} \
-                --management-group-id "${{ secrets.ENTERPRISE_SCALE_COMPANY_PREFIX }}-intranet" \
+                az deployment mg create --name "EntScale-Internal-${{ secrets.LOCATION }}" --location ${{ secrets.LOCATION }} \
+                --management-group-id "${{ secrets.ENTERPRISE_SCALE_COMPANY_PREFIX }}-internal" \
                 --template-file Templates/entscalelz/es-hubspoke-template/auxiliary/internalMG.json \
                 --parameters topLevelManagementGroupPrefix=${{ secrets.ENTERPRISE_SCALE_COMPANY_PREFIX }}
          
