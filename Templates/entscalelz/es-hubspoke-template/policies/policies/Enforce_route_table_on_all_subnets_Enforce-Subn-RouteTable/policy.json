@@ -1,0 +1,74 @@
+{
+ "properties": {
+  "displayName": "Enforce route table on all subnets",
+  "policyType": "Custom",
+  "mode": "All",
+  "description": "Enforce route table on all subnets",
+  "metadata": {
+   "version": "1.0.0",
+   "category": "Network",
+   "createdBy": "1a6c5ab2-307a-4c45-a4c8-b45ac8af8b2e",
+   "createdOn": "2021-03-16T18:45:05.0937352Z",
+   "updatedBy": null,
+   "updatedOn": null
+  },
+  "parameters": {
+   "routeTableResourceGroup": {
+    "type": "String",
+    "metadata": {
+     "displayName": "Route Table Resource Group",
+     "description": "Resource Group in which Route Table Resource is located"
+    },
+    "defaultValue": "Locked"
+   },
+   "routeTableName": {
+    "type": "String",
+    "metadata": {
+     "displayName": "Route Table Name",
+     "description": "Route Table Resource name"
+    },
+    "defaultValue": "RouteTable"
+   }
+  },
+  "policyRule": {
+   "if": {
+    "anyOf": [
+     {
+      "allOf": [
+       {
+        "field": "type",
+        "equals": "Microsoft.Network/virtualNetworks"
+       },
+       {
+        "not": {
+         "field": "Microsoft.Network/virtualNetworks/subnets[*].routeTable.id",
+         "equals": "[concat('/subscriptions/',subscription().subscriptionId,'/resourceGroups/', parameters('routeTableResourceGroup'), '/providers/Microsoft.Network/routeTables/', parameters('routeTableName'))]"
+        }
+       }
+      ]
+     },
+     {
+      "allOf": [
+       {
+        "field": "type",
+        "equals": "Microsoft.Network/virtualNetworks/subnets"
+       },
+       {
+        "not": {
+         "field": "Microsoft.Network/virtualNetworks/subnets/routeTable.id",
+         "equals": "[concat('/subscriptions/',subscription().subscriptionId,'/resourceGroups/', parameters('routeTableResourceGroup'), '/providers/Microsoft.Network/routeTables/', parameters('routeTableName'))]"
+        }
+       }
+      ]
+     }
+    ]
+   },
+   "then": {
+    "effect": "deny"
+   }
+  }
+ },
+ "id": "/providers/Microsoft.Management/managementGroups/caf/providers/Microsoft.Authorization/policyDefinitions/Enforce-Subn-RouteTable",
+ "type": "Microsoft.Authorization/policyDefinitions",
+ "name": "Enforce-Subn-RouteTable"
+}

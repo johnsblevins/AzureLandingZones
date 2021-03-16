@@ -100,11 +100,11 @@ jobs:
                 --parameters topLevelManagementGroupPrefix=${{ secrets.ENTERPRISE_SCALE_COMPANY_PREFIX }}
          
                 # Management Sub Deployment
-                #az deployment sub create --name "EntScale-Solutions-${{ secrets.LOCATION }}" --location ${{ secrets.LOCATION }} \
-                #--sub "${{ secrets.MANAGEMENT_SUB_ID }}" --template-file Templates/entscalelz/es-hubspoke-template/auxiliary/mgmtSub.json \
-                #--parameters topLevelManagementGroupPrefix=${{ secrets.ENTERPRISE_SCALE_COMPANY_PREFIX }} managementSubscriptionId=${{ secrets.MANAGEMENT_SUB_ID }} management_vnet_address_space=${{ secrets.MANAGEMENT_VNET_ADDRESS_PREFIX }} \
-                #management_subnet_address_prefix=${{ secrets.SUBNET_MASK_FOR_MANAGMENT }} hubSubscriptionId=${{ secrets.CONNECTIVITY_SUB_ID }} \
-                #subnetMaskForAzFw=${{ secrets.SUBNET_MASK_FOR_AZ_FIREWALL }}
+                az deployment sub create --name "EntScale-Solutions-${{ secrets.LOCATION }}" --location ${{ secrets.LOCATION }} \
+                --sub "${{ secrets.MANAGEMENT_SUB_ID }}" --template-file Templates/entscalelz/es-hubspoke-template/auxiliary/mgmtSub.json \
+                --parameters topLevelManagementGroupPrefix=${{ secrets.ENTERPRISE_SCALE_COMPANY_PREFIX }} managementSubscriptionId=${{ secrets.MANAGEMENT_SUB_ID }} management_vnet_address_space=${{ secrets.MANAGEMENT_VNET_ADDRESS_PREFIX }} \
+                management_subnet_address_prefix=${{ secrets.SUBNET_MASK_FOR_MANAGMENT }} hubSubscriptionId=${{ secrets.CONNECTIVITY_SUB_ID }} \
+                subnetMaskForAzFw=${{ secrets.SUBNET_MASK_FOR_AZ_FIREWALL }}
 
                 # IDENTITY Sub Deployment
                 #az deployment sub create --name "EntScale-Solutions-${{ secrets.LOCATION }}" --location ${{ secrets.LOCATION }} \

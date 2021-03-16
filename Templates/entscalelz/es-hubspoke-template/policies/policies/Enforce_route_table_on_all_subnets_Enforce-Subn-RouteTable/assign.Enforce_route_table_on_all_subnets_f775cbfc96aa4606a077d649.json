@@ -1,0 +1,25 @@
+{
+ "sku": {
+  "name": "A0",
+  "tier": "Free"
+ },
+ "properties": {
+  "displayName": "Enforce route table on all subnets",
+  "policyDefinitionId": "/providers/Microsoft.Management/managementGroups/caf/providers/Microsoft.Authorization/policyDefinitions/Enforce-Subn-RouteTable",
+  "scope": "/providers/Microsoft.Management/managementGroups/caf",
+  "notScopes": [],
+  "parameters": {},
+  "metadata": {
+   "assignedBy": "John Blevins",
+   "parameterScopes": {},
+   "createdBy": "1a6c5ab2-307a-4c45-a4c8-b45ac8af8b2e",
+   "createdOn": "2021-03-16T19:22:23.1507032Z",
+   "updatedBy": null,
+   "updatedOn": null
+  },
+  "enforcementMode": "Default"
+ },
+ "id": "/providers/Microsoft.Management/managementGroups/caf/providers/Microsoft.Authorization/policyAssignments/f775cbfc96aa4606a077d649",
+ "type": "Microsoft.Authorization/policyAssignments",
+ "name": "f775cbfc96aa4606a077d649"
+}
