@@ -87,6 +87,35 @@
                 "No"
             ],
             "defaultValue": "Yes"
+        },
+        "management_vnet_address_space": {
+            "type": "string",
+            "metadata": {
+                "displayName": "addressPrefix",
+                "description": "Address prefix of the Management VNET"
+            }
+        },
+        "management_subnet_address_prefix": {
+            "type": "string",
+            "metadata": {
+                "displayName": "addressPrefix",
+                "description": "Address prefix of the Management Subnet"
+            }
+        },
+        "hubSubscriptionId": {
+                    "type": "string"
+        },
+        "subnetMaskForAzFw": {
+            "type": "string",
+            "defaultValue": ""
+        },
+        "location": {
+            "type": "string",
+            "metadata": {
+                "displayName": "location",
+                "description": "Location of the HUB"
+            },
+            "defaultValue": "[deployment().location]"
         }
     },
     "variables": {
@@ -132,7 +161,18 @@
                 "name": "[concat('SecurityInsights', '(', parameters('workspaceName'), ')')]",
                 "marketplaceName": "SecurityInsights"
             }
-        }
+        },
+        "FWFirstOctet": "[split(split(parameters('subnetMaskForAzFw'),'/')[0],'.')[0]]",
+        "FWSecondOctet": "[split(split(parameters('subnetMaskForAzFw'),'/')[0],'.')[1]]",
+        "FWThirdOctet": "[split(split(parameters('subnetMaskForAzFw'),'/')[0],'.')[2]]",
+        "FWFourthOctet": "[string(add(int(split(split(parameters('subnetMaskForAzFw'),'/')[0],'.')[3]),4))]",
+        "azure_firewall_ip": "[concat(variables('FWFirstOctet'),'.',variables('FWSecondOctet'),'.',variables('FWThirdOctet'),'.',variables('FWFourthOctet'))]",
+        "ManagementVNETName": "[concat(parameters('topLevelManagementGroupPrefix'), '-Management-', parameters('location'))]",
+        "ManagementVnettoHubVnetPeeringName": "[concat(variables('ManagementVnetName'),'-HubVnet')]",
+        "HubVnettoManagementVnetPeeringName": "[concat('HubVnet-',variables('ManagementVnetName'))]",
+        "ManagementVnetRG": "[concat(parameters('topLevelManagementGroupPrefix'), '-management-connectivity')]",
+        "hubResourceGroupName": "[concat(parameters('topLevelManagementGroupPrefix'), '-connectivity')]",
+        "hubvNetName": "[concat(parameters('topLevelManagementGroupPrefix'), '-hub-', parameters('location'))]"
     },
     "resources": [
         {
@@ -308,6 +348,151 @@
                                 "publisher": "Microsoft"
                             }
                         }                                                       
+                    ]
+                }
+            }
+        },
+        {
+            "type": "Microsoft.Resources/deployments",
+            "apiVersion": "2018-05-01",
+            "name": "[take(concat('EntScale-', 'connectivity-', guid(deployment().name)), 63)]",
+            "resourceGroup": "[concat(parameters('topLevelManagementGroupPrefix'), '-mgmt-connectivity')]",
+            "properties": {
+                "mode": "Incremental",
+                "template": {
+                    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                    "contentVersion": "1.0.0.0",
+                    "parameters": {},
+                    "variables": {},
+                    "resources": [
+                        {
+                            "type": "Microsoft.Network/networkSecurityGroups",
+                            "name": "DefaultNSG",
+                            "apiVersion": "2018-08-01",
+                            "location": "[parameters('location')]",
+                            "scale": null,
+                            "properties": {
+                                "securityRules": [{
+                                        "name": "Allow_Any",
+                                        "properties": {
+                                            "description": "This is the first rule",
+                                            "protocol": "Tcp",
+                                            "sourcePortRange": "*",
+                                            "destinationPortRange": "*",
+                                            "sourceAddressPrefix": "*",
+                                            "destinationAddressPrefix": "*",
+                                            "access": "Allow",
+                                            "priority": 150,
+                                            "direction": "Inbound"
+                                        }
+                                    }
+                                ]
+                            }                    
+                        },
+                        {
+                            "name": "DefaultRouteTable",
+                            "type": "Microsoft.Network/routeTables",
+                            "apiVersion": "2020-06-01",
+                            "location": "[parameters('location')]",
+                            "tags": {},
+                            "properties": {
+                                "routes": [
+                                    {
+                                        "properties": {
+                                        "addressPrefix": "0.0.0.0/0",
+                                        "nextHopType": "VirtualAppliance",
+                                        "nextHopIpAddress": "[variables('azure_firewall_ip')]"
+                                        },
+                                        "name": "DefaultRoute"
+                                    }
+                                ],
+                                "disableBgpRoutePropagation": "True"
+                            }
+                        },                
+                        {
+                            "apiVersion": "2017-08-01",
+                            "type": "Microsoft.Network/virtualNetworks",
+                            "name": "[variables('ManagementVnetName')]",
+                            "location": "[parameters('location')]",
+                            "dependsOn": ["DefaultNSG","DefaultRouteTable"],
+                            "properties": {
+                                "addressSpace": {
+                                    "addressPrefixes": [
+                                        "[parameters('management_vnet_address_space')]"
+                                    ]
+                                },
+                                "subnets": [     
+                                    {
+                                        "name": "management",
+                                        "properties": {
+                                            "addressPrefix": "[parameters('management_subnet_address_prefix')]",
+                                            "networkSecurityGroup": {
+                                                "id": "[resourceId('Microsoft.Network/networkSecurityGroups', 'DefaultNSG')]"
+                                            },
+                                            "routeTable": {
+                                                "id": "[resourceId('Microsoft.Network/routeTables', 'DefaultRouteTable')]"
+                                            }
+                                        }
+                                    }
+                                ]
+                            },
+                            "resources":[
+                                {
+                                    "apiVersion": "2020-05-01",
+                                    "type": "virtualNetworkPeerings",
+                                    "name": "[variables('ManagementVnettoHubVnetPeeringName')]",
+                                    "location": "[parameters('location')]",
+                                    "dependsOn": [
+                                        "[concat('Microsoft.Network/virtualNetworks/', variables('ManagementVnetName'))]"
+                                    ],
+                                    "comments": "This is the peering from Management VNET to HubVnet",
+                                    "properties": {
+                                        "allowVirtualNetworkAccess": "true",
+                                        "allowForwardedTraffic": "false",
+                                        "allowGatewayTransit": "false",
+                                        "useRemoteGateways": "false",
+                                        "remoteVirtualNetwork": {
+                                            "id": "[resourceId(parameters('hubSubscriptionId'), variables('hubResourceGroupName'), 'Microsoft.Network/virtualNetworks', variables('hubvNetName'))]"
+                                        }
+                                    }
+                                }
+                            ]
+                        },
+                        {
+                            "type": "Microsoft.Resources/deployments",
+                            "apiVersion": "2020-06-01",
+                            "name": "nestedDeployment",
+                            "subscriptionId": "[parameters('hubSubscriptionId')]",
+                            "resourceGroup": "[variables('hubResourceGroupName')]",
+                            "dependsOn": ["[concat('Microsoft.Network/virtualNetworks/', variables('ManagementVnetName'))]"],
+                            "properties": {
+                                "mode": "Incremental",
+                                "template": {
+                                    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                                    "contentVersion": "1.0.0.0",                        
+                                    "resources": [
+                                        {
+                                            "apiVersion": "2020-05-01",
+                                            "type": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings",
+                                            "name": "[concat(variables('hubvNetName'),'/',variables('HubVnettoManagementVnetPeeringName'))]",
+                                            "location": "[parameters('location')]",
+                                            "dependsOn": [
+                                            ],
+                                            "comments": "This is the peering from HubVnet to ManagementVnet",
+                                            "properties": {
+                                                "allowVirtualNetworkAccess": "true",
+                                                "allowForwardedTraffic": "false",
+                                                "allowGatewayTransit": "false",
+                                                "useRemoteGateways": "false",
+                                                "remoteVirtualNetwork": {
+                                                    "id": "[resourceId(parameters('managementSubscriptionId'), variables('ManagementVnetRG'), 'Microsoft.Network/virtualNetworks', variables('ManagementVnetName'))]"
+                                                }
+                                            }
+                                        }
+                                    ]
+                                }
+                            }
+                        }
                     ]
                 }
             }
