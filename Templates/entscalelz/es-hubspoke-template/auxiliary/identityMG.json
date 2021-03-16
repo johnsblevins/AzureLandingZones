@@ -98,7 +98,7 @@
         "IdentityVNETName": "[concat(parameters('topLevelManagementGroupPrefix'), '-identity-', parameters('location'))]",
         "IdentityVnettoHubVnetPeeringName": "[concat(variables('IdentityVnetName'),'-HubVnet')]",
         "HubVnettoIdentityVnetPeeringName": "[concat('HubVnet-',variables('IdentityVnetName'))]",
-        "IdentityVnetRG": "[resourceGroup().name]",
+        "IdentityVnetRG": "[concat(parameters('topLevelManagementGroupPrefix'), '-identity-connectivity')]",
         "hubResourceGroupName": "[concat(parameters('topLevelManagementGroupPrefix'), '-connectivity')]",
         "hubvNetName": "[concat(parameters('topLevelManagementGroupPrefix'), '-hub-', parameters('location'))]"
         //"blankTemplateEscaped": "{\"$schema\":\"https://schema.management.azure.com/schemas/2019-08-01/tenantDeploymentTemplate.json#\",\"contentVersion\":\"1.0.0.0\",\"parameters\":{},\"variables\":{},\"resources\":[],\"outputs\":{}}"

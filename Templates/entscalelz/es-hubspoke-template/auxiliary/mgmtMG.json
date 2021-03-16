@@ -74,7 +74,7 @@
         "ManagementVNETName": "[concat(parameters('topLevelManagementGroupPrefix'), '-Management-', parameters('location'))]",
         "ManagementVnettoHubVnetPeeringName": "[concat(variables('ManagementVnetName'),'-HubVnet')]",
         "HubVnettoManagementVnetPeeringName": "[concat('HubVnet-',variables('ManagementVnetName'))]",
-        "ManagementVnetRG": "[resourceGroup().name]",
+        "ManagementVnetRG": "[concat(parameters('topLevelManagementGroupPrefix'), '-management-connectivity')]",
         "hubResourceGroupName": "[concat(parameters('topLevelManagementGroupPrefix'), '-connectivity')]",
         "hubvNetName": "[concat(parameters('topLevelManagementGroupPrefix'), '-hub-', parameters('location'))]"
     },

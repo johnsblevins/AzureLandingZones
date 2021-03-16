@@ -74,7 +74,7 @@
         "SecurityVNETName": "[concat(parameters('topLevelManagementGroupPrefix'), '-Security-', parameters('location'))]",
         "SecurityVnettoHubVnetPeeringName": "[concat(variables('SecurityVnetName'),'-HubVnet')]",
         "HubVnettoSecurityVnetPeeringName": "[concat('HubVnet-',variables('SecurityVnetName'))]",
-        "SecurityVnetRG": "[resourceGroup().name]",
+        "SecurityVnetRG": "[concat(parameters('topLevelManagementGroupPrefix'), '-security-connectivity')]",
         "hubResourceGroupName": "[concat(parameters('topLevelManagementGroupPrefix'), '-connectivity')]",
         "hubvNetName": "[concat(parameters('topLevelManagementGroupPrefix'), '-hub-', parameters('location'))]"
     },
