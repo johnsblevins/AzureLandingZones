@@ -1,0 +1,279 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-08-01/tenantDeploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "topLevelManagementGroupPrefix": {
+            "type": "string",
+            "maxLength": 5
+        },
+        "securitySubscriptionId": {
+            "type": "string",
+            "maxLength": 36
+        },
+        "enableLogAnalytics": {
+            "type": "string",
+            "defaultValue": "Yes",
+            "allowedValues": [
+                "Yes",
+                "No"
+            ],
+            "metadata": {
+                "description": "If 'Yes' is selected when also adding a subscription for management, ARM will assign two policies to enable auditing in your environment, into the Log Analytics workspace for platform monitoring. If 'No', it will be ignored."
+            }
+        },
+        "retentionInDays": {
+            "type": "string"
+        },
+        "subnetMaskForAzFw": {
+            "type": "string",
+            "defaultValue": ""
+        },
+        "location": {
+            "type": "string",
+            "metadata": {
+                "displayName": "location",
+                "description": "Location of the HUB"
+            },
+            "defaultValue": "[deployment().location]"
+        },
+        "security_vnet_address_space": {
+            "type": "string",
+            "metadata": {
+                "displayName": "addressPrefix",
+                "description": "Address prefix of the Security VNET"
+            }
+        },
+        "security_subnet_address_prefix": {
+            "type": "string",
+            "metadata": {
+                "displayName": "addressPrefix",
+                "description": "Address prefix of the Security Subnet"
+            }
+        },
+        "hubSubscriptionId": {
+                    "type": "string"
+        }
+    },
+    "variables": {
+        "policyDefinitions": {
+            "deployLogAnalytics": "[concat('/providers/Microsoft.Management/managementGroups/', parameters('topLevelManagementGroupPrefix'), '/providers/Microsoft.Authorization/policyDefinitions/Deploy-Log-Analytics')]"
+        },
+        "policyAssignmentNames": {
+            "logAnalytics": "Deploy-Log-Analytics"
+        },
+        "rbacOwner": "8e3af657-a8ff-443c-a75c-2fe8c4bcb635",
+        "roleAssignmentNames": {
+            "deployLogAnalytics": "[guid(concat(parameters('topLevelManagementGroupPrefix'), variables('policyAssignmentNames').logAnalytics))]"
+        },
+        "resourceDeploymentName": "[take(concat('mgmt', deployment().location, deployment().name), 64)]",
+        "FWFirstOctet": "[split(split(parameters('subnetMaskForAzFw'),'/')[0],'.')[0]]",
+        "FWSecondOctet": "[split(split(parameters('subnetMaskForAzFw'),'/')[0],'.')[1]]",
+        "FWThirdOctet": "[split(split(parameters('subnetMaskForAzFw'),'/')[0],'.')[2]]",
+        "FWFourthOctet": "[string(add(int(split(split(parameters('subnetMaskForAzFw'),'/')[0],'.')[3]),4))]",
+        "azure_firewall_ip": "[concat(variables('FWFirstOctet'),'.',variables('FWSecondOctet'),'.',variables('FWThirdOctet'),'.',variables('FWFourthOctet'))]",
+        "SecurityVNETName": "[concat(parameters('topLevelManagementGroupPrefix'), '-Security-', parameters('location'))]",
+        "SecurityVnettoHubVnetPeeringName": "[concat(variables('SecurityVnetName'),'-HubVnet')]",
+        "HubVnettoSecurityVnetPeeringName": "[concat('HubVnet-',variables('SecurityVnetName'))]",
+        "SecurityVnetSubId": "[subscription().subscriptionId]",
+        "SecurityVnetRG": "[resourceGroup().name]",
+        "hubResourceGroupName": "[concat(parameters('topLevelManagementGroupPrefix'), '-connectivity')]",
+        "hubvNetName": "[concat(parameters('topLevelManagementGroupPrefix'), '-hub-', parameters('location'))]"
+    },
+    "resources": [
+        {
+            "condition": "[and(not(empty(parameters('SecuritySubscriptionId'))),equals(parameters('enableLogAnalytics'), 'Yes'))]",
+            "type": "Microsoft.Authorization/policyAssignments",
+            "apiVersion": "2018-05-01",
+            "name": "[variables('policyAssignmentNames').loganalytics]",
+            "location": "[deployment().location]",
+            "identity": {
+                "type": "SystemAssigned"
+            },
+            "properties": {
+                "description": "Deploy-Log-Analytics",
+                "displayName": "Deploy-Log-Analytics",
+                "policyDefinitionId": "[variables('policyDefinitions').deployLogAnalytics]",
+                "scope": "[concat('/providers/Microsoft.Management/managementGroups/', parameters('topLevelManagementGroupPrefix'), '-security')]",
+                "parameters": {
+                    "workspaceName": {
+                        "value": "[concat(parameters('topLevelManagementGroupPrefix'), '-la-', parameters('SecuritySubscriptionId'))]"
+                    },
+                    "automationAccountName": {
+                        "value": "[concat(parameters('topLevelManagementGroupPrefix'), '-a-', parameters('SecuritySubscriptionId'))]"
+                    },
+                    "workspaceRegion": {
+                        "value": "[deployment().location]"
+                    },
+                    "automationRegion": {
+                        "value": "[deployment().location]"
+                    },
+                    "rgName": {
+                        "value": "[concat(parameters('topLevelManagementGroupPrefix'), '-mgmt')]"
+                    },
+                    "retentionInDays": {
+                        "value": "[parameters('retentionInDays')]"
+                    }
+                }
+            }
+        },
+        {
+            "condition": "[and(not(empty(parameters('securitySubscriptionId'))),equals(parameters('enableLogAnalytics'), 'Yes'))]",
+            "type": "Microsoft.Authorization/roleAssignments",
+            "apiVersion": "2019-04-01-preview",
+            "name": "[variables('roleAssignmentNames').deployLogAnalytics]",
+            "dependsOn": [
+                "[variables('policyAssignmentNames').loganalytics]"
+            ],
+            "properties": {
+                "principalType": "ServicePrincipal",
+                "roleDefinitionId": "[concat('/providers/Microsoft.Authorization/roleDefinitions/', variables('rbacOwner'))]",
+                "principalId": "[toLower(reference(concat('/providers/Microsoft.Authorization/policyAssignments/', variables('policyAssignmentNames').loganalytics), '2018-05-01', 'Full' ).identity.principalId)]"
+            }
+        },
+        {
+            "condition": "[and(not(empty(parameters('securitySubscriptionId'))),equals(parameters('enableLogAnalytics'), 'Yes'))]",
+            "type": "Microsoft.Resources/deployments",
+            "apiVersion": "2019-10-01",
+            "name": "[variables('resourceDeploymentName')]",
+            "location": "[deployment().location]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Authorization/roleAssignments/', variables('roleAssignmentNames').deployLogAnalytics)]"
+            ],
+            "subscriptionId": "[parameters('SecuritySubscriptionId')]",
+            "properties": {
+                "mode": "incremental",
+                "template": "[reference(variables('policyDefinitions').deployLogAnalytics, '2018-05-01').policyRule.then.details.deployment.properties.template]",
+                "parameters": "[reference(concat('/providers/Microsoft.Management/managementGroups/', parameters('topLevelManagementGroupPrefix'), '-Security', '/providers/Microsoft.Authorization/policyAssignments/', variables('policyAssignmentNames').loganalytics), '2018-05-01').parameters]"
+            }
+        },
+        {
+            "type": "Microsoft.Network/networkSecurityGroups",
+            "name": "DefaultNSG",
+            "apiVersion": "2018-08-01",
+            "location": "[resourceGroup().location]",
+            "scale": null,
+            "properties": {
+                "securityRules": [{
+                        "name": "Allow_Any",
+                        "properties": {
+                            "description": "This is the first rule",
+                            "protocol": "Tcp",
+                            "sourcePortRange": "*",
+                            "destinationPortRange": "*",
+                            "sourceAddressPrefix": "*",
+                            "destinationAddressPrefix": "*",
+                            "access": "Allow",
+                            "priority": 150,
+                            "direction": "Inbound"
+                        }
+                    }
+                ]
+            }                    
+        },
+        {
+            "name": "DefaultRouteTable",
+            "type": "Microsoft.Network/routeTables",
+            "apiVersion": "2020-06-01",
+            "location": "[resourceGroup().location]",
+            "tags": {},
+            "properties": {
+                "routes": [
+                    {
+                        "properties": {
+                        "addressPrefix": "0.0.0.0/0",
+                        "nextHopType": "VirtualAppliance",
+                        "nextHopIpAddress": "[variables('azure_firewall_ip')]"
+                        },
+                        "name": "DefaultRoute"
+                    }
+                ],
+                "disableBgpRoutePropagation": "True"
+            }
+        },                
+        {
+            "apiVersion": "2017-08-01",
+            "type": "Microsoft.Network/virtualNetworks",
+            "name": "[variables('SecurityVnetName')]",
+            "location": "[resourceGroup().location]",
+            "dependsOn": ["DefaultNSG","DefaultRouteTable"],
+            "properties": {
+                "addressSpace": {
+                    "addressPrefixes": [
+                        "[parameters('Security_vnet_address_space')]"
+                    ]
+                },
+                "subnets": [     
+                    {
+                        "name": "Security",
+                        "properties": {
+                            "addressPrefix": "[parameters('Security_subnet_address_prefix')]",
+                            "networkSecurityGroup": {
+                                "id": "[resourceId('Microsoft.Network/networkSecurityGroups', 'DefaultNSG')]"
+                            },
+                            "routeTable": {
+                                "id": "[resourceId('Microsoft.Network/routeTables', 'DefaultRouteTable')]"
+                            }
+                        }
+                    }
+                ]
+            },
+            "resources":[
+                {
+                    "apiVersion": "2020-05-01",
+                    "type": "virtualNetworkPeerings",
+                    "name": "[variables('SecurityVnettoHubVnetPeeringName')]",
+                    "location": "[resourceGroup().location]",
+                    "dependsOn": [
+                        "[concat('Microsoft.Network/virtualNetworks/', variables('SecurityVnetName'))]"
+                    ],
+                    "comments": "This is the peering from Security VNET to HubVnet",
+                    "properties": {
+                        "allowVirtualNetworkAccess": "true",
+                        "allowForwardedTraffic": "false",
+                        "allowGatewayTransit": "false",
+                        "useRemoteGateways": "false",
+                        "remoteVirtualNetwork": {
+                            "id": "[resourceId(parameters('hubSubscriptionId'), variables('hubResourceGroupName'), 'Microsoft.Network/virtualNetworks', variables('hubvNetName'))]"
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "type": "Microsoft.Resources/deployments",
+            "apiVersion": "2020-06-01",
+            "name": "nestedDeployment",
+            "subscriptionId": "[parameters('hubSubscriptionId')]",
+            "resourceGroup": "[variables('hubResourceGroupName')]",
+            "dependsOn": ["[concat('Microsoft.Network/virtualNetworks/', variables('SecurityVnetName'))]"],
+            "properties": {
+                "mode": "Incremental",
+                "template": {
+                    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                    "contentVersion": "1.0.0.0",                        
+                    "resources": [
+                        {
+                            "apiVersion": "2020-05-01",
+                            "type": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings",
+                            "name": "[concat(variables('hubvNetName'),'/',variables('HubVnettoSecurityVnetPeeringName'))]",
+                            "location": "[resourceGroup().location]",
+                            "dependsOn": [
+                            ],
+                            "comments": "This is the peering from HubVnet to SecurityVnet",
+                            "properties": {
+                                "allowVirtualNetworkAccess": "true",
+                                "allowForwardedTraffic": "false",
+                                "allowGatewayTransit": "false",
+                                "useRemoteGateways": "false",
+                                "remoteVirtualNetwork": {
+                                    "id": "[resourceId(variables('SecurityVnetSubId'), variables('SecurityVnetRG'), 'Microsoft.Network/virtualNetworks', variables('SecurityVnetName'))]"
+                                }
+                            }
+                        }
+                    ]
+                }
+            }
+        }
+    ],
+    "outputs": {}
+}

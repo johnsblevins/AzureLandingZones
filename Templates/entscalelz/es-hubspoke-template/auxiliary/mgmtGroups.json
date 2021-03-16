@@ -13,7 +13,8 @@
             "defaultValue": [
                 "management",
                 "connectivity",
-                "identity"
+                "identity",
+                "security"
             ],
             "metadata": {
                 "description": "Management groups for platform specific purposes, such as management, networking, identity etc."
@@ -22,22 +23,31 @@
         "landingZoneMgs": {
             "type": "array",
             "defaultValue": [
-                "intranet",
-                "extranet"
+                "internal",
+                "external"
             ],
             "metadata": {
                 "description": "These are the landing zone management groups."
             }
         },
-        "intranetMgs": {
+        "internalMgs": {
             "type": "array",
             "defaultValue": [
-                "program1",
-                "program2",
-                "program3"
+                "internal-prod",
+                "internal-nonprod"
             ],
             "metadata": {
-                "description": "These are the intranet landing zone management groups."
+                "description": "These are the internal landing zone management groups."
+            }
+        },
+        "externalMgs": {
+            "type": "array",
+            "defaultValue": [
+                "external-prod",
+                "external-nonprod"
+            ],
+            "metadata": {
+                "description": "These are the external landing zone management groups."
             }
         },
         "sandboxMgs": {
@@ -47,7 +57,7 @@
                 "Sandbox-LandingZones"
             ],
             "metadata": {
-                "description": "These are the intranet landing zone management groups."
+                "description": "These are the internal landing zone management groups."
             }
         }
     },
@@ -57,7 +67,8 @@
             "landingZone": "[concat(parameters('topLevelManagementGroupPrefix'), '-', 'landingzones')]",
             "decommissioned": "[concat(parameters('topLevelManagementGroupPrefix'), '-', 'decommissioned')]",
             "sandboxes": "[concat(parameters('topLevelManagementGroupPrefix'), '-', 'sandboxes')]",
-            "intranet": "[concat(parameters('topLevelManagementGroupPrefix'), '-', 'intranet')]"
+            "internal": "[concat(parameters('topLevelManagementGroupPrefix'), '-', 'internal')]",
+            "external": "[concat(parameters('topLevelManagementGroupPrefix'), '-', 'external')]"
         }
     },
     "resources": [
@@ -181,23 +192,23 @@
             }
         },
         {
-            // Create child management groups for intranet landing zones
-            "condition": "[not(empty(parameters('intranetMgs')))]",
+            // Create child management groups for internal landing zones
+            "condition": "[not(empty(parameters('internalMgs')))]",
             "type": "Microsoft.Management/managementGroups",
             "apiVersion": "2020-05-01",
-            "name": "[concat(parameters('topLevelManagementGroupPrefix'), '-', parameters('intranetMgs')[copyIndex()])]",
+            "name": "[concat(parameters('topLevelManagementGroupPrefix'), '-', parameters('internalMgs')[copyIndex()])]",
             "dependsOn": [
-                "[tenantResourceId('Microsoft.Management/managementGroups/', variables('enterpriseScaleManagementGroups').intranet)]"
+                "[tenantResourceId('Microsoft.Management/managementGroups/', variables('enterpriseScaleManagementGroups').internal)]"
             ],
             "copy": {
-                "name": "intranetMgCopy",
-                "count": "[length(parameters('intranetMgs'))]"
+                "name": "internalMgCopy",
+                "count": "[length(parameters('internalMgs'))]"
             },
             "properties": {
-                "displayName": "[concat(parameters('topLevelManagementGroupPrefix'), '-', parameters('intranetMgs')[copyIndex()])]",
+                "displayName": "[concat(parameters('topLevelManagementGroupPrefix'), '-', parameters('internalMgs')[copyIndex()])]",
                 "details": {
                     "parent": {
-                        "id": "[tenantResourceId('Microsoft.Management/managementGroups/', variables('enterpriseScaleManagementGroups').intranet)]"
+                        "id": "[tenantResourceId('Microsoft.Management/managementGroups/', variables('enterpriseScaleManagementGroups').internal)]"
                     }
                 }
             }
