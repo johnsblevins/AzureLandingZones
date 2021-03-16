@@ -82,7 +82,7 @@ jobs:
                 --management-group-id "${{ secrets.ENTERPRISE_SCALE_COMPANY_PREFIX }}-identity" \
                 --template-file Templates/entscalelz/es-hubspoke-template/auxiliary/identityMG.json \
                 --parameters topLevelManagementGroupPrefix=${{ secrets.ENTERPRISE_SCALE_COMPANY_PREFIX }} \
-                identitySubscriptionId=${{ secrets.IDENTITY_SUB_ID }} denyRdpForIdentity=Yes denySubnetWithoutNsgForIdentity=Yes \
+                denyRdpForIdentity=Yes denySubnetWithoutNsgForIdentity=Yes \
                 denyPipForIdentity=Yes enableVmBackupForIdentity=Yes
 
                 # Landing Zones MG Deployment
