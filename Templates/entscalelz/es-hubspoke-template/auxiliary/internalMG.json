@@ -8,7 +8,7 @@
         }        
     },
     "variables": {
-        "intranetScope": "[concat('/providers/Microsoft.Management/managementGroups/', parameters('topLevelManagementGroupPrefix'), '-intranet')]",
+        "intranetScope": "[concat('/providers/Microsoft.Management/managementGroups/', parameters('topLevelManagementGroupPrefix'), '-internal')]",
         "policyDefinitions": {
             "allowedIntranetResourceTypes": "/providers/Microsoft.Authorization/policyDefinitions/a08ec900-254a-4555-9bf5-e42af04b5c5c",
             "denyIntranetPublicPaaSEndpoints": "[concat('/providers/Microsoft.Management/managementGroups/', parameters('topLevelManagementGroupPrefix'), '/providers/Microsoft.Authorization/policySetDefinitions/Deny-PublicEndpoints')]",
