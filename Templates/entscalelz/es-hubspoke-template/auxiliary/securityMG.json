@@ -67,7 +67,7 @@
                         "value": "[deployment().location]"
                     },
                     "rgName": {
-                        "value": "[concat(parameters('topLevelManagementGroupPrefix'), '-mgmt')]"
+                        "value": "[concat(parameters('topLevelManagementGroupPrefix'), '-security')]"
                     },
                     "retentionInDays": {
                         "value": "[parameters('retentionInDays')]"
@@ -102,7 +102,7 @@
             "properties": {
                 "mode": "incremental",
                 "template": "[reference(variables('policyDefinitions').deployLogAnalytics, '2018-05-01').policyRule.then.details.deployment.properties.template]",
-                "parameters": "[reference(concat('/providers/Microsoft.Management/managementGroups/', parameters('topLevelManagementGroupPrefix'), '-Security', '/providers/Microsoft.Authorization/policyAssignments/', variables('policyAssignmentNames').loganalytics), '2018-05-01').parameters]"
+                "parameters": "[reference(concat('/providers/Microsoft.Management/managementGroups/', parameters('topLevelManagementGroupPrefix'), '-security', '/providers/Microsoft.Authorization/policyAssignments/', variables('policyAssignmentNames').loganalytics), '2018-05-01').parameters]"
             }
         }        
     ],

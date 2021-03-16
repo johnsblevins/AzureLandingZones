@@ -72,7 +72,7 @@ jobs:
 
                 # Security MG Deployment
                 az deployment mg create --name "EntScale-Security-${{ secrets.LOCATION }}" --location ${{ secrets.LOCATION }} \
-                --management-group-id "${{ secrets.ENTERPRISE_SCALE_COMPANY_PREFIX }}-management" \
+                --management-group-id "${{ secrets.ENTERPRISE_SCALE_COMPANY_PREFIX }}-security" \
                 --template-file Templates/entscalelz/es-hubspoke-template/auxiliary/securityMG.json \
                 --parameters topLevelManagementGroupPrefix=${{ secrets.ENTERPRISE_SCALE_COMPANY_PREFIX }} \
                 securitySubscriptionId=${{ secrets.SECURITY_SUB_ID }} enableLogAnalytics=Yes retentionInDays=90 
