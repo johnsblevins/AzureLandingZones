@@ -76,7 +76,7 @@ jobs:
                 --parameters topLevelManagementGroupPrefix=${{ secrets.ENTERPRISE_SCALE_COMPANY_PREFIX }} \
                 addressPrefix=${{ secrets.HUB_VNET_ADDRESS_PREFIX }} enableHub=Yes enableAzFw=Yes enableVpnGw=No enableErGw=Yes enableAzBastion=Yes \
                 connectivitySubscriptionId=${{ secrets.CONNECTIVITY_SUB_ID }} subnetMaskForAzFw=${{ secrets.SUBNET_MASK_FOR_AZ_FIREWALL }} \
-                subnetMaskForGw=${{ secrets.SUBNET_MASK_FOR_GW }} subnetMaskForAzBastion=${{ secrets.SUBNET_MASK_FOR_BASTION }} dnsServers=${{ secrets.DNS_SERVERS }}
+                subnetMaskForGw=${{ secrets.SUBNET_MASK_FOR_GW }} subnetMaskForAzBastion=${{ secrets.SUBNET_MASK_FOR_BASTION }} dnsServers="${{ secrets.DNS_SERVERS }}"
 
         - name: Management MG Deployment
           uses: azure/CLI@v1
@@ -138,7 +138,7 @@ jobs:
                 --parameters topLevelManagementGroupPrefix=${{ secrets.ENTERPRISE_SCALE_COMPANY_PREFIX }} managementSubscriptionId=${{ secrets.MANAGEMENT_SUB_ID }} \
                 management_vnet_address_space=${{ secrets.MANAGEMENT_VNET_ADDRESS_PREFIX }} \
                 management_subnet_address_prefix=${{ secrets.SUBNET_MASK_FOR_MANAGEMENT }} hubSubscriptionId=${{ secrets.CONNECTIVITY_SUB_ID }} \
-                subnetMaskForAzFw=${{ secrets.SUBNET_MASK_FOR_AZ_FIREWALL }} dnsServers=${{ secrets.DNS_SERVERS }}
+                subnetMaskForAzFw=${{ secrets.SUBNET_MASK_FOR_AZ_FIREWALL }} dnsServers="${{ secrets.DNS_SERVERS }}"
 
         - name: Identity Sub Deployment
           uses: azure/CLI@v1
@@ -151,7 +151,7 @@ jobs:
                 --parameters topLevelManagementGroupPrefix=${{ secrets.ENTERPRISE_SCALE_COMPANY_PREFIX }} identitySubscriptionId=${{ secrets.IDENTITY_SUB_ID }} \
                 identity_vnet_address_space=${{ secrets.IDENTITY_VNET_ADDRESS_PREFIX }} \
                 identity_subnet_address_prefix=${{ secrets.SUBNET_MASK_FOR_IDENTITY }} hubSubscriptionId=${{ secrets.CONNECTIVITY_SUB_ID }} \
-                subnetMaskForAzFw=${{ secrets.SUBNET_MASK_FOR_AZ_FIREWALL }} dnsServers=${{ secrets.DNS_SERVERS }}
+                subnetMaskForAzFw=${{ secrets.SUBNET_MASK_FOR_AZ_FIREWALL }} dnsServers="${{ secrets.DNS_SERVERS }}"
 
         - name: Security Sub Deployment
           uses: azure/CLI@v1
@@ -164,7 +164,7 @@ jobs:
                 --parameters topLevelManagementGroupPrefix=${{ secrets.ENTERPRISE_SCALE_COMPANY_PREFIX }} \
                 security_vnet_address_space=${{ secrets.SECURITY_VNET_ADDRESS_PREFIX }} \
                 security_subnet_address_prefix=${{ secrets.SUBNET_MASK_FOR_SECURITY }} hubSubscriptionId=${{ secrets.CONNECTIVITY_SUB_ID }} \
-                subnetMaskForAzFw=${{ secrets.SUBNET_MASK_FOR_AZ_FIREWALL }} dnsServers=${{ secrets.DNS_SERVERS }}
+                subnetMaskForAzFw=${{ secrets.SUBNET_MASK_FOR_AZ_FIREWALL }} dnsServers="${{ secrets.DNS_SERVERS }}"
         
         - name: Global Policy Assignments Deployment
           uses: azure/CLI@v1
