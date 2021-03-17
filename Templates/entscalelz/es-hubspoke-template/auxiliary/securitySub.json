@@ -55,6 +55,15 @@
     },
     "resources": [
         {
+            "name": "[variables('securityVnetRG')]",
+            "type": "Microsoft.Resources/resourceGroups",
+            "apiVersion": "2020-06-01",
+            "location": "[parameters('location')]",
+            "tags": {},
+            "properties": {
+            }
+        },
+        {
             "type": "Microsoft.Resources/deployments",
             "apiVersion": "2018-05-01",
             "name": "[take(concat('EntScale-', 'security-', guid(deployment().name)), 63)]",

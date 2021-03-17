@@ -55,6 +55,15 @@
     },
     "resources": [
         {
+            "name": "[variables('identityVnetRG')]",
+            "type": "Microsoft.Resources/resourceGroups",
+            "apiVersion": "2020-06-01",
+            "location": "[parameters('location')]",
+            "tags": {},
+            "properties": {
+            }
+        },
+        {
             "type": "Microsoft.Resources/deployments",
             "apiVersion": "2018-05-01",
             "name": "[take(concat('EntScale-', 'identity-', guid(deployment().name)), 63)]",
