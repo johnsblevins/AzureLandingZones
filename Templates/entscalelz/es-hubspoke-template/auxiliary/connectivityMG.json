@@ -53,6 +53,14 @@
             ],
             "defaultValue": "No"
         },
+        "enableAzBastion": {
+            "type": "string",
+            "allowedValues": [
+                "Yes",
+                "No"
+            ],
+            "defaultValue": "No"
+        },
         "connectivitySubscriptionId": {
             "type": "string",
             "defaultValue": "",
@@ -73,6 +81,10 @@
         "subnetMaskForGw": {
             "type": "string",
             "defaultValue": ""
+        },
+        "subnetMaskForAzBastion": {
+            "type": "string",
+            "defaultValue": ""
         }
     },
     "variables": {
@@ -83,9 +95,11 @@
         "azVpnGwIpName": "[concat(variables('vpngwname'), '-pip')]",
         "azVpnGwSubnetId": "[concat('/subscriptions/', parameters('connectivitySubscriptionId'), '/resourceGroups/', variables('rgName'),'/providers/Microsoft.Network/virtualNetworks/', variables('hubname'), '/subnets/GatewaySubnet')]",
         "azFwName": "[concat(parameters('topLevelManagementGroupPrefix'), '-fw-', parameters('location'))]",
+        "azBastionName": "[concat(parameters('topLevelManagementGroupPrefix'), '-bastion-', parameters('location'))]",
         "azErGwIpName": "[concat(variables('erGwName'), '-pip')]",
         "azVpnGwPipId": "[concat('/subscriptions/', parameters('connectivitySubscriptionId'), '/resourceGroups/', variables('rgName'), '/providers/Microsoft.Network/publicIPAddresses/', variables('azVpnGwIpName'))]",
         "azFwIpName": "[concat(variables('azFwName'), '-pip')]",
+        "azBastionIpName": "[concat(variables('azBastionName'), '-pip')]",
         "azErGwSubnetId": "[concat('/subscriptions/', parameters('connectivitySubscriptionId'), '/resourceGroups/', variables('rgName'),'/providers/Microsoft.Network/virtualNetworks/', variables('hubname'), '/subnets/GatewaySubnet')]",
         "azErGwPipId": "[concat('/subscriptions/', parameters('connectivitySubscriptionId'), '/resourceGroups/', variables('rgName'), '/providers/Microsoft.Network/publicIPAddresses/', variables('azErGwIpName'))]",
         "azFwSubnetId": "[concat('/subscriptions/', parameters('connectivitySubscriptionId'), '/resourceGroups/', variables('rgName'),'/providers/Microsoft.Network/virtualNetworks/', variables('hubname'), '/subnets/AzureFirewallSubnet')]",
@@ -104,6 +118,14 @@
                 "name": "AzureFirewallSubnet",
                 "properties": {
                     "addressPrefix": "[parameters('subnetMaskForAzFw')]"
+                }
+            }
+        ],
+        "bastionSubnet": [
+            {
+                "name": "AzureBastionSubnet",
+                "properties": {
+                    "addressPrefix": "[parameters('subnetMaskForAzBastion')]"
                 }
             }
         ]
@@ -289,6 +311,46 @@
                                                             },
                                                             "publicIPAddress": {
                                                                 "id": "[variables('azFwPipId')]"
+                                                            }
+                                                        }
+                                                    }
+                                                ]
+                                            }
+                                        },
+                                        {
+                                            "condition": "[and(equals(parameters('enableAzBastion'), 'Yes'), not(empty(parameters('subnetMaskForAzBastion'))))]",
+                                            "apiVersion": "2020-05-01",
+                                            "type": "Microsoft.Network/publicIpAddresses",
+                                            "name": "[variables('azBastionIpName')]",
+                                            "location": "[parameters('location')]",
+                                            "sku": {
+                                                "name": "Standard"
+                                            },
+                                            "properties": {
+                                                "publicIPAllocationMethod": "Static"
+                                            }
+                                        },
+                                        {
+                                            "condition": "[and(equals(parameters('enableAzBastion'), 'Yes'), not(empty(parameters('subnetMaskForAzBastion'))))]",
+                                            "apiVersion": "2020-05-01",
+                                            "type": "Microsoft.Network/bastionHosts",
+                                            "name": "[variables('azBastionName')]",
+                                            "location": "[parameters('location')]",
+                                            "dependsOn": [
+                                                "[resourceId('Microsoft.Network/publicIpAddresses', variables('azBastionIpName'))]",
+                                                "[resourceId('Microsoft.Network/virtualNetworks', variables('hubName'))]",
+                                                "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('hubName'), variables('bastionSubnet'))]"
+                                            ],
+                                            "properties": {
+                                                "ipConfigurations": [
+                                                    {
+                                                        "name": "IpConf",
+                                                        "properties": {
+                                                            "subnet": {
+                                                                "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('hubName'), variables('bastionSubnet'))]"
+                                                            },
+                                                            "publicIPAddress": {
+                                                                "id": "[resourceId('Microsoft.Network/publicIpAddresses', variables('azBastionIpName'))]"
                                                             }
                                                         }
                                                     }
