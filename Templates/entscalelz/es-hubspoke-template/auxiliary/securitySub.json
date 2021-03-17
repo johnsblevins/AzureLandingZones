@@ -66,6 +66,7 @@
         {
             "type": "Microsoft.Resources/deployments",
             "apiVersion": "2018-05-01",
+            "dependsOn": ["[variables('securityVnetRG')]"],
             "name": "[take(concat('EntScale-', 'security-', guid(deployment().name)), 63)]",
             "resourceGroup": "[variables('SecurityVnetRG')]",
             "properties": {

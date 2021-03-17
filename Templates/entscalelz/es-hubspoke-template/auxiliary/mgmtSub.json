@@ -366,7 +366,7 @@
         {
             "type": "Microsoft.Resources/deployments",
             "apiVersion": "2018-05-01",
-            "dependsOn": ["[concat(parameters('topLevelManagementGroupPrefix'), '-mgmt-connectivity')]"],
+            "dependsOn": ["[variables('ManagementVnetRG')]"],
             "name": "[take(concat('EntScale-', 'connectivity-', guid(deployment().name)), 63)]",
             "resourceGroup": "[variables('ManagementVnetRG')]",
             "properties": {
