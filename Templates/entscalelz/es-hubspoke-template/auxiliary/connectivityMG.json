@@ -187,7 +187,10 @@
                                                                           empty(parameters('subnetMaskForGw'))), variables('gwSubnet'), json('[]')), 
                                                                           if(
                                                                               not(
-                                                                                  empty(parameters('subnetMaskForAzFw'))), variables('fwSubnet'), json('[]')))]"
+                                                                                  empty(parameters('subnetMaskForAzFw'))), variables('fwSubnet'), json('[]')),
+                                                                                        if(
+                                                                                            not(
+                                                                                                empty(parameters('subnetMaskForAzBastion'))), variables('bastionSubnet'), json('[]')))]"
                                             }
                                         },
                                         {
@@ -340,8 +343,7 @@
                                             "location": "[parameters('location')]",
                                             "dependsOn": [
                                                 "[concat('Microsoft.Network/publicIpAddresses/', variables('azBastionIpName'))]",
-                                                "[concat('Microsoft.Network/virtualNetworks/', variables('hubName'))]",
-                                                "[concat('Microsoft.Network/virtualNetworks/', variables('hubName'),'/subnets/', variables('bastionSubnet'))]"
+                                                "[concat('Microsoft.Network/virtualNetworks/', variables('hubName'))]"
                                             ],
                                             "properties": {
                                                 "ipConfigurations": [
