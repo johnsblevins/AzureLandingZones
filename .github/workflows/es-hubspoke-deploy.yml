@@ -61,7 +61,7 @@ jobs:
                 --parameters topLevelManagementGroupPrefix=${{ secrets.ENTERPRISE_SCALE_COMPANY_PREFIX }} \
                 addressPrefix=${{ secrets.HUB_VNET_ADDRESS_PREFIX }} enableHub=Yes enableAzFw=Yes enableVpnGw=No enableErGw=Yes enableAzBastion=Yes \
                 connectivitySubscriptionId=${{ secrets.CONNECTIVITY_SUB_ID }} subnetMaskForAzFw=${{ secrets.SUBNET_MASK_FOR_AZ_FIREWALL }} \
-                subnetMaskForGw=${{ secrets.SUBNET_MASK_FOR_GW }} subnetMaskForAzBastion=${{ secrets.SUBNET_MASK_FOR_BASTION }}
+                subnetMaskForGw=${{ secrets.SUBNET_MASK_FOR_GW }} subnetMaskForAzBastion=${{ secrets.SUBNET_MASK_FOR_BASTION }} dnsServer=${{ secrets.DNS_SERVERS }}
 
                 # Management MG Deployment
                 az deployment mg create --name "EntScale-Monitoring-${{ secrets.LOCATION }}" --location ${{ secrets.LOCATION }} \
@@ -69,13 +69,6 @@ jobs:
                 --template-file Templates/entscalelz/es-hubspoke-template/auxiliary/mgmtMG.json --parameters \
                 topLevelManagementGroupPrefix=${{ secrets.ENTERPRISE_SCALE_COMPANY_PREFIX }} managementSubscriptionId=${{ secrets.MANAGEMENT_SUB_ID }} \
                 enableLogAnalytics=Yes retentionInDays=90 
-
-                # Security MG Deployment
-                az deployment mg create --name "EntScale-Security-${{ secrets.LOCATION }}" --location ${{ secrets.LOCATION }} \
-                --management-group-id "${{ secrets.ENTERPRISE_SCALE_COMPANY_PREFIX }}-security" \
-                --template-file Templates/entscalelz/es-hubspoke-template/auxiliary/securityMG.json \
-                --parameters topLevelManagementGroupPrefix=${{ secrets.ENTERPRISE_SCALE_COMPANY_PREFIX }} \
-                securitySubscriptionId=${{ secrets.SECURITY_SUB_ID }} enableLogAnalytics=Yes retentionInDays=90 
 
                 # Identity MG Deployment
                 az deployment mg create --name "EntScale-ID-${{ secrets.LOCATION }}" --location ${{ secrets.LOCATION }} \
@@ -105,7 +98,7 @@ jobs:
                 --parameters topLevelManagementGroupPrefix=${{ secrets.ENTERPRISE_SCALE_COMPANY_PREFIX }} managementSubscriptionId=${{ secrets.MANAGEMENT_SUB_ID }} \
                 management_vnet_address_space=${{ secrets.MANAGEMENT_VNET_ADDRESS_PREFIX }} \
                 management_subnet_address_prefix=${{ secrets.SUBNET_MASK_FOR_MANAGEMENT }} hubSubscriptionId=${{ secrets.CONNECTIVITY_SUB_ID }} \
-                subnetMaskForAzFw=${{ secrets.SUBNET_MASK_FOR_AZ_FIREWALL }}
+                subnetMaskForAzFw=${{ secrets.SUBNET_MASK_FOR_AZ_FIREWALL }} dnsServer=${{ secrets.DNS_SERVERS }}
 
                 # IDENTITY Sub Deployment
                 az deployment sub create --name "EntScale-Identity-${{ secrets.LOCATION }}" --location ${{ secrets.LOCATION }} \
@@ -113,15 +106,15 @@ jobs:
                 --parameters topLevelManagementGroupPrefix=${{ secrets.ENTERPRISE_SCALE_COMPANY_PREFIX }} identitySubscriptionId=${{ secrets.IDENTITY_SUB_ID }} \
                 identity_vnet_address_space=${{ secrets.IDENTITY_VNET_ADDRESS_PREFIX }} \
                 identity_subnet_address_prefix=${{ secrets.SUBNET_MASK_FOR_IDENTITY }} hubSubscriptionId=${{ secrets.CONNECTIVITY_SUB_ID }} \
-                subnetMaskForAzFw=${{ secrets.SUBNET_MASK_FOR_AZ_FIREWALL }}
+                subnetMaskForAzFw=${{ secrets.SUBNET_MASK_FOR_AZ_FIREWALL }} dnsServer=${{ secrets.DNS_SERVERS }}
 
                 # SECURITY Sub Deployment
                 az deployment sub create --name "EntScale-Security-${{ secrets.LOCATION }}" --location ${{ secrets.LOCATION }} \
                 --sub "${{ secrets.SECURITY_SUB_ID }}" --template-file Templates/entscalelz/es-hubspoke-template/auxiliary/securitySub.json \
-                --parameters topLevelManagementGroupPrefix=${{ secrets.ENTERPRISE_SCALE_COMPANY_PREFIX }} securitySubscriptionId=${{ secrets.SECURITY_SUB_ID }} \
+                --parameters topLevelManagementGroupPrefix=${{ secrets.ENTERPRISE_SCALE_COMPANY_PREFIX }} \
                 security_vnet_address_space=${{ secrets.SECURITY_VNET_ADDRESS_PREFIX }} \
                 security_subnet_address_prefix=${{ secrets.SUBNET_MASK_FOR_SECURITY }} hubSubscriptionId=${{ secrets.CONNECTIVITY_SUB_ID }} \
-                subnetMaskForAzFw=${{ secrets.SUBNET_MASK_FOR_AZ_FIREWALL }}
+                subnetMaskForAzFw=${{ secrets.SUBNET_MASK_FOR_AZ_FIREWALL }} dnsServer=${{ secrets.DNS_SERVERS }}
 
                 # Global Policy Assignments Deployment
                 az deployment mg create --name "EntScale-Solutions-${{ secrets.LOCATION }}" --location ${{ secrets.LOCATION }} \

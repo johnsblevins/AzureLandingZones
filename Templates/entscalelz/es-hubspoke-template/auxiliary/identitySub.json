@@ -36,6 +36,10 @@
                 "description": "Location of the HUB"
             },
             "defaultValue": "[deployment().location]"
+        },
+        "dnsServers":{
+            "type": "array",
+            "defaultValue": []
         }
     },
     "variables": {        
@@ -132,6 +136,9 @@
                                     "addressPrefixes": [
                                         "[parameters('identity_vnet_address_space')]"
                                     ]
+                                },
+                                "dhcpOptions": {
+                                    "dnsServers": "[parameters('dnsServers')]"
                                 },
                                 "subnets": [     
                                     {
