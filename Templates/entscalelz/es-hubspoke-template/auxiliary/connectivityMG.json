@@ -104,6 +104,8 @@
         "azErGwPipId": "[concat('/subscriptions/', parameters('connectivitySubscriptionId'), '/resourceGroups/', variables('rgName'), '/providers/Microsoft.Network/publicIPAddresses/', variables('azErGwIpName'))]",
         "azFwSubnetId": "[concat('/subscriptions/', parameters('connectivitySubscriptionId'), '/resourceGroups/', variables('rgName'),'/providers/Microsoft.Network/virtualNetworks/', variables('hubname'), '/subnets/AzureFirewallSubnet')]",
         "azFwPipId": "[concat('/subscriptions/', parameters('connectivitySubscriptionId'), '/resourceGroups/', variables('rgName'), '/providers/Microsoft.Network/publicIPAddresses/', variables('azFwIpName'))]",
+        "azBastionSubnetId": "[concat('/subscriptions/', parameters('connectivitySubscriptionId'), '/resourceGroups/', variables('rgName'),'/providers/Microsoft.Network/virtualNetworks/', variables('hubname'), '/subnets/AzureBastionSubnet')]",
+        "azBastionPipId": "[concat('/subscriptions/', parameters('connectivitySubscriptionId'), '/resourceGroups/', variables('rgName'), '/providers/Microsoft.Network/publicIPAddresses/', variables('azBastionIpName'))]",
         "resourceDeploymentName": "[take(concat(deployment().name, '-hubspoke'), 64)]",
         "gwSubnet": [
             {
@@ -337,9 +339,9 @@
                                             "name": "[variables('azBastionName')]",
                                             "location": "[parameters('location')]",
                                             "dependsOn": [
-                                                "[resourceId('Microsoft.Network/publicIpAddresses', variables('azBastionIpName'))]",
-                                                "[resourceId('Microsoft.Network/virtualNetworks', variables('hubName'))]",
-                                                "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('hubName'), variables('bastionSubnet'))]"
+                                                "[concat('Microsoft.Network/publicIpAddresses', variables('azBastionIpName'))]",
+                                                "[concat('Microsoft.Network/virtualNetworks', variables('hubName'))]",
+                                                "[concat('Microsoft.Network/virtualNetworks/subnets', variables('hubName'), variables('bastionSubnet'))]"
                                             ],
                                             "properties": {
                                                 "ipConfigurations": [
@@ -347,10 +349,10 @@
                                                         "name": "IpConf",
                                                         "properties": {
                                                             "subnet": {
-                                                                "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('hubName'), variables('bastionSubnet'))]"
+                                                                "id": "[variables('azBastionSubnetId')]"
                                                             },
                                                             "publicIPAddress": {
-                                                                "id": "[resourceId('Microsoft.Network/publicIpAddresses', variables('azBastionIpName'))]"
+                                                                "id": "[variables('azBastionPipId')]"
                                                             }
                                                         }
                                                     }
