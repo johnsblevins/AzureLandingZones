@@ -339,9 +339,9 @@
                                             "name": "[variables('azBastionName')]",
                                             "location": "[parameters('location')]",
                                             "dependsOn": [
-                                                "[concat('Microsoft.Network/publicIpAddresses', variables('azBastionIpName'))]",
-                                                "[concat('Microsoft.Network/virtualNetworks', variables('hubName'))]",
-                                                "[concat('Microsoft.Network/virtualNetworks/subnets', variables('hubName'), variables('bastionSubnet'))]"
+                                                "[concat('Microsoft.Network/publicIpAddresses/', variables('azBastionIpName'))]",
+                                                "[concat('Microsoft.Network/virtualNetworks/', variables('hubName'))]",
+                                                "[concat('Microsoft.Network/virtualNetworks/', variables('hubName'),'/subnets/', variables('bastionSubnet'))]"
                                             ],
                                             "properties": {
                                                 "ipConfigurations": [
