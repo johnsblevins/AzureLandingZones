@@ -61,7 +61,7 @@ jobs:
                 --parameters topLevelManagementGroupPrefix=${{ secrets.ENTERPRISE_SCALE_COMPANY_PREFIX }} \
                 addressPrefix=${{ secrets.HUB_VNET_ADDRESS_PREFIX }} enableHub=Yes enableAzFw=Yes enableVpnGw=No enableErGw=Yes enableAzBastion=Yes \
                 connectivitySubscriptionId=${{ secrets.CONNECTIVITY_SUB_ID }} subnetMaskForAzFw=${{ secrets.SUBNET_MASK_FOR_AZ_FIREWALL }} \
-                subnetMaskForGw=${{ secrets.SUBNET_MASK_FOR_GW }} subnetMaskForBastion=${{ secrets.SUBNET_MASK_FOR_BASTION }}
+                subnetMaskForGw=${{ secrets.SUBNET_MASK_FOR_GW }} subnetMaskForAzBastion=${{ secrets.SUBNET_MASK_FOR_BASTION }}
 
                 # Management MG Deployment
                 az deployment mg create --name "EntScale-Monitoring-${{ secrets.LOCATION }}" --location ${{ secrets.LOCATION }} \
