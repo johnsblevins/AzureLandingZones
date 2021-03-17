@@ -1,20 +1,27 @@
-${ARM_CLIENT_ID} - String
-${ARM_CLIENT_SECRET} - String
-${ARM_TENANT_ID} - String
+${ARM_CLIENT_ID} - String - xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
+${ARM_CLIENT_SECRET} - Secure String - Password
+${ARM_TENANT_ID} - String - xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
+
 ${LOCATION} - String - usgovvirginia
+
 ${ENTERPRISE_SCALE_COMPANY_PREFIX} - String - x.x.x.x/x
-${MANAGEMENT_SUB_ID} - String
-${CONNECTIVITY_SUB_ID} - String
-${IDENTITY_SUB_ID} - String
-${MANAGEMENT_VNET_ADDRESS_PREFIX} - String - x.x.x.x/x
-${SUBNET_MASK_FOR_MANAGEMENT} - String
+
+${MANAGEMENT_SUB_ID} - String - xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
+${CONNECTIVITY_SUB_ID} - String - xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
+${IDENTITY_SUB_ID} - String - xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
+${SECURITY_SUB_ID} - String - xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
+
+${DNS_SERVERS} - Array - ['x.x.x.x','y.y.y.y','z.z.z.z']
+
+${HUB_VNET_ADDRESS_PREFIX} - String - x.x.x.x/x
 ${SUBNET_MASK_FOR_AZ_FIREWALL} - String
+${SUBNET_MASK_FOR_GW} - String - x.x.x.x/x
+${SUBNET_MASK_FOR_BASTION} - String - x.x.x.x/x
+
+${MANAGEMENT_VNET_ADDRESS_PREFIX} - String - x.x.x.x/x
+${SUBNET_MASK_FOR_MANAGEMENT} - String - x.x.x.x/x
+
 ${IDENTITY_VNET_ADDRESS_PREFIX} - String - x.x.x.x/x
 ${SUBNET_MASK_FOR_IDENTITY} - String - x.x.x.x/x
-${SECURITY_SUB_ID} - String - 
-${HUB_VNET_ADDRESS_PREFIX} - String - x.x.x.x/x
-${DNS_SERVERS} - Array - ['x.x.x.x','y.y.y.y','z.z.z.z']
-${SECURITY_VNET_ADDRESS_PREFIX} - x.x.x.x/x
-${SUBNET_MASK_FOR_SECURITY} - x.x.x.x/x
-${SUBNET_MASK_FOR_GW} - x.x.x.x/x
-${SUBNET_MASK_FOR_BASTION} - x.x.x.x/x
+${SECURITY_VNET_ADDRESS_PREFIX} - String - x.x.x.x/x
+${SUBNET_MASK_FOR_SECURITY} - String - x.x.x.x/x

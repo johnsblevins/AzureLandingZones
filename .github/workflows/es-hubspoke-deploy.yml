@@ -19,7 +19,7 @@ jobs:
             environment: 'AzureUSGovernment'
             enable-AzPSSession: false
 
-        - name: Azure CLI script
+        - name: Management Group Deployment
           uses: azure/CLI@v1
           with:
             azcliversion: 2.17.1
@@ -29,12 +29,22 @@ jobs:
                 --template-file Templates/entscalelz/es-hubspoke-template/auxiliary/mgmtGroups.json --parameters \
                 topLevelManagementGroupPrefix=${{ secrets.ENTERPRISE_SCALE_COMPANY_PREFIX }}
 
+        - name: Global Policy Definitions Deployment 
+          uses: azure/CLI@v1
+          with:
+            azcliversion: 2.17.1
+            inlineScript: |
                 # Global Policy Definitions Deployment
                 az deployment mg create --name "EntScale-Policy-${{ secrets.LOCATION }}" --location ${{ secrets.LOCATION }} \
                 --management-group-id ${{ secrets.ENTERPRISE_SCALE_COMPANY_PREFIX }} \
                 --template-file Templates/entscalelz/es-hubspoke-template/auxiliary/globalPolicyDefs.json \
                 --parameters topLevelManagementGroupPrefix=${{ secrets.ENTERPRISE_SCALE_COMPANY_PREFIX }}
-
+       
+        - name: Move Subs
+          uses: azure/CLI@v1
+          with:
+            azcliversion: 2.17.1
+            inlineScript: |
                 # Move Management Sub
                 az account management-group subscription add --name "${{ secrets.ENTERPRISE_SCALE_COMPANY_PREFIX }}-management" \
                 --subscription ${{ secrets.MANAGEMENT_SUB_ID }}
@@ -47,13 +57,18 @@ jobs:
                 az account management-group subscription add --name "${{ secrets.ENTERPRISE_SCALE_COMPANY_PREFIX }}-security" \
                 --subscription ${{ secrets.SECURITY_SUB_ID }}
 
-                # Delay 60
-                sleep 60
-
                 # Move Connectivity Sub
                 az account management-group subscription add --name "${{ secrets.ENTERPRISE_SCALE_COMPANY_PREFIX }}-connectivity" \
                 --subscription ${{ secrets.CONNECTIVITY_SUB_ID }}
-                
+
+                # Delay 60
+                sleep 60
+        
+        - name: Connectivity MG Deployment
+          uses: azure/CLI@v1
+          with:
+            azcliversion: 2.17.1
+            inlineScript: |                
                 # Connectivity MG Deployment
                 az deployment mg create --name "EntScale-conn-${{ secrets.LOCATION }}" --location ${{ secrets.LOCATION }} \
                 --management-group-id "${{ secrets.ENTERPRISE_SCALE_COMPANY_PREFIX }}-connectivity" \
@@ -63,13 +78,23 @@ jobs:
                 connectivitySubscriptionId=${{ secrets.CONNECTIVITY_SUB_ID }} subnetMaskForAzFw=${{ secrets.SUBNET_MASK_FOR_AZ_FIREWALL }} \
                 subnetMaskForGw=${{ secrets.SUBNET_MASK_FOR_GW }} subnetMaskForAzBastion=${{ secrets.SUBNET_MASK_FOR_BASTION }} dnsServers=${{ secrets.DNS_SERVERS }}
 
+        - name: Management MG Deployment
+          uses: azure/CLI@v1
+          with:
+            azcliversion: 2.17.1
+            inlineScript: |
                 # Management MG Deployment
                 az deployment mg create --name "EntScale-Monitoring-${{ secrets.LOCATION }}" --location ${{ secrets.LOCATION }} \
                 --management-group-id "${{ secrets.ENTERPRISE_SCALE_COMPANY_PREFIX }}-management" \
                 --template-file Templates/entscalelz/es-hubspoke-template/auxiliary/mgmtMG.json --parameters \
                 topLevelManagementGroupPrefix=${{ secrets.ENTERPRISE_SCALE_COMPANY_PREFIX }} managementSubscriptionId=${{ secrets.MANAGEMENT_SUB_ID }} \
                 enableLogAnalytics=Yes retentionInDays=90 
-
+        
+        - name: Identity MG Deployment
+          uses: azure/CLI@v1
+          with:
+            azcliversion: 2.17.1
+            inlineScript: |
                 # Identity MG Deployment
                 az deployment mg create --name "EntScale-ID-${{ secrets.LOCATION }}" --location ${{ secrets.LOCATION }} \
                 --management-group-id "${{ secrets.ENTERPRISE_SCALE_COMPANY_PREFIX }}-identity" \
@@ -77,7 +102,12 @@ jobs:
                 --parameters topLevelManagementGroupPrefix=${{ secrets.ENTERPRISE_SCALE_COMPANY_PREFIX }} \
                 denyRdpForIdentity=Yes denySubnetWithoutNsgForIdentity=Yes \
                 denyPipForIdentity=Yes enableVmBackupForIdentity=Yes
-
+        
+        - name: Landing Zones MG Deployment
+          uses: azure/CLI@v1
+          with:
+            azcliversion: 2.17.1
+            inlineScript: |
                 # Landing Zones MG Deployment
                 az deployment mg create --name "EntScale-LZ-${{ secrets.LOCATION }}" --location ${{ secrets.LOCATION }} \
                 --management-group-id "${{ secrets.ENTERPRISE_SCALE_COMPANY_PREFIX }}-landingzones" \
@@ -86,12 +116,22 @@ jobs:
                 denyAksPrivilegedEscalation=Yes denyHttpIngressForAks=Yes enableSqlEncryption=Yes enableVmBackup=Yes denyRdp=Yes enableStorageHttps=Yes \
                 denyIpForwarding=Yes denySubnetWithoutNsg=Yes
 
+        - name: Internal Landing Zone MG Deployment
+          uses: azure/CLI@v1
+          with:
+            azcliversion: 2.17.1
+            inlineScript: |
                 # Internal Landing Zone MG Deployment
                 az deployment mg create --name "EntScale-Internal-${{ secrets.LOCATION }}" --location ${{ secrets.LOCATION }} \
                 --management-group-id "${{ secrets.ENTERPRISE_SCALE_COMPANY_PREFIX }}-internal" \
                 --template-file Templates/entscalelz/es-hubspoke-template/auxiliary/internalMG.json \
                 --parameters topLevelManagementGroupPrefix=${{ secrets.ENTERPRISE_SCALE_COMPANY_PREFIX }}
          
+        - name: Management Sub Deployment
+          uses: azure/CLI@v1
+          with:
+            azcliversion: 2.17.1
+            inlineScript: | 
                 # Management Sub Deployment
                 az deployment sub create --name "EntScale-Management-${{ secrets.LOCATION }}" --location ${{ secrets.LOCATION }} \
                 --sub "${{ secrets.MANAGEMENT_SUB_ID }}" --template-file Templates/entscalelz/es-hubspoke-template/auxiliary/mgmtSub.json \
@@ -100,6 +140,11 @@ jobs:
                 management_subnet_address_prefix=${{ secrets.SUBNET_MASK_FOR_MANAGEMENT }} hubSubscriptionId=${{ secrets.CONNECTIVITY_SUB_ID }} \
                 subnetMaskForAzFw=${{ secrets.SUBNET_MASK_FOR_AZ_FIREWALL }} dnsServers=${{ secrets.DNS_SERVERS }}
 
+        - name: Identity Sub Deployment
+          uses: azure/CLI@v1
+          with:
+            azcliversion: 2.17.1
+            inlineScript: | 
                 # IDENTITY Sub Deployment
                 az deployment sub create --name "EntScale-Identity-${{ secrets.LOCATION }}" --location ${{ secrets.LOCATION }} \
                 --sub "${{ secrets.IDENTITY_SUB_ID }}" --template-file Templates/entscalelz/es-hubspoke-template/auxiliary/identitySub.json \
@@ -108,6 +153,11 @@ jobs:
                 identity_subnet_address_prefix=${{ secrets.SUBNET_MASK_FOR_IDENTITY }} hubSubscriptionId=${{ secrets.CONNECTIVITY_SUB_ID }} \
                 subnetMaskForAzFw=${{ secrets.SUBNET_MASK_FOR_AZ_FIREWALL }} dnsServers=${{ secrets.DNS_SERVERS }}
 
+        - name: Security Sub Deployment
+          uses: azure/CLI@v1
+          with:
+            azcliversion: 2.17.1
+            inlineScript: | 
                 # SECURITY Sub Deployment
                 az deployment sub create --name "EntScale-Security-${{ secrets.LOCATION }}" --location ${{ secrets.LOCATION }} \
                 --sub "${{ secrets.SECURITY_SUB_ID }}" --template-file Templates/entscalelz/es-hubspoke-template/auxiliary/securitySub.json \
@@ -115,7 +165,12 @@ jobs:
                 security_vnet_address_space=${{ secrets.SECURITY_VNET_ADDRESS_PREFIX }} \
                 security_subnet_address_prefix=${{ secrets.SUBNET_MASK_FOR_SECURITY }} hubSubscriptionId=${{ secrets.CONNECTIVITY_SUB_ID }} \
                 subnetMaskForAzFw=${{ secrets.SUBNET_MASK_FOR_AZ_FIREWALL }} dnsServers=${{ secrets.DNS_SERVERS }}
-
+        
+        - name: Global Policy Assignments Deployment
+          uses: azure/CLI@v1
+          with:
+            azcliversion: 2.17.1
+            inlineScript: | 
                 # Global Policy Assignments Deployment
                 az deployment mg create --name "EntScale-Solutions-${{ secrets.LOCATION }}" --location ${{ secrets.LOCATION }} \
                 --management-group-id "${{ secrets.ENTERPRISE_SCALE_COMPANY_PREFIX }}" \
