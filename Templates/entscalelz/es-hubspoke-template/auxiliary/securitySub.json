@@ -39,49 +39,6 @@
         }
     },
     "variables": {
-        "laResourceId": "[toLower(concat('/subscriptions/', parameters('securitySubscriptionId'), '/resourceGroups/', parameters('topLevelManagementGroupPrefix'), '-mgmt', '/providers/Microsoft.OperationalInsights/workspaces/', parameters('topLevelManagementGroupPrefix'), '-la-', parameters('securitySubscriptionId')))]",
-        "solutions": {
-            "security": {
-                "name": "[concat('Security', '(', parameters('workspaceName'), ')')]",
-                "marketplaceName": "Security"
-            },
-            "agentHealth": {
-                "name": "[concat('AgentHealthAssessment', '(', parameters('workspaceName'), ')')]",
-                "marketplaceName": "AgentHealthAssessment"
-            },
-            "changeTracking": {
-                "name": "[concat('ChangeTracking', '(', parameters('workspaceName'), ')')]",
-                "marketplaceName": "ChangeTracking"
-            },
-            "updateMgmt": {
-                "name": "[concat('Updates', '(', parameters('workspaceName'), ')')]",
-                "marketplaceName": "Updates"
-            },
-            "azureActivity": {
-                "name": "[concat('AzureActivity', '(', parameters('workspaceName'), ')')]",
-                "marketplaceName": "AzureActivity"
-            },
-            "sqlAssessment": {
-                "name": "[concat('SQLAssessment', '(', parameters('workspaceName'), ')')]",
-                "marketplaceName": "SQLAssessment"
-            },
-            "antiMalware": {
-                "name": "[concat('AntiMalware', '(', parameters('workspaceName'), ')')]",
-                "marketplaceName": "AntiMalware"
-            },
-            "vmInsights": {
-                "name": "[concat('VMInsights', '(', parameters('workspaceName'), ')')]",
-                "marketplaceName": "VMInsights"
-            },
-            "serviceMap": {
-                "name": "[concat('ServiceMap', '(', parameters('workspaceName'), ')')]",
-                "marketplaceName": "ServiceMap"
-            },
-            "securityInsights": {
-                "name": "[concat('SecurityInsights', '(', parameters('workspaceName'), ')')]",
-                "marketplaceName": "SecurityInsights"
-            }
-        },
         "FWFirstOctet": "[split(split(parameters('subnetMaskForAzFw'),'/')[0],'.')[0]]",
         "FWSecondOctet": "[split(split(parameters('subnetMaskForAzFw'),'/')[0],'.')[1]]",
         "FWThirdOctet": "[split(split(parameters('subnetMaskForAzFw'),'/')[0],'.')[2]]",
