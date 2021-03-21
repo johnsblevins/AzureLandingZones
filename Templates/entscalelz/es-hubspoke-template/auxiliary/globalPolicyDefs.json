@@ -67,6 +67,62 @@
             },
             "name": "Restrict-SA-FW-Rules"
         },
+        {          
+          "properties": {
+            "displayName": "Restrict KeyVault firewall rules",
+            "description": "This policy restrict IP ranges used in KeyVault firewall rules",
+            "metadata": {
+              "category": "Key Vault"
+            },
+            "parameters": {
+              "effect": {
+                "type": "String",
+                "allowedValues": [
+                  "Audit",
+                  "Deny",
+                  "Disabled"
+                ],
+                "defaultValue": "Deny",
+                "metadata": {
+                  "displayName": "Effect",
+                  "description": "Enable or disable the execution of the policy"
+                }
+              },
+              "allowedAddressRanges": {
+                  "type": "array",
+                  "defaultValue": [],
+                  "metadata": {
+                      "description": "The list of allowed IP address ranges (Allowed internet address ranges can be provided using CIDR notation in the form 10.0.0.0/24 or as individual IP addresses like 10.0.0.4)",
+                      "displayName": "Address Range"
+                  }
+              }
+            },
+            "policyRule": {
+                "if": {
+                  "allOf": [
+                    {
+                      "field": "type",
+                      "equals": "Microsoft.KeyVault/vaults"
+                    },
+                    {
+                      "field": "Microsoft.KeyVault/vaults/networkAcls.ipRules[*].value",
+                      "notEquals": ""
+                    },
+                    {
+                      "not":{
+                          "field": "Microsoft.KeyVault/vaults/networkAcls.ipRules[*].value",
+                          "in": "[[parameters('allowedAddressRanges')]"
+                      }
+                    }
+                  ]
+                },
+                "then": {
+                  "effect": "[[parameters('effect')]"
+                }
+              }
+            },
+            "name": "Restrict-KV-FW-Rules"
+        },
         {
           "properties": {
             "description": "Enforce route table on all subnets",
@@ -17528,11 +17584,32 @@
                   "Disabled"
                 ],
                 "metadata": {
-                  "displayName": "Public network access on AKS API should be disabled",
-                  "description": "This policy denies  the creation of  Azure Kubernetes Service non-private clusters"
+                  "displayName": "The storage account firewall should allow only approved IPs or IP Ranges",
+                  "description": "This policy denies the addition of unapproved IPs or IP Ranges"
                 }
               },
               "RestrictSAFWRulesAllowedRanges": {
+                "type": "array",
+                "defaultValue": [],
+                "metadata": {
+                    "description": "The list of allowed IP address ranges (Allowed internet address ranges can be provided using CIDR notation in the form 10.0.0.0/24 or as individual IP addresses like 10.0.0.4)",
+                    "displayName": "Address Range"
+                }
+              },
+              "RestrictKVFWRulesEffect": {
+                "type": "string",
+                "defaultValue": "Deny",
+                "allowedValues": [
+                  "Audit",
+                  "Deny",
+                  "Disabled"
+                ],
+                "metadata": {
+                  "displayName": "The Key Vault firewall should allow only approved IPs or IP Ranges",
+                  "description": "This policy denies the addition of unapproved IPs or IP Ranges"
+                }
+              },
+              "RestrictKVFWRulesAllowedRanges": {
                 "type": "array",
                 "defaultValue": [],
                 "metadata": {
@@ -17628,6 +17705,18 @@
                   },
                   "allowedAddressRanges": {
                     "value": "[[parameters('RestrictSAFWRulesAllowedRanges')]"
+                  }
+                }
+              },
+              {
+                "policyDefinitionId": "[concat(variables('scope'), '/providers/Microsoft.Authorization/policyDefinitions/Restrict-SA-FW-Rules')]",
+                "policyDefinitionReferenceId": "RestrictKVFWRules",
+                "parameters": {
+                  "effect": {
+                    "value": "[[parameters('RestrictKVFWRulesEffect')]"
+                  },
+                  "allowedAddressRanges": {
+                    "value": "[[parameters('RestrictKVFWRulesAllowedRanges')]"
                   }
                 }
               }
