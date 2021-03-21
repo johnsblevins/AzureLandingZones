@@ -7,6 +7,20 @@ The Enterprise-Scale architecture is modular by design and allow organizations t
 ## Please NOTE this is a Custom Solution Repository
 The orginal source for this solution can be found on GitHub at https://github.com/Azure/Enterprise-Scale/tree/main/docs/reference/adventureworks.  The version contained in this repository includes a cloned copy of the original templates, as well as an added set of CICD script and template files for use by DevOps teams to customize the solution and make the deployment repeatable in their environment.  It also includes modifications for deployment of the template in Microsoft Azure Government (MAG).
 
+# Deployment Instructions
+
+1. Create an App Registration and Service Princpal to use for Deploying the Enterprise Scale Landing Zone
+
+This can be done in the Azure Portal by creating a new App Registration in the Azure Active Directory blade.  When creating the app registration this way and service principal is created automatically for you (see Enterprise Applications).
+
+You can create these programatically using Power Shell or Azure CLI
+
+2. Assign Owner Rights to the Service Principal or alternatively to a group in which the service principal is a member.
+```
+Get-AzRoleAssignment | where {$_.Scope -eq "/"}
+New-AzRoleAssignment -ObjectId <user/group object id> -Scope "/" -RoleDefinitionName Owner
+```
+
 # List of Modifications from Original Templates
 ## Changes required for MAG
 The templates must be modified from their original source to deploy successfully to MAG as described at:

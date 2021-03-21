@@ -11,6 +11,61 @@
     "scope": "[concat('/providers/Microsoft.Management/managementGroups/', parameters('topLevelManagementGroupPrefix'))]",
     "policies": {
       "policyDefinitions": [
+        {          
+          "properties": {
+            "displayName": "Restrict Storage Accounts firewall rules",
+            "description": "This policy restrict IP ranges used in Storage Accounts firewall rules",
+            "metadata": {
+              "category": "Storage"
+            },
+            "parameters": {
+              "effect": {
+                "type": "String",
+                "allowedValues": [
+                  "Audit",
+                  "Deny",
+                  "Disabled"
+                ],
+                "defaultValue": "Deny",
+                "metadata": {
+                  "displayName": "Effect",
+                  "description": "Enable or disable the execution of the policy"
+                }
+              },
+              "allowedAddressRanges": {
+                  "type": "array",
+                  "metadata": {
+                      "description": "The list of allowed IP address ranges (Allowed internet address ranges can be provided using CIDR notation in the form 10.0.0.0/24 or as individual IP addresses like 10.0.0.4)",
+                      "displayName": "Address Range"
+                  }
+              }
+            },
+            "policyRule": {
+                "if": {
+                  "allOf": [
+                    {
+                      "field": "type",
+                      "equals": "Microsoft.Storage/storageAccounts"
+                    },
+                    {
+                      "field": "Microsoft.Storage/storageAccounts/networkAcls.ipRules[*].value",
+                      "notEquals": ""
+                    },
+                    {
+                      "not":{
+                          "field": "Microsoft.Storage/storageAccounts/networkAcls.ipRules[*].value",
+                          "in": "[parameters('allowedAddressRanges')]"
+                      }
+                    }
+                  ]
+                },
+                "then": {
+                  "effect": "deny"
+                }
+              }
+            },
+            "name": "Restrict-SA-FW-Rules"
+        },
         {
           "properties": {
             "description": "Enforce route table on all subnets",
@@ -76,8 +131,6 @@
               }
             }
           },
-          "id": "/providers/Microsoft.Management/managementGroups/hs2-corp/providers/Microsoft.Authorization/policyDefinitions/c2397e91-77a3-464d-b942-97ed5be2d5f0",
-          "type": "Microsoft.Authorization/policyDefinitions",
           "name": "Enforce-Subn-RouteTable"
         },
         {
@@ -17464,6 +17517,27 @@
                   "displayName": "Public network access on AKS API should be disabled",
                   "description": "This policy denies  the creation of  Azure Kubernetes Service non-private clusters"
                 }
+              },
+              "RestrictSAFWRulesEffect": {
+                "type": "string",
+                "defaultValue": "Deny",
+                "allowedValues": [
+                  "Audit",
+                  "Deny",
+                  "Disabled"
+                ],
+                "metadata": {
+                  "displayName": "Public network access on AKS API should be disabled",
+                  "description": "This policy denies  the creation of  Azure Kubernetes Service non-private clusters"
+                }
+              },
+              "RestrictSAFWRulesAllowedRanges": {
+                "type": "array",
+                "defaultValue": [],
+                "metadata": {
+                    "description": "The list of allowed IP address ranges (Allowed internet address ranges can be provided using CIDR notation in the form 10.0.0.0/24 or as individual IP addresses like 10.0.0.4)",
+                    "displayName": "Address Range"
+                }
               }
             },
             "PolicyDefinitionGroups": null,
@@ -17541,6 +17615,18 @@
                 "parameters": {
                   "effect": {
                     "value": "[[parameters('AKSPublicIpDenyEffect')]"
+                  }
+                }
+              },
+              {
+                "policyDefinitionId": "[concat(variables('scope'), '/providers/Microsoft.Authorization/policyDefinitions/Restrict-SA-FW-Rules')]",
+                "policyDefinitionReferenceId": "RestrictSAFWRules",
+                "parameters": {
+                  "effect": {
+                    "value": "[[parameters('AKSPublicIpDenyEffect')]"
+                  },
+                  "effect": {
+                    "value": "[[parameters('RestrictSAFWRulesAllowedRanges')]"
                   }
                 }
               }

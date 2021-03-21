@@ -1,0 +1,127 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "adminUsername": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the Administrator of the new VM and Domain"
+      }
+    },
+    "location": {
+      "type": "string",
+      "defaultValue": "usgovvirginia",
+      "allowedValues": [
+        "usgovvirginia",
+        "usgovtexas",
+        "usgovarizona"
+      ],
+      "metadata": {
+        "description": "Location for the VM, only certain regions support zones during preview."
+      }
+    },
+    "adminPassword": {
+      "type": "securestring",
+      "metadata": {
+        "description": "The password for the Administrator account of the new VM"
+      }
+    },
+    "vmSize": {
+      "type": "string",
+      "defaultValue": "Standard_D2s_v3",
+      "metadata": {
+        "description": "Size of the VM for the controller"
+      }
+    },
+    "vmNames": {
+      "type": "array",
+      "defaultValue": [],
+      "metadata": {
+        "description": "Array of VM Names"
+      }
+    },
+    "vmIPs": {
+      "type": "array",
+      "defaultValue": [],
+      "metadata": {
+        "description": "Array of VM IP Addresses"
+      }
+    },
+    "zoneCount": {
+      "type": "string",
+      "defaultValue": "3",
+      "metadata": {
+        "description": "Number of Zones to Stripe"
+      }
+    }
+  },
+  "variables": {
+    "imagePublisher": "MicrosoftWindowsServer",
+    "imageOffer": "WindowsServer",
+    "imageSKU": "2019-Datacenter",
+    "virtualNetworkName": "adVNET",
+    "virtualNetworkAddressRange": "10.0.0.0/16",
+    "adSubnetName": "adSubnet",
+    "adSubnet": "10.0.0.0/24",
+    "adSubnetRef": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('virtualNetworkName'), variables('adSubnetName'))]",
+    "vmCount": "[if(equals(length(parameters('vmNames')), 0), 1, length(parameters('vmNames')))]"
+  },
+  "resources": [
+    {
+      "type": "Microsoft.Compute/virtualMachines",
+      "apiVersion": "2019-03-01",
+      "name": "[variables('vmName')[copyIndex()]]",
+      "location": "[parameters('location')]",
+      "zones": [
+        "[copyIndex(1)]"
+      ],
+      "dependsOn": [
+        "nicLoop"
+      ],
+      "copy": {
+        "name": "vmLoop",
+        "count": 2
+      },
+      "properties": {
+        "hardwareProfile": {
+          "vmSize": "[parameters('vmSize')]"
+        },
+        "licenseType": "Windows_Server",
+        "osProfile": {
+          "computerName": "[variables('vmName')[copyIndex()]]",
+          "adminUsername": "[parameters('adminUsername')]",
+          "adminPassword": "[parameters('adminPassword')]"
+        },
+        "storageProfile": {
+          "imageReference": {
+            "publisher": "[variables('imagePublisher')]",
+            "offer": "[variables('imageOffer')]",
+            "sku": "[variables('imageSKU')]",
+            "version": "latest"
+          },
+          "osDisk": {
+            "caching": "ReadOnly",
+            "createOption": "FromImage",
+            "managedDisk": {
+              "storageAccountType": "StandardSSD_LRS"
+            }
+          },
+          "dataDisks": [
+            {
+              "diskSizeGB": 64,
+              "lun": 0,
+              "createOption": "Empty"
+            }
+          ]
+        },
+        "networkProfile": {
+          "networkInterfaces": [
+            {
+              "id": "[resourceId('Microsoft.Network/networkInterfaces', variables('nicName')[copyIndex()])]"
+            }
+          ]
+        }
+      }
+    }
+  ]
+}
