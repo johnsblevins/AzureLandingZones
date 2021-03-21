@@ -1,0 +1,109 @@
+name: es-hubspoke-Policy
+
+
+# Controls when the action will run. 
+on:
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+jobs:
+    build-and-deploy:
+        runs-on: ubuntu-latest
+        steps:
+        - uses: actions/checkout@master
+        
+        - name: Log in with Azure
+          uses: azure/login@v1
+          with:
+            creds: ${{ secrets.AZURE_GOV_ENTSCALE_CREDENTIALS }}
+            environment: 'AzureUSGovernment'
+            enable-AzPSSession: false
+
+        - name: Global Policy Definitions Deployment 
+          uses: azure/CLI@v1
+          with:
+            azcliversion: 2.17.1
+            inlineScript: |
+                # Global Policy Definitions Deployment
+                az deployment mg create --name "EntScale-Policy-${{ secrets.LOCATION }}" --location ${{ secrets.LOCATION }} \
+                --management-group-id ${{ secrets.ENTERPRISE_SCALE_COMPANY_PREFIX }} \
+                --template-file Templates/entscalelz/es-hubspoke-template/auxiliary/globalPolicyDefs.json \
+                --parameters topLevelManagementGroupPrefix=${{ secrets.ENTERPRISE_SCALE_COMPANY_PREFIX }}
+       
+        - name: Connectivity MG Deployment
+          uses: azure/CLI@v1
+          with:
+            azcliversion: 2.17.1
+            inlineScript: |                
+                # Connectivity MG Deployment
+                az deployment mg create --name "EntScale-conn-${{ secrets.LOCATION }}" --location ${{ secrets.LOCATION }} \
+                --management-group-id "${{ secrets.ENTERPRISE_SCALE_COMPANY_PREFIX }}-connectivity" \
+                --template-file Templates/entscalelz/es-hubspoke-template/auxiliary/connectivityMG.json \
+                --parameters topLevelManagementGroupPrefix=${{ secrets.ENTERPRISE_SCALE_COMPANY_PREFIX }} \
+                addressPrefix=${{ secrets.HUB_VNET_ADDRESS_PREFIX }} enableHub=Yes enableAzFw=Yes enableVpnGw=No enableErGw=Yes enableAzBastion=Yes \
+                connectivitySubscriptionId=${{ secrets.CONNECTIVITY_SUB_ID }} subnetMaskForAzFw=${{ secrets.SUBNET_MASK_FOR_AZ_FIREWALL }} \
+                subnetMaskForGw=${{ secrets.SUBNET_MASK_FOR_GW }} subnetMaskForAzBastion=${{ secrets.SUBNET_MASK_FOR_BASTION }} dnsServers="${{ secrets.DNS_SERVERS }}"
+
+        - name: Management MG Deployment
+          uses: azure/CLI@v1
+          with:
+            azcliversion: 2.17.1
+            inlineScript: |
+                # Management MG Deployment
+                az deployment mg create --name "EntScale-Monitoring-${{ secrets.LOCATION }}" --location ${{ secrets.LOCATION }} \
+                --management-group-id "${{ secrets.ENTERPRISE_SCALE_COMPANY_PREFIX }}-management" \
+                --template-file Templates/entscalelz/es-hubspoke-template/auxiliary/mgmtMG.json --parameters \
+                topLevelManagementGroupPrefix=${{ secrets.ENTERPRISE_SCALE_COMPANY_PREFIX }} managementSubscriptionId=${{ secrets.MANAGEMENT_SUB_ID }} \
+                enableLogAnalytics=Yes retentionInDays=90 
+        
+        - name: Identity MG Deployment
+          uses: azure/CLI@v1
+          with:
+            azcliversion: 2.17.1
+            inlineScript: |
+                # Identity MG Deployment
+                az deployment mg create --name "EntScale-ID-${{ secrets.LOCATION }}" --location ${{ secrets.LOCATION }} \
+                --management-group-id "${{ secrets.ENTERPRISE_SCALE_COMPANY_PREFIX }}-identity" \
+                --template-file Templates/entscalelz/es-hubspoke-template/auxiliary/identityMG.json \
+                --parameters topLevelManagementGroupPrefix=${{ secrets.ENTERPRISE_SCALE_COMPANY_PREFIX }} \
+                denyRdpForIdentity=Yes denySubnetWithoutNsgForIdentity=Yes \
+                denyPipForIdentity=Yes enableVmBackupForIdentity=Yes
+        
+        - name: Landing Zones MG Deployment
+          uses: azure/CLI@v1
+          with:
+            azcliversion: 2.17.1
+            inlineScript: |
+                # Landing Zones MG Deployment
+                az deployment mg create --name "EntScale-LZ-${{ secrets.LOCATION }}" --location ${{ secrets.LOCATION }} \
+                --management-group-id "${{ secrets.ENTERPRISE_SCALE_COMPANY_PREFIX }}-landingzones" \
+                --template-file Templates/entscalelz/es-hubspoke-template/auxiliary/landingzonesMG.json \
+                --parameters topLevelManagementGroupPrefix=${{ secrets.ENTERPRISE_SCALE_COMPANY_PREFIX }} enableSqlAudit=Yes denyAksPrivileged=Yes \
+                denyAksPrivilegedEscalation=Yes denyHttpIngressForAks=Yes enableSqlEncryption=Yes enableVmBackup=Yes denyRdp=Yes enableStorageHttps=Yes \
+                denyIpForwarding=Yes denySubnetWithoutNsg=Yes
+
+        - name: Internal Landing Zone MG Deployment
+          uses: azure/CLI@v1
+          with:
+            azcliversion: 2.17.1
+            inlineScript: |
+                # Internal Landing Zone MG Deployment
+                az deployment mg create --name "EntScale-Internal-${{ secrets.LOCATION }}" --location ${{ secrets.LOCATION }} \
+                --management-group-id "${{ secrets.ENTERPRISE_SCALE_COMPANY_PREFIX }}-internal" \
+                --template-file Templates/entscalelz/es-hubspoke-template/auxiliary/internalMG.json \
+                --parameters topLevelManagementGroupPrefix=${{ secrets.ENTERPRISE_SCALE_COMPANY_PREFIX }}
+         
+        - name: Global Policy Assignments Deployment
+          uses: azure/CLI@v1
+          with:
+            azcliversion: 2.17.1
+            inlineScript: | 
+                # Global Policy Assignments Deployment
+                az deployment mg create --name "EntScale-Solutions-${{ secrets.LOCATION }}" --location ${{ secrets.LOCATION }} \
+                --management-group-id "${{ secrets.ENTERPRISE_SCALE_COMPANY_PREFIX }}" \
+                --template-file Templates/entscalelz/es-hubspoke-template/auxiliary/globalPolicyAssignments.json \
+                --parameters topLevelManagementGroupPrefix=${{ secrets.ENTERPRISE_SCALE_COMPANY_PREFIX }} managementSubscriptionId=${{ secrets.MANAGEMENT_SUB_ID }} \
+                enableLogAnalytics=Yes enableAsc=Yes enableAscForServers=Standard enableAscForStorage=Standard enableAscForSql=Standard enableAscForKubernetes=Standard \
+                enableAscForRegistries=Standard enableVmMonitoring=Yes enableVmssMonitoring=Yes identitySubscriptionId=${{ secrets.IDENTITY_SUB_ID }} \
+                connectivitySubscriptionId=${{ secrets.CONNECTIVITY_SUB_ID }}
+                

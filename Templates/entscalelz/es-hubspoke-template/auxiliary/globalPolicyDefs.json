@@ -34,6 +34,7 @@
               },
               "allowedAddressRanges": {
                   "type": "array",
+                  "defaultValue": [],
                   "metadata": {
                       "description": "The list of allowed IP address ranges (Allowed internet address ranges can be provided using CIDR notation in the form 10.0.0.0/24 or as individual IP addresses like 10.0.0.4)",
                       "displayName": "Address Range"
@@ -54,7 +55,7 @@
                     {
                       "not":{
                           "field": "Microsoft.Storage/storageAccounts/networkAcls.ipRules[*].value",
-                          "in": "[parameters('allowedAddressRanges')]"
+                          "in": "[[parameters('allowedAddressRanges')]"
                       }
                     }
                   ]
@@ -17623,9 +17624,9 @@
                 "policyDefinitionReferenceId": "RestrictSAFWRules",
                 "parameters": {
                   "effect": {
-                    "value": "[[parameters('AKSPublicIpDenyEffect')]"
+                    "value": "[[parameters('RestrictSAFWRulesEffect')]"
                   },
-                  "effect": {
+                  "allowedAddressRanges": {
                     "value": "[[parameters('RestrictSAFWRulesAllowedRanges')]"
                   }
                 }
