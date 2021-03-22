@@ -65,6 +65,7 @@
         "enterpriseScaleManagementGroups": {
             "platform": "[concat(parameters('topLevelManagementGroupPrefix'), '-', 'platform')]",
             "landingZone": "[concat(parameters('topLevelManagementGroupPrefix'), '-', 'landingzones')]",
+            "onboarding": "[concat(parameters('topLevelManagementGroupPrefix'), '-', 'onboarding')]",
             "decommissioned": "[concat(parameters('topLevelManagementGroupPrefix'), '-', 'decommissioned')]",
             "sandboxes": "[concat(parameters('topLevelManagementGroupPrefix'), '-', 'sandboxes')]",
             "internal": "[concat(parameters('topLevelManagementGroupPrefix'), '-', 'internal')]",
@@ -140,6 +141,23 @@
             ],
             "properties": {
                 "displayName": "[variables('enterpriseScaleManagementGroups').decommissioned]",
+                "details": {
+                    "parent": {
+                    "id": "[tenantResourceId('Microsoft.Management/managementGroups/', parameters('topLevelManagementGroupPrefix'))]"
+                    }
+                }
+            }
+        }, 
+        {
+            // Create management group for onboarding subscriptions
+            "type": "Microsoft.Management/managementGroups",
+            "apiVersion": "2020-05-01",
+            "name": "[variables('enterpriseScaleManagementGroups').onboarding]",
+            "dependsOn": [
+                "[tenantResourceId('Microsoft.Management/managementGroups/', parameters('topLevelManagementGroupPrefix'))]"
+            ],
+            "properties": {
+                "displayName": "[variables('enterpriseScaleManagementGroups').onboarding]",
                 "details": {
                     "parent": {
                     "id": "[tenantResourceId('Microsoft.Management/managementGroups/', parameters('topLevelManagementGroupPrefix'))]"
