@@ -22,11 +22,10 @@
               "effect": {
                 "type": "String",
                 "allowedValues": [
-                  "Audit",
-                  "Deny",
+                  "Modify",                  
                   "Disabled"
                 ],
-                "defaultValue": "Deny",
+                "defaultValue": "Disabled",
                 "metadata": {
                   "displayName": "Effect",
                   "description": "Enable or disable the execution of the policy"
@@ -38,7 +37,7 @@
                   "allOf": [
                     {
                       "field": "type",
-                      "equals": "Microsoft.Storage/storageAccounts"
+                      "equals": "Microsoft.Compute/disks"
                     }
                   ]
                 },
