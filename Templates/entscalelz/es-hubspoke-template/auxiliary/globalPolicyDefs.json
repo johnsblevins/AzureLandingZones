@@ -25,7 +25,7 @@
                   "Modify",                  
                   "Disabled"
                 ],
-                "defaultValue": "Disabled",
+                "defaultValue": "Modify",
                 "metadata": {
                   "displayName": "Effect",
                   "description": "Enable or disable the execution of the policy"
@@ -42,7 +42,19 @@
                   ]
                 },
                 "then": {
-                  "effect": "[[parameters('effect')]"
+                  "effect": "[[parameters('effect')]",
+                  "details": {
+                    "roleDefinitionIds": [
+                      "/providers/Microsoft.Authorization/roleDefinitions/b24988ac-6180-42a0-ab88-20f7382dd24c"
+                    ],
+                    "operations": [
+                      {
+                        "operation": "addOrReplace",
+                        "field": "Microsoft.Compute/disks/networkAccessPolicy",
+                        "value": "DenyAll"
+                      }
+                    ]
+                  }
                 }
               }
             },
