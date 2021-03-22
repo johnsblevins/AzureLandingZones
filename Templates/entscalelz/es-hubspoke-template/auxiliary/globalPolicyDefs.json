@@ -11,24 +11,61 @@
     "scope": "[concat('/providers/Microsoft.Management/managementGroups/', parameters('topLevelManagementGroupPrefix'))]",
     "policies": {
       "policyDefinitions": [
-        {
+        {          
           "properties": {
-            "displayName": "Deny Network Access to Disks",
-            "policyRule": {
-              "if": {
-                "allOf": [
-                  {
-                    "field": "type",
-                    "equals": "Microsoft.Compute/disks"
+            "displayName": "Restrict Storage Accounts firewall rules 2",
+            "description": "This policy restrict IP ranges used in Storage Accounts firewall rules 2",
+            "metadata": {
+              "category": "Storage"
+            },
+            "parameters": {
+              "effect": {
+                "type": "String",
+                "allowedValues": [
+                  "Audit",
+                  "Deny",
+                  "Disabled"
+                ],
+                "defaultValue": "Deny",
+                "metadata": {
+                  "displayName": "Effect",
+                  "description": "Enable or disable the execution of the policy"
+                }
+              },
+              "allowedAddressRanges": {
+                  "type": "array",
+                  "defaultValue": [],
+                  "metadata": {
+                      "description": "The list of allowed IP address ranges (Allowed internet address ranges can be provided using CIDR notation in the form 10.0.0.0/24 or as individual IP addresses like 10.0.0.4)",
+                      "displayName": "Address Range"
                   }
-                ]
+              }
+            },
+            "policyRule": {
+                "if": {
+                  "allOf": [
+                    {
+                      "field": "type",
+                      "equals": "Microsoft.Storage/storageAccounts"
+                    },
+                    {
+                      "field": "Microsoft.Storage/storageAccounts/networkAcls.ipRules[*].value",
+                      "notEquals": ""
+                    },
+                    {
+                      "not":{
+                          "field": "Microsoft.Storage/storageAccounts/networkAcls.ipRules[*].value",
+                          "in": "[[parameters('allowedAddressRanges')]"
+                      }
+                    }
+                  ]
                 },
                 "then": {
-                  "effect": "deny"
+                  "effect": "[[parameters('effect')]"
                 }
               }
             },
-            "name": "Deny-Net-Access-Disks"
+            "name": "Restrict-SA-FW-Rules2"
         },
         {          
           "properties": {
