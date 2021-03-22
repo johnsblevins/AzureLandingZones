@@ -13,6 +13,42 @@
       "policyDefinitions": [
         {          
           "properties": {
+            "displayName": "Deny Network Access to Disks",
+            "metadata": {
+              "category": "Storage"
+            },
+            "parameters": {
+              "effect": {
+                "type": "String",
+                "allowedValues": [
+                  "modify",
+                  "Disabled"
+                ],
+                "defaultValue": "Disabled",
+                "metadata": {
+                  "displayName": "Effect",
+                  "description": "Enable or disable the execution of the policy"
+                }
+              }
+            },
+            "policyRule": {
+                "if": {
+                  "allOf": [
+                    {
+                      "field": "type",
+                      "equals": "Microsoft.Compute/disks"
+                    }
+                  ]
+                },
+                "then": {
+                  "effect": "[[parameters('effect')]"
+                }
+              }
+            },
+            "name": "Deny-Net-Access-Disks"
+        },
+        {          
+          "properties": {
             "displayName": "Restrict Storage Accounts firewall rules",
             "description": "This policy restrict IP ranges used in Storage Accounts firewall rules",
             "metadata": {
