@@ -14,16 +14,6 @@
         {
           "properties": {
             "displayName": "Deny Network Access to Disks",
-            "parameters": {
-              "effect": {
-                "type": "String",
-                "allowedValues": [
-                  "modify",
-                  "Disabled"
-                ],
-                "defaultValue": "Disabled"
-              }
-            },
             "policyRule": {
                 "if": {
                   "allOf": [
@@ -34,7 +24,7 @@
                   ]
                 },
                 "then": {
-                  "effect": "[[parameters('effect')]",
+                  "effect": "modify",
                   "details": {
                     "roleDefinitionIds": [
                       "/providers/Microsoft.Authorization/roleDefinitions/b24988ac-6180-42a0-ab88-20f7382dd24c"
