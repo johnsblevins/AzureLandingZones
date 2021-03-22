@@ -17665,6 +17665,18 @@
                     "description": "The list of allowed IP address ranges (Allowed internet address ranges can be provided using CIDR notation in the form 10.0.0.0/24 or as individual IP addresses like 10.0.0.4)",
                     "displayName": "Address Range"
                 }
+              },
+              "DenyNetworkAccessToDisksEffect": {
+                "type": "string",
+                "defaultValue": "Modify",
+                "allowedValues": [
+                  "Modify",
+                  "Disabled"
+                ],
+                "metadata": {
+                  "displayName": "Deny Network Access to Disks",
+                  "description": "Network Access to Disks should be Denied"
+                }
               }
             },
             "PolicyDefinitionGroups": null,
@@ -17766,6 +17778,15 @@
                   },
                   "allowedAddressRanges": {
                     "value": "[[parameters('RestrictKVFWRulesAllowedRanges')]"
+                  }
+                }
+              },
+              {
+                "policyDefinitionId": "[concat(variables('scope'), '/providers/Microsoft.Authorization/policyDefinitions/Deny-Net-Access-Disks')]",
+                "policyDefinitionReferenceId": "DenyNetAccessDisks",
+                "parameters": {
+                  "effect": {
+                    "value": "[[parameters('DenyNetworkAccessToDisksEffect')]"
                   }
                 }
               }
