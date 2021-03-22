@@ -13,8 +13,8 @@
       "policyDefinitions": [
         {          
           "properties": {
-            "displayName": "Restrict Storage Accounts firewall rules 2",
-            "description": "This policy restrict IP ranges used in Storage Accounts firewall rules 2",
+            "displayName": "Deny Network Access to Disks",
+            "description": "Deny Network Access to Disks",
             "metadata": {
               "category": "Storage"
             },
