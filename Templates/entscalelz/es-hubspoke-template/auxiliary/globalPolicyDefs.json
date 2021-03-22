@@ -11,12 +11,9 @@
     "scope": "[concat('/providers/Microsoft.Management/managementGroups/', parameters('topLevelManagementGroupPrefix'))]",
     "policies": {
       "policyDefinitions": [
-        {          
+        {
           "properties": {
             "displayName": "Deny Network Access to Disks",
-            "metadata": {
-              "category": "Storage"
-            },
             "parameters": {
               "effect": {
                 "type": "String",
@@ -24,11 +21,7 @@
                   "modify",
                   "Disabled"
                 ],
-                "defaultValue": "Disabled",
-                "metadata": {
-                  "displayName": "Effect",
-                  "description": "Enable or disable the execution of the policy"
-                }
+                "defaultValue": "Disabled"
               }
             },
             "policyRule": {
@@ -41,7 +34,19 @@
                   ]
                 },
                 "then": {
-                  "effect": "[[parameters('effect')]"
+                  "effect": "[[parameters('effect')]",
+                  "details": {
+                    "roleDefinitionIds": [
+                      "/providers/Microsoft.Authorization/roleDefinitions/b24988ac-6180-42a0-ab88-20f7382dd24c"
+                    ],
+                    "operations": [
+                      {
+                        "operation": "addOrReplace",
+                        "field": "Microsoft.Compute/disks/networkAccessPolicy",
+                        "value": "DenyAll"
+                      }
+                    ]
+                  }
                 }
               }
             },
