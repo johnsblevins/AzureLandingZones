@@ -1,0 +1,54 @@
+name: es-hubspoke-mgmtGroups
+
+
+# Controls when the action will run. 
+on:
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+jobs:
+    build-and-deploy:
+        runs-on: ubuntu-latest
+        steps:
+        - uses: actions/checkout@master
+        
+        - name: Log in with Azure
+          uses: azure/login@v1
+          with:
+            creds: ${{ secrets.AZURE_GOV_ENTSCALE_CREDENTIALS }}
+            environment: 'AzureUSGovernment'
+            enable-AzPSSession: false
+
+        - name: Management Group Deployment
+          uses: azure/CLI@v1
+          with:
+            azcliversion: 2.17.1
+            inlineScript: |
+                # Management Group Deployment
+                az deployment tenant create --name "EntScale-Mgs-${{ secrets.LOCATION }}" --location ${{ secrets.LOCATION }} \
+                --template-file Templates/entscalelz/es-hubspoke-template/auxiliary/mgmtGroups.json --parameters \
+                topLevelManagementGroupPrefix=${{ secrets.ENTERPRISE_SCALE_COMPANY_PREFIX }}
+
+        - name: Move Subs
+          uses: azure/CLI@v1
+          with:
+            azcliversion: 2.17.1
+            inlineScript: |
+                # Move Management Sub
+                az account management-group subscription add --name "${{ secrets.ENTERPRISE_SCALE_COMPANY_PREFIX }}-management" \
+                --subscription ${{ secrets.MANAGEMENT_SUB_ID }}
+
+                # Move Identity Sub
+                az account management-group subscription add --name "${{ secrets.ENTERPRISE_SCALE_COMPANY_PREFIX }}-identity" \
+                --subscription ${{ secrets.IDENTITY_SUB_ID }}
+                
+                # Move Security Sub
+                az account management-group subscription add --name "${{ secrets.ENTERPRISE_SCALE_COMPANY_PREFIX }}-security" \
+                --subscription ${{ secrets.SECURITY_SUB_ID }}
+
+                # Move Connectivity Sub
+                az account management-group subscription add --name "${{ secrets.ENTERPRISE_SCALE_COMPANY_PREFIX }}-connectivity" \
+                --subscription ${{ secrets.CONNECTIVITY_SUB_ID }}
+
+                # Delay 60
+                sleep 60

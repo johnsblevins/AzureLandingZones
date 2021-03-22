@@ -1,0 +1,33 @@
+name: es-hubspoke-all
+
+
+# Controls when the action will run. 
+on:
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+jobs:
+    build-and-deploy:
+        runs-on: ubuntu-latest
+        steps:
+        - uses: actions/checkout@master
+        
+        - name: Log in with Azure
+          uses: azure/login@v1
+          with:
+            creds: ${{ secrets.AZURE_GOV_ENTSCALE_CREDENTIALS }}
+            environment: 'AzureUSGovernment'
+            enable-AzPSSession: false
+
+        - name: Identity Sub Deployment
+          uses: azure/CLI@v1
+          with:
+            azcliversion: 2.17.1
+            inlineScript: | 
+                # IDENTITY Sub Deployment
+                az deployment sub create --name "EntScale-Identity-${{ secrets.LOCATION }}" --location ${{ secrets.LOCATION }} \
+                --sub "${{ secrets.IDENTITY_SUB_ID }}" --template-file Templates/entscalelz/es-hubspoke-template/auxiliary/identitySub.json \
+                --parameters topLevelManagementGroupPrefix=${{ secrets.ENTERPRISE_SCALE_COMPANY_PREFIX }} identitySubscriptionId=${{ secrets.IDENTITY_SUB_ID }} \
+                identity_vnet_address_space=${{ secrets.IDENTITY_VNET_ADDRESS_PREFIX }} \
+                identity_subnet_address_prefix=${{ secrets.SUBNET_MASK_FOR_IDENTITY }} hubSubscriptionId=${{ secrets.CONNECTIVITY_SUB_ID }} \
+                subnetMaskForAzFw=${{ secrets.SUBNET_MASK_FOR_AZ_FIREWALL }} dnsServers="${{ secrets.DNS_SERVERS }}"

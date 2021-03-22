@@ -1,0 +1,34 @@
+name: es-hubspoke-all
+
+
+# Controls when the action will run. 
+on:
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+jobs:
+    build-and-deploy:
+        runs-on: ubuntu-latest
+        steps:
+        - uses: actions/checkout@master
+        
+        - name: Log in with Azure
+          uses: azure/login@v1
+          with:
+            creds: ${{ secrets.AZURE_GOV_ENTSCALE_CREDENTIALS }}
+            environment: 'AzureUSGovernment'
+            enable-AzPSSession: false
+
+        - name: Security Sub Deployment
+          uses: azure/CLI@v1
+          with:
+            azcliversion: 2.17.1
+            inlineScript: | 
+                # SECURITY Sub Deployment
+                az deployment sub create --name "EntScale-Security-${{ secrets.LOCATION }}" --location ${{ secrets.LOCATION }} \
+                --sub "${{ secrets.SECURITY_SUB_ID }}" --template-file Templates/entscalelz/es-hubspoke-template/auxiliary/securitySub.json \
+                --parameters topLevelManagementGroupPrefix=${{ secrets.ENTERPRISE_SCALE_COMPANY_PREFIX }} \
+                security_vnet_address_space=${{ secrets.SECURITY_VNET_ADDRESS_PREFIX }} \
+                security_subnet_address_prefix=${{ secrets.SUBNET_MASK_FOR_SECURITY }} hubSubscriptionId=${{ secrets.CONNECTIVITY_SUB_ID }} \
+                subnetMaskForAzFw=${{ secrets.SUBNET_MASK_FOR_AZ_FIREWALL }} dnsServers="${{ secrets.DNS_SERVERS }}"
+        
