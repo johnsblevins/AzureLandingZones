@@ -41,7 +41,19 @@
                   ]
                 },
                 "then": {
-                  "effect": "[[parameters('effect')]"
+                  "effect": "[[parameters('effect')]",
+                  "details": {
+                    "roleDefinitionIds": [
+                      "/providers/Microsoft.Authorization/roleDefinitions/b24988ac-6180-42a0-ab88-20f7382dd24c"
+                    ],
+                    "operations": [
+                      {
+                        "operation": "addOrReplace",
+                        "field": "Microsoft.Compute/disks/networkAccessPolicy",
+                        "value": "DenyAll"
+                      }
+                    ]
+                  }
                 }
               }
             },
@@ -17652,18 +17664,6 @@
                     "description": "The list of allowed IP address ranges (Allowed internet address ranges can be provided using CIDR notation in the form 10.0.0.0/24 or as individual IP addresses like 10.0.0.4)",
                     "displayName": "Address Range"
                 }
-              },
-              "DenyNetAccessToDisksEffect": {
-                "type": "string",
-                "defaultValue": "modify",
-                "allowedValues": [
-                  "modify",
-                  "Disabled"
-                ],
-                "metadata": {
-                  "displayName": "Network Access to Managed Disks should be Denied",
-                  "description": "This policy denies network access to the managed disk"
-                }
               }
             },
             "PolicyDefinitionGroups": null,
@@ -17765,15 +17765,6 @@
                   },
                   "allowedAddressRanges": {
                     "value": "[[parameters('RestrictKVFWRulesAllowedRanges')]"
-                  }
-                }
-              },
-              {
-                "policyDefinitionId": "[concat(variables('scope'), '/providers/Microsoft.Authorization/policyDefinitions/Deny-Net-Access-Disks')]",
-                "policyDefinitionReferenceId": "DenyNetAccessToDisks",
-                "parameters": {
-                  "effect": {
-                    "value": "[[parameters('DenyNetAccessToDisksEffect')]"
                   }
                 }
               }
