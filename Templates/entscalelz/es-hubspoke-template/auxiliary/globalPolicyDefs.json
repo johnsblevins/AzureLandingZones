@@ -13,36 +13,30 @@
       "policyDefinitions": [
         {          
           "properties": {
-              "displayName": "Deny Network Access to Disks",
-              "policyType": "Custom",
-              "mode": "Indexed",
-              "metadata": {
-                "version": "1.0.0"
-              },
-              "parameters": {
-                "effect": {
-                  "type": "String",
-                  "metadata": {
-                    "displayName": "Effect",
-                    "description": "Enable or disable the execution of the policy"
-                  },
-                  "allowedValues": [
-                    "disabled",
-                    "modify"
-                  ],
-                  "defaultValue": "modify"
+            "displayName": "Deny Network Access to Disks",
+            "metadata": {
+              "category": "Storage"
+            },
+            "parameters": {
+              "effect": {
+                "type": "String",
+                "allowedValues": [
+                  "modify",
+                  "Disabled"
+                ],
+                "defaultValue": "modify",
+                "metadata": {
+                  "displayName": "Effect",
+                  "description": "Enable or disable the execution of the policy"
                 }
-              },
-              "policyRule": {
+              }
+            },
+            "policyRule": {
                 "if": {
-                  "anyOf": [
+                  "allOf": [
                     {
-                      "allOf": [
-                        {
-                          "field": "type",
-                          "equals": "Microsoft.Compute/disks"
-                        }
-                      ]
+                      "field": "type",
+                      "equals": "Microsoft.Compute/disks"
                     }
                   ]
                 },
@@ -62,7 +56,7 @@
                   }
                 }
               }
-            },            
+            },
             "name": "Deny-Net-Access-Disks"
         },
         {          
