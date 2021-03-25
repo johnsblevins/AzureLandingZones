@@ -1,0 +1,415 @@
+{
+    "kind": "template",
+    "properties": {
+        "template": {
+            "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+            "contentVersion": "1.0.0.0",
+            "parameters": {
+                "SandboxName": {
+                    "type": "string"
+                },
+                "vnet_address_space": {
+                    "type": "string"
+                },
+                "mgt_address_prefix": {
+                    "type": "string"
+                },
+                "web_address_prefix": {
+                    "type": "string"
+                },
+                "app_address_prefix": {
+                    "type": "string"
+                },
+                "data_address_prefix": {
+                    "type": "string"
+                },
+                "master_address_prefix": {
+                    "type": "string"
+                },
+                "worker_address_prefix": {
+                    "type": "string"
+                },
+                "azure_firewall_ip": {
+                    "type": "string"
+                },
+                "hubSubscriptionId": {
+                    "type": "string"
+                },
+                "hubResourceGroupName": {
+                    "type": "string"
+                },
+                "hubVnetName": {
+                    "type": "string"
+                },
+                "serverName": {
+                    "type": "string",
+                    "metadata": {
+                    "description": "Name for the Virtual Machine jump station."
+                    }
+                },
+                "adminUsername": {
+                    "type": "string",
+                    "metadata": {
+                    "description": "Username for the Virtual Machine."
+                    }
+                },
+                "adminPassword": {
+                    "type": "securestring",
+                    "minLength": 12,
+                    "metadata": {
+                    "description": "Password for the Virtual Machine."
+                    }
+                },
+                "OSVersion": {
+                    "type": "string",
+                    "defaultValue": "2019-Datacenter",
+                    "allowedValues": [
+                    "2008-R2-SP1",
+                    "2012-Datacenter",
+                    "2012-R2-Datacenter",
+                    "2016-Nano-Server",
+                    "2016-Datacenter-with-Containers",
+                    "2016-Datacenter",
+                    "2019-Datacenter",
+                    "2019-Datacenter-Core",
+                    "2019-Datacenter-Core-smalldisk",
+                    "2019-Datacenter-Core-with-Containers",
+                    "2019-Datacenter-Core-with-Containers-smalldisk",
+                    "2019-Datacenter-smalldisk",
+                    "2019-Datacenter-with-Containers",
+                    "2019-Datacenter-with-Containers-smalldisk"
+                    ],
+                    "metadata": {
+                    "description": "The Windows version for the VM. This will pick a fully patched image of this given Windows version."
+                    }
+                },
+                "vmSize": {
+                    "type": "string",
+                    "defaultValue": "Standard_D2_v3",
+                    "metadata": {
+                    "description": "Size of the virtual machine."
+                    }
+                }
+            },
+            "variables": {
+                "SandboxVnetName": "[concat(parameters('SandboxName'),'-vnet')]",
+                "SandboxVnettoHubVnetPeeringName": "[concat(variables('SandboxVnetName'),'-HubVnet')]",
+                "HubVnettoSandboxVnetPeeringName": "[concat('HubVnet-',variables('SandboxVnetName'))]",
+                "SandboxVnetSubId": "[subscription().subscriptionId]",
+                "SandboxVnetRG": "[resourceGroup().name]",
+                "subnetRef": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('SandboxVnetName'), 'mgt')]",
+                "nicName": "[concat(parameters('serverName'),'nic')]"
+            },
+            "resources": [
+                {
+                    "type": "Microsoft.Network/networkSecurityGroups",
+                    "name": "DefaultNSG",
+                    "apiVersion": "2018-08-01",
+                    "location": "[resourceGroup().location]",
+                    "scale": null,
+                    "properties": {
+                        "securityRules": [{
+                                "name": "Allow_Any",
+                                "properties": {
+                                    "description": "This is the first rule",
+                                    "protocol": "Tcp",
+                                    "sourcePortRange": "*",
+                                    "destinationPortRange": "*",
+                                    "sourceAddressPrefix": "*",
+                                    "destinationAddressPrefix": "*",
+                                    "access": "Allow",
+                                    "priority": 150,
+                                    "direction": "Inbound"
+                                }
+                            }
+                        ]
+                    }                    
+                },
+                {
+                    "name": "DefaultRouteTable",
+                    "type": "Microsoft.Network/routeTables",
+                    "apiVersion": "2020-06-01",
+                    "location": "[resourceGroup().location]",
+                    "tags": {},
+                    "properties": {
+                        "routes": [
+                            {
+                                "properties": {
+                                "addressPrefix": "0.0.0.0/0",
+                                "nextHopType": "VirtualAppliance",
+                                "nextHopIpAddress": "[parameters('azure_firewall_ip')]"
+                                },
+                                "name": "DefaultRoute"
+                            }
+                        ],
+                        "disableBgpRoutePropagation": "True"
+                    }
+                },                
+                {
+                    "apiVersion": "2017-08-01",
+                    "type": "Microsoft.Network/virtualNetworks",
+                    "name": "[variables('SandboxVnetName')]",
+                    "location": "[resourceGroup().location]",
+                    "dependsOn": ["DefaultNSG","DefaultRouteTable"],
+                    "properties": {
+                        "addressSpace": {
+                            "addressPrefixes": [
+                                "[parameters('vnet_address_space')]"
+                            ]
+                        },
+                        "subnets": [     
+                            {
+                                "name": "mgt",
+                                "properties": {
+                                    "addressPrefix": "[parameters('mgt_address_prefix')]",
+                                    "networkSecurityGroup": {
+                                        "id": "[resourceId('Microsoft.Network/networkSecurityGroups', 'DefaultNSG')]"
+                                    },
+                                    "routeTable": {
+                                        "id": "[resourceId('Microsoft.Network/routeTables', 'DefaultRouteTable')]"
+                                    }
+                                }
+                            },
+                            {
+                                "name": "web",
+                                "properties": {
+                                    "addressPrefix": "[parameters('web_address_prefix')]",
+                                    "networkSecurityGroup": {
+                                        "id": "[resourceId('Microsoft.Network/networkSecurityGroups', 'DefaultNSG')]"
+                                    },
+                                    "routeTable": {
+                                        "id": "[resourceId('Microsoft.Network/routeTables', 'DefaultRouteTable')]"
+                                    }
+                                }
+                            },                       
+                            {
+                                "name": "app",
+                                "properties": {
+                                    "addressPrefix": "[parameters('app_address_prefix')]",
+                                    "networkSecurityGroup": {
+                                        "id": "[resourceId('Microsoft.Network/networkSecurityGroups', 'DefaultNSG')]"
+                                    },
+                                    "routeTable": {
+                                        "id": "[resourceId('Microsoft.Network/routeTables', 'DefaultRouteTable')]"
+                                    }
+                                }
+                            },
+                            {
+                                "name": "data",
+                                "properties": {
+                                    "addressPrefix": "[parameters('data_address_prefix')]",
+                                    "networkSecurityGroup": {
+                                        "id": "[resourceId('Microsoft.Network/networkSecurityGroups', 'DefaultNSG')]"
+                                    },
+                                    "routeTable": {
+                                        "id": "[resourceId('Microsoft.Network/routeTables', 'DefaultRouteTable')]"
+                                    }
+                                }
+                            },
+                            {
+                                "name": "master",
+                                "properties": {
+                                    "addressPrefix": "[parameters('master_address_prefix')]",
+                                    "networkSecurityGroup": {
+                                        "id": "[resourceId('Microsoft.Network/networkSecurityGroups', 'DefaultNSG')]"
+                                    },
+                                    "routeTable": {
+                                        "id": "[resourceId('Microsoft.Network/routeTables', 'DefaultRouteTable')]"
+                                    }
+                                }
+                            },
+                            {
+                                "name": "worker",
+                                "properties": {
+                                    "addressPrefix": "[parameters('worker_address_prefix')]",
+                                    "networkSecurityGroup": {
+                                        "id": "[resourceId('Microsoft.Network/networkSecurityGroups', 'DefaultNSG')]"
+                                    },
+                                    "routeTable": {
+                                        "id": "[resourceId('Microsoft.Network/routeTables', 'DefaultRouteTable')]"
+                                    }
+                                }
+                            }
+                        ]
+                    },
+                    "resources":[
+                        {
+                            "apiVersion": "2020-05-01",
+                            "type": "virtualNetworkPeerings",
+                            "name": "[variables('SandboxVnettoHubVnetPeeringName')]",
+                            "location": "[resourceGroup().location]",
+                            "dependsOn": [
+                                "[concat('Microsoft.Network/virtualNetworks/', variables('SandboxVnetName'))]"
+                            ],
+                            "comments": "This is the peering from SandboxVnet to HubVnet",
+                            "properties": {
+                                "allowVirtualNetworkAccess": "true",
+                                "allowForwardedTraffic": "false",
+                                "allowGatewayTransit": "false",
+                                "useRemoteGateways": "false",
+                                "remoteVirtualNetwork": {
+                                    "id": "[resourceId(parameters('hubSubscriptionId'), parameters('hubResourceGroupName'), 'Microsoft.Network/virtualNetworks', parameters('hubvNetName'))]"
+                                }
+                            }
+                        }
+                    ]
+                },
+                {
+                    "type": "Microsoft.Resources/deployments",
+                    "apiVersion": "2020-06-01",
+                    "name": "nestedDeployment",
+                    "subscriptionId": "[parameters('hubSubscriptionId')]",
+                    "resourceGroup": "[parameters('hubResourceGroupName')]",
+                    "dependsOn": ["[concat('Microsoft.Network/virtualNetworks/', variables('SandboxVnetName'))]"],
+                    "properties": {
+                        "mode": "Incremental",
+                        "template": {
+                            "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                            "contentVersion": "1.0.0.0",                        
+                            "resources": [
+                                {
+                                    "apiVersion": "2020-05-01",
+                                    "type": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings",
+                                    "name": "[concat(parameters('hubvNetName'),'/',variables('HubVnettoSandboxVnetPeeringName'))]",
+                                    "location": "[resourceGroup().location]",
+                                    "dependsOn": [
+                                    ],
+                                    "comments": "This is the peering from HubVnet to SandboxVnet",
+                                    "properties": {
+                                        "allowVirtualNetworkAccess": "true",
+                                        "allowForwardedTraffic": "false",
+                                        "allowGatewayTransit": "false",
+                                        "useRemoteGateways": "false",
+                                        "remoteVirtualNetwork": {
+                                            "id": "[resourceId(variables('SandboxVnetSubId'), variables('SandboxVnetRG'), 'Microsoft.Network/virtualNetworks', variables('SandboxVnetName'))]"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                },
+                {
+                    "type": "Microsoft.Network/networkInterfaces",
+                    "apiVersion": "2020-06-01",
+                    "name": "[variables('nicName')]",
+                    "location": "[resourceGroup().location]",
+                    "dependsOn": ["nestedDeployment"],
+                    "properties": {
+                        "ipConfigurations": [
+                            {
+                            "name": "ipconfig1",
+                                "properties": {
+                                    "privateIPAllocationMethod": "Dynamic",
+                                    "subnet": {
+                                        "id": "[variables('subnetRef')]"
+                                    }
+                                }
+                            }
+                        ]
+                    }
+                },
+                {
+                    "type": "Microsoft.Compute/virtualMachines",
+                    "apiVersion": "2020-06-01",
+                    "name": "[parameters('serverName')]",
+                    "location": "[resourceGroup().location]",
+                    "dependsOn": ["[variables('nicName')]"],
+                    "properties": {
+                        "hardwareProfile": {
+                            "vmSize": "[parameters('vmSize')]"
+                        },
+                        "osProfile": {
+                            "computerName": "[parameters('serverName')]",
+                            "adminUsername": "[parameters('adminUsername')]",
+                            "adminPassword": "[parameters('adminPassword')]"
+                        },
+                        "storageProfile": {
+                            "imageReference": {
+                            "publisher": "MicrosoftWindowsServer",
+                            "offer": "WindowsServer",
+                            "sku": "[parameters('OSVersion')]",
+                            "version": "latest"
+                            },
+                            "osDisk": {
+                                "createOption": "FromImage",
+                                "managedDisk": {
+                                    "storageAccountType": "StandardSSD_LRS"
+                                }
+                            },
+                            "dataDisks": [
+                                {
+                                    "diskSizeGB": 1023,
+                                    "lun": 0,
+                                    "createOption": "Empty"
+                                }
+                            ]
+                        },
+                        "networkProfile": {
+                            "networkInterfaces": [
+                            {
+                                "id": "[resourceId('Microsoft.Network/networkInterfaces', variables('nicName'))]"
+                            }
+                            ]
+                        },
+                        "diagnosticsProfile": {
+                            "bootDiagnostics": {
+                            "enabled": false
+                            }
+                        }
+                    }
+                }              
+            ]
+        },
+        "resourceGroup": "SandboxNetworkRG",
+        "parameters": {
+            "SandboxName": {
+                "value": "[parameters('SandboxName')]"
+            },
+            "vnet_address_space": {
+                "value": "[parameters('vnet_address_space')]"
+            },
+            "mgt_address_prefix": {
+                "value": "[parameters('mgt_address_prefix')]"
+            },
+            "web_address_prefix": {
+                "value": "[parameters('web_address_prefix')]"
+            },
+            "app_address_prefix": {
+                "value": "[parameters('app_address_prefix')]"
+            },
+            "data_address_prefix": {
+                "value": "[parameters('data_address_prefix')]"
+            },
+            "master_address_prefix": {
+                "value": "[parameters('master_address_prefix')]"
+            },
+            "worker_address_prefix": {
+                "value": "[parameters('worker_address_prefix')]"
+            },
+            "azure_firewall_ip": {
+                "value": "[parameters('azure_firewall_ip')]"
+            },
+            "hubSubscriptionId": {
+                "value": "[parameters('hubSubscriptionId')]"
+            },
+            "hubResourceGroupName": {
+                "value": "[parameters('hubResourceGroupName')]"
+            },
+            "hubVnetName": {
+                "value": "[parameters('hubVnetName')]"
+            },
+            "serverName": {
+                "value": "[parameters('serverName')]"
+            },
+            "adminUsername": {
+                "value": "[parameters('adminUsername')]"
+            },
+            "adminPassword": {
+                "value": "[parameters('adminPassword')]"
+            }
+        },
+        "dependsOn": []
+    },
+    "type": "Microsoft.Blueprint/blueprints/artifacts"
+}

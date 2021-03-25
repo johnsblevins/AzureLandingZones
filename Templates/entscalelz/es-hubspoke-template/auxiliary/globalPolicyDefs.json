@@ -178,20 +178,20 @@
             "displayName": "Enforce route table on all subnets",
             "mode": "All",            
             "parameters": {
-              "routeTableResourceGroup": {
+              "routeTableResourceGroupSuffix": {
                 "type": "string",
-                "defaultValue": "Locked",
+                "defaultValue": "-lockedRG",
                 "metadata": {
-                    "displayName": "Route Table Resource Group",
+                    "displayName": "Route Table Resource Group Suffix (ex. -lockedRG where expected full name will be <Sub Name>-lockedRG)",
                     "description": "Resource Group in which Route Table Resource is located"
                 }
               },
               "routeTableName": {
                 "type": "string",
-                "defaultValue": "RouteTable",
+                "defaultValue": "-lockedRT",
                 "metadata": {
-                    "displayName": "Route Table Name",
-                    "description": "Route Table Resource name"
+                    "displayName": "Route Table Name Resource Name Suffix (ex. -lockedRT where expected full name will be <Sub Name>-lockedRT)",
+                    "description": "Route Table Resource Name Suffix"
                 }
               }
             },
@@ -211,7 +211,7 @@
                       {
                         "not": {
                           "field": "Microsoft.Network/virtualNetworks/subnets[*].routeTable.id",
-                          "equals": "[[concat('/subscriptions/',subscription().subscriptionId,'/resourceGroups/', parameters('routeTableResourceGroup'), '/providers/Microsoft.Network/routeTables/', parameters('routeTableName'))]"
+                          "equals": "[[concat('/subscriptions/',subscription().subscriptionId,'/resourceGroups/', subscription().displayName,parameters('routeTableResourceGroup'), '/providers/Microsoft.Network/routeTables/', subscription().displayName,parameters('routeTableName'))]"
                         }
                       }
                     ]
@@ -225,7 +225,7 @@
                       {
                         "not": {
                           "field": "Microsoft.Network/virtualNetworks/subnets/routeTable.id",
-                          "equals": "[[concat('/subscriptions/',subscription().subscriptionId,'/resourceGroups/', parameters('routeTableResourceGroup'), '/providers/Microsoft.Network/routeTables/', parameters('routeTableName'))]"
+                          "equals": "[[concat('/subscriptions/',subscription().subscriptionId,'/resourceGroups/', subscription().displayName, parameters('routeTableResourceGroup'), '/providers/Microsoft.Network/routeTables/', subscription().displayName, parameters('routeTableName'))]"
                         }
                       }
                     ]

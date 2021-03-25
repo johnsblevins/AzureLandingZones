@@ -1,0 +1,52 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-08-01/managementGroupDeploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "workload": {
+            "type": "string",
+            "allowedValues": [
+                "Production",
+                "DevTest"
+            ],
+            "defaultValue": "Production"
+        },
+        "subscriptionName": {
+            "type": "string",
+            "defaultValue": "DoNotUse16"
+        },
+        "managementGroupName": {
+            "type": "string",
+            "defaultValue":"JSBLZ-PLATFORM"
+        },
+        "billingScope": {
+            "type": "string",
+            "metadata": {
+                "description": "Billing scope in the following format /providers/Microsoft.Billing/BillingAccounts/<billing account #>/enrollmentAccounts/<enrollment account #>"
+            },
+            "defaultValue":"/providers/Microsoft.Billing/billingAccounts/7403236/enrollmentAccounts/280331"
+        },
+        "resellerId": {
+            "type": "string",
+            "defaultValue": "123456"
+        }
+    },
+    "variables": {
+    },
+    "resources": [
+        {
+            "scope": "/",
+            "name": "[parameters('subscriptionName')]",
+            "type": "Microsoft.Subscription/aliases",
+            "apiVersion": "2020-09-01",
+            "properties": {
+                "workLoad": "[parameters('workload')]",
+                "displayName": "[parameters('subscriptionName')]",
+                "billingScope": "[parameters('billingScope')]",
+                "managementGroupId": "[tenantResourceId('Microsoft.Management/managementGroups/', parameters('managementGroupName'))]",
+                "resellerId" : "[parameters('resellerId')]"
+            }
+        }
+    ],
+    "outputs": {
+    }
+}
