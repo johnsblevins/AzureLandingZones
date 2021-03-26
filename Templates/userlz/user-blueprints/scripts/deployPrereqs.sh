@@ -17,9 +17,7 @@ enrAcctName=$(az billing enrollment-account list --query "[0].name" --output tsv
 az role assignment create --assignee $grpObjId --role "Owner" --scope $enrAcctID
 
 # Find Default Management Group for Subscription Creation
-rootMG=$(az account management-group list --query "[?displayName=='Root Management Group'].name" --output tsv)
-defaultMGName=$(az rest --method get --url "https://management.usgovcloudapi.net/providers/Microsoft.Management/managementGroups/$rootMG/settings/default?api-version=2020-05-01" --query properties.defaultManagementGroup --output tsv)
-defaultMG=$(az account management-group list --query $"[?displayName=='"$defaultMGName"'].id" --output tsv)
+rootMG=$(az account management-group list --query "[?displayName=='Root Management Group'].id" --output tsv)
 
 # Assign Group "Management Group Contributor" role to default Management Group
-az role assignment create --role "Management Group Contributor" --scope "$defaultMG" --assignee $grpObjId
+az role assignment create --role "Management Group Contributor" --scope "$rootMG" --assignee $grpObjId
