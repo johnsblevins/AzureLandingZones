@@ -9,13 +9,55 @@ The orginal source for this solution can be found on GitHub at https://github.co
 
 # Deployment Instructions
 
-1. Create an App Registration and Service Princpal to use for Deploying the Enterprise Scale Landing Zone
+1. Login to the Azure Portal with an account that is both an Azure Active Directory Global Administrator and EA Enrollment Account Owner.  In the Azure Active Directory blade select properties and then "Yes" for the option to enable "Access management for Azure resources", then click Save.
 
-This can be done in the Azure Portal by creating a new App Registration in the Azure Active Directory blade.  When creating the app registration this way and service principal is created automatically for you (see Enterprise Applications).
+![](media/aad_props.png)
 
-You can create these programatically using Power Shell or Azure CLI
+2. Launch a cloud shell in the Azure Portal and run the following script:
 
-2. Assign Owner Rights to the Service Principal or alternatively to a group in which the service principal is a member.
+```
+# Create Azure-Platform-Owners Azure AD Group
+platOwnerGrp=$(az ad group create --display-name Azure-Platform-Owners --mail-nickname Azure-Platform-Owners --description "Members can Create EA Subs in the Default Management Group" --query objectId --output tsv)
+
+# Create Azure-EA-Subscription-Creators Azure AD Group
+subCreatorGrp=$(az ad group create --display-name Azure-EA-Subscription-Creators --mail-nickname Azure-EA-Subscription-Creators --description "Members can Create EA Subs in the Default Management Group" --query objectId --output tsv)
+
+# Create Azure AD App Registration and Service Principal
+appId=$(az ad app create --display-name "Azure-ENTLZ-Deployer" --query appId --output tsv)
+az ad sp create --id $appId
+objId=$(az ad sp show --id $appId --query objectId --output tsv)
+
+# Add Service Principal to Groups
+az ad group member add --group $platOwnerGrp --member-id $objId
+az ad group member add --group $subCreatorGrp --member-id $objId
+
+# Assign Azure-Platform-Owners Group Owner role to Tenant Root Group Scope
+az role assignment create --role "Owner" --scope / --assignee $platOwnerGrp
+
+# Get Enrollment Account ID and Name
+enrAcctID=$(az billing enrollment-account list --query "[0].id" --output tsv) # /providers/Microsoft.Billing/enrollmentAccounts/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
+enrAcctName=$(az billing enrollment-account list --query "[0].name" --output tsv) # xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
+
+# Assign Azure-EA-Subscription-Creators Group Owner Role to Enrollment Account Scope
+az role assignment create --assignee $subCreatorGrp --role "Owner" --scope $enrAcctID
+```
+This step will create an app registration called "azure-entlz-deployer".  You'll need to manually generate a client secret and note the Tenant ID and App ID. 
+
+3. Update CICD Pipeline Service Account to use the "azure-entlz-deployer" credential from the prior step.
+
+4. Create Four Subscriptions for the following Functions
+
+* Management
+* Security
+* Connectivity
+* Identity
+
+5. Update CICD Pipeline Variables Specific to the Environment
+
+6. Deploy Pipeline
+
+
+
 ```
 Get-AzRoleAssignment | where {$_.Scope -eq "/"}
 New-AzRoleAssignment -ObjectId <user/group object id> -Scope "/" -RoleDefinitionName Owner

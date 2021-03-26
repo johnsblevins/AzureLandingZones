@@ -1,0 +1,61 @@
+ENTLZ_AZURE_ENVIRONMENT
+azureusgovernment
+
+ENTLZ_AZURE_GOV_CREDENTIALS
+{
+    "clientId": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
+    "clientSecret": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+    "subscriptionId": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
+    "tenantId": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+}
+
+ENTLZ_CONNECTIVITY_SUB_ID 
+xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
+
+ENTLZ_DNS_SERVERS 
+['x.x.x.x','y.y.y.y','z.z.z.z']
+
+ENTLZ_ENTERPRISE_SCALE_COMPANY_PREFIX 
+ABCLZ (max 5 chars)
+
+ENTLZ_HUB_VNET_ADDRESS_PREFIX 
+x.x.x.x/xx
+
+ENTLZ_IDENTITY_SUB_ID 
+xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
+
+ENTLZ_IDENTITY_VNET_ADDRESS_PREFIX 
+x.x.x.x/xx
+
+ENTLZ_LOCATION 
+usgovvirginia
+
+ENTLZ_MANAGEMENT_SUB_ID 
+xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
+
+ENTLZ_MANAGEMENT_VNET_ADDRESS_PREFIX 
+x.x.x.x/xx
+
+ENTLZ_SECURITY_SUB_ID 
+xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
+
+ENTLZ_SECURITY_VNET_ADDRESS_PREFIX 
+x.x.x.x/xx
+
+ENTLZ_SUBNET_MASK_FOR_AZ_FIREWALL 
+x.x.x.x/xx
+
+ENTLZ_SUBNET_MASK_FOR_BASTION 
+x.x.x.x/xx
+
+ENTLZ_SUBNET_MASK_FOR_GW 
+x.x.x.x/xx
+
+ENTLZ_SUBNET_MASK_FOR_IDENTITY 
+x.x.x.x/xx
+
+ENTLZ_SUBNET_MASK_FOR_MANAGEMENT 
+x.x.x.x/xx
+
+ENTLZ_SUBNET_MASK_FOR_SECURITY 
+x.x.x.x/xx

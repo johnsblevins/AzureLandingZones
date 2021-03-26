@@ -18,60 +18,60 @@ jobs:
             environment: ${{ secrets.ENTLZ_AZURE_ENVIRONMENT }}
             enable-AzPSSession: false
 
-#        - name: Management Group Deployment
-#          uses: azure/CLI@v1
-#          with:
-#            azcliversion: 2.21.0
-#            inlineScript: |
-#                # Management Group Deployment
-#                az deployment tenant create --name "EntScale-Mgs-${{ secrets.ENTLZ_LOCATION }}" --location ${{ secrets.ENTLZ_LOCATION }} \
-#                --template-file Templates/entlz/es-hubspoke/auxiliary/mgmtGroups.json --parameters \
-#                topLevelManagementGroupPrefix=${{ secrets.ENTLZ_ENTERPRISE_SCALE_COMPANY_PREFIX }}
+        - name: Management Group Deployment
+          uses: azure/CLI@v1
+          with:
+            azcliversion: 2.21.0
+            inlineScript: |
+                # Management Group Deployment
+                az deployment tenant create --name "EntScale-Mgs-${{ secrets.ENTLZ_LOCATION }}" --location ${{ secrets.ENTLZ_LOCATION }} \
+                --template-file Templates/entlz/es-hubspoke/auxiliary/mgmtGroups.json --parameters \
+                topLevelManagementGroupPrefix=${{ secrets.ENTLZ_ENTERPRISE_SCALE_COMPANY_PREFIX }}
 
-#        - name: Global Policy Definitions Deployment 
-#          uses: azure/CLI@v1
-#          with:
-#            azcliversion: 2.21.0
-#            inlineScript: |
-#                # Global Policy Definitions Deployment
-#                az deployment mg create --name "EntScale-Policy-${{ secrets.ENTLZ_LOCATION }}" --location ${{ secrets.ENTLZ_LOCATION }} \
-#                --management-group-id ${{ secrets.ENTLZ_ENTERPRISE_SCALE_COMPANY_PREFIX }} \
-#                --template-file Templates/entlz/es-hubspoke/auxiliary/globalPolicyDefs.json \
-#                --parameters topLevelManagementGroupPrefix=${{ secrets.ENTLZ_ENTERPRISE_SCALE_COMPANY_PREFIX }}
-#
-#                # Delay 300
-#                sleep 300
+        - name: Global Policy Definitions Deployment 
+          uses: azure/CLI@v1
+          with:
+            azcliversion: 2.21.0
+            inlineScript: |
+                # Global Policy Definitions Deployment
+                az deployment mg create --name "EntScale-Policy-${{ secrets.ENTLZ_LOCATION }}" --location ${{ secrets.ENTLZ_LOCATION }} \
+                --management-group-id ${{ secrets.ENTLZ_ENTERPRISE_SCALE_COMPANY_PREFIX }} \
+                --template-file Templates/entlz/es-hubspoke/auxiliary/globalPolicyDefs.json \
+                --parameters topLevelManagementGroupPrefix=${{ secrets.ENTLZ_ENTERPRISE_SCALE_COMPANY_PREFIX }}
 
-#        - name: Move Subs
-#          uses: azure/CLI@v1
-#          with:
-#            azcliversion: 2.21.0
-#            inlineScript: |
-#                # Move Management Sub
-#                az account management-group subscription add --name "${{ secrets.ENTLZ_ENTERPRISE_SCALE_COMPANY_PREFIX }}-management" \
-#                --subscription ${{ secrets.ENTLZ_MANAGEMENT_SUB_ID }}
-#
-#                # Move Identity Sub
-#                az account management-group subscription add --name "${{ secrets.ENTLZ_ENTERPRISE_SCALE_COMPANY_PREFIX }}-identity" \
-#                --subscription ${{ secrets.ENTLZ_IDENTITY_SUB_ID }}
-#                
-#                # Move Security Sub
-#                az account management-group subscription add --name "${{ secrets.ENTLZ_ENTERPRISE_SCALE_COMPANY_PREFIX }}-security" \
-#                --subscription ${{ secrets.ENTLZ_SECURITY_SUB_ID }}
-#
-#                # Move Connectivity Sub
-#                az account management-group subscription add --name "${{ secrets.ENTLZ_ENTERPRISE_SCALE_COMPANY_PREFIX }}-connectivity" \
-#                --subscription ${{ secrets.ENTLZ_CONNECTIVITY_SUB_ID }}
+                # Delay 300
+                sleep 300
 
-#        - name: Set Management Group Hierarchy Settings
-#          uses: azure/CLI@v1
-#          with:
-#            azcliversion: 2.21.0
-#            inlineScript: |
-#                TenantRootMG=$(az account management-group list --query "[0].name" --output tsv)
-#                resourceManagerURI=$(az cloud show --query 'endpoints.resourceManager' -o tsv)
-#                az rest --method put --headers "{\"Content-Type\":\"application/json\"}" --uri "${resourceManagerURI}providers/Microsoft.Management/managementGroups/$TenantRootMG/settings/default?api-version=2020-05-01" --body "{\"properties\": {\"defaultManagementGroup\": \"/providers/Microsoft.Management/managementGroups/${{ secrets.ENTLZ_ENTERPRISE_SCALE_COMPANY_PREFIX }}-onboarding\",\"requireAuthorizationForGroupCreation\": \"true\"}}" 
-#        
+        - name: Move Subs
+          uses: azure/CLI@v1
+          with:
+            azcliversion: 2.21.0
+            inlineScript: |
+                # Move Management Sub
+                az account management-group subscription add --name "${{ secrets.ENTLZ_ENTERPRISE_SCALE_COMPANY_PREFIX }}-management" \
+                --subscription ${{ secrets.ENTLZ_MANAGEMENT_SUB_ID }}
+
+                # Move Identity Sub
+                az account management-group subscription add --name "${{ secrets.ENTLZ_ENTERPRISE_SCALE_COMPANY_PREFIX }}-identity" \
+                --subscription ${{ secrets.ENTLZ_IDENTITY_SUB_ID }}
+                
+                # Move Security Sub
+                az account management-group subscription add --name "${{ secrets.ENTLZ_ENTERPRISE_SCALE_COMPANY_PREFIX }}-security" \
+                --subscription ${{ secrets.ENTLZ_SECURITY_SUB_ID }}
+
+                # Move Connectivity Sub
+                az account management-group subscription add --name "${{ secrets.ENTLZ_ENTERPRISE_SCALE_COMPANY_PREFIX }}-connectivity" \
+                --subscription ${{ secrets.ENTLZ_CONNECTIVITY_SUB_ID }}
+
+        - name: Set Management Group Hierarchy Settings
+          uses: azure/CLI@v1
+          with:
+            azcliversion: 2.21.0
+            inlineScript: |
+                TenantRootMG=$(az account management-group list --query "[0].name" --output tsv)
+                resourceManagerURI=$(az cloud show --query 'endpoints.resourceManager' -o tsv)
+                az rest --method put --headers "{\"Content-Type\":\"application/json\"}" --uri "${resourceManagerURI}providers/Microsoft.Management/managementGroups/$TenantRootMG/settings/default?api-version=2020-05-01" --body "{\"properties\": {\"defaultManagementGroup\": \"/providers/Microsoft.Management/managementGroups/${{ secrets.ENTLZ_ENTERPRISE_SCALE_COMPANY_PREFIX }}-onboarding\",\"requireAuthorizationForGroupCreation\": \"true\"}}" 
+        
         - name: Connectivity MG Deployment
           uses: azure/CLI@v1
           with:
@@ -85,55 +85,55 @@ jobs:
                 addressPrefix=${{ secrets.ENTLZ_HUB_VNET_ADDRESS_PREFIX }} enableHub=Yes enableAzFw=No enableVpnGw=No enableErGw=No enableAzBastion=No \
                 connectivitySubscriptionId=${{ secrets.ENTLZ_CONNECTIVITY_SUB_ID }} subnetMaskForAzFw=${{ secrets.ENTLZ_SUBNET_MASK_FOR_AZ_FIREWALL }} \
                 subnetMaskForGw=${{ secrets.ENTLZ_SUBNET_MASK_FOR_GW }} subnetMaskForAzBastion=${{ secrets.ENTLZ_SUBNET_MASK_FOR_BASTION }} dnsServers="${{ secrets.ENTLZ_DNS_SERVERS }}"
-#
-#        - name: Management MG Deployment
-#          uses: azure/CLI@v1
-#          with:
-#            azcliversion: 2.21.0
-#            inlineScript: |
-#                # Management MG Deployment
-#                az deployment mg create --name "EntScale-Monitoring-${{ secrets.ENTLZ_LOCATION }}" --location ${{ secrets.ENTLZ_LOCATION }} \
-#                --management-group-id "${{ secrets.ENTLZ_ENTERPRISE_SCALE_COMPANY_PREFIX }}-management" \
-#                --template-file Templates/entlz/es-hubspoke/auxiliary/mgmtMG.json --parameters \
-#                topLevelManagementGroupPrefix=${{ secrets.ENTLZ_ENTERPRISE_SCALE_COMPANY_PREFIX }} managementSubscriptionId=${{ secrets.ENTLZ_MANAGEMENT_SUB_ID }} \
-#                enableLogAnalytics=Yes retentionInDays=90 
-#        
-#        - name: Identity MG Deployment
-#          uses: azure/CLI@v1
-#          with:
-#            azcliversion: 2.21.0
-#            inlineScript: |
-#                # Identity MG Deployment
-#                az deployment mg create --name "EntScale-ID-${{ secrets.ENTLZ_LOCATION }}" --location ${{ secrets.ENTLZ_LOCATION }} \
-#                --management-group-id "${{ secrets.ENTLZ_ENTERPRISE_SCALE_COMPANY_PREFIX }}-identity" \
-#                --template-file Templates/entlz/es-hubspoke/auxiliary/identityMG.json \
-#                --parameters topLevelManagementGroupPrefix=${{ secrets.ENTLZ_ENTERPRISE_SCALE_COMPANY_PREFIX }} \
-#                denyRdpForIdentity=Yes denySubnetWithoutNsgForIdentity=Yes \
-#                denyPipForIdentity=Yes enableVmBackupForIdentity=Yes
-#        
-#        - name: Landing Zones MG Deployment
-#          uses: azure/CLI@v1
-#          with:
-#            azcliversion: 2.21.0
-#            inlineScript: |
-#                # Landing Zones MG Deployment
-#                az deployment mg create --name "EntScale-LZ-${{ secrets.ENTLZ_LOCATION }}" --location ${{ secrets.ENTLZ_LOCATION }} \
-#                --management-group-id "${{ secrets.ENTLZ_ENTERPRISE_SCALE_COMPANY_PREFIX }}-landingzones" \
-#                --template-file Templates/entlz/es-hubspoke/auxiliary/landingzonesMG.json \
-#                --parameters topLevelManagementGroupPrefix=${{ secrets.ENTLZ_ENTERPRISE_SCALE_COMPANY_PREFIX }} enableSqlAudit=Yes denyAksPrivileged=Yes \
-#                denyAksPrivilegedEscalation=Yes denyHttpIngressForAks=Yes enableSqlEncryption=Yes enableVmBackup=Yes denyRdp=Yes enableStorageHttps=Yes \
-#                denyIpForwarding=Yes denySubnetWithoutNsg=Yes
-#
-#        - name: Internal Landing Zone MG Deployment
-#          uses: azure/CLI@v1
-#          with:
-#            azcliversion: 2.21.0
-#            inlineScript: |
-#                # Internal Landing Zone MG Deployment
-#                az deployment mg create --name "EntScale-Internal-${{ secrets.ENTLZ_LOCATION }}" --location ${{ secrets.ENTLZ_LOCATION }} \
-#                --management-group-id "${{ secrets.ENTLZ_ENTERPRISE_SCALE_COMPANY_PREFIX }}-internal" \
-#                --template-file Templates/entlz/es-hubspoke/auxiliary/internalMG.json \
-#                --parameters topLevelManagementGroupPrefix=${{ secrets.ENTLZ_ENTERPRISE_SCALE_COMPANY_PREFIX }}
+
+        - name: Management MG Deployment
+          uses: azure/CLI@v1
+          with:
+            azcliversion: 2.21.0
+            inlineScript: |
+                # Management MG Deployment
+                az deployment mg create --name "EntScale-Monitoring-${{ secrets.ENTLZ_LOCATION }}" --location ${{ secrets.ENTLZ_LOCATION }} \
+                --management-group-id "${{ secrets.ENTLZ_ENTERPRISE_SCALE_COMPANY_PREFIX }}-management" \
+                --template-file Templates/entlz/es-hubspoke/auxiliary/mgmtMG.json --parameters \
+                topLevelManagementGroupPrefix=${{ secrets.ENTLZ_ENTERPRISE_SCALE_COMPANY_PREFIX }} managementSubscriptionId=${{ secrets.ENTLZ_MANAGEMENT_SUB_ID }} \
+                enableLogAnalytics=Yes retentionInDays=90 
+        
+        - name: Identity MG Deployment
+          uses: azure/CLI@v1
+          with:
+            azcliversion: 2.21.0
+            inlineScript: |
+                # Identity MG Deployment
+                az deployment mg create --name "EntScale-ID-${{ secrets.ENTLZ_LOCATION }}" --location ${{ secrets.ENTLZ_LOCATION }} \
+                --management-group-id "${{ secrets.ENTLZ_ENTERPRISE_SCALE_COMPANY_PREFIX }}-identity" \
+                --template-file Templates/entlz/es-hubspoke/auxiliary/identityMG.json \
+                --parameters topLevelManagementGroupPrefix=${{ secrets.ENTLZ_ENTERPRISE_SCALE_COMPANY_PREFIX }} \
+                denyRdpForIdentity=Yes denySubnetWithoutNsgForIdentity=Yes \
+                denyPipForIdentity=Yes enableVmBackupForIdentity=Yes
+        
+        - name: Landing Zones MG Deployment
+          uses: azure/CLI@v1
+          with:
+            azcliversion: 2.21.0
+            inlineScript: |
+                # Landing Zones MG Deployment
+                az deployment mg create --name "EntScale-LZ-${{ secrets.ENTLZ_LOCATION }}" --location ${{ secrets.ENTLZ_LOCATION }} \
+                --management-group-id "${{ secrets.ENTLZ_ENTERPRISE_SCALE_COMPANY_PREFIX }}-landingzones" \
+                --template-file Templates/entlz/es-hubspoke/auxiliary/landingzonesMG.json \
+                --parameters topLevelManagementGroupPrefix=${{ secrets.ENTLZ_ENTERPRISE_SCALE_COMPANY_PREFIX }} enableSqlAudit=Yes denyAksPrivileged=Yes \
+                denyAksPrivilegedEscalation=Yes denyHttpIngressForAks=Yes enableSqlEncryption=Yes enableVmBackup=Yes denyRdp=Yes enableStorageHttps=Yes \
+                denyIpForwarding=Yes denySubnetWithoutNsg=Yes
+
+        - name: Internal Landing Zone MG Deployment
+          uses: azure/CLI@v1
+          with:
+            azcliversion: 2.21.0
+            inlineScript: |
+                # Internal Landing Zone MG Deployment
+                az deployment mg create --name "EntScale-Internal-${{ secrets.ENTLZ_LOCATION }}" --location ${{ secrets.ENTLZ_LOCATION }} \
+                --management-group-id "${{ secrets.ENTLZ_ENTERPRISE_SCALE_COMPANY_PREFIX }}-internal" \
+                --template-file Templates/entlz/es-hubspoke/auxiliary/internalMG.json \
+                --parameters topLevelManagementGroupPrefix=${{ secrets.ENTLZ_ENTERPRISE_SCALE_COMPANY_PREFIX }}
          
         - name: Management Sub Deployment
           uses: azure/CLI@v1
@@ -187,32 +187,3 @@ jobs:
                 enableLogAnalytics=Yes enableAsc=Yes enableAscForServers=Standard enableAscForStorage=Standard enableAscForSql=Standard enableAscForKubernetes=Standard \
                 enableAscForRegistries=Standard enableVmMonitoring=Yes enableVmssMonitoring=Yes identitySubscriptionId=${{ secrets.ENTLZ_IDENTITY_SUB_ID }} \
                 connectivitySubscriptionId=${{ secrets.ENTLZ_CONNECTIVITY_SUB_ID }}
-        
-        - name: Generate Group and Service Pricipal with Permission to Create EA Subs
-          uses: azure/CLI@v1
-          with:
-            azcliversion: 2.21.0
-            inlineScript: | 
-              # Create Azure AD Group
-              grpObjId=$(az ad group create --display-name Azure-EA-Subscription-Creators --mail-nickname Azure-EA-Subscription-Creators --description "Members can Create EA Subs in the Default Management Group" --query objectId --output tsv)
-
-              # Create Azure AD App Registration and Service Principal
-              appId=$(az ad app create --display-name "SPN-EA-Subscription-Creator" --query appId --output tsv)
-              az ad sp create --id $appId
-              objId=$(az ad sp show --id $appId --query objectId --output tsv)
-
-              # Add Service Principal to Group
-              az ad group member add --group $grpObjId --member-id $objId
-
-              # Get Enrollment Account ID and Name
-              enrAcctID=$(az billing enrollment-account list --query "[0].id" --output tsv) # /providers/Microsoft.Billing/enrollmentAccounts/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
-              enrAcctName=$(az billing enrollment-account list --query "[0].name" --output tsv) # xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
-
-              # Assign Group Owner Role to Enrollment Account
-              az role assignment create --assignee $grpObjId --role "Owner" --scope $enrAcctID
-
-              # Find Default Management Group for Subscription Creation
-              rootMG=$(az account management-group list --query "[?displayName=='Root Management Group'].id" --output tsv)
-
-              # Assign Group "Management Group Contributor" role to default Management Group
-              az role assignment create --role "Management Group Contributor" --scope "$rootMG" --assignee $grpObjId

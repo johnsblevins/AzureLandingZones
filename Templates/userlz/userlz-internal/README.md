@@ -33,7 +33,7 @@ The following script demonstrates how to create a Service Prinicipal, add it to 
 grpObjId=$(az ad group create --display-name Azure-EA-Subscription-Creators --mail-nickname Azure-EA-Subscription-Creators --description "Members can Create EA Subs in the Default Management Group" --query objectId --output tsv)
 
 # Create Azure AD App Registration and Service Principal
-appId=$(az ad app create --display-name "SPN-EA-Subscription-Creator" --query appId --output tsv)
+appId=$(az ad app create --display-name "Azure-EA-Subscription-Deployer" --query appId --output tsv)
 az ad sp create --id $appId
 objId=$(az ad sp show --id $appId --query objectId --output tsv)
 
