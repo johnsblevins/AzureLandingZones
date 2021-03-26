@@ -29,10 +29,12 @@ jobs:
               echo $subName
               echo $resourceManagerURI              
               echo $deploymentUser
-              az rest --method post \
-              --uri "${resourceManagerURI}providers/Microsoft.Billing/enrollmentAccounts/b5f3295f-c2be-4afb-8880-5c0ce9be2db3/providers/Microsoft.Subscription/createSubscription?api-version=2019-10-01-preview" \
-              --headers "{\"content-type\":\"application/json\"}" \
-              --body "{\"displayName\": \"${subName}\", \"offerType\": \"MS-AZR-USGOV-0017P\", \"owners\": [{\"objectId\": \"${deploymentUser}\"}]}"
+#              az rest --method post \
+#              --uri "https://management.usgovcloudapi.net/providers/Microsoft.Billing/enrollmentAccounts/b5f3295f-c2be-4afb-8880-5c0ce9be2db3/providers/Microsoft.Subscription/createSubscription?api-version=2019-10-01-preview" \
+#              --headers "{\"content-type\":\"application/json\"}" \
+#              --body "{\"displayName\": \"int-pr-prog2\", \"offerType\": \"MS-AZR-USGOV-0017P\", \"owners\": [{\"objectId\": \"d5689087-861c-4f45-a487-667629fc1323\"}]}"
+
+
 
 #              az rest --method post \
 #              --uri "${resourceManagerURI}providers/Microsoft.Billing/enrollmentAccounts/${{ secrets.USERLZ_ENROLLMENT_ACCOUNT_NAME }}/providers/Microsoft.Subscription/createSubscription?api-version=2019-10-01-preview" \
