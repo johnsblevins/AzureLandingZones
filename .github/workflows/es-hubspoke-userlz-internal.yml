@@ -26,9 +26,9 @@ jobs:
               resourceManagerURI=$(az cloud show --query 'endpoints.resourceManager' -o tsv)
               deploymentUser=$(az ad signed-in-user show --query objectId --output tsv)
               az rest --method post \
-              --url "${resourceManagerURI}/providers/Microsoft.Billing/enrollmentAccounts/${{ USERLZ_ENROLLMENT_ACCOUNT_NAME }}/providers/Microsoft.Subscription/createSubscription?api-version=2019-10-01-preview" \
+              --url "${resourceManagerURI}/providers/Microsoft.Billing/enrollmentAccounts/${{ secrets.USERLZ_ENROLLMENT_ACCOUNT_NAME }}/providers/Microsoft.Subscription/createSubscription?api-version=2019-10-01-preview" \
               --headers "{\"content-type\":\"application/json\"}" \
-              --body "{\"displayName\": \"${{ USERLZ_SUBNAME }}\", \"offerType\": \"${{ USERLZ_OFFERTYPE }}\", \"owners\": [{\"objectId\": \"${deploymentUser}\"}]}"
+              --body "{\"displayName\": \"${{ secrets.USERLZ_SUBNAME }}\", \"offerType\": \"${{ secrets.USERLZ_OFFERTYPE }}\", \"owners\": [{\"objectId\": \"${deploymentUser}\"}]}"
 #
 #        - name: Add Subscription Tags
 #          uses: azure/CLI@v1
@@ -37,15 +37,15 @@ jobs:
 #            inlineScript: |
 #              NOW=$(date +"%m/%d/%Y_%I:%M:%S_%p")
 #              USER=$(az ad signed-in-user show --query userPrincipalName --output tsv)
-#              OWNER=$(az ad user show --id ${{ USERLZ_SUB_OWNER_OBJECT_ID }} )
-#              az tag create --resource-id /subscriptions/${{ USERLZ_SUBNAME }} --tags createdOn="$NOW" createdBy="$USER" owner="$OWNER" 
+#              OWNER=$(az ad user show --id ${{ secrets.USERLZ_SUB_OWNER_OBJECT_ID }} )
+#              az tag create --resource-id /subscriptions/${{ secrets.USERLZ_SUBNAME }} --tags createdOn="$NOW" createdBy="$USER" owner="$OWNER" 
 #
 #        - name: Move Subscription to Management Group
 #          uses: azure/CLI@v1
 #          with:
 #            azcliversion: 2.21.0
 #            inlineScript: |
-#              az account management-group subscription add --name "${{ USERLZ_MANAGEMENT_GROUP }}" \
+#              az account management-group subscription add --name "${{ secrets.USERLZ_MANAGEMENT_GROUP }}" \
 #              --subscription ${{ secrets.USERLZ_SUBNAME }}
 
 #        - name: User Landing Zone Deployment
