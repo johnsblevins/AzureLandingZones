@@ -23,12 +23,14 @@ jobs:
           with:
             azcliversion: 2.21.0
             inlineScript: |
+              subName="${{ secrets.USERLZ_PROGRAM_TYPE }}-${{ secrets.USERLZ_PROGRAM_ENV }}-${{ secrets.USERLZ_PROGRAM_NAME }}"
               resourceManagerURI=$(az cloud show --query 'endpoints.resourceManager' -o tsv)
               deploymentUser=$(az ad signed-in-user show --query objectId --output tsv)
               az rest --method post \
-              --url "${resourceManagerURI}providers/Microsoft.Billing/enrollmentAccounts/${{ secrets.USERLZ_ENROLLMENT_ACCOUNT_NAME }}/providers/Microsoft.Subscription/createSubscription?api-version=2019-10-01-preview" \
+              --uri "${resourceManagerURI}providers/Microsoft.Billing/enrollmentAccounts/${{ secrets.USERLZ_ENROLLMENT_ACCOUNT_NAME }}/providers/Microsoft.Subscription/createSubscription?api-version=2019-10-01-preview" \
               --headers "{\"content-type\":\"application/json\"}" \
-              --body "{\"displayName\": \"${{ secrets.USERLZ_SUBNAME }}\", \"offerType\": \"${{ secrets.USERLZ_OFFERTYPE }}\", \"owners\": [{\"objectId\": \"${deploymentUser}\"}]}"
+              --body "{\"displayName\": \"${subName}\", \"offerType\": \"${{ secrets.USERLZ_OFFERTYPE }}\", \"owners\": [{\"objectId\": \"${deploymentUser}\"}]}"
+
 #
 #        - name: Add Subscription Tags
 #          uses: azure/CLI@v1
