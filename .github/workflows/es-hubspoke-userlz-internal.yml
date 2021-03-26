@@ -26,7 +26,7 @@ jobs:
               resourceManagerURI=$(az cloud show --query 'endpoints.resourceManager' -o tsv)
               deploymentUser=$(az ad signed-in-user show --query objectId --output tsv)
               az rest --method post \
-              --url "${resourceManagerURI}/providers/Microsoft.Billing/enrollmentAccounts/${{ secrets.USERLZ_ENROLLMENT_ACCOUNT_NAME }}/providers/Microsoft.Subscription/createSubscription?api-version=2019-10-01-preview" \
+              --url "${resourceManagerURI}providers/Microsoft.Billing/enrollmentAccounts/${{ secrets.USERLZ_ENROLLMENT_ACCOUNT_NAME }}/providers/Microsoft.Subscription/createSubscription?api-version=2019-10-01-preview" \
               --headers "{\"content-type\":\"application/json\"}" \
               --body "{\"displayName\": \"${{ secrets.USERLZ_SUBNAME }}\", \"offerType\": \"${{ secrets.USERLZ_OFFERTYPE }}\", \"owners\": [{\"objectId\": \"${deploymentUser}\"}]}"
 #
