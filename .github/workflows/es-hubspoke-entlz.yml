@@ -18,29 +18,29 @@ jobs:
             environment: ${{ secrets.ENTLZ_AZURE_ENVIRONMENT }}
             enable-AzPSSession: false
 
-        - name: Management Group Deployment
-          uses: azure/CLI@v1
-          with:
-            azcliversion: 2.21.0
-            inlineScript: |
-                # Management Group Deployment
-                az deployment tenant create --name "EntScale-Mgs-${{ secrets.ENTLZ_LOCATION }}" --location ${{ secrets.ENTLZ_LOCATION }} \
-                --template-file Templates/entlz/es-hubspoke/auxiliary/mgmtGroups.json --parameters \
-                topLevelManagementGroupPrefix=${{ secrets.ENTLZ_ENTERPRISE_SCALE_COMPANY_PREFIX }}
+#        - name: Management Group Deployment
+#          uses: azure/CLI@v1
+#          with:
+#            azcliversion: 2.21.0
+#            inlineScript: |
+#                # Management Group Deployment
+#                az deployment tenant create --name "EntScale-Mgs-${{ secrets.ENTLZ_LOCATION }}" --location ${{ secrets.ENTLZ_LOCATION }} \
+#                --template-file Templates/entlz/es-hubspoke/auxiliary/mgmtGroups.json --parameters \
+#                topLevelManagementGroupPrefix=${{ secrets.ENTLZ_ENTERPRISE_SCALE_COMPANY_PREFIX }}
 
-        - name: Global Policy Definitions Deployment 
-          uses: azure/CLI@v1
-          with:
-            azcliversion: 2.21.0
-            inlineScript: |
-                # Global Policy Definitions Deployment
-                az deployment mg create --name "EntScale-Policy-${{ secrets.ENTLZ_LOCATION }}" --location ${{ secrets.ENTLZ_LOCATION }} \
-                --management-group-id ${{ secrets.ENTLZ_ENTERPRISE_SCALE_COMPANY_PREFIX }} \
-                --template-file Templates/entlz/es-hubspoke/auxiliary/globalPolicyDefs.json \
-                --parameters topLevelManagementGroupPrefix=${{ secrets.ENTLZ_ENTERPRISE_SCALE_COMPANY_PREFIX }}
-
-                # Delay 300
-                sleep 300
+#        - name: Global Policy Definitions Deployment 
+#          uses: azure/CLI@v1
+#          with:
+#            azcliversion: 2.21.0
+#            inlineScript: |
+#                # Global Policy Definitions Deployment
+#                az deployment mg create --name "EntScale-Policy-${{ secrets.ENTLZ_LOCATION }}" --location ${{ secrets.ENTLZ_LOCATION }} \
+#                --management-group-id ${{ secrets.ENTLZ_ENTERPRISE_SCALE_COMPANY_PREFIX }} \
+#                --template-file Templates/entlz/es-hubspoke/auxiliary/globalPolicyDefs.json \
+#                --parameters topLevelManagementGroupPrefix=${{ secrets.ENTLZ_ENTERPRISE_SCALE_COMPANY_PREFIX }}
+#
+#                # Delay 300
+#                sleep 300
 
         - name: Move Subs
           uses: azure/CLI@v1
