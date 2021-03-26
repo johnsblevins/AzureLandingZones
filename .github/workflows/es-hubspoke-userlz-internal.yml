@@ -29,7 +29,7 @@ jobs:
               az rest --method post \
               --uri "${resourceManagerURI}providers/Microsoft.Billing/enrollmentAccounts/${{ secrets.USERLZ_ENROLLMENT_ACCOUNT_NAME }}/providers/Microsoft.Subscription/createSubscription?api-version=2019-10-01-preview" \
               --headers "{\"content-type\":\"application/json\"}" \
-              --body "{\"displayName\": \"${subName}\", \"offerType\": \"${{ secrets.USERLZ_OFFERTYPE }}\", \"owners\": [{\"objectId\": \"${deploymentUser}\"}]}"
+              --body "{\"displayName\": \"${subName}\", \"offerType\": \"${{ secrets.USERLZ_OFFER_TYPE }}\", \"owners\": [{\"objectId\": \"${deploymentUser}\"}]}"
 
 #
 #        - name: Add Subscription Tags
