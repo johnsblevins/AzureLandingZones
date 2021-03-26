@@ -22,13 +22,13 @@ jobs:
           uses: azure/CLI@v1
           with:
             azcliversion: 2.21.0
-            inlineScript: |
-                subName="${{ secrets.USERLZ_PROGRAM_TYPE }}-${{ secrets.USERLZ_PROGRAM_ENV }}-${{ secrets.USERLZ_PROGRAM_NAME }}"
-                resourceManagerURI=$(az cloud show --query 'endpoints.resourceManager' -o tsv)
-                deploymentUser=$(az ad signed-in-user show --query objectId --output tsv)
-                echo $subName
-                echo $resourceManagerURI              
-                echo $deploymentUser
+            inlineScript: | echo "blah"
+#                subName="${{ secrets.USERLZ_PROGRAM_TYPE }}-${{ secrets.USERLZ_PROGRAM_ENV }}-${{ secrets.USERLZ_PROGRAM_NAME }}"
+#                resourceManagerURI=$(az cloud show --query 'endpoints.resourceManager' -o tsv)
+#                deploymentUser=$(az ad signed-in-user show --query objectId --output tsv)
+#                echo $subName
+#                echo $resourceManagerURI              
+#                echo $deploymentUser
 #              az rest --method post \
 #              --uri "https://management.usgovcloudapi.net/providers/Microsoft.Billing/enrollmentAccounts/b5f3295f-c2be-4afb-8880-5c0ce9be2db3/providers/Microsoft.Subscription/createSubscription?api-version=2019-10-01-preview" \
 #              --headers "{\"content-type\":\"application/json\"}" \
