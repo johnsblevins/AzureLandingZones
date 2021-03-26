@@ -24,6 +24,9 @@ x.x.x.x
 USERLZ_MGMT_SUBNET_PREFIX
 x.x.x.x/xx
 
+USERLZ_ENROLLMENT_ACCOUNT_NAME
+xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx - az billing enrollment-account list 
+
 USERLZ_PROGRAM_ENV
 (PR)od or (N)on(P)rod - PR or NP
 
