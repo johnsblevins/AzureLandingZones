@@ -194,7 +194,10 @@
                                                                     empty(parameters('subnetMaskForGw'))), variables('gwSubnet'), json('[]')), 
                                                             if(
                                                                 not(
-                                                                    empty(parameters('subnetMaskForAzFw'))), variables('fwSubnet'), json('[]')))]"
+                                                                    empty(parameters('subnetMaskForAzFw'))), variables('fwSubnet'), json('[]')),
+                                                            if(
+                                                                not(
+                                                                    empty(parameters('subnetMaskForAzBastion'))), variables('bastionSubnet'), json('[]')))]"
                                             }
                                         },
                                         {
