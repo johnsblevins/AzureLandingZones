@@ -1,3 +1,17 @@
+USERLZ_AZURE_ENVIRONMENT
+azureusgovernment
+
+USERLZ_AZURE_GOV_CREDENTIALS
+{
+    "clientId": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
+    "clientSecret": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+    "subscriptionId": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
+    "tenantId": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+}
+
+USERLZ_LOCATION
+usgovvirginia
+
 USERLZ_APP_SUBNET_PREFIX
 x.x.x.x/xx
 

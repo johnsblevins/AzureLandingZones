@@ -9,20 +9,15 @@ This solution allows you to provision an internal facing user landing zone in an
 * Assign RBAC Roles at Subscription Level
 * Deploy Internal Landing Zone Configuration
 
-For organizations who have not already deployed their Enterprise Landing Zone scaffolding it is recommended to use the Enterprise Scale Landing Zone (EntLZ) templates [HERE](Templates/entscalelz/README.md) to deploy the framework needed for managing Azure at scale before deploying user landing zones. The enterprise scaffolding includes a management group branch for internal facing user landing zone subscriptions.  
+For organizations who have not already deployed their Enterprise Landing Zone scaffolding it is recommended to use the Enterprise Scale Landing Zone (EntLZ) templates [HERE](../../entlz/README.md) to deploy the framework needed for managing Azure at scale before deploying user landing zones. The enterprise scaffolding which includes a Management Group for onboarding new subs, Management Groups for Internal Production and Non-Production subs and the default infrastructure components including VNET with Hub Peering, User Defined Routes and NSGs to enforce internal connectivity requirements.  
+
+For organizations who have already deployed their Enterprise landing zone scaffolding the following components should be added to your existing CICD pipeline deployment to enable the solution.
 
 After the enterprise scaffolding is in place the following pre-built pipelines exist for deploying internal facing user landing zones into the enterprise landing zone:
 
 * GitHub Action - [es-hubspoke-userlz-internal.yml](../../../.github/workflows/es-hubspoke-userlz-internal.yml)
 
 ## Prereqs
-### Prereqs Built into Enterprise Scale Landing Zone (EntLZ)
-For organizations who have not already deployed their Enterprise Landing Zone scaffolding it is recommended to use the Enterprise Scale Landing Zone templates in this repository to deploy the enterprise level scaffolding which include all of the required prereqs for the User Landing Zone solution.  The following pre-built pipelines exist for deploying Enterprise Scale Landing Zone:
-
-* GitHub Action - [es-hubspoke-entlz.yml](../../../.github/workflows/es-hubspoke-entlz.yml)
-
-For organizations who have already deployed their Enterprise landing zone scaffolding the following prereqs should be added to your existing CICD pipeline deployment to enable the solution.
-
 ### Grant Rights for Service Principal to Create EA Subscriptions
 A service principal with "Owner" rights to the enrollment account scope (/providers/Microsoft.Billing/enrollmentAccounts/) and "Management Group Contributor" rights to your MG hierarchy is needed to programatically create and manage EA subscriptions. 
 
@@ -34,7 +29,9 @@ grpObjId=$(az ad group create --display-name Azure-EA-Subscription-Creators --ma
 
 # Create Azure AD App Registration and Service Principal
 appId=$(az ad app create --display-name "Azure-EA-Subscription-Deployer" --query appId --output tsv)
+sleep 5
 az ad sp create --id $appId
+sleep 5
 objId=$(az ad sp show --id $appId --query objectId --output tsv)
 
 # Add Service Principal to Group
@@ -54,11 +51,6 @@ az role assignment create --role "Management Group Contributor" --scope "$rootMG
 ```
 
 # Pipeline Components
-## Deploy Components into Enterprise Scale Landing Zone (EntLZ)
-For organizations who have not already deployed their Enterprise Landing Zone scaffolding it is recommended to use the Enterprise Scale Landing Zone templates in this repository to deploy the enterprise level scaffolding which includes a Management Group for onboarding new subs, Management Groups for Internal Production and Non-Production subs and the default infrastructure components including Default VNET with Hub Peering and require User Defined Routes and NSGs to enforce internal connectivity requirements.  
-
-For organizations who have already deployed their Enterprise landing zone scaffolding the following components should be added to your existing CICD pipeline deployment to enable the solution.
-
 ## Provision EA Subscription
 The API documented [HERE](https://docs.microsoft.com/en-us/azure/cost-management-billing/manage/programmatically-create-subscription-preview?tabs=rest) is used to create the EA subscription.  Ensure you are using the **2019-10-01-preview** version of the API when making the call for it to work properly.  
 

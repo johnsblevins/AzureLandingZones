@@ -14,8 +14,8 @@ jobs:
         - name: Log in with Azure
           uses: azure/login@v1
           with:
-            creds: ${{ secrets.AZURE_GOV_ENTSCALE_CREDENTIALS }}
-            environment: 'AzureUSGovernment'
+            creds: ${{ secrets.USERLZ_AZURE_GOV_CREDENTIALS }}
+            environment: ${{ secrets.USERLZ_AZURE_ENVIRONMENT }}
             enable-AzPSSession: false
 
         - name: Provision EA Subscription
@@ -23,28 +23,30 @@ jobs:
           with:
             azcliversion: 2.21.0
             inlineScript: |
+              resourceManagerURI=$(az cloud show --query 'endpoints.resourceManager' -o tsv)
+              deploymentUser=$(az ad signed-in-user show --query objectId --output tsv)
               az rest --method post \
-              --url "https://management.usgovcloudapi.net/providers/Microsoft.Billing/enrollmentAccounts/${{ enrAcctName }}/providers/Microsoft.Subscription/createSubscription?api-version=2019-10-01-preview" \
+              --url "${resourceManagerURI}/providers/Microsoft.Billing/enrollmentAccounts/${{ enrAcctName }}/providers/Microsoft.Subscription/createSubscription?api-version=2019-10-01-preview" \
               --headers "{\"content-type\":\"application/json\"}" \
-              --body "{\"displayName\": \"${{ USERLZ_SUBNAME }}\", \"offerType\": \"${{ USERLZ_OFFERTYPE }}\", \"owners\": [{\"objectId\": \"${{ USERLZ_SUB_OWNER_OBJECT_ID }}\"}]}"
-
-        - name: Add Subscription Tags
-          uses: azure/CLI@v1
-          with:
-            azcliversion: 2.21.0
-            inlineScript: |
-              NOW=$(date +"%m/%d/%Y_%I:%M:%S_%p")
-              USER=$(az ad signed-in-user show --query userPrincipalName --output tsv)
-              OWNER=$(az ad user show --id ${{ USERLZ_SUB_OWNER_OBJECT_ID }} )
-              az tag create --resource-id /subscriptions/${{ USERLZ_SUBNAME }} --tags createdOn="$NOW" createdBy="$USER" owner="$OWNER" 
-
-        - name: Move Subscription to Management Group
-          uses: azure/CLI@v1
-          with:
-            azcliversion: 2.21.0
-            inlineScript: |
-              az account management-group subscription add --name "${{ USERLZ_MANAGEMENT_GROUP }}" \
-              --subscription ${{ secrets.USERLZ_SUBNAME }}
+              --body "{\"displayName\": \"${{ USERLZ_SUBNAME }}\", \"offerType\": \"${{ USERLZ_OFFERTYPE }}\", \"owners\": [{\"objectId\": \"${deploymentUser}\"}]}"
+#
+#        - name: Add Subscription Tags
+#          uses: azure/CLI@v1
+#          with:
+#            azcliversion: 2.21.0
+#            inlineScript: |
+#              NOW=$(date +"%m/%d/%Y_%I:%M:%S_%p")
+#              USER=$(az ad signed-in-user show --query userPrincipalName --output tsv)
+#              OWNER=$(az ad user show --id ${{ USERLZ_SUB_OWNER_OBJECT_ID }} )
+#              az tag create --resource-id /subscriptions/${{ USERLZ_SUBNAME }} --tags createdOn="$NOW" createdBy="$USER" owner="$OWNER" 
+#
+#        - name: Move Subscription to Management Group
+#          uses: azure/CLI@v1
+#          with:
+#            azcliversion: 2.21.0
+#            inlineScript: |
+#              az account management-group subscription add --name "${{ USERLZ_MANAGEMENT_GROUP }}" \
+#              --subscription ${{ secrets.USERLZ_SUBNAME }}
 
 #        - name: User Landing Zone Deployment
 #          uses: azure/CLI@v1
