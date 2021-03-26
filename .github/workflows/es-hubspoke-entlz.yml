@@ -63,14 +63,14 @@ jobs:
 #                az account management-group subscription add --name "${{ secrets.ENTLZ_ENTERPRISE_SCALE_COMPANY_PREFIX }}-connectivity" \
 #                --subscription ${{ secrets.ENTLZ_CONNECTIVITY_SUB_ID }}
 
-        - name: Set Management Group Hierarchy Settings
-          uses: azure/CLI@v1
-          with:
-            azcliversion: 2.21.0
-            inlineScript: |
-                TenantRootMG=$(az account management-group list --query "[0].name" --output tsv)
-                resourceManagerURI=$(az cloud show --query 'endpoints.resourceManager' -o tsv)
-                az rest --method put --headers "{\"Content-Type\":\"application/json\"}" --uri "${resourceManagerURI}providers/Microsoft.Management/managementGroups/$TenantRootMG/settings/default?api-version=2020-05-01" --body "{\"properties\": {\"defaultManagementGroup\": \"/providers/Microsoft.Management/managementGroups/${{ secrets.ENTLZ_ENTERPRISE_SCALE_COMPANY_PREFIX }}-onboarding\",\"requireAuthorizationForGroupCreation\": \"true\"}}" 
+#        - name: Set Management Group Hierarchy Settings
+#          uses: azure/CLI@v1
+#          with:
+#            azcliversion: 2.21.0
+#            inlineScript: |
+#                TenantRootMG=$(az account management-group list --query "[0].name" --output tsv)
+#                resourceManagerURI=$(az cloud show --query 'endpoints.resourceManager' -o tsv)
+#                az rest --method put --headers "{\"Content-Type\":\"application/json\"}" --uri "${resourceManagerURI}providers/Microsoft.Management/managementGroups/$TenantRootMG/settings/default?api-version=2020-05-01" --body "{\"properties\": {\"defaultManagementGroup\": \"/providers/Microsoft.Management/managementGroups/${{ secrets.ENTLZ_ENTERPRISE_SCALE_COMPANY_PREFIX }}-onboarding\",\"requireAuthorizationForGroupCreation\": \"true\"}}" 
         
         - name: Connectivity MG Deployment
           uses: azure/CLI@v1
@@ -84,7 +84,7 @@ jobs:
                 --parameters topLevelManagementGroupPrefix=${{ secrets.ENTLZ_ENTERPRISE_SCALE_COMPANY_PREFIX }} \
                 addressPrefix=${{ secrets.ENTLZ_HUB_VNET_ADDRESS_PREFIX }} enableHub=Yes enableAzFw=No enableVpnGw=No enableErGw=No enableAzBastion=No \
                 connectivitySubscriptionId=${{ secrets.ENTLZ_CONNECTIVITY_SUB_ID }} subnetMaskForAzFw=${{ secrets.ENTLZ_SUBNET_MASK_FOR_AZ_FIREWALL }} \
-                subnetMaskForGw=${{ secrets.ENTLZ_SUBNET_MASK_FOR_GW }} subnetMaskForAzBastion=${{ secrets.ENTLZ_SUBNET_MASK_FOR_BASTION }} dnsServers="${{ secrets.ENTLZ_DNS_SERVERS }}"
+                subnetMaskForGw=${{ secrets.ENTLZ_SUBNET_MASK_FOR_GW }} subnetMaskForAzBastion=${{ secrets.ENTLZ_SUBNET_MASK_FOR_BASTION }} dnsServers=${{ secrets.ENTLZ_DNS_SERVERS }}
 
         - name: Management MG Deployment
           uses: azure/CLI@v1

@@ -188,16 +188,17 @@
                                                     "dnsServers": "[parameters('dnsServers')]"
                                                 },
                                                 "subnets": "[
-                                                             union(
-                                                                  if(
-                                                                      not(
-                                                                          empty(parameters('subnetMaskForGw'))), variables('gwSubnet'), json('[]')), 
-                                                                          if(
-                                                                              not(
-                                                                                  empty(parameters('subnetMaskForAzFw'))), variables('fwSubnet'), json('[]')),
-                                                                                        if(
-                                                                                            not(
-                                                                                                empty(parameters('subnetMaskForAzBastion'))), variables('bastionSubnet'), json('[]')))]"
+                                                    union(
+                                                            if(
+                                                                not(
+                                                                    empty(parameters('subnetMaskForGw'))), variables('gwSubnet'), json('[]')), 
+                                                            if(
+                                                                not(
+                                                                    empty(parameters('subnetMaskForAzFw'))), variables('fwSubnet'), json('[]')),
+                                                            if(
+                                                                not(
+                                                                    empty(parameters('subnetMaskForAzBastion'))), variables('bastionSubnet'), json('[]'))
+                                                        )]"
                                             }
                                         },
                                         {
