@@ -178,21 +178,21 @@
             "displayName": "Enforce route table on all subnets",
             "mode": "All",            
             "parameters": {
-              "routeTableResourceGroupSuffix": {
-                "type": "string",
-                "defaultValue": "-lockedRG",
+              "routeTableResourceGroup": {
+                "type": "String",
                 "metadata": {
-                    "displayName": "Route Table Resource Group Suffix (ex. -lockedRG where expected full name will be <Sub Name>-lockedRG)",
-                    "description": "Resource Group in which Route Table Resource is located"
-                }
+                  "displayName": "Route Table Resource Group Suffix (ex. -lockedRG where full name is expected to be <Sub Name>-lockedRG)",
+                  "description": "Resource Group in which Route Table Resource is located"
+                },
+                "defaultValue": "-lockedRG"
               },
               "routeTableName": {
-                "type": "string",
-                "defaultValue": "-lockedRT",
+                "type": "String",
                 "metadata": {
-                    "displayName": "Route Table Name Resource Name Suffix (ex. -lockedRT where expected full name will be <Sub Name>-lockedRT)",
-                    "description": "Route Table Resource Name Suffix"
-                }
+                  "displayName": "Route Table Name Resource Name Suffix (ex. -lockedRT where full name is expected to be <Sub Name>-lockedRT)",
+                  "description": "Route Table Resource name Suffix"
+                },
+                "defaultValue": "-lockedRT"
               }
             },
             "metadata": {
