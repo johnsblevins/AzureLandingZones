@@ -25,7 +25,7 @@ jobs:
             inlineScript: |
                 # Management Group Deployment
                 az deployment tenant create --name "EntScale-Mgs-${{ secrets.ENTLZ_LOCATION }}" --location ${{ secrets.ENTLZ_LOCATION }} \
-                --template-file Templates/entscalelz/es-hubspoke/auxiliary/mgmtGroups.json --parameters \
+                --template-file Templates/entlz/es-hubspoke/auxiliary/mgmtGroups.json --parameters \
                 topLevelManagementGroupPrefix=${{ secrets.ENTLZ_ENTERPRISE_SCALE_COMPANY_PREFIX }}
 
         - name: Global Policy Definitions Deployment 
@@ -36,7 +36,7 @@ jobs:
                 # Global Policy Definitions Deployment
                 az deployment mg create --name "EntScale-Policy-${{ secrets.ENTLZ_LOCATION }}" --location ${{ secrets.ENTLZ_LOCATION }} \
                 --management-group-id ${{ secrets.ENTLZ_ENTERPRISE_SCALE_COMPANY_PREFIX }} \
-                --template-file Templates/entscalelz/es-hubspoke/auxiliary/globalPolicyDefs.json \
+                --template-file Templates/entlz/es-hubspoke/auxiliary/globalPolicyDefs.json \
                 --parameters topLevelManagementGroupPrefix=${{ secrets.ENTLZ_ENTERPRISE_SCALE_COMPANY_PREFIX }}
 
                 # Delay 300
@@ -80,7 +80,7 @@ jobs:
                 # Connectivity MG Deployment
                 az deployment mg create --name "EntScale-conn-${{ secrets.ENTLZ_LOCATION }}" --location ${{ secrets.ENTLZ_LOCATION }} \
                 --management-group-id "${{ secrets.ENTLZ_ENTERPRISE_SCALE_COMPANY_PREFIX }}-connectivity" \
-                --template-file Templates/entscalelz/es-hubspoke/auxiliary/connectivityMG.json \
+                --template-file Templates/entlz/es-hubspoke/auxiliary/connectivityMG.json \
                 --parameters topLevelManagementGroupPrefix=${{ secrets.ENTLZ_ENTERPRISE_SCALE_COMPANY_PREFIX }} \
                 addressPrefix=${{ secrets.ENTLZ_HUB_VNET_ADDRESS_PREFIX }} enableHub=Yes enableAzFw=No enableVpnGw=No enableErGw=No enableAzBastion=No \
                 connectivitySubscriptionId=${{ secrets.ENTLZ_CONNECTIVITY_SUB_ID }} subnetMaskForAzFw=${{ secrets.ENTLZ_SUBNET_MASK_FOR_AZ_FIREWALL }} \
@@ -94,7 +94,7 @@ jobs:
                 # Management MG Deployment
                 az deployment mg create --name "EntScale-Monitoring-${{ secrets.ENTLZ_LOCATION }}" --location ${{ secrets.ENTLZ_LOCATION }} \
                 --management-group-id "${{ secrets.ENTLZ_ENTERPRISE_SCALE_COMPANY_PREFIX }}-management" \
-                --template-file Templates/entscalelz/es-hubspoke/auxiliary/mgmtMG.json --parameters \
+                --template-file Templates/entlz/es-hubspoke/auxiliary/mgmtMG.json --parameters \
                 topLevelManagementGroupPrefix=${{ secrets.ENTLZ_ENTERPRISE_SCALE_COMPANY_PREFIX }} managementSubscriptionId=${{ secrets.ENTLZ_MANAGEMENT_SUB_ID }} \
                 enableLogAnalytics=Yes retentionInDays=90 
         
@@ -106,7 +106,7 @@ jobs:
                 # Identity MG Deployment
                 az deployment mg create --name "EntScale-ID-${{ secrets.ENTLZ_LOCATION }}" --location ${{ secrets.ENTLZ_LOCATION }} \
                 --management-group-id "${{ secrets.ENTLZ_ENTERPRISE_SCALE_COMPANY_PREFIX }}-identity" \
-                --template-file Templates/entscalelz/es-hubspoke/auxiliary/identityMG.json \
+                --template-file Templates/entlz/es-hubspoke/auxiliary/identityMG.json \
                 --parameters topLevelManagementGroupPrefix=${{ secrets.ENTLZ_ENTERPRISE_SCALE_COMPANY_PREFIX }} \
                 denyRdpForIdentity=Yes denySubnetWithoutNsgForIdentity=Yes \
                 denyPipForIdentity=Yes enableVmBackupForIdentity=Yes
@@ -119,7 +119,7 @@ jobs:
                 # Landing Zones MG Deployment
                 az deployment mg create --name "EntScale-LZ-${{ secrets.ENTLZ_LOCATION }}" --location ${{ secrets.ENTLZ_LOCATION }} \
                 --management-group-id "${{ secrets.ENTLZ_ENTERPRISE_SCALE_COMPANY_PREFIX }}-landingzones" \
-                --template-file Templates/entscalelz/es-hubspoke/auxiliary/landingzonesMG.json \
+                --template-file Templates/entlz/es-hubspoke/auxiliary/landingzonesMG.json \
                 --parameters topLevelManagementGroupPrefix=${{ secrets.ENTLZ_ENTERPRISE_SCALE_COMPANY_PREFIX }} enableSqlAudit=Yes denyAksPrivileged=Yes \
                 denyAksPrivilegedEscalation=Yes denyHttpIngressForAks=Yes enableSqlEncryption=Yes enableVmBackup=Yes denyRdp=Yes enableStorageHttps=Yes \
                 denyIpForwarding=Yes denySubnetWithoutNsg=Yes
@@ -132,7 +132,7 @@ jobs:
                 # Internal Landing Zone MG Deployment
                 az deployment mg create --name "EntScale-Internal-${{ secrets.ENTLZ_LOCATION }}" --location ${{ secrets.ENTLZ_LOCATION }} \
                 --management-group-id "${{ secrets.ENTLZ_ENTERPRISE_SCALE_COMPANY_PREFIX }}-internal" \
-                --template-file Templates/entscalelz/es-hubspoke/auxiliary/internalMG.json \
+                --template-file Templates/entlz/es-hubspoke/auxiliary/internalMG.json \
                 --parameters topLevelManagementGroupPrefix=${{ secrets.ENTLZ_ENTERPRISE_SCALE_COMPANY_PREFIX }}
          
         - name: Management Sub Deployment
@@ -142,7 +142,7 @@ jobs:
             inlineScript: | 
                 # Management Sub Deployment
                 az deployment sub create --name "EntScale-Management-${{ secrets.ENTLZ_LOCATION }}" --location ${{ secrets.ENTLZ_LOCATION }} \
-                --sub "${{ secrets.ENTLZ_MANAGEMENT_SUB_ID }}" --template-file Templates/entscalelz/es-hubspoke/auxiliary/mgmtSub.json \
+                --sub "${{ secrets.ENTLZ_MANAGEMENT_SUB_ID }}" --template-file Templates/entlz/es-hubspoke/auxiliary/mgmtSub.json \
                 --parameters topLevelManagementGroupPrefix=${{ secrets.ENTLZ_ENTERPRISE_SCALE_COMPANY_PREFIX }} managementSubscriptionId=${{ secrets.ENTLZ_MANAGEMENT_SUB_ID }} \
                 management_vnet_address_space=${{ secrets.ENTLZ_MANAGEMENT_VNET_ADDRESS_PREFIX }} \
                 management_subnet_address_prefix=${{ secrets.ENTLZ_SUBNET_MASK_FOR_MANAGEMENT }} hubSubscriptionId=${{ secrets.ENTLZ_CONNECTIVITY_SUB_ID }} \
@@ -155,7 +155,7 @@ jobs:
             inlineScript: | 
                 # IDENTITY Sub Deployment
                 az deployment sub create --name "EntScale-Identity-${{ secrets.ENTLZ_LOCATION }}" --location ${{ secrets.ENTLZ_LOCATION }} \
-                --sub "${{ secrets.ENTLZ_IDENTITY_SUB_ID }}" --template-file Templates/entscalelz/es-hubspoke/auxiliary/identitySub.json \
+                --sub "${{ secrets.ENTLZ_IDENTITY_SUB_ID }}" --template-file Templates/entlz/es-hubspoke/auxiliary/identitySub.json \
                 --parameters topLevelManagementGroupPrefix=${{ secrets.ENTLZ_ENTERPRISE_SCALE_COMPANY_PREFIX }} identitySubscriptionId=${{ secrets.ENTLZ_IDENTITY_SUB_ID }} \
                 identity_vnet_address_space=${{ secrets.ENTLZ_IDENTITY_VNET_ADDRESS_PREFIX }} \
                 identity_subnet_address_prefix=${{ secrets.ENTLZ_SUBNET_MASK_FOR_IDENTITY }} hubSubscriptionId=${{ secrets.ENTLZ_CONNECTIVITY_SUB_ID }} \
@@ -168,7 +168,7 @@ jobs:
             inlineScript: | 
                 # SECURITY Sub Deployment
                 az deployment sub create --name "EntScale-Security-${{ secrets.ENTLZ_LOCATION }}" --location ${{ secrets.ENTLZ_LOCATION }} \
-                --sub "${{ secrets.ENTLZ_SECURITY_SUB_ID }}" --template-file Templates/entscalelz/es-hubspoke/auxiliary/securitySub.json \
+                --sub "${{ secrets.ENTLZ_SECURITY_SUB_ID }}" --template-file Templates/entlz/es-hubspoke/auxiliary/securitySub.json \
                 --parameters topLevelManagementGroupPrefix=${{ secrets.ENTLZ_ENTERPRISE_SCALE_COMPANY_PREFIX }} \
                 security_vnet_address_space=${{ secrets.ENTLZ_SECURITY_VNET_ADDRESS_PREFIX }} \
                 security_subnet_address_prefix=${{ secrets.ENTLZ_SUBNET_MASK_FOR_SECURITY }} hubSubscriptionId=${{ secrets.ENTLZ_CONNECTIVITY_SUB_ID }} \
@@ -182,7 +182,7 @@ jobs:
                 # Global Policy Assignments Deployment
                 az deployment mg create --name "EntScale-Solutions-${{ secrets.ENTLZ_LOCATION }}" --location ${{ secrets.ENTLZ_LOCATION }} \
                 --management-group-id "${{ secrets.ENTLZ_ENTERPRISE_SCALE_COMPANY_PREFIX }}" \
-                --template-file Templates/entscalelz/es-hubspoke/auxiliary/globalPolicyAssignments.json \
+                --template-file Templates/entlz/es-hubspoke/auxiliary/globalPolicyAssignments.json \
                 --parameters topLevelManagementGroupPrefix=${{ secrets.ENTLZ_ENTERPRISE_SCALE_COMPANY_PREFIX }} managementSubscriptionId=${{ secrets.ENTLZ_MANAGEMENT_SUB_ID }} \
                 enableLogAnalytics=Yes enableAsc=Yes enableAscForServers=Standard enableAscForStorage=Standard enableAscForSql=Standard enableAscForKubernetes=Standard \
                 enableAscForRegistries=Standard enableVmMonitoring=Yes enableVmssMonitoring=Yes identitySubscriptionId=${{ secrets.ENTLZ_IDENTITY_SUB_ID }} \
