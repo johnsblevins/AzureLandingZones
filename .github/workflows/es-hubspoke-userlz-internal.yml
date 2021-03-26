@@ -4,7 +4,7 @@ name: es-hubspoke-userlz-internal
 on:
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
-  
+
 
 jobs:
     build-and-deploy:
@@ -23,7 +23,8 @@ jobs:
           uses: azure/CLI@v1
           with:
             azcliversion: 2.21.0
-            inlineScript: | echo "blah"
+            inlineScript: | 
+              echo "blah"
 #                subName="${{ secrets.USERLZ_PROGRAM_TYPE }}-${{ secrets.USERLZ_PROGRAM_ENV }}-${{ secrets.USERLZ_PROGRAM_NAME }}"
 #                resourceManagerURI=$(az cloud show --query 'endpoints.resourceManager' -o tsv)
 #                deploymentUser=$(az ad signed-in-user show --query objectId --output tsv)
