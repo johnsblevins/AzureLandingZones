@@ -84,7 +84,7 @@ jobs:
                 --parameters topLevelManagementGroupPrefix=${{ secrets.ENTLZ_ENTERPRISE_SCALE_COMPANY_PREFIX }} \
                 addressPrefix=${{ secrets.ENTLZ_HUB_VNET_ADDRESS_PREFIX }} enableHub=Yes enableAzFw=No enableVpnGw=No enableErGw=No enableAzBastion=No \
                 connectivitySubscriptionId=${{ secrets.ENTLZ_CONNECTIVITY_SUB_ID }} subnetMaskForAzFw=${{ secrets.ENTLZ_SUBNET_MASK_FOR_AZ_FIREWALL }} \
-                subnetMaskForGw=${{ secrets.ENTLZ_SUBNET_MASK_FOR_GW }} subnetMaskForAzBastion=${{ secrets.ENTLZ_SUBNET_MASK_FOR_BASTION }} dnsServers=${{ secrets.ENTLZ_DNS_SERVERS }}
+                subnetMaskForGw=${{ secrets.ENTLZ_SUBNET_MASK_FOR_GW }} subnetMaskForAzBastion=${{ secrets.ENTLZ_SUBNET_MASK_FOR_BASTION }}
 
         - name: Management MG Deployment
           uses: azure/CLI@v1
