@@ -25,7 +25,7 @@ jobs:
             azcliversion: 2.21.0
             inlineScript: | 
               echo "blah"
-#                subName="${{ secrets.USERLZ_PROGRAM_TYPE }}-${{ secrets.USERLZ_PROGRAM_ENV }}-${{ secrets.USERLZ_PROGRAM_NAME }}"
+              subName="${{ secrets.USERLZ_PROGRAM_TYPE }}-${{ secrets.USERLZ_PROGRAM_ENV }}-${{ secrets.USERLZ_PROGRAM_NAME }}"
 #                resourceManagerURI=$(az cloud show --query 'endpoints.resourceManager' -o tsv)
 #                deploymentUser=$(az ad signed-in-user show --query objectId --output tsv)
 #                echo $subName
