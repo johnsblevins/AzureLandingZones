@@ -23,7 +23,7 @@ jobs:
           uses: azure/CLI@v1
           with:
             azcliversion: 2.21.0
-            inlineScript: | 
+            inlineScript: |
               az config set extension.use_dynamic_install=yes_without_prompt
               resourceManagerURI=$(az cloud show --query 'endpoints.resourceManager' -o tsv)
               subName="${{ secrets.USERLZ_PROGRAM_TYPE }}-${{ secrets.USERLZ_PROGRAM_ENV }}-${{ secrets.USERLZ_PROGRAM_NAME }}"
