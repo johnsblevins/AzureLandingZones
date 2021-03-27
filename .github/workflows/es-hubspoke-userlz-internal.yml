@@ -24,6 +24,7 @@ jobs:
           with:
             azcliversion: 2.21.0
             inlineScript: | 
+              resourceManagerURI=$(az cloud show --query 'endpoints.resourceManager' -o tsv)
               subName="${{ secrets.USERLZ_PROGRAM_TYPE }}-${{ secrets.USERLZ_PROGRAM_ENV }}-${{ secrets.USERLZ_PROGRAM_NAME }}"
               az rest --method post \
               --uri "${resourceManagerURI}providers/Microsoft.Billing/enrollmentAccounts/${{ secrets.USERLZ_ENROLLMENT_ACCOUNT_NAME }}/providers/Microsoft.Subscription/createSubscription?api-version=2019-10-01-preview" \
