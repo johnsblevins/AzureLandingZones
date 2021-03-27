@@ -33,7 +33,7 @@ jobs:
               --headers "{\"content-type\":\"application/json\"}" \
               --body "{\"displayName\": \"${subName}\", \"offerType\": \"${{ secrets.USERLZ_OFFER_TYPE }}\", \"owners\": [{\"objectId\": \"${{ secrets.USERLZ_SUBSCRIPTION_OWNER }}\"}]}"
               subId=$(az account subscription list --query "[?displayName=='$subName'].subscriptionId" --output tsv)
-              az tag create --resource-id /subscriptions/$subId --tags createdOn="$NOW" createdBy="$USER" initialOwner="$OWNER" programType="${{ secrets.USERLZ_PROGRAM_TYPE }}" programEnv="${{ secrets.USERLZ_PROGRAM_ENV }}" programName="${{ secrets.USERLZ_PROGRAM_NAME }}" "${{ secrets.USERLZ_TAGS }}"
+              az tag create --resource-id /subscriptions/$subId --tags createdOn="$NOW" programType="${{ secrets.USERLZ_PROGRAM_TYPE }}" programEnv="${{ secrets.USERLZ_PROGRAM_ENV }}" programName="${{ secrets.USERLZ_PROGRAM_NAME }}" ${{ secrets.USERLZ_TAGS }}
 
 
 #        - name: Move Subscription to Management Group
