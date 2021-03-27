@@ -19,25 +19,26 @@ jobs:
             environment: ${{ secrets.USERLZ_AZURE_ENVIRONMENT }}
             enable-AzPSSession: false
    
-        - name: Provision EA Subscription
+        - name: Provision EA Subscription and Add Tags
           uses: azure/CLI@v1
           with:
             azcliversion: 2.21.0
             inlineScript: | 
               resourceManagerURI=$(az cloud show --query 'endpoints.resourceManager' -o tsv)
+              
               subName="${{ secrets.USERLZ_PROGRAM_TYPE }}-${{ secrets.USERLZ_PROGRAM_ENV }}-${{ secrets.USERLZ_PROGRAM_NAME }}"
+              
+              NOW=$(date +"%m/%d/%Y_%I:%M:%S_%p")
+
               az rest --method post \
               --uri "${resourceManagerURI}providers/Microsoft.Billing/enrollmentAccounts/${{ secrets.USERLZ_ENROLLMENT_ACCOUNT_NAME }}/providers/Microsoft.Subscription/createSubscription?api-version=2019-10-01-preview" \
               --headers "{\"content-type\":\"application/json\"}" \
               --body "{\"displayName\": \"${subName}\", \"offerType\": \"${{ secrets.USERLZ_OFFER_TYPE }}\", \"owners\": [{\"objectId\": \"${{ secrets.USERLZ_SUBSCRIPTION_OWNER }}\"}]}"
+              
+              subId=$(az account subscription list --query "[?displayName=='$subName'].subscriptionId" --output tsv)
+                            
+              az tag create --resource-id /subscriptions/$subId --tags createdOn="$NOW" createdBy="$USER" initialOwner="$OWNER" programType="${{ secrets.USERLZ_PROGRAM_TYPE }}" programEnv="${{ secrets.USERLZ_PROGRAM_ENV }}" programName="${{ secrets.USERLZ_PROGRAM_NAME }}" "${{ secrets.USERLZ_TAGS }}"
 
-        - name: Add Subscription Tags
-          uses: azure/CLI@v1
-          with:
-            azcliversion: 2.21.0
-            inlineScript: |
-              NOW=$(date +"%m/%d/%Y_%I:%M:%S_%p")
-              az tag create --resource-id /subscriptions/${{ secrets.USERLZ_SUBNAME }} --tags createdOn="$NOW" createdBy="$USER" initialOwner="$OWNER" programType="${{ secrets.USERLZ_PROGRAM_TYPE }}" programEnv="${{ secrets.USERLZ_PROGRAM_ENV }}" programName="${{ secrets.USERLZ_PROGRAM_NAME }}"
 
 #        - name: Move Subscription to Management Group
 #          uses: azure/CLI@v1
@@ -56,3 +57,11 @@ jobs:
 #                programType=${{ secrets.USERLZ_PROGRAM_TYPE }} programEnv=${{ secrets.USERLZ_PROGRAM_ENV }} vnetPrefix= ${{ secrets.USERLZ_VNET_PREFIX }} \
 #                mgmtSubnetPrefix=${{ secrets.MGMT_SUBNET_PREFIX }} webSubnetPrefix= ${{ secrets.USERLZ_WEB_SUBNET_PREFIX  }} \
 #                appSubnetPrefix=${{ secrets.APP_SUBNET_PREFIX }} dataSubnetPrefix=${{ secrets.DATA_SUBNET_PREFIX }} firewallIP=${{ secrets.FIREWALL_IP }}
+
+#        - name: Remove Subscription Deployment Account as Owner
+#          uses: azure/CLI@v1
+#          with:
+#            azcliversion: 2.21.0
+#            inlineScript: |
+#              az account management-group subscription add --name "${{ secrets.USERLZ_MANAGEMENT_GROUP }}" \
+#              --subscription ${{ secrets.USERLZ_SUBNAME }}
