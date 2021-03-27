@@ -43,7 +43,7 @@ jobs:
               subId=$(az account subscription list --query "[?displayName=='$subName'].subscriptionId" --output tsv)
               az tag create --resource-id /subscriptions/$subId --tags createdOn="$NOW" programType="${{ secrets.USERLZ_PROGRAM_TYPE }}" programEnv="${{ secrets.USERLZ_PROGRAM_ENV }}" programName="${{ secrets.USERLZ_PROGRAM_NAME }}" ${{ secrets.USERLZ_TAGS }}
 
-        - name: Log in with Azure
+        - name: Log in with Azure 2
             uses: azure/login@v1
             with:
               creds: ${{ secrets.USERLZ_AZURE_GOV_CREDENTIALS }}
