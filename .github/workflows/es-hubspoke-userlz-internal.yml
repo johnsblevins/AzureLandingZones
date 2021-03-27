@@ -37,13 +37,13 @@ jobs:
               az tag create --resource-id /subscriptions/$subId --tags createdOn="$NOW" programType="${{ secrets.USERLZ_PROGRAM_TYPE }}" programEnv="${{ secrets.USERLZ_PROGRAM_ENV }}" programName="${{ secrets.USERLZ_PROGRAM_NAME }}" ${{ secrets.USERLZ_TAGS }}
 
 
-#        - name: Move Subscription to Management Group
-#          uses: azure/CLI@v1
-#          with:
-#            azcliversion: 2.21.0
-#            inlineScript: |
-#              az account management-group subscription add --name "${{ secrets.USERLZ_MANAGEMENT_GROUP }}" \
-#              --subscription ${{ secrets.USERLZ_SUBNAME }}
+        - name: Move Subscription to Management Group
+          uses: azure/CLI@v1
+          with:
+            azcliversion: 2.21.0
+            inlineScript: |
+              az account management-group subscription add --name "${{ secrets.USERLZ_MANAGEMENT_GROUP }}" \
+              --subscription $subId
 
 #        - name: User Landing Zone Deployment
 #          uses: azure/CLI@v1
