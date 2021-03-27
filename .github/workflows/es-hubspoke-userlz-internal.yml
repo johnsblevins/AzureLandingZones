@@ -32,6 +32,7 @@ jobs:
               --uri "${resourceManagerURI}providers/Microsoft.Billing/enrollmentAccounts/${{ secrets.USERLZ_ENROLLMENT_ACCOUNT_NAME }}/providers/Microsoft.Subscription/createSubscription?api-version=2019-10-01-preview" \
               --headers "{\"content-type\":\"application/json\"}" \
               --body "{\"displayName\": \"${subName}\", \"offerType\": \"${{ secrets.USERLZ_OFFER_TYPE }}\", \"owners\": [{\"objectId\": \"${{ secrets.USERLZ_SUBSCRIPTION_OWNER }}\"}]}"
+              sleep 10
               subId=$(az account subscription list --query "[?displayName=='$subName'].subscriptionId" --output tsv)
               az tag create --resource-id /subscriptions/$subId --tags createdOn="$NOW" programType="${{ secrets.USERLZ_PROGRAM_TYPE }}" programEnv="${{ secrets.USERLZ_PROGRAM_ENV }}" programName="${{ secrets.USERLZ_PROGRAM_NAME }}" ${{ secrets.USERLZ_TAGS }}
 
