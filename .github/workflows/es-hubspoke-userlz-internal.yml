@@ -27,7 +27,6 @@ jobs:
               az config set extension.use_dynamic_install=yes_without_prompt
               resourceManagerURI=$(az cloud show --query 'endpoints.resourceManager' -o tsv)
               subName="${{ secrets.USERLZ_PROGRAM_TYPE }}-${{ secrets.USERLZ_PROGRAM_ENV }}-${{ secrets.USERLZ_PROGRAM_NAME }}"
-              NOW=$(date +"%m/%d/%Y_%I:%M:%S_%p")
               az rest --method post \
               --uri "${resourceManagerURI}providers/Microsoft.Billing/enrollmentAccounts/${{ secrets.USERLZ_ENROLLMENT_ACCOUNT_NAME }}/providers/Microsoft.Subscription/createSubscription?api-version=2019-10-01-preview" \
               --headers "{\"content-type\":\"application/json\"}" \
@@ -39,6 +38,7 @@ jobs:
           with:
             azcliversion: 2.21.0
             inlineScript: |
+              NOW=$(date +"%m/%d/%Y_%I:%M:%S_%p")
               subName="${{ secrets.USERLZ_PROGRAM_TYPE }}-${{ secrets.USERLZ_PROGRAM_ENV }}-${{ secrets.USERLZ_PROGRAM_NAME }}"
               subId=$(az account subscription list --query "[?displayName=='$subName'].subscriptionId" --output tsv)
               az tag create --resource-id /subscriptions/$subId --tags createdOn="$NOW" programType="${{ secrets.USERLZ_PROGRAM_TYPE }}" programEnv="${{ secrets.USERLZ_PROGRAM_ENV }}" programName="${{ secrets.USERLZ_PROGRAM_NAME }}" ${{ secrets.USERLZ_TAGS }}
