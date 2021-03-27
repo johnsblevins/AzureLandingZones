@@ -33,15 +33,22 @@ jobs:
               --headers "{\"content-type\":\"application/json\"}" \
               --body "{\"displayName\": \"${subName}\", \"offerType\": \"${{ secrets.USERLZ_OFFER_TYPE }}\", \"owners\": [{\"objectId\": \"${{ secrets.USERLZ_SUBSCRIPTION_OWNER }}\"}]}"
               sleep 30
+        
+        - name: Apply Tags to Subscription
+          uses: azure/CLI@v1
+          with:
+            azcliversion: 2.21.0
+            inlineScript: |
+              subName="${{ secrets.USERLZ_PROGRAM_TYPE }}-${{ secrets.USERLZ_PROGRAM_ENV }}-${{ secrets.USERLZ_PROGRAM_NAME }}"
               subId=$(az account subscription list --query "[?displayName=='$subName'].subscriptionId" --output tsv)
               az tag create --resource-id /subscriptions/$subId --tags createdOn="$NOW" programType="${{ secrets.USERLZ_PROGRAM_TYPE }}" programEnv="${{ secrets.USERLZ_PROGRAM_ENV }}" programName="${{ secrets.USERLZ_PROGRAM_NAME }}" ${{ secrets.USERLZ_TAGS }}
-
 
         - name: Move Subscription to Management Group
           uses: azure/CLI@v1
           with:
             azcliversion: 2.21.0
             inlineScript: |
+              subName="${{ secrets.USERLZ_PROGRAM_TYPE }}-${{ secrets.USERLZ_PROGRAM_ENV }}-${{ secrets.USERLZ_PROGRAM_NAME }}"
               subId=$(az account subscription list --query "[?displayName=='$subName'].subscriptionId" --output tsv)
               az account management-group subscription add --name "${{ secrets.USERLZ_MANAGEMENT_GROUP }}" \
               --subscription $subId
