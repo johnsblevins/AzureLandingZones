@@ -48,7 +48,6 @@ jobs:
             with:
               creds: ${{ secrets.USERLZ_AZURE_GOV_CREDENTIALS }}
               environment: ${{ secrets.USERLZ_AZURE_ENVIRONMENT }}
-              enable-AzPSSession: false
 
         - name: Move Subscription to Management Group
           uses: azure/CLI@v1
