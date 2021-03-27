@@ -46,4 +46,4 @@ USERLZ_OFFER_TYPE
 MS-AZR-USGOV-0017P
 
 USERLZ_SUBSCRIPTION_OWNER
-xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx - objectId for User or Group to be initial Owner
+xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx - objectId for User or Group to be initial Owner - Default to Azure-EA-Subscription-Creators Group in UserLZ Pipeline

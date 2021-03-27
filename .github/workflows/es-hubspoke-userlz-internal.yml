@@ -31,16 +31,14 @@ jobs:
               --headers "{\"content-type\":\"application/json\"}" \
               --body "{\"displayName\": \"${subName}\", \"offerType\": \"${{ secrets.USERLZ_OFFER_TYPE }}\", \"owners\": [{\"objectId\": \"${{ secrets.USERLZ_SUBSCRIPTION_OWNER }}\"}]}"
 
-#        - name: Add Subscription Tags
-#          uses: azure/CLI@v1
-#          with:
-#            azcliversion: 2.21.0
-#            inlineScript: |
-#              NOW=$(date +"%m/%d/%Y_%I:%M:%S_%p")
-#              USER=$(az ad signed-in-user show --query userPrincipalName --output tsv)
-#              OWNER=$(az ad user show --id ${{ secrets.USERLZ_SUB_OWNER_OBJECT_ID }} )
-#              az tag create --resource-id /subscriptions/${{ secrets.USERLZ_SUBNAME }} --tags createdOn="$NOW" createdBy="$USER" owner="$OWNER" 
-#
+        - name: Add Subscription Tags
+          uses: azure/CLI@v1
+          with:
+            azcliversion: 2.21.0
+            inlineScript: |
+              NOW=$(date +"%m/%d/%Y_%I:%M:%S_%p")
+              az tag create --resource-id /subscriptions/${{ secrets.USERLZ_SUBNAME }} --tags createdOn="$NOW" createdBy="$USER" initialOwner="$OWNER" programType="${{ secrets.USERLZ_PROGRAM_TYPE }}" programEnv="${{ secrets.USERLZ_PROGRAM_ENV }}" programName="${{ secrets.USERLZ_PROGRAM_NAME }}"
+
 #        - name: Move Subscription to Management Group
 #          uses: azure/CLI@v1
 #          with:

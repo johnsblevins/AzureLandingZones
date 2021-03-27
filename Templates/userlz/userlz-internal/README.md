@@ -46,7 +46,6 @@ az role assignment create --assignee $grpObjId --role "Owner" --scope $enrAcctID
 
 # Assign Group "Management Group Contributor" role to Root Management Group
 rootMG=$(az account management-group list --query "[?displayName=='Root Management Group'].id" --output tsv)
-
 az role assignment create --role "Management Group Contributor" --scope "$rootMG" --assignee $grpObjId
 ```
 
