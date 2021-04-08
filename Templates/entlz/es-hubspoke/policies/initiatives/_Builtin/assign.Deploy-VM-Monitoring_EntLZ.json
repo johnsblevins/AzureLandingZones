@@ -1,0 +1,24 @@
+{
+    "sku": {
+     "name": "A0",
+     "tier": "Free"
+    },
+    "identity": {
+        "type": "SystemAssigned",
+        "role": "Owner"
+    },
+    "properties": {
+     "displayName": "Deploy-VM-Monitoring",
+     "policyDefinitionId": "55f3eceb-5573-4f18-9695-226972c6d74a",
+     "scope": "/providers/Microsoft.Management/managementGroups/%%entlzprefix%%",
+     "notScopes": [],
+     "parameters": {
+        "logAnalytics_1": {
+            "value": "/subscriptions/%%managementsubid%%/resourcegroups/%%entlzprefix%%-mgmt/providers/microsoft.operationalinsights/workspaces/%%entlzprefix%%-la-management-%%location%%"
+        }
+    },
+     "enforcementMode": "Default"
+    },
+    "type": "Microsoft.Authorization/policySetAssignments",
+    "name": "Deploy-VM-Monitoring"
+}

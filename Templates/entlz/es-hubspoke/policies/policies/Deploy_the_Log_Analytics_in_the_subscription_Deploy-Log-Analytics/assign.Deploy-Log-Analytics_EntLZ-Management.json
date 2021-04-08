@@ -1,0 +1,39 @@
+{
+ "sku": {
+  "name": "A0",
+  "tier": "Free"
+ },
+ "identity": {
+  "type": "SystemAssigned",
+  "role": "Owner"
+ },
+ "properties": {
+  "displayName": "Deploy-Log-Analytics",
+  "policyDefinitionId": "/providers/Microsoft.Management/managementGroups/%%entlzprefix%%/providers/Microsoft.Authorization/policyDefinitions/Deploy-Log-Analytics",
+  "scope": "/providers/Microsoft.Management/managementGroups/%%entlzprefix%%-management",
+  "notScopes": [],
+  "parameters": {
+      "workspaceName": {
+        "value": "%%entlzprefix%%-la-management-%%location%%"
+      },
+      "automationAccountName": {
+          "value": "%%entlzprefix%%-aa-management-%%location%%"
+      },
+      "workspaceRegion": {
+        "value": "%%location%%"
+      },
+      "automationRegion": {
+        "value": "%%location%%"
+      },
+      "rgName": {
+        "value": "%%entlzprefix%%-mgmt"
+      },
+      "retentionInDays": {
+        "value": "360"
+      }      
+  },
+  "enforcementMode": "Default"
+ },
+ "type": "Microsoft.Authorization/policyAssignments",
+ "name": "Deploy-Log-Analytics"
+}

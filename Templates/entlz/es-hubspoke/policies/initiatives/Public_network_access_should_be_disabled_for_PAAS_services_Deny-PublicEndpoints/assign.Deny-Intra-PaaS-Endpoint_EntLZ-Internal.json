@@ -1,0 +1,20 @@
+{
+ "sku": {
+  "name": "A0",
+  "tier": "Free"
+ },
+ "identity": {
+    "type": "SystemAssigned",
+    "role": ""
+ },
+ "properties": {
+  "displayName": "Deny-Intra-PaaS-Endpoint",
+  "policyDefinitionId": "/providers/Microsoft.Management/managementGroups/%%entlzprefix%%/providers/Microsoft.Authorization/policySetDefinitions/Deny-PublicEndpoints",
+  "scope": "/providers/Microsoft.Management/managementGroups/%%entlzprefix%%",
+  "notScopes": [],
+  "parameters": {}, 
+  "enforcementMode": "Default"
+ },
+ "type": "Microsoft.Authorization/policySetAssignments",
+ "name": "Deny-Intra-PaaS-Endpoint"
+}

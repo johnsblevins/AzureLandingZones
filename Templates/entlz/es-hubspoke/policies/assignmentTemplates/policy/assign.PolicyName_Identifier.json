@@ -1,0 +1,27 @@
+{
+ "sku": {
+  "name": "A0",
+  "tier": "Free"
+ },
+ "identity": {
+  "type": "SystemAssigned",
+  "role": ""
+ },
+ "properties": {
+  "displayName": "<<Assignment Display Name - Freeform>>",
+  "policyDefinitionId": "/providers/Microsoft.Management/managementGroups/%%entlzprefix%%/providers/Microsoft.Authorization/policyDefinitions/<<PolicyName>>",
+  "scope": "/providers/Microsoft.Management/managementGroups/%%entlzprefix%%",
+  "notScopes": [],
+  "parameters": {
+      "<<param1>>": {
+        "value": "<<param1value>>"
+      },
+      "<param2>": {
+          "value": "<<param2value>>"
+      }
+  },
+  "enforcementMode": "Default"
+ },
+ "type": "Microsoft.Authorization/policyAssignments",
+ "name": "<<UniqueName_max_length_24_A-Za-z0-9_Dash_Underscore_NoSpaces>>"
+}

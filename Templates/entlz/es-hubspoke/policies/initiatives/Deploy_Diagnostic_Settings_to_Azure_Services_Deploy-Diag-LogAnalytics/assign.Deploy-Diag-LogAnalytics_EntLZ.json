@@ -1,0 +1,24 @@
+{
+ "sku": {
+  "name": "A0",
+  "tier": "Free"
+ },
+ "identity": {
+  "type": "SystemAssigned",
+  "role": "Owner"
+ },
+ "properties": {
+  "displayName": "Deploy-Resource-Diag",
+  "policyDefinitionId": "/providers/Microsoft.Management/managementGroups/%%entlzprefix%%/providers/Microsoft.Authorization/policySetDefinitions/Deploy-Diag-LogAnalytics",
+  "scope": "/providers/Microsoft.Management/managementGroups/%%entlzprefix%%",
+  "notScopes": [],
+  "parameters": {
+    "logAnalytics": {
+        "value": "/subscriptions/%%managementsubid%%/resourcegroups/%%entlzprefix%%-mgmt/providers/microsoft.operationalinsights/workspaces/%%entlzprefix%%-la-management-%%location%%"
+    }
+ },
+  "enforcementMode": "Default"
+ },
+ "type": "Microsoft.Authorization/policySetAssignments",
+ "name": "Deploy-Resource-Diag"
+}

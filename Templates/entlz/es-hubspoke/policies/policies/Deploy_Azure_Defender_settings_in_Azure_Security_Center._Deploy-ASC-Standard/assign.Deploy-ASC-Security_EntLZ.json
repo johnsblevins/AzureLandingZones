@@ -1,0 +1,48 @@
+{
+ "sku": {
+  "name": "A0",
+  "tier": "Free"
+ },
+ "identity": {
+  "type": "SystemAssigned",
+  "role": "Owner"
+ },
+ "properties": {
+  "displayName": "Deploy-ASC-Defender",
+  "policyDefinitionId": "/providers/Microsoft.Management/managementGroups/%%entlzprefix%%/providers/Microsoft.Authorization/policyDefinitions/Deploy-ASC-Standard",
+  "scope": "/providers/Microsoft.Management/managementGroups/%%entlzprefix%%",
+  "notScopes": [],
+  "parameters": {
+      "pricingTierVms": {
+        "value": "Standard"
+      },
+      "pricingTierSqlServers": {
+        "value": "Standard"
+      },
+      "pricingTierAppServices": {
+        "value": "Free"
+      },
+      "pricingTierStorageAccounts": {
+        "value": "Standard"
+      },
+      "pricingTierContainerRegistry": { 
+        "value": "Standard"
+      },
+      "pricingTierKeyVaults": {
+        "value": "Free"
+      },
+      "pricingTierKubernetesService": {
+        "value": "Standard"
+      },
+      "pricingTierArm": {
+        "value": "Free"
+      },
+      "pricingTierDns": {
+        "value": "Free"
+      }      
+  },
+  "enforcementMode": "Default"
+ },
+ "type": "Microsoft.Authorization/policyAssignments",
+ "name": "Deploy-ASC-Security"
+}

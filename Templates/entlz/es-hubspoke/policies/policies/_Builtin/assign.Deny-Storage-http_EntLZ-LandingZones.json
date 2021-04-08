@@ -1,0 +1,20 @@
+{
+ "sku": {
+  "name": "A0",
+  "tier": "Free"
+ },
+ "identity": {
+  "type": "SystemAssigned",
+  "role": "Reader"
+ },
+ "properties": {
+  "displayName": "Enforce-Https-Ingress-AKS",
+  "policyDefinitionId": "1a5b4dca-0b6f-4cf5-907c-56316bc1bf3d",
+  "scope": "/providers/Microsoft.Management/managementGroups/%%entlzprefix%%-landingzones",
+  "notScopes": [],
+  "parameters": {},
+  "enforcementMode": "Default"
+ },
+ "type": "Microsoft.Authorization/policyAssignments",
+ "name": "Enforce-AKS-HTTPS"
+}

@@ -1,0 +1,59 @@
+{
+    "properties": {
+      "displayName": "Restrict KeyVault firewall rules",
+      "policyType": "Custom",
+      "mode": "All",
+      "description": "This policy restrict IP ranges used in KeyVault firewall rules",
+      "metadata": {
+        "category": "Key Vault"
+      },
+      "parameters": {
+        "effect": {
+          "type": "String",
+          "metadata": {
+            "displayName": "Effect",
+            "description": "Enable or disable the execution of the policy"
+          },
+          "allowedValues": [
+            "Audit",
+            "Deny",
+            "Disabled"
+          ],
+          "defaultValue": "Deny"
+        },
+        "allowedAddressRanges": {
+          "type": "Array",
+          "metadata": {
+            "description": "The list of allowed IP address ranges (Allowed internet address ranges can be provided using CIDR notation in the form 10.0.0.0/24 or as individual IP addresses like 10.0.0.4)",
+            "displayName": "Address Range"
+          },
+          "defaultValue": []
+        }
+      },
+      "policyRule": {
+        "if": {
+          "allOf": [
+            {
+              "field": "type",
+              "equals": "Microsoft.KeyVault/vaults"
+            },
+            {
+              "field": "Microsoft.KeyVault/vaults/networkAcls.ipRules[*].value",
+              "notEquals": ""
+            },
+            {
+              "not": {
+                "field": "Microsoft.KeyVault/vaults/networkAcls.ipRules[*].value",
+                "in": "[parameters('allowedAddressRanges')]"
+              }
+            }
+          ]
+        },
+        "then": {
+          "effect": "[parameters('effect')]"
+        }
+      }
+    },
+    "type": "Microsoft.Authorization/policyDefinitions",
+    "name": "Restrict-KV-FW-Rules"
+  }

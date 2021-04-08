@@ -115,12 +115,66 @@
      "Disabled"
     ],
     "defaultValue": "Deny"
-   }
+   },
+   "RestrictSAFWRulesEffect": {
+    "type": "String",
+    "metadata": {
+     "displayName": "Restrict FW Rules on Storage Accounts",
+     "description": "Restrict FW Rules on Storage Accounts"
+    },
+    "allowedValues": [
+     "Audit",
+     "Deny",
+     "Disabled"
+    ],
+    "defaultValue": "Deny"
+   },
+   "RestrictSAFWRulesAllowedAddressRanges": {
+    "type": "Array",
+    "metadata": {
+     "displayName": "Allowed Address Ranges for FW Rules on Storage Accounts",
+     "description": "The list of allowed IP address ranges (Allowed internet address ranges can be provided using CIDR notation in the form 10.0.0.0/24 or as individual IP addresses like 10.0.0.4)"
+    },
+    "defaultValue": []
+   },
+   "RestrictKVFWRulesEffect": {
+    "type": "String",
+    "metadata": {
+     "displayName": "Restrict FW Rules on Key Vaults",
+     "description": "Restrict FW Rules on Key Vaults"
+    },
+    "allowedValues": [
+     "Audit",
+     "Deny",
+     "Disabled"
+    ],
+    "defaultValue": "Deny"
+   },
+   "RestrictKVFWRulesAllowedAddressRanges": {
+    "type": "Array",
+    "metadata": {
+     "displayName": "Allowed Address Ranges for FW Rules on Key Vaults",
+     "description": "The list of allowed IP address ranges (Allowed internet address ranges can be provided using CIDR notation in the form 10.0.0.0/24 or as individual IP addresses like 10.0.0.4)"
+    },
+    "defaultValue": []
+   },
+   "DenyNetAccessDisksEffect": {
+    "type": "String",
+    "metadata": {
+     "displayName": "Deny Network Access to Managed Disks",
+     "description": "Deny Network Access to Managed Disks"
+    },
+    "allowedValues": [
+     "Modify",
+     "Disabled"
+    ],
+    "defaultValue": "Modify"
+   }   
   },
   "policyDefinitions": [
    {
     "policyDefinitionReferenceId": "CosmosDenyPaasPublicIP",
-    "policyDefinitionId": "/providers/Microsoft.Management/managementGroups/caf/providers/Microsoft.Authorization/policyDefinitions/Deny-PublicEndpoint-CosmosDB",
+    "policyDefinitionId": "/providers/Microsoft.Management/managementGroups/%%entlzprefix%%/providers/Microsoft.Authorization/policyDefinitions/Deny-PublicEndpoint-CosmosDB",
     "parameters": {
      "effect": {
       "value": "[parameters('CosmosPublicIpDenyEffect')]"
@@ -129,7 +183,7 @@
    },
    {
     "policyDefinitionReferenceId": "MariaDBDenyPaasPublicIP",
-    "policyDefinitionId": "/providers/Microsoft.Management/managementGroups/caf/providers/Microsoft.Authorization/policyDefinitions/Deny-PublicEndpoint-MariaDB",
+    "policyDefinitionId": "/providers/Microsoft.Management/managementGroups/%%entlzprefix%%/providers/Microsoft.Authorization/policyDefinitions/Deny-PublicEndpoint-MariaDB",
     "parameters": {
      "effect": {
       "value": "[parameters('MariaDBPublicIpDenyEffect')]"
@@ -138,7 +192,7 @@
    },
    {
     "policyDefinitionReferenceId": "MySQLDenyPaasPublicIP",
-    "policyDefinitionId": "/providers/Microsoft.Management/managementGroups/caf/providers/Microsoft.Authorization/policyDefinitions/Deny-PublicEndpoint-MySQL",
+    "policyDefinitionId": "/providers/Microsoft.Management/managementGroups/%%entlzprefix%%/providers/Microsoft.Authorization/policyDefinitions/Deny-PublicEndpoint-MySQL",
     "parameters": {
      "effect": {
       "value": "[parameters('MySQLPublicIpDenyEffect')]"
@@ -147,7 +201,7 @@
    },
    {
     "policyDefinitionReferenceId": "PostgreSQLDenyPaasPublicIP",
-    "policyDefinitionId": "/providers/Microsoft.Management/managementGroups/caf/providers/Microsoft.Authorization/policyDefinitions/Deny-PublicEndpoint-PostgreSql",
+    "policyDefinitionId": "/providers/Microsoft.Management/managementGroups/%%entlzprefix%%/providers/Microsoft.Authorization/policyDefinitions/Deny-PublicEndpoint-PostgreSql",
     "parameters": {
      "effect": {
       "value": "[parameters('PostgreSQLPublicIpDenyEffect')]"
@@ -156,7 +210,7 @@
    },
    {
     "policyDefinitionReferenceId": "KeyVaultDenyPaasPublicIP",
-    "policyDefinitionId": "/providers/Microsoft.Management/managementGroups/caf/providers/Microsoft.Authorization/policyDefinitions/Deny-PublicEndpoint-KeyVault",
+    "policyDefinitionId": "/providers/Microsoft.Management/managementGroups/%%entlzprefix%%/providers/Microsoft.Authorization/policyDefinitions/Deny-PublicEndpoint-KeyVault",
     "parameters": {
      "effect": {
       "value": "[parameters('KeyVaultPublicIpDenyEffect')]"
@@ -165,7 +219,7 @@
    },
    {
     "policyDefinitionReferenceId": "SqlServerDenyPaasPublicIP",
-    "policyDefinitionId": "/providers/Microsoft.Management/managementGroups/caf/providers/Microsoft.Authorization/policyDefinitions/Deny-PublicEndpoint-Sql",
+    "policyDefinitionId": "/providers/Microsoft.Management/managementGroups/%%entlzprefix%%/providers/Microsoft.Authorization/policyDefinitions/Deny-PublicEndpoint-Sql",
     "parameters": {
      "effect": {
       "value": "[parameters('SqlServerPublicIpDenyEffect')]"
@@ -174,7 +228,7 @@
    },
    {
     "policyDefinitionReferenceId": "StorageDenyPaasPublicIP",
-    "policyDefinitionId": "/providers/Microsoft.Management/managementGroups/caf/providers/Microsoft.Authorization/policyDefinitions/Deny-PublicEndpoint-Storage",
+    "policyDefinitionId": "/providers/Microsoft.Management/managementGroups/%%entlzprefix%%/providers/Microsoft.Authorization/policyDefinitions/Deny-PublicEndpoint-Storage",
     "parameters": {
      "effect": {
       "value": "[parameters('StoragePublicIpDenyEffect')]"
@@ -183,16 +237,49 @@
    },
    {
     "policyDefinitionReferenceId": "AKSDenyPaasPublicIP",
-    "policyDefinitionId": "/providers/Microsoft.Management/managementGroups/caf/providers/Microsoft.Authorization/policyDefinitions/Deny-PublicEndpoint-Aks",
+    "policyDefinitionId": "/providers/Microsoft.Management/managementGroups/%%entlzprefix%%/providers/Microsoft.Authorization/policyDefinitions/Deny-PublicEndpoint-Aks",
     "parameters": {
      "effect": {
       "value": "[parameters('AKSPublicIpDenyEffect')]"
      }
     }
-   }
+   },
+   {
+    "policyDefinitionReferenceId": "RestrictSAFWRules",
+    "policyDefinitionId": "/providers/Microsoft.Management/managementGroups/%%entlzprefix%%/providers/Microsoft.Authorization/policyDefinitions/Restrict-SA-FW-Rules",
+    "parameters": {
+     "effect": {
+      "value": "[parameters('RestrictSAFWRulesEffect')]"
+     },
+     "AllowedAddressRanges":{
+         "value": "[parameters('RestrictSAFWRulesAllowedAddressRanges')]"
+     }
+    }
+   },
+   {
+    "policyDefinitionReferenceId": "RestrictKVFWRules",
+    "policyDefinitionId": "/providers/Microsoft.Management/managementGroups/%%entlzprefix%%/providers/Microsoft.Authorization/policyDefinitions/Restrict-KV-FW-Rules",
+    "parameters": {
+     "effect": {
+      "value": "[parameters('RestrictKVFWRulesEffect')]"
+     },
+     "AllowedAddressRanges":{
+         "value": "[parameters('RestrictKVFWRulesAllowedAddressRanges')]"
+     }
+    }
+   },
+   {
+    "policyDefinitionReferenceId": "DenyNetAccessDisks",
+    "policyDefinitionId": "/providers/Microsoft.Management/managementGroups/%%entlzprefix%%/providers/Microsoft.Authorization/policyDefinitions/Deny-Net-Access-Disks",
+    "parameters": {
+     "effect": {
+      "value": "[parameters('DenyNetAccessDisksEffect')]"
+     }
+    }
+   }   
   ]
  },
- "id": "/providers/Microsoft.Management/managementGroups/caf/providers/Microsoft.Authorization/policySetDefinitions/Deny-PublicEndpoints",
+ "id": "/providers/Microsoft.Management/managementGroups/%%entlzprefix%%/providers/Microsoft.Authorization/policySetDefinitions/Deny-PublicEndpoints",
  "type": "Microsoft.Authorization/policySetDefinitions",
  "name": "Deny-PublicEndpoints"
 }

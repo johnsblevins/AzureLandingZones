@@ -1,0 +1,21 @@
+{
+    "sku": {
+     "name": "A0",
+     "tier": "Free"
+    },
+    "identity": {
+        "type": "SystemAssigned",
+        "role": "Security Admin"
+    },
+    "properties": {
+     "displayName": "ASC-Monitoring",
+     "policyDefinitionId": "1f3afdf9-d0c9-4c3d-847f-89da613e70a8",
+     "scope": "/providers/Microsoft.Management/managementGroups/%%entlzprefix%%",
+     "notScopes": [],
+     "parameters": {
+    },
+     "enforcementMode": "Default"
+    },
+    "type": "Microsoft.Authorization/policySetAssignments",
+    "name": "Deploy-ASC-Monitoring"
+}

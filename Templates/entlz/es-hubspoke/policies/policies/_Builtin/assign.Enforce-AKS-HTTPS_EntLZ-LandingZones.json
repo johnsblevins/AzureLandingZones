@@ -1,0 +1,16 @@
+{
+ "sku": {
+  "name": "A0",
+  "tier": "Free"
+ },
+ "properties": {
+  "displayName": "Enforce-Secure-Storage",
+  "policyDefinitionId": "404c3081-a854-4457-ae30-26a93ef643f9",
+  "scope": "/providers/Microsoft.Management/managementGroups/%%entlzprefix%%-landingzones",
+  "notScopes": [],
+  "parameters": {},
+  "enforcementMode": "Default"
+ },
+ "type": "Microsoft.Authorization/policyAssignments",
+ "name": "Deny-Storage-http"
+}

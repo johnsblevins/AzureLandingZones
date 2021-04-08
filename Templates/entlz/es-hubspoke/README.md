@@ -1,11 +1,11 @@
 # Deploy Enterprise-Scale with VNET Hub and Spoke Architecture
 
-The Enterprise-Scale architecture is modular by design and allow organizations to start with foundational landing zones that support their application portfolios and add hybrid connectivity with ExpressRoute or VPN when required. Alternatively, organizations can start with an Enterprise-Scale architecture based on the traditional hub and spoke network topology if customers require hybrid connectivity to on-premises locations from the begining.  
+The Enterprise-Scale architecture is modular by design and allows organizations to start with a foundational landing zone that supports their application portfolios with hybrid onpremises connectivity using either ExpressRoute or VPN where required.  This implementation utilizes a Virtual Network (VNET) hub and spoke transit network architecture.  The connectivity components contained in the solution can be replaced with a Virtual WAN (VWAN) hub and spoke architecture if required.    
 
 ![CAF Enterprise Scale](media/cafentscale.png)
 
 ## Please NOTE this is a Custom Solution Repository
-The orginal source for this solution can be found on GitHub at https://github.com/Azure/Enterprise-Scale/tree/main/docs/reference/adventureworks.  The version contained in this repository includes a cloned copy of the original templates, as well as an added set of CICD script and template files for use by DevOps teams to customize the solution and make the deployment repeatable in their environment.  It also includes modifications for deployment of the template in Microsoft Azure Government (MAG).
+The reference implementation for this solution is based on the CAF enterprise scale landing zone templates which can be found on GitHub at https://github.com/Azure/Enterprise-Scale/tree/main/docs/reference/adventureworks.  The version contained in this repository includes updates to the original templates, as well as an added set of CICD pipeline templates for GitHub and GitLab deployments as well as converted BICEP template files for use by DevOps teams to customize the solution and make the deployment repeatable and more manageable in their environment.  It also includes modifications for deployment of the template in Microsoft Azure Government (MAG).
 
 # Deployment Instructions
 
@@ -56,11 +56,156 @@ This step will create an app registration called "azure-entlz-deployer".  You'll
 
 6. Deploy Pipeline
 
-
-
 ```
 Get-AzRoleAssignment | where {$_.Scope -eq "/"}
 New-AzRoleAssignment -ObjectId <user/group object id> -Scope "/" -RoleDefinitionName Owner
+```
+
+# Pipeline Components
+## Pipeline Input Parameters
+
+Enterprise Landing Zone (EntLZ) Prefix - 5 character identifier for Enterprise Landing Zone
+
+## Management Group Deployment
+In this step the following management group structure is created using the EntLZ Prefix parameter.  In the sample below "CAF" is used as the prefix identifier:
+
+    Tenant (/)
+        Tenant Root Group
+            CAF (Root)
+                CAF-Platform
+                    CAF-Management
+                    CAF-Identity
+                    CAF-Connectivity
+                    CAF-Security
+                CAF-LandingZones
+                    CAF-Internal
+                        CAF-Internal-Prod
+                        CAF-Internal-NonProd
+                    CAF-External
+                        CAF-External-Prod
+                        CAF-External-NonProd
+                CAF-Decomissioned
+                CAF-Onboarding
+                CAF-Sandboxes
+                    CAF-Sandbox-Management
+                    CAF-Sandbox-LandingZones
+
+In addition, the Management Group Hierarchy settings are configured such that the "CAF-Onboarding" management group is configured as the default management group for new subscriptions and RBAC for the Management Group hierarchy is set to require "Management Group Contributor" role to add/remove/modify management groups.  This prevents non-privileged users from making changes to the management group hierarchy or creating their own branches.
+
+The following script is used for this step:
+```
+# BICEP Template Deployment to Create the Management Group Hierarchy
+az deployment tenant create --name "EntScale-Mgs-${{ secrets.ENTLZ_LOCATION }}" --location ${{ secrets.ENTLZ_LOCATION }} \
+--template-file Templates/entlz/es-hubspoke/mgmtGroups.bicep --parameters \
+entLZPrefix=${{ secrets.ENTLZ_ENTERPRISE_SCALE_COMPANY_PREFIX }}
+
+# Management Group Hierarchy Settings
+TenantRootMG=$(az account management-group list --query "[0].name" --output tsv)
+resourceManagerURI=$(az cloud show --query 'endpoints.resourceManager' -o tsv)
+az rest --method put --headers "{\"Content-Type\":\"application/json\"}" --uri "${resourceManagerURI}providers/Microsoft.Management/managementGroups/$TenantRootMG/settings/default?api-version=2020-05-01" --body "{\"properties\": {\"defaultManagementGroup\": \"/providers/Microsoft.Management/managementGroups/${{ secrets.ENTLZ_ENTERPRISE_SCALE_COMPANY_PREFIX }}-onboarding\",\"requireAuthorizationForGroupCreation\": \"true\"}}" 
+```
+
+## Azure Policy Deployment
+In this step Azure Policies and Policy Initiatives are created and assigned to the management group hierarchy using a Policy-as-Code approach as outlined at [https://docs.microsoft.com/en-us/azure/governance/policy/concepts/policy-as-code](https://docs.microsoft.com/en-us/azure/governance/policy/concepts/policy-as-code).  The folder structure used with the pipeline is as follows:
+
+        .policies
+        |- assignmentTemplates _______________          # Sample Assignment Templates
+        |  |- policy/                                   # Subfolder for Policy Template
+        |     |- assign.PolicyName_Identifier.json      # Template definition for Policy
+        |  |- initiative/                               # Subfolder for Initiative Template
+        |     |- assign.InitiativeName_Identifier.json  # Template definition for Initiative        
+        |- policies/  ________________________          # Root folder for policy resources
+        |  |- policy1/  ______________________          # Subfolder for a policy
+        |     |- policy.json _________________          # Policy definition
+        |     |- assign.<name1>.json _________          # Assignment 1 for this policy definition
+        |     |- assign.<name2>.json _________          # Assignment 2 for this policy definition
+        |  |- policy2/  ______________________          # Subfolder for a policy
+        |     |- policy.json _________________          # Policy definition
+        |     |- assign.<name1>.json _________          # Assignment 1 for this policy definition
+        |     |- assign.<name2>.json _________          # Assignment 2 for this policy definition
+        |- initiatives/ ______________________          # Root folder for initiatives
+        |  |- init1/ _________________________          # Subfolder for an initiative
+        |     |- policyset.json ______________          # Initiative definition
+        |     |- assign.<name1>.json _________          # Assignment 1 for this policy initiative
+        |     |- assign.<name2>.json _________          # Assignment 2 for this policy initiative
+        |  |- init2/ _________________________          # Subfolder for an initiative
+        |     |- policyset.json ______________          # Initiative definition
+        |     |- assign.<name1>.json _________          # Assignment 1 for this policy initiative
+        |     |- assign.<name2>.json _________          # Assignment 2 for this policy initiative
+
+This step in the pipeline can be used after the initial Enterprise Landing Zone deployment to manage Policy Defintion and Assignment going forward within the environment.
+
+The following deployment script is used for this step:
+
+```
+# Deploy Policy Definitions
+for f in $(find Templates/entlz/es-hubspoke/policies/policies -name policy.json); \
+do name=`jq -r .name $f`; \
+description=`jq -r .properties.description $f`; \
+displayName=`jq -r .properties.displayName $f`; \
+rules=`jq -r .properties.policyRule $f`; \
+params=`jq -r .properties.parameters $f`; \
+mode=`jq -r .properties.mode $f`; \
+az policy definition create --name "$name" --description "$description" --display-name "$displayName" --rules "$rules" --params "$params" --management-group "jblz1" --mode "$mode"   ;\
+done
+
+# Deploy Initiative Definitions
+for f in $(find Templates/entlz/es-hubspoke/policies/initiatives -name policyset.json); \
+do name=`jq -r .name $f`; \
+description=`jq -r .properties.description $f`; \
+displayName=`jq -r .properties.displayName $f`; \
+definitions=`jq -r .properties.policyDefinitions $f | sed -e 's/%%entlzprefix%%/jblz1/g'`; \
+params=`jq -r .properties.parameters $f`; \
+az policy set-definition create --name "$name" --description "$description" --display-name "$displayName" --definitions "$definitions" --params "$params" --management-group "jblz1"   ;\
+done
+
+# Delay 120
+sleep 120
+
+# Deploy Policy Assignments
+for f in $(find Templates/entlz/es-hubspoke/policies/policies -name assign.*.json); \
+do name=`jq -r .name $f`; \
+displayName=`jq -r .properties.displayName $f`; \
+location="usgovvirginia"; \
+policy=`jq -r .properties.policyDefinitionId $f | sed -e 's/%%entlzprefix%%/jblz1/g' | sed -e 's/%%location%%/usgovvirginia/g' | sed -e 's/%%managementsubid%%/07526f72-6689-42be-945f-bb6ad0214b71/g'`; \
+params=`jq -r .properties.parameters $f | sed -e 's/%%entlzprefix%%/jblz1/g' | sed -e 's/%%location%%/usgovvirginia/g' | sed -e 's/%%managementsubid%%/07526f72-6689-42be-945f-bb6ad0214b71/g'`; \
+scope=`jq -r .properties.scope $f | sed -e 's/%%entlzprefix%%/jblz1/g' | sed -e 's/%%location%%/usgovvirginia/g' | sed -e 's/%%managementsubid%%/07526f72-6689-42be-945f-bb6ad0214b71/g'`; \
+sku=`jq -r .sku.tier $f`; \
+identity=`jq -r .identity $f`; \
+role=`jq -r .identity.role $f`; \
+[[ -z $role ]] && role="Contributor"; \
+echo "Creating Policy Assignment $name"; \
+if [[ $identity = "null" ]]  ;
+then
+az policy assignment create --name "$name" --display-name "$displayName" --location "$location" --policy "$policy" --params "$params" --scope "$scope"  --sku "$sku";
+else
+az policy assignment create --name "$name" --display-name "$displayName" --location "$location" --policy "$policy" --params "$params"  --scope "$scope"  --sku "$sku"  --assign-identity --identity-scope "$scope" --role "$role";
+fi ; \
+done
+
+# Deploy Initiative Assignments
+for f in $(find Templates/entlz/es-hubspoke/policies/initiatives -name assign.*.json); \
+do name=`jq -r .name $f`; \
+displayName=`jq -r .properties.displayName $f`; \
+location="usgovvirginia"; \
+policySetDefinition=`jq -r .properties.policyDefinitionId $f | sed -e 's/%%entlzprefix%%/jblz1/g' | sed -e 's/%%location%%/usgovvirginia/g' | sed -e 's/%%managementsubid%%/07526f72-6689-42be-945f-bb6ad0214b71/g'`; \
+params=`jq -r .properties.parameters $f | sed -e 's/%%entlzprefix%%/jblz1/g' | sed -e 's/%%location%%/usgovvirginia/g' | sed -e 's/%%managementsubid%%/07526f72-6689-42be-945f-bb6ad0214b71/g'`; \
+scope=`jq -r .properties.scope $f | sed -e 's/%%entlzprefix%%/jblz1/g' | sed -e 's/%%location%%/usgovvirginia/g' | sed -e 's/%%managementsubid%%/07526f72-6689-42be-945f-bb6ad0214b71/g'`; \
+sku=`jq -r .sku.tier $f`; \
+identity=`jq -r .identity $f`; \
+role=`jq -r .identity.role $f`; \
+[[ -z $role ]] && role="Contributor"; \
+echo "Creating Initiative Assignment $name"; \
+if [[ $identity = "null" ]]  ;
+then
+az policy assignment create --name "$name" --display-name "$displayName" --location "$location" --policy-set-definition "$policySetDefinition" --params "$params" --scope "$scope"  --sku "$sku";
+else
+az policy assignment create --name "$name" --display-name "$displayName" --location "$location" --policy-set-definition "$policySetDefinition" --params "$params" --scope "$scope"  --sku "$sku"  --assign-identity --identity-scope "$scope" --role "$role";
+fi; \
+done
+
+# Delay 120
+sleep 120
 ```
 
 # List of Modifications from Original Templates

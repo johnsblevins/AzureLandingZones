@@ -1,0 +1,20 @@
+{
+ "sku": {
+  "name": "A0",
+  "tier": "Free"
+ },
+ "identity": {
+  "type": "SystemAssigned",
+  "role": "Owner"
+ },
+ "properties": {
+  "displayName": "Deploy-VM-Backup",
+  "policyDefinitionId": "/providers/Microsoft.Management/managementGroups/%%entlzprefix%%/providers/Microsoft.Authorization/policyDefinitions/Deploy-AzureBackup-on-VM",
+  "scope": "/providers/Microsoft.Management/managementGroups/%%entlzprefix%%-landingzones",
+  "notScopes": [],
+  "parameters": {},
+  "enforcementMode": "Default"
+ },
+ "type": "Microsoft.Authorization/policyAssignments",
+ "name": "Deploy-VM-Backup"
+}

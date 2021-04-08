@@ -1,0 +1,27 @@
+{
+ "sku": {
+  "name": "A0",
+  "tier": "Free"
+ },
+ "identity": {
+  "type": "SystemAssigned",
+  "role": "Owner"
+ },
+ "properties": {
+  "displayName": "Deploy-AzActivity-Log",
+  "policyDefinitionId": "/providers/Microsoft.Management/managementGroups/%%entlzprefix%%/providers/Microsoft.Authorization/policyDefinitions/Deploy-Diagnostics-ActivityLog",
+  "scope": "/providers/Microsoft.Management/managementGroups/%%entlzprefix%%",
+  "notScopes": [],
+  "parameters": {
+      "logAnalytics": {
+        "value": "/subscriptions/%%managementsubid%%/resourcegroups/%%entlzprefix%%-mgmt/providers/microsoft.operationalinsights/workspaces/%%entlzprefix%%-la-management-%%location%%"
+      },
+      "logsEnabled": {
+        "value": "True"
+      }      
+  },
+  "enforcementMode": "Default"
+ },
+ "type": "Microsoft.Authorization/policyAssignments",
+ "name": "Deploy-AzActivity-Log"
+}
