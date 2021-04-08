@@ -1,0 +1,24 @@
+{
+ "sku": {
+  "name": "A0",
+  "tier": "Free"
+ },
+ "properties": {
+  "displayName": "Allowed-Locations-EntLZ",
+  "policyDefinitionId": "e56962a6-4747-49cd-b67b-bf8b01975c4c",
+  "scope": "/providers/Microsoft.Management/managementGroups/%%entlzprefix%%",
+  "notScopes": [],
+  "parameters": {
+      "listOfAllowedLocations": {
+        "value": [
+          "USGov Arizona",
+          "USGov Texas",
+          "USGov Virginia"
+        ]
+      }
+  },
+  "enforcementMode": "Default"
+ },
+ "type": "Microsoft.Authorization/policyAssignments",
+ "name": "Allowed-Locations-EntLZ"
+}
