@@ -6,7 +6,7 @@
  "properties": {
   "displayName": "Deny-Privileged-AKS",
   "policyDefinitionId": "95edb821-ddaf-4404-9732-666045e056b4",
-  "scope": "/providers/Microsoft.Management/managementGroups/%%entlzprefix%%-landingzones",
+  "scope": "/providers/Microsoft.Management/managementGroups/%%policydefinitionmg%%-landingzones",
   "notScopes": [],
   "parameters": {},
   "enforcementMode": "Default"

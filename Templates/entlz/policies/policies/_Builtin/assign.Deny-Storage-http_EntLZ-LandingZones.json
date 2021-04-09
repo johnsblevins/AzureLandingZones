@@ -10,7 +10,7 @@
  "properties": {
   "displayName": "Enforce-Https-Ingress-AKS",
   "policyDefinitionId": "1a5b4dca-0b6f-4cf5-907c-56316bc1bf3d",
-  "scope": "/providers/Microsoft.Management/managementGroups/%%entlzprefix%%-landingzones",
+  "scope": "/providers/Microsoft.Management/managementGroups/%%policydefinitionmg%%-landingzones",
   "notScopes": [],
   "parameters": {},
   "enforcementMode": "Default"

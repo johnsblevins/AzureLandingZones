@@ -9,8 +9,8 @@
  },
  "properties": {
   "displayName": "Deploy-ASC-Defender",
-  "policyDefinitionId": "/providers/Microsoft.Management/managementGroups/%%entlzprefix%%/providers/Microsoft.Authorization/policyDefinitions/Deploy-ASC-Standard",
-  "scope": "/providers/Microsoft.Management/managementGroups/%%entlzprefix%%",
+  "policyDefinitionId": "/providers/Microsoft.Management/managementGroups/%%policydefinitionmg%%/providers/Microsoft.Authorization/policyDefinitions/Deploy-ASC-Standard",
+  "scope": "/providers/Microsoft.Management/managementGroups/%%policydefinitionmg%%",
   "notScopes": [],
   "parameters": {
       "pricingTierVms": {

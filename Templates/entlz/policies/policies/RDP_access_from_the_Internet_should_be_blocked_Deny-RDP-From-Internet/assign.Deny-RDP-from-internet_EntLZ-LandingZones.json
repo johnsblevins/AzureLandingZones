@@ -5,8 +5,8 @@
  },
  "properties": {
   "displayName": "Deny-RDP-from-internet",
-  "policyDefinitionId": "/providers/Microsoft.Management/managementGroups/%%entlzprefix%%/providers/Microsoft.Authorization/policyDefinitions/Deny-RDP-From-Internet",
-  "scope": "/providers/Microsoft.Management/managementGroups/%%entlzprefix%%-landingzones",
+  "policyDefinitionId": "/providers/Microsoft.Management/managementGroups/%%policydefinitionmg%%/providers/Microsoft.Authorization/policyDefinitions/Deny-RDP-From-Internet",
+  "scope": "/providers/Microsoft.Management/managementGroups/%%policydefinitionmg%%-landingzones",
   "notScopes": [],
   "parameters": {},
   "enforcementMode": "Default"

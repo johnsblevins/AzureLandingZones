@@ -6,7 +6,7 @@
  "properties": {
   "displayName": "Deny-IP-forwarding",
   "policyDefinitionId": "88c0b9da-ce96-4b03-9635-f29a937e2900",
-  "scope": "/providers/Microsoft.Management/managementGroups/%%entlzprefix%%-landingzones",
+  "scope": "/providers/Microsoft.Management/managementGroups/%%policydefinitionmg%%-landingzones",
   "notScopes": [],
   "parameters": {},
   "enforcementMode": "Default"

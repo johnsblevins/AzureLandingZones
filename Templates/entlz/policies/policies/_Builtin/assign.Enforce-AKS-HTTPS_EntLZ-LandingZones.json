@@ -6,7 +6,7 @@
  "properties": {
   "displayName": "Enforce-Secure-Storage",
   "policyDefinitionId": "404c3081-a854-4457-ae30-26a93ef643f9",
-  "scope": "/providers/Microsoft.Management/managementGroups/%%entlzprefix%%-landingzones",
+  "scope": "/providers/Microsoft.Management/managementGroups/%%policydefinitionmg%%-landingzones",
   "notScopes": [],
   "parameters": {},
   "enforcementMode": "Default"

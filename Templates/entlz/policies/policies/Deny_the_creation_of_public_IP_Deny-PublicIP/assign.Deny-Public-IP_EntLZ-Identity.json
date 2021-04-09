@@ -5,8 +5,8 @@
  },
  "properties": {
   "displayName": "Deny-Public-IP",
-  "policyDefinitionId": "/providers/Microsoft.Management/managementGroups/%%entlzprefix%%/providers/Microsoft.Authorization/policyDefinitions/Deny-PublicIP",
-  "scope": "/providers/Microsoft.Management/managementGroups/%%entlzprefix%%-identity",
+  "policyDefinitionId": "/providers/Microsoft.Management/managementGroups/%%policydefinitionmg%%/providers/Microsoft.Authorization/policyDefinitions/Deny-PublicIP",
+  "scope": "/providers/Microsoft.Management/managementGroups/%%policydefinitionmg%%-identity",
   "notScopes": [],
   "parameters": {},
   "enforcementMode": "Default"

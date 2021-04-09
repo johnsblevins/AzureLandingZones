@@ -9,15 +9,15 @@
  },
  "properties": {
   "displayName": "Deploy-Log-Analytics",
-  "policyDefinitionId": "/providers/Microsoft.Management/managementGroups/%%entlzprefix%%/providers/Microsoft.Authorization/policyDefinitions/Deploy-Log-Analytics",
-  "scope": "/providers/Microsoft.Management/managementGroups/%%entlzprefix%%-management",
+  "policyDefinitionId": "/providers/Microsoft.Management/managementGroups/%%policydefinitionmg%%/providers/Microsoft.Authorization/policyDefinitions/Deploy-Log-Analytics",
+  "scope": "/providers/Microsoft.Management/managementGroups/%%policydefinitionmg%%-management",
   "notScopes": [],
   "parameters": {
       "workspaceName": {
-        "value": "%%entlzprefix%%-la-management-%%location%%"
+        "value": "%%policydefinitionmg%%-la-management-%%location%%"
       },
       "automationAccountName": {
-          "value": "%%entlzprefix%%-aa-management-%%location%%"
+          "value": "%%policydefinitionmg%%-aa-management-%%location%%"
       },
       "workspaceRegion": {
         "value": "%%location%%"
@@ -26,7 +26,7 @@
         "value": "%%location%%"
       },
       "rgName": {
-        "value": "%%entlzprefix%%-mgmt"
+        "value": "%%policydefinitionmg%%-mgmt"
       },
       "retentionInDays": {
         "value": "360"

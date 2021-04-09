@@ -10,11 +10,11 @@
     "properties": {
      "displayName": "Deploy-VMSS-Monitoring",
      "policyDefinitionId": "75714362-cae7-409e-9b99-a8e5075b7fad",
-     "scope": "/providers/Microsoft.Management/managementGroups/%%entlzprefix%%",
+     "scope": "/providers/Microsoft.Management/managementGroups/%%policydefinitionmg%%",
      "notScopes": [],
      "parameters": {
         "logAnalytics_1": {
-            "value": "/subscriptions/%%managementsubid%%/resourcegroups/%%entlzprefix%%-mgmt/providers/microsoft.operationalinsights/workspaces/%%entlzprefix%%-la-management-%%location%%"
+            "value": "/subscriptions/%%managementsubid%%/resourcegroups/%%policydefinitionmg%%-mgmt/providers/microsoft.operationalinsights/workspaces/%%policydefinitionmg%%-la-management-%%location%%"
         }
     },
      "enforcementMode": "Default"
