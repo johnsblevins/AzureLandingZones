@@ -1,4 +1,4 @@
-name: entlz-policies
+name: entlz-2-platform-policies
 
 # Controls when the action will run. 
 on:
@@ -80,7 +80,7 @@ jobs:
             azcliversion: 2.21.0
             inlineScript: |
               # Deploy Policy Assignments
-              for f in $(find Templates/entlz/es-hubspoke/policies/policies -name assign.*.json);
+              for f in $(find Templates/entlz/policies/policies -name assign.*.json);
                 do name=`jq -r .name $f`;
                   displayName=`jq -r .properties.displayName $f`
                   location="${{ env.location }}"
@@ -132,7 +132,7 @@ jobs:
             azcliversion: 2.21.0
             inlineScript: |
               # Deploy Initiative Assignments
-              for f in $(find Templates/entlz/es-hubspoke/policies/initiatives -name assign.*.json);
+              for f in $(find Templates/entlz/policies/initiatives -name assign.*.json);
                 do name=`jq -r .name $f`;
                   displayName=`jq -r .properties.displayName $f`
                   location="${{ env.location }}"

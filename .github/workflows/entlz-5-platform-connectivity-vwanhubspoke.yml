@@ -1,0 +1,34 @@
+name: entlz-5-platform-connectivity
+
+# Controls when the action will run. 
+on:
+  # Allows you to run this workflow manually from the Actions tab
+  push:
+    branches:
+      - master
+
+jobs:
+    build-and-deploy:
+        runs-on: ubuntu-latest
+        env:
+          entlzprefix: jblz4
+          environment: azureusgovernment
+          location: usgovvirginia
+          policydefinitionmg: jblz4
+          managementsubid: 07526f72-6689-42be-945f-bb6ad0214b71
+          
+        steps:
+        - uses: actions/checkout@master        
+        - name: Log in with Azure
+          uses: azure/login@v1
+          with:
+            creds: ${{ secrets.JOBLEVINMAG_AZURE_CREDS }}
+            environment: ${{ env.environment }}
+            enable-AzPSSession: false
+        
+        - name: Deploy Policy Definitions
+          uses: azure/CLI@v1
+          with:
+            azcliversion: 2.21.0
+            inlineScript: |
+              
