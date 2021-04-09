@@ -1,4 +1,4 @@
-param entLZPrefix string // Enterprise Landing Zone Prefix - 5 Characters Maximum
+param entlzprefix string // Enterprise Landing Zone Prefix - 5 Characters Maximum
 
 targetScope = 'tenant'
 
@@ -8,7 +8,7 @@ targetScope = 'tenant'
 module entLZRootMG 'modules/rootedMG.bicep'={
   name: 'entLZRootMG'
   params:{
-    name: entLZPrefix
+    name: entlzprefix
   }
 }
 
@@ -19,7 +19,7 @@ module platformMG 'modules/parentedMG.bicep'={
     entLZRootMG
   ]
   params:{
-    name: '${entLZPrefix}-platform'
+    name: '${entlzprefix}-platform'
     parentId: entLZRootMG.outputs.mgId
   }
 }
@@ -30,7 +30,7 @@ module platformConnectivityMG 'modules/parentedMG.bicep'={
     platformMG
   ]
   params:{
-    name: '${entLZPrefix}-connectivity'
+    name: '${entlzprefix}-connectivity'
     parentId: platformMG.outputs.mgId
   }
 }
@@ -41,7 +41,7 @@ module platformIdentityMG 'modules/parentedMG.bicep'={
     platformMG
   ]
   params:{
-    name: '${entLZPrefix}-identity'
+    name: '${entlzprefix}-identity'
     parentId: platformMG.outputs.mgId
   }
 }
@@ -52,7 +52,7 @@ module platformManagementMG 'modules/parentedMG.bicep'={
     platformMG
   ]
   params:{
-    name: '${entLZPrefix}-management'
+    name: '${entlzprefix}-management'
     parentId: platformMG.outputs.mgId
   }
 }
@@ -63,7 +63,7 @@ module platformSecurityMG 'modules/parentedMG.bicep'={
     platformMG
   ]
   params:{
-    name: '${entLZPrefix}-security'
+    name: '${entlzprefix}-security'
     parentId: platformMG.outputs.mgId
   }
 }
@@ -75,7 +75,7 @@ module landingZonesMG 'modules/parentedMG.bicep'={
     entLZRootMG
   ]
   params:{
-    name: '${entLZPrefix}-landingzones'
+    name: '${entlzprefix}-landingzones'
     parentId: entLZRootMG.outputs.mgId
   }
 }
@@ -86,7 +86,7 @@ module internal 'modules/parentedMG.bicep'={
     landingZonesMG
   ]
   params:{
-    name: '${entLZPrefix}-internal'
+    name: '${entlzprefix}-internal'
     parentId: landingZonesMG.outputs.mgId
   }
 }
@@ -97,7 +97,7 @@ module internalProd 'modules/parentedMG.bicep'={
     internal
   ]
   params:{
-    name: '${entLZPrefix}-internal-prod'
+    name: '${entlzprefix}-internal-prod'
     parentId: internal.outputs.mgId
   }
 }
@@ -108,7 +108,7 @@ module internalNonProd 'modules/parentedMG.bicep'={
     internal
   ]
   params:{
-    name: '${entLZPrefix}-internal-nonprod'
+    name: '${entlzprefix}-internal-nonprod'
     parentId: internal.outputs.mgId
   }
 }
@@ -119,7 +119,7 @@ module external 'modules/parentedMG.bicep'={
     landingZonesMG
   ]
   params:{
-    name: '${entLZPrefix}-external'
+    name: '${entlzprefix}-external'
     parentId: landingZonesMG.outputs.mgId
   }
 }
@@ -130,7 +130,7 @@ module externalProd 'modules/parentedMG.bicep'={
     external
   ]
   params:{
-    name: '${entLZPrefix}-external-prod'
+    name: '${entlzprefix}-external-prod'
     parentId: external.outputs.mgId
   }
 }
@@ -141,7 +141,7 @@ module externalNonProd 'modules/parentedMG.bicep'={
     external
   ]
   params:{
-    name: '${entLZPrefix}-external-nonprod'
+    name: '${entlzprefix}-external-nonprod'
     parentId: external.outputs.mgId
   }
 }
@@ -153,7 +153,7 @@ module onboardingMG 'modules/parentedMG.bicep'={
     entLZRootMG
   ]
   params:{
-    name: '${entLZPrefix}-onboarding'
+    name: '${entlzprefix}-onboarding'
     parentId: entLZRootMG.outputs.mgId
   }
 }
@@ -165,7 +165,7 @@ module decommissionedMG 'modules/parentedMG.bicep'={
     entLZRootMG
   ]
   params:{
-    name: '${entLZPrefix}-decommissioned'
+    name: '${entlzprefix}-decommissioned'
     parentId: entLZRootMG.outputs.mgId
   }
 }
@@ -177,7 +177,7 @@ module sandboxMG 'modules/parentedMG.bicep'={
     entLZRootMG
   ]
   params:{
-    name: '${entLZPrefix}-sandboxes'
+    name: '${entlzprefix}-sandboxes'
     parentId: entLZRootMG.outputs.mgId
   }
 }
@@ -188,7 +188,7 @@ module sandboxManagementMG 'modules/parentedMG.bicep'={
     sandboxMG
   ]
   params:{
-    name: '${entLZPrefix}-sandbox-management'
+    name: '${entlzprefix}-sandbox-management'
     parentId: sandboxMG.outputs.mgId
   }
 }
@@ -199,7 +199,7 @@ module sandboxLandingZonesMG 'modules/parentedMG.bicep'={
     sandboxMG
   ]
   params:{
-    name: '${entLZPrefix}-sandbox-landingzones'
+    name: '${entlzprefix}-sandbox-landingzones'
     parentId: sandboxMG.outputs.mgId
   }
 }

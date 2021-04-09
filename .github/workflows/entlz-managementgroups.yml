@@ -11,7 +11,7 @@ jobs:
     build-and-deploy:
         runs-on: ubuntu-latest
         env:
-          entlzprefix: jblz3
+          entlzprefix: jblz4
           environment: azureusgovernment
           location: usgovvirginia
         steps:
@@ -23,19 +23,26 @@ jobs:
             environment: ${{ env.environment }}
             enable-AzPSSession: false
 
-        - name: Management Group Deployment
+        - name: Deploy Management Groups
           uses: azure/CLI@v1
           with:
             azcliversion: 2.21.0
             inlineScript: |
                 # Deploy Management Groups using template
+
                 az deployment tenant create \
                   --name "entlz-managementgroups-${{ env.location }}" \
                   --location ${{ env.location }} \
                   --template-file Templates/entlz/managementgroups.bicep \
                   --parameters entLZPrefix=${{ env.entlzprefix }}
-
+        
+        - name: Configure Management Group Hierarchy Settings
+          uses: azure/CLI@v1
+          with:
+            azcliversion: 2.21.0
+            inlineScript: |
                 # Configure Management Group Hierarchy Settings
+
                 TenantRootMG=$(az account management-group list --query "[0].name" --output tsv)
 
                 resourceManagerURI=$(az cloud show --query 'endpoints.resourceManager' -o tsv)
