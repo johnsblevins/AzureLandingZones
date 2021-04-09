@@ -1,6 +1,6 @@
-# Deploy Enterprise-Scale with VNET Hub and Spoke Architecture
+# Deploy Enterprise Landing Zone
 
-The Enterprise-Scale architecture is modular by design and allows organizations to start with a foundational landing zone that supports their application portfolios with hybrid on-premises connectivity using either ExpressRoute or VPN where required.  This implementation utilizes a Virtual Network (VNET) hub-and-spoke transit network architecture.  The connectivity components contained in the solution can be replaced with a Virtual WAN (VWAN) hub and spoke architecture if required.
+The Enterprise Landing Zone architecture is modular by design and allows organizations to start with a foundational landing zone that supports their application portfolios.  The reference architecture provides for both VNET and VWAN hub-and-spoke transit models and support for both ExpressRoute and VPN hybrid connetivity models.  A policy-based governance model is enforced that can be managed at scale through Policy-as-Code and additional compliance frameworks can be layered on top of the base deployment where needed.  The architecture provides a scale mechanism for enabling mission owner workloads and can scale to support multi-tenant, multi-region and multi-sovereign deployments.
 
 ![CAF Enterprise Scale](media/cafentscale.png)
 
@@ -20,43 +20,39 @@ This repository contains CICD automation to deploy these user landing zones with
 ## Please NOTE this is a Custom Solution Repository
 The reference implementation for this solution is based on the CAF enterprise scale landing zone templates which can be found on GitHub at https://github.com/Azure/Enterprise-Scale/tree/main/docs/reference/adventureworks.  The version contained in this repository includes updates to the original templates, as well as an added set of CICD pipeline templates for GitHub and GitLab deployments as well as converted BICEP template files for use by DevOps teams to customize the solution and make the deployment repeatable and more manageable in their environment.  It also includes modifications for deployment of the template in Microsoft Azure Government (MAG).
 
-# Enterprise Landing Zone Deployment Instructions
-
-1. Login to the Azure Portal with an account that is an Azure Active Directory Global Administrator.  In the Azure Active Directory blade select properties and then "Yes" for the option to enable "Access management for Azure resources", then click Save.
+# Deploy the Enterprise Landing Zone
+## Prerequistes
+1. Login to the Azure Portal with an account that has the "Global Administrator" role in Azure Active Directory.  In the Azure Active Directory blade select properties and then select "Yes" for the option to enable "Access management for Azure resources" and click Save.  This grants the "User Access Administrator" role to the logged in user at the tenant root (/) scope.
 
 ![](media/aad_props.png)
 
-2. Create a Service Principal to Deploy Enterprise Landing Zone
+2. Create a Service Principal and Assign Azure Roles
 
-Launch a cloud shell in the Azure Portal and run the following script:
+The following script creates an **"azure-platform-owners"** group and an application registration called **"azure-entlz-deployer"** in Azure Active Directory with an associated service principal.  The app registration is added to the group and the group is assigned the "Owner" role at the tenant root (/) scope.  Afterward you will need to manually generate a secret for the app registration and make note of the Application (client) ID and Directory (tenant) ID.  The script can be run from a cloud shell instance in the Azure Portal or from a local Azure CLI instance.
 
 ```
 # Create Azure-Platform-Owners Azure AD Group
-platOwnerGrp=$(az ad group create --display-name Azure-Platform-Owners --mail-nickname Azure-Platform-Owners --description "Members can Create EA Subs in the Default Management Group" --query objectId --output tsv)
+platformOwnerGroup=$(az ad group create --display-name azure-platform-owners --mail-nickname azure-platform-owners --description "Members can Create EA Subs in the Default Management Group" --query objectId --output tsv)
 
 # Create Azure AD App Registration and Service Principal
-appId=$(az ad app create --display-name "Azure-ENTLZ-Deployer" --query appId --output tsv)
+appId=$(az ad app create --display-name "azure-entlz-deployer" --query appId --output tsv)
+sleep 10
 az ad sp create --id $appId
+sleep 10
 objId=$(az ad sp show --id $appId --query objectId --output tsv)
 
 # Add Service Principal to Group
-az ad group member add --group $platOwnerGrp --member-id $objId
+az ad group member add --group $platformOwnerGroup --member-id $objId
 
 # Assign Azure-Platform-Owners Group Owner role to Tenant Root Group Scope
-az role assignment create --role "Owner" --scope / --assignee $platOwnerGrp
+az role assignment create --role "Owner" --scope / --assignee $platformOwnerGroup
 
-# Get Enrollment Account ID and Name
-enrAcctID=$(az billing enrollment-account list --query "[0].id" --output tsv) # /providers/Microsoft.Billing/enrollmentAccounts/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
-enrAcctName=$(az billing enrollment-account list --query "[0].name" --output tsv) # xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
-
-# Assign Azure-EA-Subscription-Creators Group Owner Role to Enrollment Account Scope
-az role assignment create --assignee $subCreatorGrp --role "Owner" --scope $enrAcctID
+echo Done
 ```
-This step will create an app registration called "azure-entlz-deployer".  You'll need to manually generate a client secret and note the Tenant ID and App ID for use in the CICD pipeline automation. 
 
-3. (OPTIONAL BUT HIGHLY RECOMMENDED) Enable Subscription Vending for Enterprise Landing Zone Service Account
+3. (OPTIONAL BUT HIGHLY RECOMMENDED) Assign EA Roles for Sub Creation
 
-It is recommended to grant the service principal from the prior step permission to create EA subscriptions needed for the Enterprise Landing Zone.  While the required subscriptions can be created and specified manually the automation in this solution has the ability to provision the subscriptions from inception with the proper name, management group, tags and policies.  An account with "Enrollment Account Administrator" rights in the EA portal is required to grant this permission.  The following script creates an "Azure-EA-Subscription-Creators" group and adds the service principal:
+It is recommended to grant the "azure_entlz_deployer" service principal the necessary permissions to create EA subscriptions needed for the Enterprise Landing Zone components.  The standard EntLZ deployment requires four subscriptions (Management, Connectivity, Identity and Security) and while these subscriptions can be created manually the solution allows for the automatic "vending" of the required subscriptions which configures the proper name, management group, tags and policies from subscrition inception.  An account with "Enrollment Account Administrator" rights in the EA portal is required to grant this permission.  The following script creates an "Azure-EA-Subscription-Creators" group and adds the service principal:
 
 ```
 # Create Azure-EA-Subscription-Creators Azure AD Group
@@ -72,31 +68,7 @@ enrAcctName=$(az billing enrollment-account list --query "[0].name" --output tsv
 # Assign Azure-EA-Subscription-Creators Group Owner Role to Enrollment Account Scope
 az role assignment create --assignee $subCreatorGrp --role "Owner" --scope $enrAcctID
 ```
-
-3. Update CICD Pipeline Service Account to use the "azure-entlz-deployer" credential from the prior step.
-
-4. Create Four Subscriptions for the following Functions
-
-* Management
-* Security
-* Connectivity
-* Identity
-
-5. Update CICD Pipeline Variables Specific to the Environment
-
-6. Deploy Pipeline
-
-```
-Get-AzRoleAssignment | where {$_.Scope -eq "/"}
-New-AzRoleAssignment -ObjectId <user/group object id> -Scope "/" -RoleDefinitionName Owner
-```
-
-# Pipeline Components
-## Pipeline Input Parameters
-
-Enterprise Landing Zone (EntLZ) Prefix - 5 character identifier for Enterprise Landing Zone
-
-## Management Group Deployment
+## Pipeline 1 - Deploy Platform Managment Groups
 In this step the following management group structure is created using the EntLZ Prefix parameter.  In the sample below "CAF" is used as the prefix identifier:
 
     Tenant (/)
@@ -135,7 +107,7 @@ resourceManagerURI=$(az cloud show --query 'endpoints.resourceManager' -o tsv)
 az rest --method put --headers "{\"Content-Type\":\"application/json\"}" --uri "${resourceManagerURI}providers/Microsoft.Management/managementGroups/$TenantRootMG/settings/default?api-version=2020-05-01" --body "{\"properties\": {\"defaultManagementGroup\": \"/providers/Microsoft.Management/managementGroups/${{ secrets.ENTLZ_ENTERPRISE_SCALE_COMPANY_PREFIX }}-onboarding\",\"requireAuthorizationForGroupCreation\": \"true\"}}" 
 ```
 
-## Azure Policy Deployment
+## Pipeline 2 - Deploy Platform Policies
 In this step Azure Policies and Policy Initiatives are created and assigned to the management group hierarchy using a Policy-as-Code approach as outlined at [https://docs.microsoft.com/en-us/azure/governance/policy/concepts/policy-as-code](https://docs.microsoft.com/en-us/azure/governance/policy/concepts/policy-as-code).  The folder structure used with the pipeline is as follows:
 
         .policies
@@ -237,6 +209,16 @@ done
 # Delay 120
 sleep 120
 ```
+
+## Pipeline 3 - Deploy Platform Subscriptions
+
+## Pipeline 4 - Deploy Platform Management
+
+## Pipeline 5 - Deploy Platform Connectivity
+
+## User Landing Zone Pipelines
+
+## Enterprise Service Pipelines
 
 # List of Modifications from Original Templates
 ## Changes required for MAG

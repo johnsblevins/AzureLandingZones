@@ -19,7 +19,7 @@ jobs:
         - name: Log in with Azure
           uses: azure/login@v1
           with:
-            creds: ${{ secrets.ENTLZ_AZURE_GOV_CREDENTIALS }}
+            creds: ${{ secrets.JOBLEVINMAG_AZURE_CREDS }}
             environment: ${{ env.environment }}
             enable-AzPSSession: false
 
@@ -28,12 +28,20 @@ jobs:
           with:
             azcliversion: 2.21.0
             inlineScript: |
-                # Management Group Deployment
-                az deployment tenant create --name "entlz-managementgroups-${{ env.location }}" --location ${{ env.location }} \
-                --template-file Templates/entlz/es-hubspoke/mgmtGroups.bicep --parameters \
-                entLZPrefix=${{ env.entlzprefix }}
+                # Deploy Management Groups using template
+                az deployment tenant create \
+                  --name "entlz-managementgroups-${{ env.location }}" \
+                  --location ${{ env.location }} \
+                  --template-file Templates/entlz/managementgroups.bicep \
+                  --parameters entLZPrefix=${{ env.entlzprefix }}
 
-                # Management Group Hierarchy Settings
+                # Configure Management Group Hierarchy Settings
                 TenantRootMG=$(az account management-group list --query "[0].name" --output tsv)
+
                 resourceManagerURI=$(az cloud show --query 'endpoints.resourceManager' -o tsv)
-                az rest --method put --headers "{\"Content-Type\":\"application/json\"}" --uri "${resourceManagerURI}providers/Microsoft.Management/managementGroups/$TenantRootMG/settings/default?api-version=2020-05-01" --body "{\"properties\": {\"defaultManagementGroup\": \"/providers/Microsoft.Management/managementGroups/${{ env.entlzprefix }}-onboarding\",\"requireAuthorizationForGroupCreation\": \"true\"}}" 
+                
+                az rest \
+                  --method put \
+                  --headers "{\"Content-Type\":\"application/json\"}" \
+                  --uri "${resourceManagerURI}providers/Microsoft.Management/managementGroups/$TenantRootMG/settings/default?api-version=2020-05-01" \
+                  --body "{\"properties\": {\"defaultManagementGroup\": \"/providers/Microsoft.Management/managementGroups/${{ env.entlzprefix }}-onboarding\",\"requireAuthorizationForGroupCreation\": \"true\"}}" 
