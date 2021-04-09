@@ -4,11 +4,6 @@ name: es-hubspoke-entlz
 on:
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
-
-variables:
-- name: one
-  value: initialValue
-
 jobs:
     build-and-deploy:
         runs-on: ubuntu-latest
@@ -110,7 +105,7 @@ jobs:
               done
 
               # Delay 120
-               sleep 120
+              sleep 120
 
         - name: RBAC Deployment 
                   uses: azure/CLI@v1

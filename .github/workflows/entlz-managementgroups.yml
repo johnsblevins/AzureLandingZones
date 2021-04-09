@@ -5,7 +5,7 @@ on:
   # Allows you to run this workflow manually from the Actions tab
   push:
     branches:
-      - main
+      - master
 
 jobs:
     build-and-deploy:
@@ -15,8 +15,7 @@ jobs:
           environment: usgovernment
           location: usgovvirginia
         steps:
-        - uses: actions/checkout@master
-        
+        - uses: actions/checkout@master        
         - name: Log in with Azure
           uses: azure/login@v1
           with:
