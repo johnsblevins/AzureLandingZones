@@ -9,7 +9,7 @@ on:
     paths:
       - 'Templates/entlz/managementgroups.bicep'
       - 'Templates/entlz/modules/*MG.bicep'
-
+      - '.github/workflows/entlz-1-platform-mgs.yml'
 jobs:
     build-and-deploy:
         runs-on: ubuntu-latest
