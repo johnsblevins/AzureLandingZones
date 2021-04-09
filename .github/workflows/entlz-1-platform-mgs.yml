@@ -37,7 +37,7 @@ jobs:
                 az deployment tenant create \
                   --name "entlz-managementgroups-${{ env.location }}" \
                   --location ${{ env.location }} \
-                  --template-file templates/entlz/platform-mgs.bicep \
+                  --template-file 'templates/entlz/platform-mgs.bicep' \
                   --parameters entlzprefix=${{ env.entlzprefix }}
         
         - name: Configure Management Group Hierarchy Settings
