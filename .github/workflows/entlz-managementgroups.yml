@@ -1,0 +1,40 @@
+name: entlz-managementgroups
+
+# Controls when the action will run. 
+on:
+  # Allows you to run this workflow manually from the Actions tab
+  push:
+    branches:
+      - main
+
+jobs:
+    build-and-deploy:
+        runs-on: ubuntu-latest
+        env:
+          entlzprefix: jblz3
+          environment: usgovernment
+          location: usgovvirginia
+        steps:
+        - uses: actions/checkout@master
+        
+        - name: Log in with Azure
+          uses: azure/login@v1
+          with:
+            creds: ${{ secrets.ENTLZ_AZURE_GOV_CREDENTIALS }}
+            environment: ${{ env.environment }}
+            enable-AzPSSession: false
+
+        - name: Management Group Deployment
+          uses: azure/CLI@v1
+          with:
+            azcliversion: 2.21.0
+            inlineScript: |
+                # Management Group Deployment
+                az deployment tenant create --name "entlz-managementgroups-${{ env.location }}" --location ${{ env.location }} \
+                --template-file Templates/entlz/es-hubspoke/mgmtGroups.bicep --parameters \
+                entLZPrefix=${{ env.entlzprefix }}
+
+                # Management Group Hierarchy Settings
+                TenantRootMG=$(az account management-group list --query "[0].name" --output tsv)
+                resourceManagerURI=$(az cloud show --query 'endpoints.resourceManager' -o tsv)
+                az rest --method put --headers "{\"Content-Type\":\"application/json\"}" --uri "${resourceManagerURI}providers/Microsoft.Management/managementGroups/$TenantRootMG/settings/default?api-version=2020-05-01" --body "{\"properties\": {\"defaultManagementGroup\": \"/providers/Microsoft.Management/managementGroups/${{ env.entlzprefix }}-onboarding\",\"requireAuthorizationForGroupCreation\": \"true\"}}" 

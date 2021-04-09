@@ -5,6 +5,10 @@ on:
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
+variables:
+- name: one
+  value: initialValue
+
 jobs:
     build-and-deploy:
         runs-on: ubuntu-latest
@@ -114,11 +118,24 @@ jobs:
                     azcliversion: 2.21.0
                     inlineScript: |
                 
-        - name: Create Management Subscription
+        - name: Deploy Management Subscription
                   uses: azure/CLI@v1
                   with:
                     azcliversion: 2.21.0
                     inlineScript: |
+                      # Create Management Sub
+
+                      # Move Management Sub
+                        az account management-group subscription add --name "jblz1-management" --subscription "07526f72-6689-42be-945f-bb6ad0214b71"
+                      
+                      # Force Policy Remdiation Scan (Can take 10-15 minutes to complete)
+                      #  az account set -s "07526f72-6689-42be-945f-bb6ad0214b71"
+                      #  az policy state trigger-scan
+                      
+                      # Remediate DeployIfNotExist Policies (deploys LogA workspace)
+
+                      # Configure Tenant Logs
+
 
         - name: Move Subs
                   uses: azure/CLI@v1
