@@ -17,6 +17,7 @@ jobs:
           entlzprefix: jblz4
           environment: azureusgovernment
           location: usgovvirginia
+          onboardingmg: ${{ env.entlzprefix }}-onboarding
           
         steps:
         - uses: actions/checkout@master        
@@ -53,4 +54,4 @@ jobs:
                   --method put \
                   --headers "{\"Content-Type\":\"application/json\"}" \
                   --uri "${resourceManagerURI}providers/Microsoft.Management/managementGroups/$TenantRootMG/settings/default?api-version=2020-05-01" \
-                  --body "{\"properties\": {\"defaultManagementGroup\": \"/providers/Microsoft.Management/managementGroups/${{ env.entlzprefix }}-onboarding\",\"requireAuthorizationForGroupCreation\": \"true\"}}" 
+                  --body "{\"properties\": {\"defaultManagementGroup\": \"/providers/Microsoft.Management/managementGroups/${{ env.onboardingmg }}\",\"requireAuthorizationForGroupCreation\": \"true\"}}" 
