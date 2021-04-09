@@ -6,6 +6,8 @@ on:
   push:
     branches:
       - master
+    paths:
+      - 'Templates/entlz/vwanhubspoke.bicep'
 
 jobs:
     build-and-deploy:

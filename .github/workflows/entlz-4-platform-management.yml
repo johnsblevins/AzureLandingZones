@@ -6,7 +6,9 @@ on:
   push:
     branches:
       - master
-
+    paths:
+      - 'Templates/entlz/management.bicep'
+      
 jobs:
     build-and-deploy:
         runs-on: ubuntu-latest

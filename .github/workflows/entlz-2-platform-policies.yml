@@ -6,6 +6,8 @@ on:
   push:
     branches:
       - master
+    paths:
+      - 'Templates/entlz/policies/*'
 
 jobs:
     build-and-deploy:
