@@ -38,7 +38,7 @@
     "resources": [
       {
         "name": "[parameters('imageTemplateName')]",
-        "type": "Microsoft.VirtualMachineImages/imageTemplates",
+        "type": "Microsoft.VirtualMachineImages/imagetemplates",
         "apiVersion": "2020-02-14",
         "location": "[resourceGroup().location]",
         "dependsOn": [

@@ -1,4 +1,4 @@
-name: entlz-5-platform-connectivity
+name: entlz-5-platform-connectivity-vnethubspoke
 
 # Controls when the action will run. 
 on:
@@ -7,7 +7,7 @@ on:
     branches:
       - master
     paths:
-      - 'Templates/entlz/vnethubspoke.bicep'
+      - 'templates/entlz/vnethubspoke.bicep'
       - '.github/workflows/entlz-5-platform-connectivity-vnethubspoke.yml'
 
 jobs:

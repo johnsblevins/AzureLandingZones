@@ -7,7 +7,7 @@ on:
     branches:
       - master
     paths:
-      - 'Templates/entlz/management.bicep'
+      - 'templates/entlz/management.bicep'
       - '.github/workflows/entlz-4-platform-management.yml'
       
 jobs:

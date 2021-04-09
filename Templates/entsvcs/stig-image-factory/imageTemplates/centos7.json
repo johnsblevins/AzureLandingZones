@@ -65,7 +65,7 @@
             },  
             { 
             "name": "[concat(parameters('imageTemplateName'),'1')]",
-            "type": "Microsoft.VirtualMachineImages/imageTemplates", 
+            "type": "Microsoft.VirtualMachineImages/imagetemplates", 
             "apiVersion": "2020-02-14", 
             "location": "[resourceGroup().location]", 
             "identity":{

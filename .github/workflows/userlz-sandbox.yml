@@ -65,7 +65,7 @@ jobs:
 #         with:
 #            azcliversion: 2.21.0
 #            inlineScript: |
-#                az deployment sub create -f Templates/userlz/userlz-internal/templates/main.bicep -l ${{ secrets.USERLZ_LOCATION }} -p programName=${{ secrets.USERLZ_PROGRAM_NAME }} \
+#                az deployment sub create -f templates/userlz/userlz-internal/templates/main.bicep -l ${{ secrets.USERLZ_LOCATION }} -p programName=${{ secrets.USERLZ_PROGRAM_NAME }} \
 #                programType=${{ secrets.USERLZ_PROGRAM_TYPE }} programEnv=${{ secrets.USERLZ_PROGRAM_ENV }} vnetPrefix= ${{ secrets.USERLZ_VNET_PREFIX }} \
 #                mgmtSubnetPrefix=${{ secrets.MGMT_SUBNET_PREFIX }} webSubnetPrefix= ${{ secrets.USERLZ_WEB_SUBNET_PREFIX  }} \
 #                appSubnetPrefix=${{ secrets.APP_SUBNET_PREFIX }} dataSubnetPrefix=${{ secrets.DATA_SUBNET_PREFIX }} firewallIP=${{ secrets.FIREWALL_IP }}

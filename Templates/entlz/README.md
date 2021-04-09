@@ -98,7 +98,7 @@ The following script is used for this step:
 ```
 # BICEP Template Deployment to Create the Management Group Hierarchy
 az deployment tenant create --name "EntScale-Mgs-${{ secrets.ENTLZ_LOCATION }}" --location ${{ secrets.ENTLZ_LOCATION }} \
---template-file Templates/entlz/es-hubspoke/mgmtGroups.bicep --parameters \
+--template-file templates/entlz/es-hubspoke/mgmtGroups.bicep --parameters \
 entLZPrefix=${{ secrets.ENTLZ_ENTERPRISE_SCALE_COMPANY_PREFIX }}
 
 # Management Group Hierarchy Settings
@@ -111,7 +111,7 @@ az rest --method put --headers "{\"Content-Type\":\"application/json\"}" --uri "
 In this step Azure Policies and Policy Initiatives are created and assigned to the management group hierarchy using a Policy-as-Code approach as outlined at [https://docs.microsoft.com/en-us/azure/governance/policy/concepts/policy-as-code](https://docs.microsoft.com/en-us/azure/governance/policy/concepts/policy-as-code).  The following folder structure is used to store custom policy and initiative definitions as well as both builtin and custom policy and initiative assignments.  This is the native format when exporting policy definitions and assignements using the portal export features which allows an administrator to build a policy set within the portal and export it into the folder structure.
 
         .policies
-        |- assignmentTemplates _______________          # Sample Assignment Templates
+        |- assignmenttemplates _______________          # Sample Assignment templates
         |  |- policy/                                   # Subfolder for Policy Template
         |     |- assign.PolicyName_Identifier.json      # Template definition for Policy
         |  |- initiative/                               # Subfolder for Initiative Template
@@ -147,7 +147,7 @@ This pipeline can be used after the initial Enterprise Landing Zone deployment t
 
 ```
 # Deploy Policy Definitions
-for f in $(find Templates/entlz/es-hubspoke/policies/policies -name policy.json); \
+for f in $(find templates/entlz/es-hubspoke/policies/policies -name policy.json); \
 do name=`jq -r .name $f`; \
 description=`jq -r .properties.description $f`; \
 displayName=`jq -r .properties.displayName $f`; \
@@ -158,7 +158,7 @@ az policy definition create --name "$name" --description "$description" --displa
 done
 
 # Deploy Initiative Definitions
-for f in $(find Templates/entlz/es-hubspoke/policies/initiatives -name policyset.json); \
+for f in $(find templates/entlz/es-hubspoke/policies/initiatives -name policyset.json); \
 do name=`jq -r .name $f`; \
 description=`jq -r .properties.description $f`; \
 displayName=`jq -r .properties.displayName $f`; \
@@ -171,7 +171,7 @@ done
 sleep 120
 
 # Deploy Policy Assignments
-for f in $(find Templates/entlz/es-hubspoke/policies/policies -name assign.*.json); \
+for f in $(find templates/entlz/es-hubspoke/policies/policies -name assign.*.json); \
 do name=`jq -r .name $f`; \
 displayName=`jq -r .properties.displayName $f`; \
 location="usgovvirginia"; \
@@ -192,7 +192,7 @@ fi ; \
 done
 
 # Deploy Initiative Assignments
-for f in $(find Templates/entlz/es-hubspoke/policies/initiatives -name assign.*.json); \
+for f in $(find templates/entlz/es-hubspoke/policies/initiatives -name assign.*.json); \
 do name=`jq -r .name $f`; \
 displayName=`jq -r .properties.displayName $f`; \
 location="usgovvirginia"; \
@@ -226,7 +226,7 @@ sleep 120
 
 ## Enterprise Service Pipelines
 
-# List of Modifications from Original Templates
+# List of Modifications from Original templates
 ## Changes required for MAG
 The templates must be modified from their original source to deploy successfully to MAG as described at:
 * [Deploy Enterprise Scale Landing Zone from CICD Pipeline in MAG](../README.md)

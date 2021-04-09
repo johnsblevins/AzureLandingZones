@@ -7,7 +7,7 @@ on:
     branches:
       - master
     paths:
-      - 'Templates/entlz/policies/*'
+      - 'templates/entlz/policies/*'
       - '.github/workflows/entlz-2-platform-policies.yml'
 
 jobs:
@@ -35,7 +35,7 @@ jobs:
             azcliversion: 2.21.0
             inlineScript: |
               # Deploy Policy Definitions
-              for f in $(find Templates/entlz/policies/policies -name policy.json); 
+              for f in $(find templates/entlz/policies/policies -name policy.json); 
                 do  name=`jq -r .name $f`; 
                     description=`jq -r .properties.description $f`
                     displayName=`jq -r .properties.displayName $f` 
@@ -58,7 +58,7 @@ jobs:
             azcliversion: 2.21.0
             inlineScript: |
               # Deploy Initiative Definitions
-              for f in $(find Templates/entlz/policies/initiatives -name policyset.json);
+              for f in $(find templates/entlz/policies/initiatives -name policyset.json);
                 do  name=`jq -r .name $f`;
                     description=`jq -r .properties.description $f`
                     displayName=`jq -r .properties.displayName $f`
@@ -83,7 +83,7 @@ jobs:
             azcliversion: 2.21.0
             inlineScript: |
               # Deploy Policy Assignments
-              for f in $(find Templates/entlz/policies/policies -name assign.*.json);
+              for f in $(find templates/entlz/policies/policies -name assign.*.json);
                 do name=`jq -r .name $f`;
                   displayName=`jq -r .properties.displayName $f`
                   location="${{ env.location }}"
@@ -135,7 +135,7 @@ jobs:
             azcliversion: 2.21.0
             inlineScript: |
               # Deploy Initiative Assignments
-              for f in $(find Templates/entlz/policies/initiatives -name assign.*.json);
+              for f in $(find templates/entlz/policies/initiatives -name assign.*.json);
                 do name=`jq -r .name $f`;
                   displayName=`jq -r .properties.displayName $f`
                   location="${{ env.location }}"

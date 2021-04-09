@@ -236,7 +236,7 @@ with:
 5. Remove the following unused policy file.
   
 ```
-Templates\entscalelz\es-template\auxiliary\mkPolicies.json
+templates\entscalelz\es-template\auxiliary\mkPolicies.json
 ```
 
 6. Change references to 'northerneurope' in **policies.json**.  
@@ -303,7 +303,7 @@ Remove the following block from **policies.json**
                             ],
 ```
 
-8. Remove reference to China Cloud and mkPolicies.json in **es-hubspoke.json**, **es-foundation.json** and **es-vwan.json** Master Templates
+8. Remove reference to China Cloud and mkPolicies.json in **es-hubspoke.json**, **es-foundation.json** and **es-vwan.json** Master templates
 
 Remove the following line:
 ```

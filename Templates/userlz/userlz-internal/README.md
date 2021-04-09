@@ -128,7 +128,7 @@ A subscription level deployment can be created to stage required user landing zo
 
 The following script demonstrates the deployment of a Bicep template which creates a locked RG with Route Table, NSG, Key Vault and Disk Encryption set and connectivity RG with VNET, subnets and peerings to hub:
 ```
-az deployment sub create -f Templates/userlz/userlz-internal/templates/main.bicep -l ${{ secrets.USERLZ_LOCATION }} -p programName=${{ secrets.USERLZ_PROGRAM_NAME }} \
+az deployment sub create -f templates/userlz/userlz-internal/templates/main.bicep -l ${{ secrets.USERLZ_LOCATION }} -p programName=${{ secrets.USERLZ_PROGRAM_NAME }} \
 #                programType=${{ secrets.USERLZ_PROGRAM_TYPE }} programEnv=${{ secrets.USERLZ_PROGRAM_ENV }} vnetPrefix= ${{ secrets.USERLZ_VNET_PREFIX }} \
 #                mgmtSubnetPrefix=${{ secrets.MGMT_SUBNET_PREFIX }} webSubnetPrefix= ${{ secrets.USERLZ_WEB_SUBNET_PREFIX  }} \
 #                appSubnetPrefix=${{ secrets.APP_SUBNET_PREFIX }} dataSubnetPrefix=${{ secrets.DATA_SUBNET_PREFIX }} firewallIP=${{ secrets.FIREWALL_IP }}

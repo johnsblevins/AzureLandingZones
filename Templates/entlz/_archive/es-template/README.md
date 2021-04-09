@@ -9,7 +9,7 @@ The orginal source for this solution can be found on GitHub at https://github.co
 
 ### Deviations from Original Solution for Microsoft Azure Government Deployment
 
-In order to deploy the solution on Microsoft Azure Government the following Templates parameters must be configured as specified below:
+In order to deploy the solution on Microsoft Azure Government the following templates parameters must be configured as specified below:
 
 #### Asc Configuration
 

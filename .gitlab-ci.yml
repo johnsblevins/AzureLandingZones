@@ -22,10 +22,10 @@ deploy:
     - az account list
 
       # Management Group Deployment
-    - az deployment tenant create --name "EntScale-Mgs-${LOCATION}" --location ${LOCATION} --template-file Templates/entscalelz/es-hubspoke-template/auxiliary/mgmtGroups.json --parameters topLevelManagementGroupPrefix=${ENTERPRISE_SCALE_COMPANY_PREFIX}
+    - az deployment tenant create --name "EntScale-Mgs-${LOCATION}" --location ${LOCATION} --template-file templates/entscalelz/es-hubspoke-template/auxiliary/mgmtGroups.json --parameters topLevelManagementGroupPrefix=${ENTERPRISE_SCALE_COMPANY_PREFIX}
 
       # Policy Deployment
-    - az deployment mg create --name "EntScale-Policy-${LOCATION}" --location ${LOCATION} --management-group-id ${ENTERPRISE_SCALE_COMPANY_PREFIX} --template-file Templates/entscalelz/es-hubspoke-template/auxiliary/policies.json --parameters topLevelManagementGroupPrefix=${ENTERPRISE_SCALE_COMPANY_PREFIX}
+    - az deployment mg create --name "EntScale-Policy-${LOCATION}" --location ${LOCATION} --management-group-id ${ENTERPRISE_SCALE_COMPANY_PREFIX} --template-file templates/entscalelz/es-hubspoke-template/auxiliary/policies.json --parameters topLevelManagementGroupPrefix=${ENTERPRISE_SCALE_COMPANY_PREFIX}
 
       # Move Management Sub
     - az account management-group subscription add --name "${ENTERPRISE_SCALE_COMPANY_PREFIX}-management" --subscription ${MANAGEMENT_SUB_ID}
@@ -43,25 +43,25 @@ deploy:
     - sleep 20
 
       # Monitoring Deployment
-    - az deployment mg create --name "EntScale-Monitoring-${LOCATION}" --location ${LOCATION} --management-group-id "${ENTERPRISE_SCALE_COMPANY_PREFIX}-management" --template-file Templates/entscalelz/es-hubspoke-template/auxiliary/logAnalytics.json --parameters topLevelManagementGroupPrefix=${ENTERPRISE_SCALE_COMPANY_PREFIX} managementSubscriptionId=${MANAGEMENT_SUB_ID} enableLogAnalytics=Yes retentionInDays=90
+    - az deployment mg create --name "EntScale-Monitoring-${LOCATION}" --location ${LOCATION} --management-group-id "${ENTERPRISE_SCALE_COMPANY_PREFIX}-management" --template-file templates/entscalelz/es-hubspoke-template/auxiliary/logAnalytics.json --parameters topLevelManagementGroupPrefix=${ENTERPRISE_SCALE_COMPANY_PREFIX} managementSubscriptionId=${MANAGEMENT_SUB_ID} enableLogAnalytics=Yes retentionInDays=90
 
       # Identity Deployment
-    - az deployment mg create --name "EntScale-ID-${LOCATION}" --location ${LOCATION} --management-group-id "${ENTERPRISE_SCALE_COMPANY_PREFIX}-identity" --template-file Templates/entscalelz/es-hubspoke-template/auxiliary/identity.json --parameters topLevelManagementGroupPrefix=${ENTERPRISE_SCALE_COMPANY_PREFIX} denyRdpForIdentity=Yes denySubnetWithoutNsgForIdentity=Yes denyPipForIdentity=Yes enableVmBackupForIdentity=Yes 
+    - az deployment mg create --name "EntScale-ID-${LOCATION}" --location ${LOCATION} --management-group-id "${ENTERPRISE_SCALE_COMPANY_PREFIX}-identity" --template-file templates/entscalelz/es-hubspoke-template/auxiliary/identity.json --parameters topLevelManagementGroupPrefix=${ENTERPRISE_SCALE_COMPANY_PREFIX} denyRdpForIdentity=Yes denySubnetWithoutNsgForIdentity=Yes denyPipForIdentity=Yes enableVmBackupForIdentity=Yes 
 
       # Landing Zone Deployment
-    - az deployment mg create --name "EntScale-LZ-${LOCATION}" --location ${LOCATION} --management-group-id "${ENTERPRISE_SCALE_COMPANY_PREFIX}-landingzones" --template-file Templates/entscalelz/es-hubspoke-template/auxiliary/lz.json --parameters topLevelManagementGroupPrefix=${ENTERPRISE_SCALE_COMPANY_PREFIX} enableSqlAudit=Yes denyAksPrivileged=Yes denyAksPrivilegedEscalation=Yes denyHttpIngressForAks=Yes enableSqlEncryption=Yes enableVmBackup=Yes denyRdp=Yes enableStorageHttps=Yes denyIpForwarding=Yes denySubnetWithoutNsg=Yes
+    - az deployment mg create --name "EntScale-LZ-${LOCATION}" --location ${LOCATION} --management-group-id "${ENTERPRISE_SCALE_COMPANY_PREFIX}-landingzones" --template-file templates/entscalelz/es-hubspoke-template/auxiliary/lz.json --parameters topLevelManagementGroupPrefix=${ENTERPRISE_SCALE_COMPANY_PREFIX} enableSqlAudit=Yes denyAksPrivileged=Yes denyAksPrivilegedEscalation=Yes denyHttpIngressForAks=Yes enableSqlEncryption=Yes enableVmBackup=Yes denyRdp=Yes enableStorageHttps=Yes denyIpForwarding=Yes denySubnetWithoutNsg=Yes
 
       # Intranet Landing Zone Deployment
-    - az deployment mg create --name "EntScale-IntranetLZ-${LOCATION}" --location ${LOCATION} --management-group-id "${ENTERPRISE_SCALE_COMPANY_PREFIX}-intranet" --template-file Templates/entscalelz/es-hubspoke-template/auxiliary/intranetlz.json --parameters topLevelManagementGroupPrefix=${ENTERPRISE_SCALE_COMPANY_PREFIX}
+    - az deployment mg create --name "EntScale-IntranetLZ-${LOCATION}" --location ${LOCATION} --management-group-id "${ENTERPRISE_SCALE_COMPANY_PREFIX}-intranet" --template-file templates/entscalelz/es-hubspoke-template/auxiliary/intranetlz.json --parameters topLevelManagementGroupPrefix=${ENTERPRISE_SCALE_COMPANY_PREFIX}
 
       # Move Connectivity Sub
     - az account management-group subscription add --name "${ENTERPRISE_SCALE_COMPANY_PREFIX}-connectivity" --subscription ${CONNECTIVITY_SUB_ID}
 
       # Monitoring Solutions Deployment
-    - az deployment sub create --name "EntScale-Solutions-${LOCATION}" --location ${LOCATION} --sub "${MANAGEMENT_SUB_ID}" --template-file Templates/entscalelz/es-hubspoke-template/auxiliary/logAnalyticsSolutions.json --parameters topLevelManagementGroupPrefix=${ENTERPRISE_SCALE_COMPANY_PREFIX} managementSubscriptionId=${MANAGEMENT_SUB_ID} 
+    - az deployment sub create --name "EntScale-Solutions-${LOCATION}" --location ${LOCATION} --sub "${MANAGEMENT_SUB_ID}" --template-file templates/entscalelz/es-hubspoke-template/auxiliary/logAnalyticsSolutions.json --parameters topLevelManagementGroupPrefix=${ENTERPRISE_SCALE_COMPANY_PREFIX} managementSubscriptionId=${MANAGEMENT_SUB_ID} 
 
       # Diagnostics and Security
-    - az deployment mg create --name "EntScale-Solutions-${LOCATION}" --location ${LOCATION} --management-group-id "${ENTERPRISE_SCALE_COMPANY_PREFIX}" --template-file Templates/entscalelz/es-hubspoke-template/auxiliary/diagnosticsAndSecurity.json --parameters topLevelManagementGroupPrefix=${ENTERPRISE_SCALE_COMPANY_PREFIX} managementSubscriptionId=${MANAGEMENT_SUB_ID} enableLogAnalytics=Yes enableAsc=Yes enableAscForServers=Standard enableAscForStorage=Standard enableAscForSql=Standard enableAscForKubernetes=Standard enableAscForRegistries=Standard enableVmMonitoring=Yes enableVmssMonitoring=Yes identitySubscriptionId=${IDENTITY_SUB_ID} connectivitySubscriptionId=${CONNECTIVITY_SUB_ID}
+    - az deployment mg create --name "EntScale-Solutions-${LOCATION}" --location ${LOCATION} --management-group-id "${ENTERPRISE_SCALE_COMPANY_PREFIX}" --template-file templates/entscalelz/es-hubspoke-template/auxiliary/diagnosticsAndSecurity.json --parameters topLevelManagementGroupPrefix=${ENTERPRISE_SCALE_COMPANY_PREFIX} managementSubscriptionId=${MANAGEMENT_SUB_ID} enableLogAnalytics=Yes enableAsc=Yes enableAscForServers=Standard enableAscForStorage=Standard enableAscForSql=Standard enableAscForKubernetes=Standard enableAscForRegistries=Standard enableVmMonitoring=Yes enableVmssMonitoring=Yes identitySubscriptionId=${IDENTITY_SUB_ID} connectivitySubscriptionId=${CONNECTIVITY_SUB_ID}
 
       # Connectivity Deployment
-    - az deployment mg create --name "EntScale-conn-${LOCATION}" --location ${LOCATION} --management-group-id "${ENTERPRISE_SCALE_COMPANY_PREFIX}-connectivity" --template-file Templates/entscalelz/es-hubspoke-template/auxiliary/hubspoke-connectivity.json --parameters topLevelManagementGroupPrefix=${ENTERPRISE_SCALE_COMPANY_PREFIX} addressPrefix=${VNET_ADDRESS_PREFIX} enableHub=Yes enableAzFw=Yes enableVpnGw=Yes connectivitySubscriptionId=${CONNECTIVITY_SUB_ID} subnetMaskForAzFw=${SUBNET_MASK_FOR_AZ_FIREWALL} subnetMaskForGw=${SUBNET_MASK_FOR_GW}
+    - az deployment mg create --name "EntScale-conn-${LOCATION}" --location ${LOCATION} --management-group-id "${ENTERPRISE_SCALE_COMPANY_PREFIX}-connectivity" --template-file templates/entscalelz/es-hubspoke-template/auxiliary/hubspoke-connectivity.json --parameters topLevelManagementGroupPrefix=${ENTERPRISE_SCALE_COMPANY_PREFIX} addressPrefix=${VNET_ADDRESS_PREFIX} enableHub=Yes enableAzFw=Yes enableVpnGw=Yes connectivitySubscriptionId=${CONNECTIVITY_SUB_ID} subnetMaskForAzFw=${SUBNET_MASK_FOR_AZ_FIREWALL} subnetMaskForGw=${SUBNET_MASK_FOR_GW}

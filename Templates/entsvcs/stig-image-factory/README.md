@@ -9,7 +9,7 @@ Basic resources used:
 
 * Shared Image Gallery
 * Image Definitions
-* Image Builder Templates
+* Image Builder templates
 * GitHub
 * Log Analytics Workspace
 * Azure Automation (for future use)

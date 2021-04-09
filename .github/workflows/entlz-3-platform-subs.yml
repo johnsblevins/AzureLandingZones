@@ -7,7 +7,7 @@ on:
     branches:
       - master
     paths:
-      - 'Templates/entlz/subs.bicep'
+      - 'templates/entlz/subs.bicep'
       - '.github/workflows/entlz-3-platform-subs.yml'
 
 jobs:
@@ -35,3 +35,18 @@ jobs:
             azcliversion: 2.21.0
             inlineScript: |
               echo blah
+              # Move Management Sub
+              az account management-group subscription add --name "${{ env.entlzprefix }}-management" \
+              --subscription ${{ secrets.ENTLZ_MANAGEMENT_SUB_ID }}
+
+              # Move Identity Sub
+              az account management-group subscription add --name "${{ env.entlzprefix }}-identity" \
+              --subscription ${{ secrets.ENTLZ_IDENTITY_SUB_ID }}
+              
+              # Move Security Sub
+              az account management-group subscription add --name "${{ env.entlzprefix }}-security" \
+              --subscription ${{ secrets.ENTLZ_SECURITY_SUB_ID }}
+
+              # Move Connectivity Sub
+              az account management-group subscription add --name "${{ env.entlzprefix }}-connectivity" \
+              --subscription ${{ secrets.ENTLZ_CONNECTIVITY_SUB_ID }}
