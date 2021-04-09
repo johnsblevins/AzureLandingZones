@@ -17,7 +17,6 @@ jobs:
           entlzprefix: jblz4
           environment: azureusgovernment
           location: usgovvirginia
-          onboardingmg: "${{ env.entlzprefix }}-onboarding"
           
         steps:
         - uses: actions/checkout@master        
@@ -42,6 +41,8 @@ jobs:
                   --parameters entlzprefix=${{ env.entlzprefix }}
         
         - name: Configure Management Group Hierarchy Settings
+          env:
+            onboardingmg: "${{ env.entlzprefix }}-onboarding"
           uses: azure/CLI@v1
           with:
             azcliversion: 2.21.0
