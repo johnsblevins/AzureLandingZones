@@ -35,7 +35,7 @@ jobs:
                   --name "entlz-managementgroups-${{ env.location }}" \
                   --location ${{ env.location }} \
                   --template-file Templates/entlz/managementgroups.bicep \
-                  --parameters entLZPrefix=${{ env.entlzprefix }}
+                  --parameters entlzprefix=${{ env.entlzprefix }}
         
         - name: Configure Management Group Hierarchy Settings
           uses: azure/CLI@v1
