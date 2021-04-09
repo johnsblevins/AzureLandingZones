@@ -1,0 +1,184 @@
+name: entlz-2-platform-subs
+
+# Controls when the action will run. 
+on:
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+jobs:
+    build-and-deploy:
+        runs-on: ubuntu-latest
+        env:
+          entlzprefix: jblz4
+          managementmg: jblz4-management
+          identitymg: jblz4-identity
+          securitymg: jblz4-security
+          connectivitymg: jblz4-connectivity
+          environment: azureusgovernment
+          location: usgovvirginia
+          policydefinitionmg: jblz4
+          managementsubid: 07526f72-6689-42be-945f-bb6ad0214b71
+          identitysubid: 787e871a-84ba-43be-86bf-86bd1e408a4a
+          connectivitysubid: b30166b8-dd1b-4fa2-9ad7-057614257b06
+          securitysubid: ac95a806-c9d3-49e7-83ee-7f82e88c2bd3
+          subOwnerObjectId: 36a879ef-5abf-4366-858e-12275020906c
+          managementsubname: jblz4-management-001
+          identitysubname: jblz4-identity-001
+          connectivitysubname: jblz4-connectivity-001
+          securitysubname: jblz4-security-001
+          suboffertype: MS-AZR-USGOV-0017P
+          enracctname: xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
+          azuremanagementuri: management.usgovcloudapi.net
+
+        steps:
+        - uses: actions/checkout@master        
+        - name: Log in with Azure
+          uses: azure/login@v1
+          with:
+            creds: ${{ secrets.JOBLEVINMAG_AZURE_CREDS }}
+            environment: ${{ env.environment }}
+            enable-AzPSSession: false
+        
+        - name: Create Management Sub
+          uses: azure/CLI@v1
+          with:
+            azcliversion: 2.21.0
+            inlineScript: |
+              # Create Sub if not Specified (requires "Owner" role at EA scope)
+              
+              if [[ -z ${{ env.managementsubid }} ]];
+              then
+                # REST Call to Create Subscription
+                az rest --method post \
+                --url "https://${{ env.azuremanagementuri }}/providers/Microsoft.Billing/enrollmentAccounts/${{ env.enrAcctName }}/providers/Microsoft.Subscription/createSubscription?api-version=2019-10-01-preview" \
+                --headers "{\"content-type\":\"application/json\"}" \
+                --body "{\"displayName\": \"${{ env.managementsubname }}\", \"offerType\": \"${{ env.offerType }}\", \"owners\": [{\"objectId\": \"${{ env.subOwnerObjId}}\"}]}"
+
+                NOW=$(date +"%m/%d/%Y_%I:%M:%S_%p")
+                subId=$(az account subscription list --query "[?displayName=='${{ env.managementsubname }}'].subscriptionId" --output tsv)
+                az tag create --resource-id /subscriptions/$subId --tags createdOn="$NOW" programType="int" programEnv="prod" programName="${{ env.entlzprefix }}"
+              else
+                echo "Management subscription already exists...skipping"
+              fi;
+
+        - name: Create Identity Sub
+          uses: azure/CLI@v1
+          with:
+            azcliversion: 2.21.0
+            inlineScript: |
+              # Create Sub if not Specified (requires "Owner" role at EA scope)
+              
+              if [[ -z ${{ env.identitysubid }} ]];
+              then
+                # REST Call to Create Subscription
+                az rest --method post \
+                --url "https://${{ env.azuremanagementuri }}/providers/Microsoft.Billing/enrollmentAccounts/${{ env.enrAcctName }}/providers/Microsoft.Subscription/createSubscription?api-version=2019-10-01-preview" \
+                --headers "{\"content-type\":\"application/json\"}" \
+                --body "{\"displayName\": \"${{ env.identitysubname }}\", \"offerType\": \"${{ env.offerType }}\", \"owners\": [{\"objectId\": \"${{ env.subOwnerObjId}}\"}]}"
+
+                NOW=$(date +"%m/%d/%Y_%I:%M:%S_%p")
+                subId=$(az account subscription list --query "[?displayName=='${{ env.identitysubname }}'].subscriptionId" --output tsv)
+                az tag create --resource-id /subscriptions/$subId --tags createdOn="$NOW" programType="int" programEnv="prod" programName="${{ env.entlzprefix }}"
+              else
+                echo "Identity subscription already exists...skipping"
+              fi;
+
+        - name: Create Connectivity Sub
+          uses: azure/CLI@v1
+          with:
+            azcliversion: 2.21.0
+            inlineScript: |
+              # Create Sub if not Specified (requires "Owner" role at EA scope)
+              
+              if [[ -z ${{ env.connectivitysubid }} ]];
+              then
+                # REST Call to Create Subscription
+                az rest --method post \
+                --url "https://${{ env.azuremanagementuri }}/providers/Microsoft.Billing/enrollmentAccounts/${{ env.enrAcctName }}/providers/Microsoft.Subscription/createSubscription?api-version=2019-10-01-preview" \
+                --headers "{\"content-type\":\"application/json\"}" \
+                --body "{\"displayName\": \"${{ env.connectivitysubname }}\", \"offerType\": \"${{ env.offerType }}\", \"owners\": [{\"objectId\": \"${{ env.subOwnerObjId}}\"}]}"
+
+                NOW=$(date +"%m/%d/%Y_%I:%M:%S_%p")
+                subId=$(az account subscription list --query "[?displayName=='${{ env.connectivitysubname }}'].subscriptionId" --output tsv)
+                az tag create --resource-id /subscriptions/$subId --tags createdOn="$NOW" programType="int" programEnv="prod" programName="${{ env.entlzprefix }}"
+              else
+                echo "Connectivity subscription already exists...skipping"
+              fi;
+
+        - name: Create Security Sub
+          uses: azure/CLI@v1
+          with:
+            azcliversion: 2.21.0
+            inlineScript: |
+              # Create Sub if not Specified (requires "Owner" role at EA scope)
+              
+              if [[ -z ${{ env.securitysubid }} ]];
+              then
+                # REST Call to Create Subscription
+                az rest --method post \
+                --url "https://${{ env.azuremanagementuri }}/providers/Microsoft.Billing/enrollmentAccounts/${{ env.enrAcctName }}/providers/Microsoft.Subscription/createSubscription?api-version=2019-10-01-preview" \
+                --headers "{\"content-type\":\"application/json\"}" \
+                --body "{\"displayName\": \"${{ env.securitysubname }}\", \"offerType\": \"${{ env.offerType }}\", \"owners\": [{\"objectId\": \"${{ env.subOwnerObjId}}\"}]}"
+
+                NOW=$(date +"%m/%d/%Y_%I:%M:%S_%p")
+                subId=$(az account subscription list --query "[?displayName=='${{ env.securitysubname }}'].subscriptionId" --output tsv)
+                az tag create --resource-id /subscriptions/$subId --tags createdOn="$NOW" programType="int" programEnv="prod" programName="${{ env.entlzprefix }}"
+              else
+                echo "Security subscription already exists...skipping"
+              fi;
+
+        - name: Log in to Azure Again
+          uses: azure/login@v1
+          with:
+            creds: ${{ secrets.USERLZ_AZURE_GOV_CREDENTIALS }}
+            environment: ${{ secrets.USERLZ_AZURE_ENVIRONMENT }}
+            enable-AzPSSession: false
+
+        - name: Move Subscription to Management Group
+          uses: azure/CLI@v1
+          with:
+            azcliversion: 2.21.0
+            inlineScript: |
+              subName="${{ secrets.USERLZ_PROGRAM_TYPE }}-${{ secrets.USERLZ_PROGRAM_ENV }}-${{ secrets.USERLZ_PROGRAM_NAME }}"
+              subId=$(az account subscription list --query "[?displayName=='$subName'].subscriptionId" --output tsv)
+              az account management-group subscription add --name "${{ secrets.USERLZ_MANAGEMENT_GROUP }}" \
+              --subscription $subId
+
+
+
+              # Move Management Sub
+              az account management-group subscription add --name "${{ env.managementmg }}" \
+              --subscription ${{ secrets.ENTLZ_MANAGEMENT_SUB_ID }}
+
+        - name: Deploy Identity Sub
+          uses: azure/CLI@v1
+          with:
+            azcliversion: 2.21.0
+            inlineScript: |
+              # Create Sub if not Specified (requires "Owner" role at EA scope)
+              
+              # Move Identity Sub
+              az account management-group subscription add --name "${{  env.identitymg }}" \
+              --subscription ${{ secrets.ENTLZ_IDENTITY_SUB_ID }}
+
+        - name: Deploy Security Sub
+          uses: azure/CLI@v1
+          with:
+            azcliversion: 2.21.0
+            inlineScript: |              
+              # Create Sub if not Specified (requires "Owner" role at EA scope)
+
+              # Move Security Sub
+              az account management-group subscription add --name "${{ env.securitymg }}" \
+              --subscription ${{ secrets.ENTLZ_SECURITY_SUB_ID }}
+
+        - name: Deploy Connectivity Sub
+          uses: azure/CLI@v1
+          with:
+            azcliversion: 2.21.0
+            inlineScript: |
+              # Create Sub if not Specified (requires "Owner" role at EA scope)
+              
+              # Move Connectivity Sub
+              az account management-group subscription add --name "${{ env.managementmg }}" \
+              --subscription ${{ secrets.ENTLZ_CONNECTIVITY_SUB_ID }}
