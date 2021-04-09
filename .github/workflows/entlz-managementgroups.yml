@@ -14,6 +14,7 @@ jobs:
           entlzprefix: jblz4
           environment: azureusgovernment
           location: usgovvirginia
+          
         steps:
         - uses: actions/checkout@master        
         - name: Log in with Azure
@@ -44,9 +45,7 @@ jobs:
                 # Configure Management Group Hierarchy Settings
 
                 TenantRootMG=$(az account management-group list --query "[0].name" --output tsv)
-
-                resourceManagerURI=$(az cloud show --query 'endpoints.resourceManager' -o tsv)
-                
+                resourceManagerURI=$(az cloud show --query 'endpoints.resourceManager' -o tsv)                
                 az rest \
                   --method put \
                   --headers "{\"Content-Type\":\"application/json\"}" \
