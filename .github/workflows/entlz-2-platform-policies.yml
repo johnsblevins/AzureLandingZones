@@ -8,6 +8,7 @@ on:
       - master
     paths:
       - 'Templates/entlz/policies/*'
+      - '.github/workflows/entlz-2-platform-policies.yml'
 
 jobs:
     build-and-deploy:

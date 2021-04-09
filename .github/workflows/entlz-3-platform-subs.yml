@@ -8,6 +8,7 @@ on:
       - master
     paths:
       - 'Templates/entlz/subs.bicep'
+      - '.github/workflows/entlz-3-platform-subs.yml'
 
 jobs:
     build-and-deploy:
@@ -33,4 +34,4 @@ jobs:
           with:
             azcliversion: 2.21.0
             inlineScript: |
-              
+              echo blah
