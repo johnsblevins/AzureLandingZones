@@ -12,7 +12,7 @@ jobs:
         runs-on: ubuntu-latest
         env:
           entlzprefix: jblz3
-          environment: usgovernment
+          environment: azureusgovernment
           location: usgovvirginia
         steps:
         - uses: actions/checkout@master        
