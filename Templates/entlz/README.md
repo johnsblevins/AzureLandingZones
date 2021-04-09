@@ -4,7 +4,7 @@ The Enterprise Landing Zone architecture is modular by design and allows organiz
 
 ![CAF Enterprise Scale](media/cafentscale.png)
 
-The Enterprise Landing Zone deploys the scaffolding needed to support User Landing Zones.  The subscription is utilized as the scale unit for User Landing Zones.  The following types of User Landing Zones are included out of the box with the Enterprise scaffolding:
+The Enterprise Landing Zone deploys the scaffolding needed to support User Landing Zones for which subscriptions are utilized as the scale unit.  The solution includes a "Subscription Vending" service which enable the automatic deployment and configuration of subscription through a CICD build and release pipeline.  The following User Landing Zones are included out-of-the-box with the Enterprise Landing Zone framework:
 
 * Internal - Workloads requiring internal organization connectivity with high security controls
     * Production - LOB Apps, Infrastructure, Internal Business Systems, etc...
@@ -108,7 +108,7 @@ az rest --method put --headers "{\"Content-Type\":\"application/json\"}" --uri "
 ```
 
 ## Pipeline 2 - Deploy Platform Policies
-In this step Azure Policies and Policy Initiatives are created and assigned to the management group hierarchy using a Policy-as-Code approach as outlined at [https://docs.microsoft.com/en-us/azure/governance/policy/concepts/policy-as-code](https://docs.microsoft.com/en-us/azure/governance/policy/concepts/policy-as-code).  The folder structure used with the pipeline is as follows:
+In this step Azure Policies and Policy Initiatives are created and assigned to the management group hierarchy using a Policy-as-Code approach as outlined at [https://docs.microsoft.com/en-us/azure/governance/policy/concepts/policy-as-code](https://docs.microsoft.com/en-us/azure/governance/policy/concepts/policy-as-code).  The following folder structure is used to store custom policy and initiative definitions as well as both builtin and custom policy and initiative assignments.  This is the native format when exporting policy definitions and assignements using the portal export features which allows an administrator to build a policy set within the portal and export it into the folder structure.
 
         .policies
         |- assignmentTemplates _______________          # Sample Assignment Templates
@@ -135,9 +135,15 @@ In this step Azure Policies and Policy Initiatives are created and assigned to t
         |     |- assign.<name1>.json _________          # Assignment 1 for this policy initiative
         |     |- assign.<name2>.json _________          # Assignment 2 for this policy initiative
 
-This step in the pipeline can be used after the initial Enterprise Landing Zone deployment to manage Policy Defintion and Assignment going forward within the environment.
+The Policy-as-Code pipeline deployment consists of four steps:
+* Policy Definition Creation
+* Initiative Definiton Creation
+* Policy Assignment
+* Initiative Assignment
 
-The following deployment script is used for this step:
+During the Policy Definition Creation step the pipeline loops through all policy.json files within the hierarchy and deploys the associated policy definition to the designated Management Group, which is by default the EntLZ root MG.  During the Initiative Definition Creation step the pipeline loops through all policyset.json files within the hierarchy and deploys the associated initiative definiton to the designated Management Group, which is by default the EntLZ root MG.
+
+This pipeline can be used after the initial Enterprise Landing Zone deployment to manage Policy Defintions and Assignments going forward within the environment.
 
 ```
 # Deploy Policy Definitions

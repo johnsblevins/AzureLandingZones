@@ -174,7 +174,7 @@
   "policyDefinitions": [
    {
     "policyDefinitionReferenceId": "CosmosDenyPaasPublicIP",
-    "policyDefinitionId": "/providers/Microsoft.Management/managementGroups/%%entlzprefix%%/providers/Microsoft.Authorization/policyDefinitions/Deny-PublicEndpoint-CosmosDB",
+    "policyDefinitionId": "/providers/Microsoft.Management/managementGroups/%%policydefinitionmg%%/providers/Microsoft.Authorization/policyDefinitions/Deny-PublicEndpoint-CosmosDB",
     "parameters": {
      "effect": {
       "value": "[parameters('CosmosPublicIpDenyEffect')]"
@@ -183,7 +183,7 @@
    },
    {
     "policyDefinitionReferenceId": "MariaDBDenyPaasPublicIP",
-    "policyDefinitionId": "/providers/Microsoft.Management/managementGroups/%%entlzprefix%%/providers/Microsoft.Authorization/policyDefinitions/Deny-PublicEndpoint-MariaDB",
+    "policyDefinitionId": "/providers/Microsoft.Management/managementGroups/%%policydefinitionmg%%/providers/Microsoft.Authorization/policyDefinitions/Deny-PublicEndpoint-MariaDB",
     "parameters": {
      "effect": {
       "value": "[parameters('MariaDBPublicIpDenyEffect')]"
@@ -192,7 +192,7 @@
    },
    {
     "policyDefinitionReferenceId": "MySQLDenyPaasPublicIP",
-    "policyDefinitionId": "/providers/Microsoft.Management/managementGroups/%%entlzprefix%%/providers/Microsoft.Authorization/policyDefinitions/Deny-PublicEndpoint-MySQL",
+    "policyDefinitionId": "/providers/Microsoft.Management/managementGroups/%%policydefinitionmg%%/providers/Microsoft.Authorization/policyDefinitions/Deny-PublicEndpoint-MySQL",
     "parameters": {
      "effect": {
       "value": "[parameters('MySQLPublicIpDenyEffect')]"
@@ -201,7 +201,7 @@
    },
    {
     "policyDefinitionReferenceId": "PostgreSQLDenyPaasPublicIP",
-    "policyDefinitionId": "/providers/Microsoft.Management/managementGroups/%%entlzprefix%%/providers/Microsoft.Authorization/policyDefinitions/Deny-PublicEndpoint-PostgreSql",
+    "policyDefinitionId": "/providers/Microsoft.Management/managementGroups/%%policydefinitionmg%%/providers/Microsoft.Authorization/policyDefinitions/Deny-PublicEndpoint-PostgreSql",
     "parameters": {
      "effect": {
       "value": "[parameters('PostgreSQLPublicIpDenyEffect')]"
@@ -210,7 +210,7 @@
    },
    {
     "policyDefinitionReferenceId": "KeyVaultDenyPaasPublicIP",
-    "policyDefinitionId": "/providers/Microsoft.Management/managementGroups/%%entlzprefix%%/providers/Microsoft.Authorization/policyDefinitions/Deny-PublicEndpoint-KeyVault",
+    "policyDefinitionId": "/providers/Microsoft.Management/managementGroups/%%policydefinitionmg%%/providers/Microsoft.Authorization/policyDefinitions/Deny-PublicEndpoint-KeyVault",
     "parameters": {
      "effect": {
       "value": "[parameters('KeyVaultPublicIpDenyEffect')]"
@@ -219,7 +219,7 @@
    },
    {
     "policyDefinitionReferenceId": "SqlServerDenyPaasPublicIP",
-    "policyDefinitionId": "/providers/Microsoft.Management/managementGroups/%%entlzprefix%%/providers/Microsoft.Authorization/policyDefinitions/Deny-PublicEndpoint-Sql",
+    "policyDefinitionId": "/providers/Microsoft.Management/managementGroups/%%policydefinitionmg%%/providers/Microsoft.Authorization/policyDefinitions/Deny-PublicEndpoint-Sql",
     "parameters": {
      "effect": {
       "value": "[parameters('SqlServerPublicIpDenyEffect')]"
@@ -228,7 +228,7 @@
    },
    {
     "policyDefinitionReferenceId": "StorageDenyPaasPublicIP",
-    "policyDefinitionId": "/providers/Microsoft.Management/managementGroups/%%entlzprefix%%/providers/Microsoft.Authorization/policyDefinitions/Deny-PublicEndpoint-Storage",
+    "policyDefinitionId": "/providers/Microsoft.Management/managementGroups/%%policydefinitionmg%%/providers/Microsoft.Authorization/policyDefinitions/Deny-PublicEndpoint-Storage",
     "parameters": {
      "effect": {
       "value": "[parameters('StoragePublicIpDenyEffect')]"
@@ -237,7 +237,7 @@
    },
    {
     "policyDefinitionReferenceId": "AKSDenyPaasPublicIP",
-    "policyDefinitionId": "/providers/Microsoft.Management/managementGroups/%%entlzprefix%%/providers/Microsoft.Authorization/policyDefinitions/Deny-PublicEndpoint-Aks",
+    "policyDefinitionId": "/providers/Microsoft.Management/managementGroups/%%policydefinitionmg%%/providers/Microsoft.Authorization/policyDefinitions/Deny-PublicEndpoint-Aks",
     "parameters": {
      "effect": {
       "value": "[parameters('AKSPublicIpDenyEffect')]"
@@ -246,7 +246,7 @@
    },
    {
     "policyDefinitionReferenceId": "RestrictSAFWRules",
-    "policyDefinitionId": "/providers/Microsoft.Management/managementGroups/%%entlzprefix%%/providers/Microsoft.Authorization/policyDefinitions/Restrict-SA-FW-Rules",
+    "policyDefinitionId": "/providers/Microsoft.Management/managementGroups/%%policydefinitionmg%%/providers/Microsoft.Authorization/policyDefinitions/Restrict-SA-FW-Rules",
     "parameters": {
      "effect": {
       "value": "[parameters('RestrictSAFWRulesEffect')]"
@@ -258,7 +258,7 @@
    },
    {
     "policyDefinitionReferenceId": "RestrictKVFWRules",
-    "policyDefinitionId": "/providers/Microsoft.Management/managementGroups/%%entlzprefix%%/providers/Microsoft.Authorization/policyDefinitions/Restrict-KV-FW-Rules",
+    "policyDefinitionId": "/providers/Microsoft.Management/managementGroups/%%policydefinitionmg%%/providers/Microsoft.Authorization/policyDefinitions/Restrict-KV-FW-Rules",
     "parameters": {
      "effect": {
       "value": "[parameters('RestrictKVFWRulesEffect')]"
@@ -270,7 +270,7 @@
    },
    {
     "policyDefinitionReferenceId": "DenyNetAccessDisks",
-    "policyDefinitionId": "/providers/Microsoft.Management/managementGroups/%%entlzprefix%%/providers/Microsoft.Authorization/policyDefinitions/Deny-Net-Access-Disks",
+    "policyDefinitionId": "/providers/Microsoft.Management/managementGroups/%%policydefinitionmg%%/providers/Microsoft.Authorization/policyDefinitions/Deny-Net-Access-Disks",
     "parameters": {
      "effect": {
       "value": "[parameters('DenyNetAccessDisksEffect')]"
@@ -279,7 +279,7 @@
    }   
   ]
  },
- "id": "/providers/Microsoft.Management/managementGroups/%%entlzprefix%%/providers/Microsoft.Authorization/policySetDefinitions/Deny-PublicEndpoints",
+ "id": "/providers/Microsoft.Management/managementGroups/%%policydefinitionmg%%/providers/Microsoft.Authorization/policySetDefinitions/Deny-PublicEndpoints",
  "type": "Microsoft.Authorization/policySetDefinitions",
  "name": "Deny-PublicEndpoints"
 }
