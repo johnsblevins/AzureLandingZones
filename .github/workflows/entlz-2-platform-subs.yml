@@ -4,10 +4,10 @@ env:
   entlzprefix: entlz  
   environment: azureusgovernment
   location: usgovvirginia  
-  managementsubid: b16dc920-b976-4776-8e6f-b73c187942c0
-  identitysubid: 510685f5-45c7-4643-b99e-0d508c083ef7
-  connectivitysubid: 4064ce0a-c8bc-4b5a-9fa8-5c7b842265da
-  securitysubid: 816b73e9-e4aa-40eb-9d2d-ce78df160fe6
+  managementsubid:
+  identitysubid:
+  connectivitysubid:
+  securitysubid:
   subOwnerGroup: azure-platform-owners
   offertype: MS-AZR-USGOV-0017P
   enracctname: b5f3295f-c2be-4afb-8880-5c0ce9be2db3
