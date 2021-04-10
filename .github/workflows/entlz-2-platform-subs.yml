@@ -40,6 +40,7 @@ jobs:
             inlineScript: |
               if [[ -z "${{ env.managementsubid }}" ]];
               then
+                az config set extension.use_dynamic_install=yes_without_prompt
                 managementuri=$(az cloud show --query endpoints.resourceManager --output tsv)
                 subownergroupid=$(az ad group list --display-name ${{ env.subownergroup }}  --query [].objectId -o tsv)
 
@@ -67,6 +68,7 @@ jobs:
             inlineScript: |
               if [[ -z "${{ env.identitysubid }}" ]];
               then
+                az config set extension.use_dynamic_install=yes_without_prompt
                 managementuri=$(az cloud show --query endpoints.resourceManager --output tsv)
                 subownergroupid=$(az ad group list --display-name ${{ env.subownergroup }}  --query [].objectId -o tsv)
 
@@ -94,6 +96,7 @@ jobs:
             inlineScript: |
               if [[ -z "${{ env.connectivitysubid }}" ]];
               then
+                az config set extension.use_dynamic_install=yes_without_prompt
                 managementuri=$(az cloud show --query endpoints.resourceManager --output tsv)
                 subownergroupid=$(az ad group list --display-name ${{ env.subownergroup }}  --query [].objectId -o tsv)
 
@@ -121,6 +124,7 @@ jobs:
             inlineScript: |
               if [[ -z "${{ env.securitysubid }}" ]];
               then
+                az config set extension.use_dynamic_install=yes_without_prompt
                  managementuri=$(az cloud show --query endpoints.resourceManager --output tsv)
                  subownergroupid=$(az ad group list --display-name ${{ env.subownergroup }}  --query [].objectId -o tsv)
 
