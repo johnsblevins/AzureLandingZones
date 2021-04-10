@@ -3,12 +3,14 @@ name: entlz-4-platform-policies
 # Controls when the action will run. 
 on:
   # Allows you to run this workflow manually from the Actions tab
-  push:
-    branches:
-      - master
-    paths:
-      - 'templates/entlz/policies/*'
-      - '.github/workflows/entlz-2-platform-policies.yml'
+  workflow_dispatch:
+  
+  #push:
+  #  branches:
+  #    - master
+  #  paths:
+  #    - 'templates/entlz/policies/*'
+  #    - '.github/workflows/entlz-2-platform-policies.yml'
 
 jobs:
     build-and-deploy:

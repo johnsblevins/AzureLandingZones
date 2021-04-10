@@ -57,6 +57,14 @@ Generate a new secret for the app registration:
 ![](media/appreg_secret.png)
 
 Save the credential object to a GitHub Action Secret.  The following format is required:
+```
+{
+    "clientId": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
+    "clientSecret": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+    "subscriptionId": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
+    "tenantId": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+}
+```
 ![](media/github_secret.png)
 
 
@@ -77,17 +85,19 @@ The group has "Owner" role at the Enrollment Account scope (/providers/Microsoft
  
 The starter pipeline is included at [.github/workflows/entlz-1-platform-mgs.yml](.github/workflows/entlz-1-platform-mgs.yml).  The pipeline is configured by default to be manually executed.  Before deploying the pipeline customize the environment variables at the top of the template to fit the environment.  These include:
 
-    entlzprefix: 
+    entlzprefix (required): 
         Description: 5 character alphanumeric prefix to establish the Management Group naming standard
         Default Value: entlz
-    environment: 
+
+    environment (required): 
         Description: Azure Cloud environment for AZ CLI connection
         Default Value: azureusgovernment
-    location: 
+
+    location (required): 
         Description: Location to store deployment metadata
         Default Value: usgovvirginia
 
-This pipeline deploys the management group structure using a customer provided 5 character alphanumeric prefix to establish the Management Group naming standard.  The following figure shows the management group hierarchy which will be created using "entlz" as the prefix value for demonstration purposes:
+The following figure shows the management group hierarchy which will be created using "entlz" as the prefix value for demonstration purposes:
 
     Tenant (/)
         Tenant Root Group
@@ -112,20 +122,37 @@ This pipeline deploys the management group structure using a customer provided 5
 
 In addition, the Management Group Hierarchy settings are configured such that the "entlz-Onboarding" management group is configured as the default management group for new subscriptions and RBAC for the Management Group hierarchy is set to require "Management Group Contributor" role to add/remove/modify management groups.  This prevents non-privileged users from making changes to the management group hierarchy or creating their own branches.
 
-The following script is used for this step:
-```
-# BICEP Template Deployment to Create the Management Group Hierarchy
-az deployment tenant create --name "EntScale-Mgs-${{ secrets.ENTLZ_LOCATION }}" --location ${{ secrets.ENTLZ_LOCATION }} \
---template-file templates/entlz/es-hubspoke/mgmtGroups.bicep --parameters \
-entLZPrefix=${{ secrets.ENTLZ_ENTERPRISE_SCALE_COMPANY_PREFIX }}
-
-# Management Group Hierarchy Settings
-TenantRootMG=$(az account management-group list --query "[0].name" --output tsv)
-resourceManagerURI=$(az cloud show --query 'endpoints.resourceManager' -o tsv)
-az rest --method put --headers "{\"Content-Type\":\"application/json\"}" --uri "${resourceManagerURI}providers/Microsoft.Management/managementGroups/$TenantRootMG/settings/default?api-version=2020-05-01" --body "{\"properties\": {\"defaultManagementGroup\": \"/providers/Microsoft.Management/managementGroups/${{ secrets.ENTLZ_ENTERPRISE_SCALE_COMPANY_PREFIX }}-onboarding\",\"requireAuthorizationForGroupCreation\": \"true\"}}" 
-```
-
 ## Pipeline 2 - Deploy Platform Policies
+The starter pipeline is included at [.github/workflows/entlz-2-platform-subs.yml](.github/workflows/entlz-2-platform-subs.yml).  The pipeline is configured by default to be manually executed.  Before deploying the pipeline customize the environment variables at the top of the template to fit the environment.  These include:
+
+    entlzprefix (required): 
+        Description: 5 character alphanumeric prefix to establish the Management Group naming standard
+        Default Value: entlz
+
+    environment (required): 
+        Description: Azure Cloud environment for AZ CLI connection
+        Default Value: azureusgovernment
+
+    location (required): 
+        Description: Location to store deployment metadata
+        Default Value: usgovvirginia
+
+    managementsubid (optional): 
+        Description: Sub ID for existing management subscription, if not provided or left empty EA subscription will be created
+        Default Value: <none>
+
+    identitysubid (optional): 
+        Description: Sub ID for existing identity subscription, if not provided or left empty EA subscription will be created
+        Default Value: <none>
+
+    connectivitysubid (optional): 
+        Description: Sub ID for existing connectivity subscription, if not provided or left empty EA subscription will be created
+        Default Value: <none>
+
+    securitysubid (optional): 
+        Description: Sub ID for existing security subscription, if not provided or left empty EA subscription will be created
+        Default Value: <none>
+
 In this step Azure Policies and Policy Initiatives are created and assigned to the management group hierarchy using a Policy-as-Code approach as outlined at [https://docs.microsoft.com/en-us/azure/governance/policy/concepts/policy-as-code](https://docs.microsoft.com/en-us/azure/governance/policy/concepts/policy-as-code).  The following folder structure is used to store custom policy and initiative definitions as well as both builtin and custom policy and initiative assignments.  This is the native format when exporting policy definitions and assignements using the portal export features which allows an administrator to build a policy set within the portal and export it into the folder structure.
 
         .policies
@@ -153,86 +180,22 @@ In this step Azure Policies and Policy Initiatives are created and assigned to t
         |     |- assign.<name1>.json _________          # Assignment 1 for this policy initiative
         |     |- assign.<name2>.json _________          # Assignment 2 for this policy initiative
 
-The Policy-as-Code pipeline deployment consists of four steps:
-* Policy Definition Creation
-* Initiative Definiton Creation
-* Policy Assignment
-* Initiative Assignment
+The Policy-as-Code pipeline consists of four steps:
+    
+1. Policy Definition Creation
 
-During the Policy Definition Creation step the pipeline loops through all policy.json files within the hierarchy and deploys the associated policy definition to the designated Management Group, which is by default the EntLZ root MG.  During the Initiative Definition Creation step the pipeline loops through all policyset.json files within the hierarchy and deploys the associated initiative definiton to the designated Management Group, which is by default the EntLZ root MG.
+    Script loops through the policy folder structure and looks for all "policy.json" files.  Each Policy Definition is deployed to the Enterprise Landing Zone root management group (ie. value specified in entlzprefix environment variable). 
+2. Initiative Definiton Creation
 
-This pipeline can be used after the initial Enterprise Landing Zone deployment to manage Policy Defintions and Assignments going forward within the environment.
+    Script loops through the initiative folder structure and looks for all "policyset.json" files.  Each Initiative Definition is deployed to the Enterprise Landing Zone root management group (ie. value specified in entlzprefix environment variable). 
+3. Policy Assignments
 
-```
-# Deploy Policy Definitions
-for f in $(find templates/entlz/es-hubspoke/policies/policies -name policy.json); \
-do name=`jq -r .name $f`; \
-description=`jq -r .properties.description $f`; \
-displayName=`jq -r .properties.displayName $f`; \
-rules=`jq -r .properties.policyRule $f`; \
-params=`jq -r .properties.parameters $f`; \
-mode=`jq -r .properties.mode $f`; \
-az policy definition create --name "$name" --description "$description" --display-name "$displayName" --rules "$rules" --params "$params" --management-group "jblz1" --mode "$mode"   ;\
-done
+    Script loops through the policy folder structure and looks for all files matching the "assign.*.json" pattern.  Each assignement is deployed to the scope provided in the assignment JSON file.  Assignment scopes are generalized in these files by using the pattern %%entlzprefix%%  to refer to the enterprise scale root management group.  The script finds and replaces all instances of this pattern with the value provided in entlzprefix environment variable when making assignments.
+4. Initiative Assignment
 
-# Deploy Initiative Definitions
-for f in $(find templates/entlz/es-hubspoke/policies/initiatives -name policyset.json); \
-do name=`jq -r .name $f`; \
-description=`jq -r .properties.description $f`; \
-displayName=`jq -r .properties.displayName $f`; \
-definitions=`jq -r .properties.policyDefinitions $f | sed -e 's/%%entlzprefix%%/jblz1/g'`; \
-params=`jq -r .properties.parameters $f`; \
-az policy set-definition create --name "$name" --description "$description" --display-name "$displayName" --definitions "$definitions" --params "$params" --management-group "jblz1"   ;\
-done
+    Script loops through the initiative folder structure and looks for all files matching the "assign.*.json" pattern.  Each assignement is deployed to the scope provided in the assignment JSON file.  Assignment scopes are generalized in these files by using the pattern %%entlzprefix%%  to refer to the enterprise scale root management group.  The script finds and replaces all instances of this pattern with the value provided in entlzprefix environment variable when making assignments.
 
-# Delay 120
-sleep 120
-
-# Deploy Policy Assignments
-for f in $(find templates/entlz/es-hubspoke/policies/policies -name assign.*.json); \
-do name=`jq -r .name $f`; \
-displayName=`jq -r .properties.displayName $f`; \
-location="usgovvirginia"; \
-policy=`jq -r .properties.policyDefinitionId $f | sed -e 's/%%entlzprefix%%/jblz1/g' | sed -e 's/%%location%%/usgovvirginia/g' | sed -e 's/%%managementsubid%%/07526f72-6689-42be-945f-bb6ad0214b71/g'`; \
-params=`jq -r .properties.parameters $f | sed -e 's/%%entlzprefix%%/jblz1/g' | sed -e 's/%%location%%/usgovvirginia/g' | sed -e 's/%%managementsubid%%/07526f72-6689-42be-945f-bb6ad0214b71/g'`; \
-scope=`jq -r .properties.scope $f | sed -e 's/%%entlzprefix%%/jblz1/g' | sed -e 's/%%location%%/usgovvirginia/g' | sed -e 's/%%managementsubid%%/07526f72-6689-42be-945f-bb6ad0214b71/g'`; \
-sku=`jq -r .sku.tier $f`; \
-identity=`jq -r .identity $f`; \
-role=`jq -r .identity.role $f`; \
-[[ -z $role ]] && role="Contributor"; \
-echo "Creating Policy Assignment $name"; \
-if [[ $identity = "null" ]]  ;
-then
-az policy assignment create --name "$name" --display-name "$displayName" --location "$location" --policy "$policy" --params "$params" --scope "$scope"  --sku "$sku";
-else
-az policy assignment create --name "$name" --display-name "$displayName" --location "$location" --policy "$policy" --params "$params"  --scope "$scope"  --sku "$sku"  --assign-identity --identity-scope "$scope" --role "$role";
-fi ; \
-done
-
-# Deploy Initiative Assignments
-for f in $(find templates/entlz/es-hubspoke/policies/initiatives -name assign.*.json); \
-do name=`jq -r .name $f`; \
-displayName=`jq -r .properties.displayName $f`; \
-location="usgovvirginia"; \
-policySetDefinition=`jq -r .properties.policyDefinitionId $f | sed -e 's/%%entlzprefix%%/jblz1/g' | sed -e 's/%%location%%/usgovvirginia/g' | sed -e 's/%%managementsubid%%/07526f72-6689-42be-945f-bb6ad0214b71/g'`; \
-params=`jq -r .properties.parameters $f | sed -e 's/%%entlzprefix%%/jblz1/g' | sed -e 's/%%location%%/usgovvirginia/g' | sed -e 's/%%managementsubid%%/07526f72-6689-42be-945f-bb6ad0214b71/g'`; \
-scope=`jq -r .properties.scope $f | sed -e 's/%%entlzprefix%%/jblz1/g' | sed -e 's/%%location%%/usgovvirginia/g' | sed -e 's/%%managementsubid%%/07526f72-6689-42be-945f-bb6ad0214b71/g'`; \
-sku=`jq -r .sku.tier $f`; \
-identity=`jq -r .identity $f`; \
-role=`jq -r .identity.role $f`; \
-[[ -z $role ]] && role="Contributor"; \
-echo "Creating Initiative Assignment $name"; \
-if [[ $identity = "null" ]]  ;
-then
-az policy assignment create --name "$name" --display-name "$displayName" --location "$location" --policy-set-definition "$policySetDefinition" --params "$params" --scope "$scope"  --sku "$sku";
-else
-az policy assignment create --name "$name" --display-name "$displayName" --location "$location" --policy-set-definition "$policySetDefinition" --params "$params" --scope "$scope"  --sku "$sku"  --assign-identity --identity-scope "$scope" --role "$role";
-fi; \
-done
-
-# Delay 120
-sleep 120
-```
+This pipeline can be used after the initial Enterprise Landing Zone deployment to manage Policy Defintions and Assignments going forward within the environment as Policy-as-Code.
 
 ## Pipeline 3 - Deploy Platform Subscriptions
 

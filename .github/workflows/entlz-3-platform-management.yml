@@ -3,12 +3,14 @@ name: entlz-3-platform-management
 # Controls when the action will run. 
 on:
   # Allows you to run this workflow manually from the Actions tab
-  push:
-    branches:
-      - master
-    paths:
-      - 'templates/entlz/platform-management.bicep'
-      - '.github/workflows/entlz-4-platform-management.yml'
+  workflow_dispatch:
+
+  #push:
+  #  branches:
+  #    - master
+  #  paths:
+  #    - 'templates/entlz/platform-management.bicep'
+  #    - '.github/workflows/entlz-4-platform-management.yml'
       
 jobs:
     build-and-deploy:
