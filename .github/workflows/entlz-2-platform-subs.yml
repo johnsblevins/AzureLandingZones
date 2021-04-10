@@ -21,8 +21,6 @@ on:
 jobs:
     build-and-deploy:
         runs-on: ubuntu-latest
-        
-
         steps:
         - uses: actions/checkout@master        
         - name: Log in with Azure
@@ -40,7 +38,7 @@ jobs:
           with:
             azcliversion: 2.21.0
             inlineScript: |
-              if [[ -z ${{ env.managementsubid }} ]];
+              if [[ -z "${{ env.managementsubid }}" ]];
               then
                 managementURI=$(az cloud show --query endpoints.resourceManager --output tsv)
                 subownergroupid=$(az ad group list --display-name ${{ env.subownergroup }}  --query [].objectId -o tsv)
@@ -67,7 +65,7 @@ jobs:
           with:
             azcliversion: 2.21.0
             inlineScript: |
-              if [[ -z ${{ env.identitysubid }} ]];
+              if [[ -z "${{ env.identitysubid }}" ]];
               then
                 managementURI=$(az cloud show --query endpoints.resourceManager --output tsv)
                 subownergroupid=$(az ad group list --display-name ${{ env.subownergroup }}  --query [].objectId -o tsv)
@@ -94,7 +92,7 @@ jobs:
           with:
             azcliversion: 2.21.0
             inlineScript: |
-              if [[ -z ${{ env.connectivitysubid }} ]];
+              if [[ -z "${{ env.connectivitysubid }}" ]];
               then
                 managementURI=$(az cloud show --query endpoints.resourceManager --output tsv)
                 subownergroupid=$(az ad group list --display-name ${{ env.subownergroup }}  --query [].objectId -o tsv)
@@ -121,7 +119,7 @@ jobs:
           with:
             azcliversion: 2.21.0
             inlineScript: |
-              if [[ -z ${{ env.securitysubid }} ]];
+              if [[ -z "${{ env.securitysubid }}" ]];
               then
                  managementURI=$(az cloud show --query endpoints.resourceManager --output tsv)
                  subownergroupid=$(az ad group list --display-name ${{ env.subownergroup }}  --query [].objectId -o tsv)
@@ -155,7 +153,7 @@ jobs:
           with:
             azcliversion: 2.21.0
             inlineScript: |
-              if [[ -z ${{ env.managementsubid }} ]];
+              if [[ -z "${{ env.managementsubid }}" ]];
               then
                 subId=$(az account subscription list --query "[?displayName=='${{ env.managementsubname }}'].subscriptionId" --output tsv)
                 az account management-group subscription add --name "${{ env.managementmg }}" \
@@ -173,7 +171,7 @@ jobs:
           with:
             azcliversion: 2.21.0
             inlineScript: |
-              if [[ -z ${{ env.identitysubid }} ]];
+              if [[ -z "${{ env.identitysubid }}" ]];
               then
                 subId=$(az account subscription list --query "[?displayName=='${{ env.identitysubname }}'].subscriptionId" --output tsv)
                 az account management-group subscription add --name "${{ env.identitymg }}" \
@@ -191,7 +189,7 @@ jobs:
           with:
             azcliversion: 2.21.0
             inlineScript: |
-              if [[ -z ${{ env.connectivitysubid }} ]];
+              if [[ -z "${{ env.connectivitysubid }}" ]];
               then
                 subId=$(az account subscription list --query "[?displayName=='${{ env.connectivitysubname }}'].subscriptionId" --output tsv)
                 az account management-group subscription add --name "${{ env.connectivitymg }}" \
@@ -209,7 +207,7 @@ jobs:
           with:
             azcliversion: 2.21.0
             inlineScript: |
-              if [[ -z ${{ env.securitysubid }} ]];
+              if [[ -z "${{ env.securitysubid }}" ]];
               then
                 subId=$(az account subscription list --query "[?displayName=='${{ env.securitysubname }}'].subscriptionId" --output tsv)
                 az account management-group subscription add --name "${{ env.securitymg }}" \
