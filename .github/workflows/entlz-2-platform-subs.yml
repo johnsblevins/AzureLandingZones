@@ -190,8 +190,7 @@ jobs:
               if [[ -z "${{ env.managementsubid }}" ]];
               then
                 subId=$(az account subscription list --query "[?displayName=='${{ env.managementsubname }}'].subscriptionId" --output tsv)
-                az account management-group subscription add --name "${{ env.managementmg }}" \
-                  --subscription $subId
+                az account management-group subscription add --name "${{ env.managementmg }}" --subscription $subId
               else
                 az account management-group subscription add --name "${{ env.managementmg }}" \
                   --subscription ${{ env.managementsubid }}
