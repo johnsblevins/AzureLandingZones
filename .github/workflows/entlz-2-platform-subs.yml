@@ -52,7 +52,7 @@ jobs:
                   --url "${managementuri}providers/Microsoft.Billing/enrollmentAccounts/${{ env.enracctname }}/providers/Microsoft.Subscription/createSubscription?api-version=2019-10-01-preview" \
                   --headers "{\"content-type\":\"application/json\"}" \
                   --body "{\"displayName\": \"${{ env.managementsubname }}\", \"offerType\": \"${{ env.offertype }}\", \"owners\": [{\"objectId\": \"${subownergroupid}\"}]}"
-                  sleep 20
+                  sleep 60
 
                   echo "Assigning default tags..."
                   # Assign Default Tags to Subscription
@@ -88,7 +88,7 @@ jobs:
                   --url "${managementuri}providers/Microsoft.Billing/enrollmentAccounts/${{ env.enracctname }}/providers/Microsoft.Subscription/createSubscription?api-version=2019-10-01-preview" \
                   --headers "{\"content-type\":\"application/json\"}" \
                   --body "{\"displayName\": \"${{ env.identitysubname }}\", \"offerType\": \"${{ env.offertype }}\", \"owners\": [{\"objectId\": \"${subownergroupid}\"}]}"
-                  sleep 20
+                  sleep 60
 
                   # Assign Default Tags to Subscription
                   NOW=$(date +"%m/%d/%Y_%I:%M:%S_%p")
@@ -183,7 +183,7 @@ jobs:
           uses: azure/CLI@v1
           env:
             managementmg: "${{ env.entlzprefix }}-management"
-            managementsubname: "${{ env.entlzprefix }}-management-001"
+            managementsubname: "${{ env.entlzprefix }}-management"
           with:
             azcliversion: 2.21.0
             inlineScript: |
@@ -200,7 +200,7 @@ jobs:
           uses: azure/CLI@v1
           env:
             identitymg: "${{ env.entlzprefix }}-identity"
-            identitysubname: "${{ env.entlzprefix }}-identity-001"
+            identitysubname: "${{ env.entlzprefix }}-identity"
           with:
             azcliversion: 2.21.0
             inlineScript: |
@@ -218,7 +218,7 @@ jobs:
           uses: azure/CLI@v1
           env:
             connectivitymg: "${{ env.entlzprefix }}-connectivity"
-            connectivitysubname: "${{ env.entlzprefix }}-connectivity-001"
+            connectivitysubname: "${{ env.entlzprefix }}-connectivity"
           with:
             azcliversion: 2.21.0
             inlineScript: |
@@ -236,7 +236,7 @@ jobs:
           uses: azure/CLI@v1
           env:
             securitymg: "${{ env.entlzprefix }}-security"
-            securitysubname: "${{ env.entlzprefix }}-security-001"
+            securitysubname: "${{ env.entlzprefix }}-security"
           with:
             azcliversion: 2.21.0
             inlineScript: |
