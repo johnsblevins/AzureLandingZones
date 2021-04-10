@@ -8,7 +8,7 @@ env:
   identitysubid:
   connectivitysubid:
   securitysubid:
-  subOwnerGroup: azure-platform-owners
+  subownergroup: azure-platform-owners
   offertype: MS-AZR-USGOV-0017P
   enracctname: b5f3295f-c2be-4afb-8880-5c0ce9be2db3
 
