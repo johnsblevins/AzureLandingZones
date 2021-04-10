@@ -34,7 +34,7 @@ jobs:
           uses: azure/CLI@v1
           env:
             managementmg: "${{ env.entlzprefix }}-management"
-            managementsubname: "${{ env.entlzprefix }}-management-002"
+            managementsubname: "${{ env.entlzprefix }}-management"
           with:
             azcliversion: 2.21.0
             inlineScript: |
@@ -44,16 +44,22 @@ jobs:
                 managementuri=$(az cloud show --query endpoints.resourceManager --output tsv)
                 subownergroupid=$(az ad group list --display-name ${{ env.subownergroup }}  --query [].objectId -o tsv)
 
-                # REST Call to Create Subscription
-                az rest --method post \
-                --url "${managementuri}providers/Microsoft.Billing/enrollmentAccounts/${{ env.enracctname }}/providers/Microsoft.Subscription/createSubscription?api-version=2019-10-01-preview" \
-                --headers "{\"content-type\":\"application/json\"}" \
-                --body "{\"displayName\": \"${{ env.managementsubname }}\", \"offerType\": \"${{ env.offertype }}\", \"owners\": [{\"objectId\": \"${subownergroupid}\"}]}"
+                # Check if Sub already exists
+                if [[ -z `az account list --query "[?name=='${{ env.managementsubname }}'].name" --output tsv` ]];
+                then
+                  # REST Call to Create Subscription
+                  az rest --method post \
+                  --url "${managementuri}providers/Microsoft.Billing/enrollmentAccounts/${{ env.enracctname }}/providers/Microsoft.Subscription/createSubscription?api-version=2019-10-01-preview" \
+                  --headers "{\"content-type\":\"application/json\"}" \
+                  --body "{\"displayName\": \"${{ env.managementsubname }}\", \"offerType\": \"${{ env.offertype }}\", \"owners\": [{\"objectId\": \"${subownergroupid}\"}]}"
 
-                # Assign Default Tags to Subscription
-                NOW=$(date +"%m/%d/%Y_%I:%M:%S_%p")
-                subId=$(az account subscription list --query "[?displayName=='${{ env.managementsubname }}'].subscriptionId" --output tsv)
-                az tag create --resource-id /subscriptions/$subId --tags createdOn="$NOW" programType="int" programEnv="prod" programName="${{ env.entlzprefix }}"
+                  # Assign Default Tags to Subscription
+                  NOW=$(date +"%m/%d/%Y_%I:%M:%S_%p")
+                  subId=$(az account subscription list --query "[?displayName=='${{ env.managementsubname }}'].subscriptionId" --output tsv)
+                  az tag create --resource-id /subscriptions/$subId --tags createdOn="$NOW" programType="int" programEnv="prod" programName="${{ env.entlzprefix }}"
+                else
+                  echo "Management subscription already exists...skipping"
+                fi;
               else
                 echo "Management subscription already exists...skipping"
               fi;
@@ -62,7 +68,7 @@ jobs:
           uses: azure/CLI@v1
           env:
             identitymg: "${{ env.entlzprefix }}-identity"
-            identitysubname: "${{ env.entlzprefix }}-identity-002"
+            identitysubname: "${{ env.entlzprefix }}-identity"
           with:
             azcliversion: 2.21.0
             inlineScript: |
@@ -72,16 +78,22 @@ jobs:
                 managementuri=$(az cloud show --query endpoints.resourceManager --output tsv)
                 subownergroupid=$(az ad group list --display-name ${{ env.subownergroup }}  --query [].objectId -o tsv)
 
-                # REST Call to Create Subscription
-                az rest --method post \
-                --url "${managementuri}providers/Microsoft.Billing/enrollmentAccounts/${{ env.enracctname }}/providers/Microsoft.Subscription/createSubscription?api-version=2019-10-01-preview" \
-                --headers "{\"content-type\":\"application/json\"}" \
-                --body "{\"displayName\": \"${{ env.identitysubname }}\", \"offerType\": \"${{ env.offertype }}\", \"owners\": [{\"objectId\": \"${subownergroupid}\"}]}"
+                # Check if Sub already exists
+                if [[ -z `az account list --query "[?name=='${{ env.managementsubname }}'].name" --output tsv` ]];
+                then
+                  # REST Call to Create Subscription
+                  az rest --method post \
+                  --url "${managementuri}providers/Microsoft.Billing/enrollmentAccounts/${{ env.enracctname }}/providers/Microsoft.Subscription/createSubscription?api-version=2019-10-01-preview" \
+                  --headers "{\"content-type\":\"application/json\"}" \
+                  --body "{\"displayName\": \"${{ env.identitysubname }}\", \"offerType\": \"${{ env.offertype }}\", \"owners\": [{\"objectId\": \"${subownergroupid}\"}]}"
 
-                # Assign Default Tags to Subscription
-                NOW=$(date +"%m/%d/%Y_%I:%M:%S_%p")
-                subId=$(az account subscription list --query "[?displayName=='${{ env.identitysubname }}'].subscriptionId" --output tsv)
-                az tag create --resource-id /subscriptions/$subId --tags createdOn="$NOW" programType="int" programEnv="prod" programName="${{ env.entlzprefix }}"
+                  # Assign Default Tags to Subscription
+                  NOW=$(date +"%m/%d/%Y_%I:%M:%S_%p")
+                  subId=$(az account subscription list --query "[?displayName=='${{ env.identitysubname }}'].subscriptionId" --output tsv)
+                  az tag create --resource-id /subscriptions/$subId --tags createdOn="$NOW" programType="int" programEnv="prod" programName="${{ env.entlzprefix }}"
+                else
+                  echo "Identity subscription already exists...skipping"
+                fi;
               else
                 echo "Identity subscription already exists...skipping"
               fi;
@@ -90,7 +102,7 @@ jobs:
           uses: azure/CLI@v1
           env:
             connectivitymg: "${{ env.entlzprefix }}-connectivity"
-            connectivitysubname: "${{ env.entlzprefix }}-connectivity-002"
+            connectivitysubname: "${{ env.entlzprefix }}-connectivity"
           with:
             azcliversion: 2.21.0
             inlineScript: |
@@ -100,16 +112,22 @@ jobs:
                 managementuri=$(az cloud show --query endpoints.resourceManager --output tsv)
                 subownergroupid=$(az ad group list --display-name ${{ env.subownergroup }}  --query [].objectId -o tsv)
 
-                # REST Call to Create Subscription
-                az rest --method post \
-                --url "${managementuri}providers/Microsoft.Billing/enrollmentAccounts/${{ env.enracctname }}/providers/Microsoft.Subscription/createSubscription?api-version=2019-10-01-preview" \
-                --headers "{\"content-type\":\"application/json\"}" \
-                --body "{\"displayName\": \"${{ env.connectivitysubname }}\", \"offerType\": \"${{ env.offertype }}\", \"owners\": [{\"objectId\": \"${subownergroupid}\"}]}"
+                # Check if Sub already exists
+                if [[ -z `az account list --query "[?name=='${{ env.managementsubname }}'].name" --output tsv` ]];
+                then
+                  # REST Call to Create Subscription
+                  az rest --method post \
+                  --url "${managementuri}providers/Microsoft.Billing/enrollmentAccounts/${{ env.enracctname }}/providers/Microsoft.Subscription/createSubscription?api-version=2019-10-01-preview" \
+                  --headers "{\"content-type\":\"application/json\"}" \
+                  --body "{\"displayName\": \"${{ env.connectivitysubname }}\", \"offerType\": \"${{ env.offertype }}\", \"owners\": [{\"objectId\": \"${subownergroupid}\"}]}"
 
-                 # Assign Default Tags to Subscription
-                NOW=$(date +"%m/%d/%Y_%I:%M:%S_%p")
-                subId=$(az account subscription list --query "[?displayName=='${{ env.connectivitysubname }}'].subscriptionId" --output tsv)
-                az tag create --resource-id /subscriptions/$subId --tags createdOn="$NOW" programType="int" programEnv="prod" programName="${{ env.entlzprefix }}"
+                  # Assign Default Tags to Subscription
+                  NOW=$(date +"%m/%d/%Y_%I:%M:%S_%p")
+                  subId=$(az account subscription list --query "[?displayName=='${{ env.connectivitysubname }}'].subscriptionId" --output tsv)
+                  az tag create --resource-id /subscriptions/$subId --tags createdOn="$NOW" programType="int" programEnv="prod" programName="${{ env.entlzprefix }}"
+                else
+                  echo "Connectivity subscription already exists...skipping"
+                fi;
               else
                 echo "Connectivity subscription already exists...skipping"
               fi;
@@ -118,26 +136,33 @@ jobs:
           uses: azure/CLI@v1
           env:
             securitymg: "${{ env.entlzprefix }}-security"
-            securitysubname: "${{ env.entlzprefix }}-security-002"
+            securitysubname: "${{ env.entlzprefix }}-security"
           with:
             azcliversion: 2.21.0
             inlineScript: |
               if [[ -z "${{ env.securitysubid }}" ]];
               then
-                az config set extension.use_dynamic_install=yes_without_prompt
-                 managementuri=$(az cloud show --query endpoints.resourceManager --output tsv)
-                 subownergroupid=$(az ad group list --display-name ${{ env.subownergroup }}  --query [].objectId -o tsv)
+                
+                # Check if Sub already exists
+                if [[ -z `az account list --query "[?name=='${{ env.managementsubname }}'].name" --output tsv` ]];
+                then
+                  az config set extension.use_dynamic_install=yes_without_prompt
+                  managementuri=$(az cloud show --query endpoints.resourceManager --output tsv)
+                  subownergroupid=$(az ad group list --display-name ${{ env.subownergroup }}  --query [].objectId -o tsv)
 
-                # REST Call to Create Subscription
-                az rest --method post \
-                --url "${managementuri}providers/Microsoft.Billing/enrollmentAccounts/${{ env.enracctname }}/providers/Microsoft.Subscription/createSubscription?api-version=2019-10-01-preview" \
-                --headers "{\"content-type\":\"application/json\"}" \
-                --body "{\"displayName\": \"${{ env.securitysubname }}\", \"offerType\": \"${{ env.offertype }}\", \"owners\": [{\"objectId\": \"${subownergroupid}\"}]}"
+                  # REST Call to Create Subscription
+                  az rest --method post \
+                  --url "${managementuri}providers/Microsoft.Billing/enrollmentAccounts/${{ env.enracctname }}/providers/Microsoft.Subscription/createSubscription?api-version=2019-10-01-preview" \
+                  --headers "{\"content-type\":\"application/json\"}" \
+                  --body "{\"displayName\": \"${{ env.securitysubname }}\", \"offerType\": \"${{ env.offertype }}\", \"owners\": [{\"objectId\": \"${subownergroupid}\"}]}"
 
-                # Assign Default Tags to Subscription
-                NOW=$(date +"%m/%d/%Y_%I:%M:%S_%p")
-                subId=$(az account subscription list --query "[?displayName=='${{ env.securitysubname }}'].subscriptionId" --output tsv)
-                az tag create --resource-id /subscriptions/$subId --tags createdOn="$NOW" programType="int" programEnv="prod" programName="${{ env.entlzprefix }}"
+                  # Assign Default Tags to Subscription
+                  NOW=$(date +"%m/%d/%Y_%I:%M:%S_%p")
+                  subId=$(az account subscription list --query "[?displayName=='${{ env.securitysubname }}'].subscriptionId" --output tsv)
+                  az tag create --resource-id /subscriptions/$subId --tags createdOn="$NOW" programType="int" programEnv="prod" programName="${{ env.entlzprefix }}"
+                else
+                  echo "Security subscription already exists...skipping"
+                fi;
               else
                 echo "Security subscription already exists...skipping"
               fi;
