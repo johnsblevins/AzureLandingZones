@@ -1,7 +1,7 @@
 name: entlz-1-platform-mgs
 
 env:
-  entlzprefix: entlz
+  entlzprefix: elz1
   environment: azureusgovernment
   location: usgovvirginia
 

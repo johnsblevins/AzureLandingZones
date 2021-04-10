@@ -1,7 +1,7 @@
 name: entlz-2-platform-subs
 
 env:
-  entlzprefix: entlz  
+  entlzprefix: elz1  
   environment: azureusgovernment
   location: usgovvirginia  
   managementsubid:
@@ -81,7 +81,7 @@ jobs:
                 subownergroupid=$(az ad group list --display-name ${{ env.subownergroup }}  --query [].objectId -o tsv)
 
                 # Check if Sub already exists
-                if [[ -z `az account list --query "[?name=='${{ env.managementsubname }}'].name" --output tsv` ]];
+                if [[ -z `az account list --query "[?name=='${{ env.identitysubname }}'].name" --output tsv` ]];
                 then
                   # REST Call to Create Subscription
                   az rest --method post \
@@ -116,7 +116,7 @@ jobs:
                 subownergroupid=$(az ad group list --display-name ${{ env.subownergroup }}  --query [].objectId -o tsv)
 
                 # Check if Sub already exists
-                if [[ -z `az account list --query "[?name=='${{ env.managementsubname }}'].name" --output tsv` ]];
+                if [[ -z `az account list --query "[?name=='${{ env.connectivitysubname }}'].name" --output tsv` ]];
                 then
                   # REST Call to Create Subscription
                   az rest --method post \
@@ -148,7 +148,7 @@ jobs:
               then
                 
                 # Check if Sub already exists
-                if [[ -z `az account list --query "[?name=='${{ env.managementsubname }}'].name" --output tsv` ]];
+                if [[ -z `az account list --query "[?name=='${{ env.securitysubname }}'].name" --output tsv` ]];
                 then
                   az config set extension.use_dynamic_install=yes_without_prompt
                   managementuri=$(az cloud show --query endpoints.resourceManager --output tsv)
