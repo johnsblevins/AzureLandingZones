@@ -33,7 +33,6 @@ jobs:
         - name: Create Management Sub
           uses: azure/CLI@v1
           env:
-            managementmg: "${{ env.entlzprefix }}-management"
             managementsubname: "${{ env.entlzprefix }}-management"
           with:
             azcliversion: 2.21.0
@@ -47,12 +46,15 @@ jobs:
                 # Check if Sub already exists
                 if [[ -z `az account list --query "[?name=='${{ env.managementsubname }}'].name" --output tsv` ]];
                 then
+                  echo "Creating Management Subscription..."
                   # REST Call to Create Subscription
                   az rest --method post \
                   --url "${managementuri}providers/Microsoft.Billing/enrollmentAccounts/${{ env.enracctname }}/providers/Microsoft.Subscription/createSubscription?api-version=2019-10-01-preview" \
                   --headers "{\"content-type\":\"application/json\"}" \
                   --body "{\"displayName\": \"${{ env.managementsubname }}\", \"offerType\": \"${{ env.offertype }}\", \"owners\": [{\"objectId\": \"${subownergroupid}\"}]}"
+                  sleep 10
 
+                  echo "Assigning default tags..."
                   # Assign Default Tags to Subscription
                   NOW=$(date +"%m/%d/%Y_%I:%M:%S_%p")
                   subId=$(az account subscription list --query "[?displayName=='${{ env.managementsubname }}'].subscriptionId" --output tsv)
@@ -86,6 +88,7 @@ jobs:
                   --url "${managementuri}providers/Microsoft.Billing/enrollmentAccounts/${{ env.enracctname }}/providers/Microsoft.Subscription/createSubscription?api-version=2019-10-01-preview" \
                   --headers "{\"content-type\":\"application/json\"}" \
                   --body "{\"displayName\": \"${{ env.identitysubname }}\", \"offerType\": \"${{ env.offertype }}\", \"owners\": [{\"objectId\": \"${subownergroupid}\"}]}"
+                  sleep 10
 
                   # Assign Default Tags to Subscription
                   NOW=$(date +"%m/%d/%Y_%I:%M:%S_%p")
@@ -120,6 +123,7 @@ jobs:
                   --url "${managementuri}providers/Microsoft.Billing/enrollmentAccounts/${{ env.enracctname }}/providers/Microsoft.Subscription/createSubscription?api-version=2019-10-01-preview" \
                   --headers "{\"content-type\":\"application/json\"}" \
                   --body "{\"displayName\": \"${{ env.connectivitysubname }}\", \"offerType\": \"${{ env.offertype }}\", \"owners\": [{\"objectId\": \"${subownergroupid}\"}]}"
+                  sleep 10
 
                   # Assign Default Tags to Subscription
                   NOW=$(date +"%m/%d/%Y_%I:%M:%S_%p")
@@ -155,6 +159,7 @@ jobs:
                   --url "${managementuri}providers/Microsoft.Billing/enrollmentAccounts/${{ env.enracctname }}/providers/Microsoft.Subscription/createSubscription?api-version=2019-10-01-preview" \
                   --headers "{\"content-type\":\"application/json\"}" \
                   --body "{\"displayName\": \"${{ env.securitysubname }}\", \"offerType\": \"${{ env.offertype }}\", \"owners\": [{\"objectId\": \"${subownergroupid}\"}]}"
+                  sleep 10
 
                   # Assign Default Tags to Subscription
                   NOW=$(date +"%m/%d/%Y_%I:%M:%S_%p")
