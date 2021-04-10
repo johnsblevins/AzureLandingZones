@@ -1,30 +1,24 @@
 name: entlz-1-platform-mgs
 
+env:
+  entlzprefix: entlz
+  environment: azureusgovernment
+  location: usgovvirginia
+
 # Controls when the action will run. 
 on:
   # Allows you to run this workflow manually from the Actions tab
-  push:
-    branches:
-      - master
-    paths:
-      - 'templates/entlz/platform-mgs.bicep'
-      - 'templates/entlz/modules/*mg.bicep'
-      - '.github/workflows/entlz-1-platform-mgs.yml'
+  workflow_dispatch:
+
 jobs:
     build-and-deploy:
         runs-on: ubuntu-latest
-        env:
-          entlzprefix: jblz4
-          onboardingmg: jblz4-onboarding
-          environment: azureusgovernment
-          location: usgovvirginia         
-          
         steps:
         - uses: actions/checkout@master        
         - name: Log in with Azure
           uses: azure/login@v1
           with:
-            creds: ${{ secrets.JOBLEVINMAG_AZURE_CREDS }}
+            creds: ${{ secrets.AZGOV_CREDS }}
             environment: ${{ env.environment }}
             enable-AzPSSession: false
 
@@ -54,4 +48,4 @@ jobs:
                   --method put \
                   --headers "{\"Content-Type\":\"application/json\"}" \
                   --uri "${resourceManagerURI}providers/Microsoft.Management/managementGroups/$TenantRootMG/settings/default?api-version=2020-05-01" \
-                  --body "{\"properties\": {\"defaultManagementGroup\": \"/providers/Microsoft.Management/managementGroups/${{ env.onboardingmg }}\",\"requireAuthorizationForGroupCreation\": \"true\"}}" 
+                  --body "{\"properties\": {\"defaultManagementGroup\": \"/providers/Microsoft.Management/managementGroups/${{ env.entlzprefix }}-onboarding\",\"requireAuthorizationForGroupCreation\": \"true\"}}" 

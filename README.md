@@ -10,6 +10,12 @@ Azure Landing Zones are the output of a multi-subscription Azure environment tha
 
 The solutions contained in this repository extend the base CAF aligned architectures referenced above to include instructions for deploying them to Microsoft Azure Government (MAG) environments.  In addition, this repo contains user landing zones and additional enterprise service templates which can be deployed within the Enterprise Scale Architecture to enable additional hosting and management scenarios.
 
+## Steps
+
+1. Deploy Enterprise Landing Zone
+2. Deploy User Landing Zone(s) 
+3. Deploy Enterprise Services
+
 ## Step 1 - Deploying Enterprise-scale Landing Zone
 The **Enterprise Scale Landing Zone** should be deployed first to create the overall cloud management structure and governance for the hosting environment.  This includes the management group hierarchy, policies, connectivity, and management components needed to centrally administer the entire environment.  Landing Zones are deployed using Blueprints or with custom Azure Resource Manager (ARM) or Terraform templates.  It is recommended to use the most current CAF Enterprise Scale Landing Zone templates as a starting point for the organization and then adjust based on requirements.  The public source repositories for these templates should be checked into the organizational source control, then managed and deployed through a CICD pipeline using Infrastructure-as-Code.  The organziational platform team will then be responsible for managing the Enterprise Scale Landing zone using build and release process automation to make configuration changes to the environment.  The following diagram depicts a high level enterprise scale landing zone you can deploy with the solution:
 
