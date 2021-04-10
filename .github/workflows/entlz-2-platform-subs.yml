@@ -40,7 +40,7 @@ jobs:
             inlineScript: |
               if [[ -z "${{ env.managementsubid }}" ]];
               then
-                managementURI=$(az cloud show --query endpoints.resourceManager --output tsv)
+                managementuri=$(az cloud show --query endpoints.resourceManager --output tsv)
                 subownergroupid=$(az ad group list --display-name ${{ env.subownergroup }}  --query [].objectId -o tsv)
 
                 # REST Call to Create Subscription
@@ -67,12 +67,12 @@ jobs:
             inlineScript: |
               if [[ -z "${{ env.identitysubid }}" ]];
               then
-                managementURI=$(az cloud show --query endpoints.resourceManager --output tsv)
+                managementuri=$(az cloud show --query endpoints.resourceManager --output tsv)
                 subownergroupid=$(az ad group list --display-name ${{ env.subownergroup }}  --query [].objectId -o tsv)
 
                 # REST Call to Create Subscription
                 az rest --method post \
-                --url "${managementURI}providers/Microsoft.Billing/enrollmentAccounts/${{ env.enracctname }}/providers/Microsoft.Subscription/createSubscription?api-version=2019-10-01-preview" \
+                --url "${managementuri}providers/Microsoft.Billing/enrollmentAccounts/${{ env.enracctname }}/providers/Microsoft.Subscription/createSubscription?api-version=2019-10-01-preview" \
                 --headers "{\"content-type\":\"application/json\"}" \
                 --body "{\"displayName\": \"${{ env.identitysubname }}\", \"offerType\": \"${{ env.offertype }}\", \"owners\": [{\"objectId\": \"${subownergroupid}\"}]}"
 
@@ -94,12 +94,12 @@ jobs:
             inlineScript: |
               if [[ -z "${{ env.connectivitysubid }}" ]];
               then
-                managementURI=$(az cloud show --query endpoints.resourceManager --output tsv)
+                managementuri=$(az cloud show --query endpoints.resourceManager --output tsv)
                 subownergroupid=$(az ad group list --display-name ${{ env.subownergroup }}  --query [].objectId -o tsv)
 
                 # REST Call to Create Subscription
                 az rest --method post \
-                --url "${managementURI}providers/Microsoft.Billing/enrollmentAccounts/${{ env.enracctname }}/providers/Microsoft.Subscription/createSubscription?api-version=2019-10-01-preview" \
+                --url "${managementuri}providers/Microsoft.Billing/enrollmentAccounts/${{ env.enracctname }}/providers/Microsoft.Subscription/createSubscription?api-version=2019-10-01-preview" \
                 --headers "{\"content-type\":\"application/json\"}" \
                 --body "{\"displayName\": \"${{ env.connectivitysubname }}\", \"offerType\": \"${{ env.offertype }}\", \"owners\": [{\"objectId\": \"${subownergroupid}\"}]}"
 
@@ -121,12 +121,12 @@ jobs:
             inlineScript: |
               if [[ -z "${{ env.securitysubid }}" ]];
               then
-                 managementURI=$(az cloud show --query endpoints.resourceManager --output tsv)
+                 managementuri=$(az cloud show --query endpoints.resourceManager --output tsv)
                  subownergroupid=$(az ad group list --display-name ${{ env.subownergroup }}  --query [].objectId -o tsv)
 
                 # REST Call to Create Subscription
                 az rest --method post \
-                --url "${managementURI}providers/Microsoft.Billing/enrollmentAccounts/${{ env.enracctname }}/providers/Microsoft.Subscription/createSubscription?api-version=2019-10-01-preview" \
+                --url "${managementuri}providers/Microsoft.Billing/enrollmentAccounts/${{ env.enracctname }}/providers/Microsoft.Subscription/createSubscription?api-version=2019-10-01-preview" \
                 --headers "{\"content-type\":\"application/json\"}" \
                 --body "{\"displayName\": \"${{ env.securitysubname }}\", \"offerType\": \"${{ env.offertype }}\", \"owners\": [{\"objectId\": \"${subownergroupid}\"}]}"
 
