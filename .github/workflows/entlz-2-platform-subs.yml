@@ -34,7 +34,7 @@ jobs:
           uses: azure/CLI@v1
           env:
             managementmg: "${{ env.entlzprefix }}-management"
-            managementsubname: "${{ env.entlzprefix }}-management-001"
+            managementsubname: "${{ env.entlzprefix }}-management-002"
           with:
             azcliversion: 2.21.0
             inlineScript: |
@@ -62,7 +62,7 @@ jobs:
           uses: azure/CLI@v1
           env:
             identitymg: "${{ env.entlzprefix }}-identity"
-            identitysubname: "${{ env.entlzprefix }}-identity-001"
+            identitysubname: "${{ env.entlzprefix }}-identity-002"
           with:
             azcliversion: 2.21.0
             inlineScript: |
@@ -90,7 +90,7 @@ jobs:
           uses: azure/CLI@v1
           env:
             connectivitymg: "${{ env.entlzprefix }}-connectivity"
-            connectivitysubname: "${{ env.entlzprefix }}-connectivity-001"
+            connectivitysubname: "${{ env.entlzprefix }}-connectivity-002"
           with:
             azcliversion: 2.21.0
             inlineScript: |
@@ -118,7 +118,7 @@ jobs:
           uses: azure/CLI@v1
           env:
             securitymg: "${{ env.entlzprefix }}-security"
-            securitysubname: "${{ env.entlzprefix }}-security-001"
+            securitysubname: "${{ env.entlzprefix }}-security-002"
           with:
             azcliversion: 2.21.0
             inlineScript: |
