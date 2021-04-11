@@ -124,7 +124,7 @@ An Azure Bicep template is used to deploy the management group hierarchy, [platf
 In addition, the Management Group Hierarchy settings are configured such that the "entlz-Onboarding" management group is configured as the default management group for new subscriptions and RBAC for the Management Group hierarchy is set to require "Management Group Contributor" role to add/remove/modify management groups.  This prevents non-privileged users from making changes to the management group hierarchy or creating their own branches.
 ![](media/mg_settings.png)
 
-## Pipeline 2 - Deploy Platform Policies
+## Pipeline 2 - Deploy Platform Subscriptions
 The starter pipeline is included at [.github/workflows/entlz-2-platform-subs.yml](../../.github/workflows/entlz-2-platform-subs.yml).  The pipeline is configured by default to be manually executed.  Before deploying the pipeline customize the environment variables at the top of the template to fit the environment.  These include:
 
     entlzprefix (required): 
@@ -153,6 +153,76 @@ The starter pipeline is included at [.github/workflows/entlz-2-platform-subs.yml
 
     securitysubid (optional): 
         Description: Sub ID for existing security subscription, if not provided or left empty EA subscription will be created
+        Default Value: <none>
+    
+    subownergroup (required if any sub ids aren't specified):
+        Description: Azure AD Group Name to make as default owner of sub
+        Default Value: azure-platform-owners
+
+    offertype (required if any sub ids aren't specified): 
+        Description: EA Subscription Offer (ex. MS-AZR-USGOV-0017P, MS-AZR-0017P)
+        Default Value: MS-AZR-USGOV-0017P
+
+    enracctname (required if any sub ids aren't specified):
+        Description: Enrollment Account identifier required to create EA Subs (ex. ac95a806-c9d3-49e7-83ee-7f82e88c2bd3)
+        Default Value: <none>
+
+In this step the Azure subscriptions required to deploy the Enterprise Landing Zone are configured.  The following four subscriptions are required:
+    
+    Management 
+        Name/Management Group: ${entlzprefix}-management
+        Description:         
+    Identity 
+        Name/Management Group: ${entlzprefix}-identity
+        Description: 
+    Connectivity 
+        Name/Management Group: ${entlzprefix}-connectivity
+        Description: 
+    Security 
+        Name/Management Group: ${entlzprefix}-security
+        Description: 
+
+If existing subscription IDs are provided as pipeline parameters they will be renamed with the above naming standard and moved to the correspondong management group.  If subscription IDs are not provided the pipeline will attempt to create new EA subscriptions and move them to their corresponding management groups.
+
+## Pipeline 3 - Deploy Platform Management
+
+## Pipeline 4 - Deploy Platform Policies
+The starter pipeline is included at [.github/workflows/entlz-2-platform-subs.yml](../../.github/workflows/entlz-2-platform-subs.yml).  The pipeline is configured by default to be manually executed.  Before deploying the pipeline customize the environment variables at the top of the template to fit the environment.  These include:
+
+    entlzprefix (required): 
+        Description: 5 character alphanumeric prefix to establish the Management Group naming standard
+        Default Value: entlz
+
+    environment (required): 
+        Description: Azure Cloud environment for AZ CLI connection
+        Default Value: azureusgovernment
+
+    location (required): 
+        Description: Location to store deployment metadata
+        Default Value: usgovvirginia
+
+    managementsubid (optional): 
+        Description: Sub ID for existing management subscription, if not provided or left empty EA subscription will be created
+        Default Value: <none>
+
+    identitysubid (optional): 
+        Description: Sub ID for existing identity subscription, if not provided or left empty EA subscription will be created
+        Default Value: <none>
+
+    connectivitysubid (optional): 
+        Description: Sub ID for existing connectivity subscription, if not provided or left empty EA subscription will be created
+        Default Value: <none>
+
+    securitysubid (optional): 
+        Description: Sub ID for existing security subscription, if not provided or left empty EA subscription will be created
+        Default Value: <none>
+    
+    offertype (required if any sub ids aren't specified): 
+        Description: EA Subscription Offer (ex. MS-AZR-USGOV-0017P, MS-AZR-0017P)
+        Default Value: MS-AZR-USGOV-0017P
+
+    enracctname (required if any sub ids aren't specified):
+        Description: Enrollment Account identifier required to create EA Subs (ex. ac95a806-c9d3-49e7-83ee-7f82e88c2bd3)
         Default Value: <none>
 
 In this step Azure Policies and Policy Initiatives are created and assigned to the management group hierarchy using a Policy-as-Code approach as outlined at [https://docs.microsoft.com/en-us/azure/governance/policy/concepts/policy-as-code](https://docs.microsoft.com/en-us/azure/governance/policy/concepts/policy-as-code).  The following folder structure is used to store custom policy and initiative definitions as well as both builtin and custom policy and initiative assignments.  This is the native format when exporting policy definitions and assignements using the portal export features which allows an administrator to build a policy set within the portal and export it into the folder structure.
@@ -199,11 +269,10 @@ The Policy-as-Code pipeline consists of four steps:
 
 This pipeline can be used after the initial Enterprise Landing Zone deployment to manage Policy Defintions and Assignments going forward within the environment as Policy-as-Code.
 
-## Pipeline 3 - Deploy Platform Subscriptions
 
-## Pipeline 4 - Deploy Platform Management
+## Pipeline 5 - Deploy Platform RBAC
 
-## Pipeline 5 - Deploy Platform Connectivity
+## Pipeline 6 - Deploy Platform Connectivity
 
 ## User Landing Zone Pipelines
 
