@@ -98,7 +98,7 @@ The starter pipeline is included at [.github/workflows/entlz-1-platform-mgs.yml]
         Description: Location to store deployment metadata
         Default Value: usgovvirginia
 
-The following figure shows the management group hierarchy which will be created using "entlz" as the prefix value for demonstration purposes:
+An Azure Bicep template is used to deploy the management group hierarchy, [platform-mgs.bicep](platform-mgs.bicep).  The following figure shows the management group hierarchy which will be created using "entlz" as the prefix value for demonstration purposes:
 
     Tenant (/)
         Tenant Root Group
