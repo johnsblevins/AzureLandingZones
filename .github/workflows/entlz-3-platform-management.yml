@@ -38,7 +38,7 @@ jobs:
             azcliversion: 2.21.0
             inlineScript: |
               # Deploy Management Components to Management Subscription
-                az deployment subscription create \
+                az deployment sub create \
                   --name "entlz-management-${{ env.location }}" \
                   --subscription "${{ env.managementsubid }}" \
                   --location "${{ env.location }}" \
