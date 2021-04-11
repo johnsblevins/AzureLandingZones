@@ -277,6 +277,55 @@ The Policy-as-Code pipeline consists of four steps:
 
     Script loops through the initiative folder structure and looks for all files matching the "assign.*.json" pattern.  Each assignement is deployed to the scope provided in the assignment JSON file.  Assignment scopes are generalized in these files by using the pattern %%entlzprefix%%  to refer to the enterprise scale root management group.  The script finds and replaces all instances of this pattern with the value provided in entlzprefix environment variable when making assignments.
 
+The default set of policy assignments on the management group hierarchy is as follows:
+    Tenant (/)
+        Tenant Root Group
+            entlz (Root)
+                **Initiative: ASC-Monitoring**
+                **Initiative: Deploy-Resource-Diag**
+                **Initiative: Deploy-VM-Monitoring**
+                **Initiative: Deploy-VMSS-Monitoring**
+                **Policy: Allowed-Locations-EntLZ**
+                **Policy: Deploy-ASC-Defender**
+                **Policy: Deploy-AzActivity-Log**
+                entlz-Platform
+                    entlz-Management
+                    entlz-Identity
+                        **Policy: Deny-Public-IP**
+                        **Policy: Deny-RDP-from-Internet**
+                        **Policy: Deny-Subnet-Without-Nsg**
+                        **Policy: Deploy-VM-Backup**
+                    entlz-Connectivity
+                    entlz-Security
+                        **Group: ${entlzprefix}-security-admins | Role: Virtual Machine Contributor**
+                entlz-LandingZones
+                    **Policy: Deny-IP-forwarding**
+                    **Policy: Deny-Priv-Esc-AKS**
+                    **Policy: Deny-Privileged-AKS**
+                    **Policy: Deny-RDP-from-internet**
+                    **Policy: Deny-Subnet-Without-Nsg**
+                    **Policy: Deploy-SQL-Audit**
+                    **Policy: Deploy-SQL-Security**
+                    **Policy: Deploy-VM-Backup**
+                    **Policy: Enforce-Https-Ingress-AKS**
+                    **Policy: Enforce-Secure-Storage**
+                    entlz-Internal
+                        **Initiative: Deny-Intra-PaaS-Endpoint**
+                        **Policy: Allowed-Resource-Types**
+                        entlz-Internal-Prod
+                        entlz-Internal-NonProd
+                    entlz-External
+                        entlz-External-Prod
+                        entlz-External-NonProd
+                entlz-Decomissioned
+                entlz-Onboarding
+                entlz-Sandboxes
+                    entlz-Sandbox-Management
+                    entlz-Sandbox-LandingZones
+
+In addition the following assignments are automatically made for all subscriptions without explicit assignment:
+* **Initiative** ASC DataProtection
+
 This pipeline can be used after the initial Enterprise Landing Zone deployment to manage Policy Defintions and Assignments going forward within the environment as Policy-as-Code.
 
 
