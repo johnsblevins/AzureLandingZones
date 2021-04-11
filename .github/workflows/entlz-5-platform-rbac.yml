@@ -99,7 +99,7 @@ jobs:
                   group=$(az rest --method post \
                       --url "${graphURI}beta/groups" \
                       --headers "{\"content-type\":\"application/json\"}" \
-                      --body "{   \"description\": \"Members have Security Admin rights at enterprise landing zone root and VM contributor rights on security MG\", 
+                      --body "{   \"description\": \"Members have Security Admin rights at enterprise landing zone root and Virtual Machine Contributor rights on security MG\", 
                                   \"displayName\": \"${{ env.entlzprefix}}-security-admins\", 
                                   \"isAssignableToRole\": \"false\", 
                                   \"mailNickname\": \"${{ env.entlzprefix}}-security-admins\",
@@ -115,7 +115,7 @@ jobs:
               sleep 15
 
               az role assignment create --assignee $group --scope /providers/Microsoft.Management/managementGroups/${{ env.entlzprefix }} --role "Security Admin"
-              az role assignment create --assignee $group --scope /providers/Microsoft.Management/managementGroups/${{ env.entlzprefix }}-security --role "VM Contributor"
+              az role assignment create --assignee $group --scope /providers/Microsoft.Management/managementGroups/${{ env.entlzprefix }}-security --role "Virtual Machine Contributor"
 
               # {entlzprefix}-network-admins
               # role: Network Contributor
@@ -127,7 +127,7 @@ jobs:
                   group=$(az rest --method post \
                       --url "${graphURI}beta/groups" \
                       --headers "{\"content-type\":\"application/json\"}" \
-                      --body "{   \"description\": \"Members have Network Contributor rights at enterprise landing zone root and VM contributor rights on connectivity MG\", 
+                      --body "{   \"description\": \"Members have Network Contributor rights at enterprise landing zone root and Virtual Machine Contributor rights on connectivity MG\", 
                                   \"displayName\": \"${{ env.entlzprefix}}-network-admins\", 
                                   \"isAssignableToRole\": \"false\", 
                                   \"mailNickname\": \"${{ env.entlzprefix}}-network-admins\",
@@ -143,7 +143,7 @@ jobs:
               sleep 15
 
               az role assignment create --assignee $group --scope /providers/Microsoft.Management/managementGroups/${{ env.entlzprefix }} --role "Network Contributor"
-              az role assignment create --assignee $group --scope /providers/Microsoft.Management/managementGroups/${{ env.entlzprefix }}-connectivity --role "VM Contributor"
+              az role assignment create --assignee $group --scope /providers/Microsoft.Management/managementGroups/${{ env.entlzprefix }}-connectivity --role "Virtual Machine Contributor"
 
               # {entlzprefix}-cost-admins
               # role: Cost Managment Contributor
@@ -173,7 +173,7 @@ jobs:
               az role assignment create --assignee $group --scope /providers/Microsoft.Management/managementGroups/${{ env.entlzprefix }} --role "Cost Management Contributor"
 
               # {entlzprefix}-identity-admins
-              # role: VM Contributor
+              # role: Virtual Machine Contributor
               # scope: {entlzprefix}-Identity management group
               group=$(az ad group list --query "[?displayName=='${{ env.entlzprefix}}-identity-admins'].objectId" --output tsv)              
               if [[ -z $group ]] ;
@@ -182,7 +182,7 @@ jobs:
                   group=$(az rest --method post \
                       --url "${graphURI}beta/groups" \
                       --headers "{\"content-type\":\"application/json\"}" \
-                      --body "{   \"description\": \"Members have VM Contributor rights at identity MG\", 
+                      --body "{   \"description\": \"Members have Virtual Machine Contributor rights at identity MG\", 
                                   \"displayName\": \"${{ env.entlzprefix}}-identity-admins\", 
                                   \"isAssignableToRole\": \"false\", 
                                   \"mailNickname\": \"${{ env.entlzprefix}}-identity-admins\",
@@ -197,7 +197,7 @@ jobs:
               fi;
               sleep 15
 
-              az role assignment create --assignee $group --scope /providers/Microsoft.Management/managementGroups/${{ env.entlzprefix }}-identity --role "VM Contributor"
+              az role assignment create --assignee $group --scope /providers/Microsoft.Management/managementGroups/${{ env.entlzprefix }}-identity --role "Virtual Machine Contributor"
 
 
               # {entlzprefix}-sandbox-admins
