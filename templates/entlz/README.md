@@ -65,6 +65,7 @@ Save the credential object to a GitHub Action Secret.  The following format is r
     "tenantId": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
 }
 ```
+**subscriptionId** must be set to a valid subscription id.  Any active subscription will work; nothing will be modified within the subscription.
 ![](media/github_secret.png)
 
 
