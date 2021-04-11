@@ -26,12 +26,12 @@ The reference implementation for this solution is based on the CAF enterprise sc
 ## Deployment Order
 The Enterprise Landing Zone is deployed through a series of build/release pipline scripts packaged as GitHub actions.  A prerequisite script is used to create a service principal with the required roles in Azure.  This service prinicipal is then used by GitHub Actions to connect to Azure and deploy the pipelines.  After the initial deployment the pipelines can be used to manage the environment using Infrastructure-as-Code.  The deployment order is as follows:
 
-1. Deploy Prerequisites (script) - [templates/entlz/scripts/entlz_prereqs.sh](entlz/scripts/entlz_prereqs.sh)
-2. Deploy Management Group Hierarchy (pipeline) - [.github/workflows/entlz-1-platform-mgs.yml](~/.github/workflows/entlz-1-platform-mgs.yml)
-3. Deploy Platform Subscriptions (pipeline) - [.github/workflows/entlz-2-platform-subs.yml](.github/workflows/entlz-2-platform-subs.yml)
-4. Deploy Platform Management Components (pipeline) - [.github/workflows/entlz-3-platform-management.yml](.github/workflows/entlz-3-platform-management.yml)
-5. Deploy Platform Policies (pipeline) - [.github/workflows/entlz-4-platform-policies.yml](.github/workflows/entlz-4-platform-policies.yml)
-6. Deploy Platform Connectivity Components (pipeline) - [.github/workflows/entlz-5-platform-connectivity-vnethubspoke.yml](.github/workflows/entlz-5-platform-connectivity-vnethubspoke.yml)
+1. Deploy Prerequisites (script) - [templates/entlz/scripts/entlz_prereqs.sh](scripts/entlz_prereqs.sh)
+2. Deploy Management Group Hierarchy (pipeline) - [.github/workflows/entlz-1-platform-mgs.yml](../../.github/workflows/entlz-1-platform-mgs.yml)
+3. Deploy Platform Subscriptions (pipeline) - [.github/workflows/entlz-2-platform-subs.yml](../../.github/workflows/entlz-2-platform-subs.yml)
+4. Deploy Platform Management Components (pipeline) - [.github/workflows/entlz-3-platform-management.yml](../../.github/workflows/entlz-3-platform-management.yml)
+5. Deploy Platform Policies (pipeline) - [.github/workflows/entlz-4-platform-policies.yml](../../.github/workflows/entlz-4-platform-policies.yml)
+6. Deploy Platform Connectivity Components (pipeline) - [.github/workflows/entlz-5-platform-connectivity-vnethubspoke.yml](../../.github/workflows/entlz-5-platform-connectivity-vnethubspoke.yml)
 
 ## Prerequistes
 1. Login to the Azure Portal with an account that has the "Global Administrator" role in Azure Active Directory.  In the Azure Active Directory blade select properties and then select "Yes" for the option to enable "Access management for Azure resources" and click Save.  This grants the "User Access Administrator" role to the logged in user at the tenant root (/) scope.
@@ -42,7 +42,7 @@ The Enterprise Landing Zone is deployed through a series of build/release piplin
 
 The following script creates an **"azure-platform-owners"** group and an application registration called **"azure-entlz-deployer"** in Azure Active Directory with an associated service principal.  The app registration is added to the group and the group is assigned the "Owner" role at the tenant root (/) scope.  Afterward you will need to manually generate a secret for the app registration and make note of the Application (client) ID and Directory (tenant) ID.  The script can be run from a cloud shell instance in the Azure Portal or from a local Azure CLI instance.
 
-[templates/entlz/scripts/entlz_prereqs.sh](templates/entlz/scripts/entlz_prereqs.sh)
+[templates/entlz/scripts/entlz_prereqs.sh](scripts/entlz_prereqs.sh)
 
 The group with service account is visible in Azure Active Directory:
 ![](media/platowner_group.png)
@@ -73,7 +73,7 @@ Save the credential object to a GitHub Action Secret.  The following format is r
 
 It is recommended to grant the "azure-entlz-deployer" service principal the necessary permissions to create EA subscriptions needed for the Enterprise Landing Zone components.  The standard EntLZ deployment requires four subscriptions (Management, Connectivity, Identity and Security) and while these subscriptions can be created manually the solution allows for the automatic provisioning of the required subscriptions with proper name, management group, tags and policies.  An account with **"Enrollment Account Administrator"** role in the EA portal is required to run the script and grant this permission.  The following script creates an **"azure-ea-subscription-creators"** group and adds the **"azure-entlz-deployer"** service principal to it.  The group is then assigned the "Owner" role at the Enrollment Account scope (/providers/Microsoft.Billing/enrollmentAccounts/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx).  The script can be run from a cloud shell instance in the Azure Portal or from a local Azure CLI instance:
 
-[templates/entlz/scripts/entlz_ea_prereqs.sh](templates/entlz/scripts/entlz_ea_prereqs.sh)
+[templates/entlz/scripts/entlz_ea_prereqs.sh](scripts/entlz_ea_prereqs.sh)
 
 The group with service account is visible in Azure Active Directory:
 ![](media/subcreator_group.png)
@@ -84,7 +84,7 @@ The group has "Owner" role at the Enrollment Account scope (/providers/Microsoft
 
 ## Pipeline 1 - Deploy Platform Managment Groups
  
-The starter pipeline is included at [.github/workflows/entlz-1-platform-mgs.yml](.github/workflows/entlz-1-platform-mgs.yml).  The pipeline is configured by default to be manually executed.  Before deploying the pipeline customize the environment variables at the top of the template to fit the environment.  These include:
+The starter pipeline is included at [.github/workflows/entlz-1-platform-mgs.yml](../../.github/workflows/entlz-1-platform-mgs.yml).  The pipeline is configured by default to be manually executed.  Before deploying the pipeline customize the environment variables at the top of the template to fit the environment.  These include:
 
     entlzprefix (required): 
         Description: 5 character alphanumeric prefix to establish the Management Group naming standard
@@ -124,7 +124,7 @@ The following figure shows the management group hierarchy which will be created 
 In addition, the Management Group Hierarchy settings are configured such that the "entlz-Onboarding" management group is configured as the default management group for new subscriptions and RBAC for the Management Group hierarchy is set to require "Management Group Contributor" role to add/remove/modify management groups.  This prevents non-privileged users from making changes to the management group hierarchy or creating their own branches.
 
 ## Pipeline 2 - Deploy Platform Policies
-The starter pipeline is included at [.github/workflows/entlz-2-platform-subs.yml](.github/workflows/entlz-2-platform-subs.yml).  The pipeline is configured by default to be manually executed.  Before deploying the pipeline customize the environment variables at the top of the template to fit the environment.  These include:
+The starter pipeline is included at [.github/workflows/entlz-2-platform-subs.yml](../../.github/workflows/entlz-2-platform-subs.yml).  The pipeline is configured by default to be manually executed.  Before deploying the pipeline customize the environment variables at the top of the template to fit the environment.  These include:
 
     entlzprefix (required): 
         Description: 5 character alphanumeric prefix to establish the Management Group naming standard
