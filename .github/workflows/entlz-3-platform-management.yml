@@ -40,7 +40,7 @@ jobs:
               # Deploy Management Components to Management Subscription
                 az deployment subscription create \
                   --name "entlz-management-${{ env.location }}" \
-                  --subscription "${{ env.managementsubid }} \
-                  --location ${{ env.location }} \
-                  --template-file templates/entlz/platform-management.bicep \
+                  --subscription "${{ env.managementsubid }}" \
+                  --location "${{ env.location }}" \
+                  --template-file "templates/entlz/platform-management.bicep" \
                   --parameters entlzprefix=${{ env.entlzprefix }}
