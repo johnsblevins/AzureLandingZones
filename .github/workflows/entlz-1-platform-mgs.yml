@@ -66,10 +66,10 @@ jobs:
               # azure-platform-readers
               # role: reader
               # scope: Root Management Group
-              group=$(az ad group show -g azure-platform-readers --query objectId --output tsv)
+              group=$(az ad group list --query "[?name=='azure-platform-readers'].objectId" --output tsv)
               if [[ -z $group ]] ;
               then
-                  graphURI=$(az cloud show --query endpoints.microsoftGraphResourceId --output tsv)
+                  graphURI=$(az ad group list --query "[?displayName=='azure-platform-readers'].objectId" --output tsv)
                   platformOwnerGroup=$(az rest --method post \
                       --url "${graphURI}beta/groups" \
                       --headers "{\"content-type\":\"application/json\"}" \
@@ -84,7 +84,7 @@ jobs:
                       --query id \
                       --output tsv)
               else
-                  echo "azure-platform-owners group already exists"
+                  echo "azure-platform-readers group already exists"
               fi;
 
               az role assignment create --assignee $group --scope / --role Reader
@@ -92,7 +92,7 @@ jobs:
               # {entlzprefix}-platform-admins
               # role: owner
               # scope: {entlzprefix} management group
-              group=$(az ad group show -g ${{ env.entlzprefix}}-platform-admins --query objectId --output tsv)
+              group=$(az ad group list --query "[?name=='${{ env.entlzprefix}}-platform-admins'].objectId" --output tsv)
               if [[ -z $group ]] ;
               then
                   graphURI=$(az cloud show --query endpoints.microsoftGraphResourceId --output tsv)
@@ -118,7 +118,7 @@ jobs:
               # {entlzprefix}-security-admins
               # role: security admin
               # scope: {entlzprefix} management group
-              group=$(az ad group show -g ${{ env.entlzprefix}}-security-admins --query objectId --output tsv)
+              group=$(az ad group list --query "[?name=='${{ env.entlzprefix}}-security-admins'].objectId" --output tsv)
               if [[ -z $group ]] ;
               then
                   graphURI=$(az cloud show --query endpoints.microsoftGraphResourceId --output tsv)
@@ -145,7 +145,7 @@ jobs:
               # {entlzprefix}-network-admins
               # role: Network Contributor
               # scope: {entlzprefix} management group
-              group=$(az ad group show -g ${{ env.entlzprefix}}-network-admins --query objectId --output tsv)
+              group=$(az ad group list --query "[?name=='${{ env.entlzprefix}}-network-admins'].objectId" --output tsv)
               if [[ -z $group ]] ;
               then
                   graphURI=$(az cloud show --query endpoints.microsoftGraphResourceId --output tsv)
@@ -172,7 +172,7 @@ jobs:
               # {entlzprefix}-cost-admins
               # role: Cost Managment Contributor
               # scope: {entlzprefix} management group
-              group=$(az ad group show -g ${{ env.entlzprefix}}-cost-admins --query objectId --output tsv)
+              group=$(az ad group list --query "[?name=='${{ env.entlzprefix}}-cost-admins'].objectId" --output tsv)
               if [[ -z $group ]] ;
               then
                   graphURI=$(az cloud show --query endpoints.microsoftGraphResourceId --output tsv)
@@ -198,7 +198,7 @@ jobs:
               # {entlzprefix}-identity-admins
               # role: VM Contributor
               # scope: {entlzprefix}-Identity management group
-              group=$(az ad group show -g ${{ env.entlzprefix}}-identity-admins --query objectId --output tsv)
+              group=$(az ad group list --query "[?name=='${{ env.entlzprefix}}-identity-admins'].objectId" --output tsv)              
               if [[ -z $group ]] ;
               then
                   graphURI=$(az cloud show --query endpoints.microsoftGraphResourceId --output tsv)
@@ -225,7 +225,7 @@ jobs:
               # {entlzprefix}-sandbox-admins
               # role: owner
               # scope: {entlzprefix}-Sandboxes management group
-              group=$(az ad group show -g ${{ env.entlzprefix}}-sandbox-admins --query objectId --output tsv)
+              group=$(az ad group list --query "[?name=='${{ env.entlzprefix}}-sandbox-admins'].objectId" --output tsv)
               if [[ -z $group ]] ;
               then
                   graphURI=$(az cloud show --query endpoints.microsoftGraphResourceId --output tsv)
