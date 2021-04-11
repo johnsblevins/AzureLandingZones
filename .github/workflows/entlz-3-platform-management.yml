@@ -1,5 +1,11 @@
 name: entlz-3-platform-management
 
+env:
+  entlzprefix: elz1
+  environment: azureusgovernment
+  location: usgovvirginia
+  managementsubid: 07526f72-6689-42be-945f-bb6ad0214b71
+
 # Controls when the action will run. 
 on:
   # Allows you to run this workflow manually from the Actions tab
@@ -15,11 +21,7 @@ on:
 jobs:
     build-and-deploy:
         runs-on: ubuntu-latest
-        env:
-          entlzprefix: elz1
-          environment: azureusgovernment
-          location: usgovvirginia
-          managementsubid: 07526f72-6689-42be-945f-bb6ad0214b71
+
           
         steps:
         - uses: actions/checkout@master        

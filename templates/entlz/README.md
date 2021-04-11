@@ -163,7 +163,7 @@ The starter pipeline is included at [.github/workflows/entlz-2-platform-subs.yml
         Description: EA Subscription Offer (ex. MS-AZR-USGOV-0017P, MS-AZR-0017P)
         Default Value: MS-AZR-USGOV-0017P
 
-    enracctname (required if any sub ids aren't specified):
+    enracctname (required if any sub ids aren't specified - az billing enrollment-account list --query "[0].name" --output tsv):
         Description: Enrollment Account identifier required to create EA Subs (ex. ac95a806-c9d3-49e7-83ee-7f82e88c2bd3)
         Default Value: <none>
 
@@ -185,6 +185,27 @@ In this step the Azure subscriptions required to deploy the Enterprise Landing Z
 If existing subscription IDs are provided as pipeline parameters they will be renamed with the above naming standard and moved to the correspondong management group.  If subscription IDs are not provided the pipeline will attempt to create new EA subscriptions and move them to their corresponding management groups.
 
 ## Pipeline 3 - Deploy Platform Management
+The starter pipeline is included at [.github/workflows/entlz-3-platform-management.yml](../../.github/workflows/entlz-2-platform-management.yml).  The pipeline is configured by default to be manually executed.  Before deploying the pipeline customize the environment variables at the top of the template to fit the environment.  These include:
+
+    entlzprefix (required): 
+        Description: 5 character alphanumeric prefix to establish the Management Group naming standard
+        Default Value: entlz
+
+    environment (required): 
+        Description: Azure Cloud environment for AZ CLI connection
+        Default Value: azureusgovernment
+
+    location (required): 
+        Description: Location to store deployment metadata
+        Default Value: usgovvirginia
+
+    managementsubid (required): 
+        Description: Sub ID for existing management subscription
+        Default Value: <none>
+
+The pipeline calls an Azure Bicep template to deploy the management group hierarchy, [platform-management.bicep](platform-management.bicep).  The following figure shows the management components deployed:
+
+
 
 ## Pipeline 4 - Deploy Platform Policies
 The starter pipeline is included at [.github/workflows/entlz-2-platform-subs.yml](../../.github/workflows/entlz-2-platform-subs.yml).  The pipeline is configured by default to be manually executed.  Before deploying the pipeline customize the environment variables at the top of the template to fit the environment.  These include:
