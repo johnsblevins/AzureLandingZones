@@ -58,6 +58,7 @@ jobs:
               else
                   echo "azure-platform-readers group already exists"
               fi;
+              sleep 15
 
               az role assignment create --assignee $group --scope / --role Reader
               
@@ -84,6 +85,7 @@ jobs:
               else
                   echo "${{ env.entlzprefix}}-platform-admins group already exists"
               fi;
+              sleep 15
 
               az role assignment create --assignee $group --scope /providers/Microsoft.Management/managementGroups/${{ env.entlzprefix }} --role Owner
 
@@ -110,6 +112,7 @@ jobs:
               else
                   echo "${{ env.entlzprefix}}-security-admins group already exists"
               fi;
+              sleep 15
 
               az role assignment create --assignee $group --scope /providers/Microsoft.Management/managementGroups/${{ env.entlzprefix }} --role "Security Admin"
               az role assignment create --assignee $group --scope /providers/Microsoft.Management/managementGroups/${{ env.entlzprefix }}-security --role "VM Contributor"
@@ -137,6 +140,7 @@ jobs:
               else
                   echo "${{ env.entlzprefix}}-network-admins group already exists"
               fi;
+              sleep 15
 
               az role assignment create --assignee $group --scope /providers/Microsoft.Management/managementGroups/${{ env.entlzprefix }} --role "Network Contributor"
               az role assignment create --assignee $group --scope /providers/Microsoft.Management/managementGroups/${{ env.entlzprefix }}-connectivity --role "VM Contributor"
@@ -164,6 +168,7 @@ jobs:
               else
                   echo "${{ env.entlzprefix}}-cost-admins group already exists"
               fi;
+              sleep 15
 
               az role assignment create --assignee $group --scope /providers/Microsoft.Management/managementGroups/${{ env.entlzprefix }} --role "Cost Management Contributor"
 
@@ -190,6 +195,7 @@ jobs:
               else
                   echo "${{ env.entlzprefix}}-identity-admins group already exists"
               fi;
+              sleep 15
 
               az role assignment create --assignee $group --scope /providers/Microsoft.Management/managementGroups/${{ env.entlzprefix }}-identity --role "VM Contributor"
 
@@ -217,5 +223,6 @@ jobs:
               else
                   echo "${{ env.entlzprefix}}-sandbox-admins group already exists"
               fi;
+              sleep 15
 
               az role assignment create --assignee $group --scope /providers/Microsoft.Management/managementGroups/${{ env.entlzprefix }}-sandboxes --role "Owner"
