@@ -204,7 +204,7 @@ The starter pipeline is included at [.github/workflows/entlz-3-platform-manageme
         Default Value: <none>
 
 The pipeline calls an Azure Bicep template to deploy the management group hierarchy, [platform-management.bicep](platform-management.bicep).  The following figure shows the management components deployed:
-
+![](media/mgmt_components.png)
 
 
 ## Pipeline 4 - Deploy Platform Policies
