@@ -5,6 +5,7 @@ env:
   environment: azureusgovernment
   location: usgovvirginia
   managementsubid: 07526f72-6689-42be-945f-bb6ad0214b71
+  uniqueid: 001
 
 # Controls when the action will run. 
 on:
@@ -43,4 +44,4 @@ jobs:
                   --subscription "${{ env.managementsubid }}" \
                   --location "${{ env.location }}" \
                   --template-file "templates/entlz/platform-management.bicep" \
-                  --parameters entlzprefix=${{ env.entlzprefix }}
+                  --parameters entlzprefix=${{ env.entlzprefix }} uniqueid=${{ env.uniqueid }}

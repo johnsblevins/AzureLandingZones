@@ -1,4 +1,6 @@
 param entlzprefix string
+param uniqueid string = ''
+
 
 var location = deployment().location
 
@@ -17,6 +19,6 @@ module loga 'modules/loga.bicep'={
   scope: managementrg
   params:{
     aaname: '${entlzprefix}-aa-${location}'
-    loganame: '${entlzprefix}-loga-${location}'
+    loganame: '${entlzprefix}-loga-${location}${uniqueid}'
   }
 }
