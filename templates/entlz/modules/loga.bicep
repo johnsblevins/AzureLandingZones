@@ -22,7 +22,7 @@ resource loga 'Microsoft.OperationalInsights/workspaces@2020-10-01'={
     }
     retentionInDays: 360    
   }
-  resource myChild 'linkedServices' ={
+  resource myChild 'linkedServices@2020-08-01' ={
     name: 'Automation'
     dependsOn: [
       loga
@@ -32,5 +32,4 @@ resource loga 'Microsoft.OperationalInsights/workspaces@2020-10-01'={
       resourceId: aa.id
     }
   }
-
 }

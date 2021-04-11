@@ -203,7 +203,8 @@ The starter pipeline is included at [.github/workflows/entlz-3-platform-manageme
         Description: Sub ID for existing management subscription
         Default Value: <none>
 
-The pipeline calls an Azure Bicep template to deploy the management group hierarchy, [platform-management.bicep](platform-management.bicep).  The following figure shows the management components deployed:
+The pipeline calls an Azure Bicep template to deploy the management group hierarchy, [platform-management.bicep](platform-management.bicep).  The following figure shows the management components which are deployed:
+
 ![](media/mgmt_components.png)
 
 
