@@ -14,10 +14,10 @@
   "notScopes": [],
   "parameters": {
       "workspaceName": {
-        "value": "%%policydefinitionmg%%-la-management-%%location%%"
+        "value": "%%policydefinitionmg%%-loga-%%location%%%%uniqueid%%"
       },
       "automationAccountName": {
-          "value": "%%policydefinitionmg%%-aa-management-%%location%%"
+          "value": "%%policydefinitionmg%%-aa-%%location%%"
       },
       "workspaceRegion": {
         "value": "%%location%%"

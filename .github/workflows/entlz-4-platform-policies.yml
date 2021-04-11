@@ -1,5 +1,12 @@
 name: entlz-4-platform-policies
 
+env:
+  entlzprefix: elz1
+  environment: azureusgovernment
+  location: usgovvirginia
+  managementsubid: 07526f72-6689-42be-945f-bb6ad0214b71
+  uniqueid: "1"
+
 # Controls when the action will run. 
 on:
   # Allows you to run this workflow manually from the Actions tab
@@ -15,12 +22,7 @@ on:
 jobs:
     build-and-deploy:
         runs-on: ubuntu-latest
-        env:
-          entlzprefix: jblz4
-          environment: azureusgovernment
-          location: usgovvirginia
-          policydefinitionmg: jblz4
-          managementsubid: 07526f72-6689-42be-945f-bb6ad0214b71
+        
           
         steps:
         - uses: actions/checkout@master        
@@ -38,21 +40,16 @@ jobs:
             inlineScript: |
               # Deploy Policy Definitions
               for f in $(find templates/entlz/policies/policies -name policy.json); 
-                do  name=`jq -r .name $f`; 
-                    description=`jq -r .properties.description $f`
-                    displayName=`jq -r .properties.displayName $f` 
-                    rules=`jq -r .properties.policyRule $f`
-                    params=`jq -r .properties.parameters $f`
-                    mode=`jq -r .properties.mode $f`     
-                    az policy definition create \
-                      --name "$name" \
-                      --description "$description" \
-                      --display-name "$displayName" \
-                      --rules "$rules" \
-                      --params "$params" \
-                      --management-group ${{ env.policydefinitionmg }} \
-                      --mode "$mode"
+                do  az policy definition create \
+                      --name "`jq -r .name $f`" \
+                      --description "`jq -r .properties.description $f`" \
+                      --display-name "`jq -r .properties.displayName $f`" \
+                      --rules "`jq -r .properties.policyRule $f`" \
+                      --params "`jq -r .properties.parameters $f`" \
+                      --management-group ${{ env.entlzprefix }} \
+                      --mode "`jq -r .properties.mode $f`"
               done
+              sleep 60
 
         - name: Deploy Initiative Definitions
           uses: azure/CLI@v1
@@ -61,23 +58,15 @@ jobs:
             inlineScript: |
               # Deploy Initiative Definitions
               for f in $(find templates/entlz/policies/initiatives -name policyset.json);
-                do  name=`jq -r .name $f`;
-                    description=`jq -r .properties.description $f`
-                    displayName=`jq -r .properties.displayName $f`
-                    definitions=`jq -r .properties.policyDefinitions $f | \
-                      sed -e 's/%%policydefinitionmg%%/${{ env.policydefinitionmg }}/g'`
-                    params=`jq -r .properties.parameters $f`
-                    az policy set-definition create \
-                      --name "$name" \
-                      --description "$description" \
-                      --display-name "$displayName" \
-                      --definitions "$definitions" \
-                      --params "$params" \
-                      --management-group ${{ env.policydefinitionmg }}
+                do  az policy set-definition create \
+                      --name "`jq -r .name $f`" \
+                      --description "`jq -r .properties.description $f`" \
+                      --display-name "`jq -r .properties.displayName $f`" \
+                      --definitions "`jq -r .properties.policyDefinitions $f | sed -e 's/%%policydefinitionmg%%/${{ env.entlzprefix }}/g'`" \
+                      --params "`jq -r .properties.parameters $f`" \
+                      --management-group ${{ env.entlzprefix }}
               done
-
-              # Delay 120
-              sleep 120
+              sleep 60
 
         - name: Deploy Policy Assignments
           uses: azure/CLI@v1
@@ -86,22 +75,15 @@ jobs:
             inlineScript: |
               # Deploy Policy Assignments
               for f in $(find templates/entlz/policies/policies -name assign.*.json);
-                do name=`jq -r .name $f`;
-                  displayName=`jq -r .properties.displayName $f`
-                  location="${{ env.location }}"
-                  policy=`jq -r .properties.policyDefinitionId $f | \
-                    sed -e 's/%%policydefinitionmg%%/${{ env.policydefinitionmg }}/g' | \
-                    sed -e 's/%%location%%/${{ env.location }}/g' | \
-                    sed -e 's/%%managementsubid%%/${{ env.managementsubid }}/g'`
+                do policy=`jq -r .properties.policyDefinitionId $f | \
+                    sed -e 's/%%policydefinitionmg%%/${{ env.entlzprefix }}/g'`
                   params=`jq -r .properties.parameters $f | \
-                    sed -e 's/%%policydefinitionmg%%/${{ env.policydefinitionmg }}/g' | \
+                    sed -e 's/%%policydefinitionmg%%/${{ env.entlzprefix }}/g' | \
                     sed -e 's/%%location%%/${{ env.location }}/g' | \
-                    sed -e 's/%%managementsubid%%/${{ env.managementsubid }}/g'`
+                    sed -e 's/%%managementsubid%%/${{ env.managementsubid }}/g' | \
+                    sed -e 's/%%uniqueid%%/${{ env.uniqueid }}/g'`
                   scope=`jq -r .properties.scope $f | \
-                    sed -e 's/%%policydefinitionmg%%/${{ env.policydefinitionmg }}/g' | \
-                    sed -e 's/%%location%%/${{ env.location }}/g' | \
-                    sed -e 's/%%managementsubid%%/${{ env.managementsubid }}/g'`
-                  sku=`jq -r .sku.tier $f`
+                    sed -e 's/%%policydefinitionmg%%/${{ env.entlzprefix }}/g' `
                   identity=`jq -r .identity $f`
                   role=`jq -r .identity.role $f`
                   [[ -z $role ]] && role="Contributor"
@@ -109,27 +91,28 @@ jobs:
                   if [[ $identity = "null" ]];
                   then
                     az policy assignment create \
-                      --name "$name" \
-                      --display-name "$displayName" \
-                      --location "$location" \
+                      --name "`jq -r .name $f`" \
+                      --display-name "`jq -r .properties.displayName $f`" \
+                      --location "${{ env.location }}" \
                       --policy "$policy" \
                       --params "$params" \
                       --scope "$scope"  \
-                      --sku "$sku";
+                      --sku "`jq -r .sku.tier $f`";
                   else
                     az policy assignment create \
-                      --name "$name" \
-                      --display-name "$displayName" \
-                      --location "$location" \
+                      --name "`jq -r .name $f`" \
+                      --display-name "`jq -r .properties.displayName $f`" \
+                      --location "${{ env.location }}" \
                       --policy "$policy" \
                       --params "$params"  \
                       --scope "$scope"  \
-                      --sku "$sku"  \
+                      --sku "`jq -r .sku.tier $f`"  \
                       --assign-identity \
                       --identity-scope "$scope" \
                       --role "$role";
                   fi;
               done
+              sleep 60
 
         - name: Deploy Initiative Assignments
           uses: azure/CLI@v1
@@ -138,22 +121,15 @@ jobs:
             inlineScript: |
               # Deploy Initiative Assignments
               for f in $(find templates/entlz/policies/initiatives -name assign.*.json);
-                do name=`jq -r .name $f`;
-                  displayName=`jq -r .properties.displayName $f`
-                  location="${{ env.location }}"
-                  policySetDefinition=`jq -r .properties.policyDefinitionId $f | \
-                    sed -e 's/%%policydefinitionmg%%/${{ env.policydefinitionmg }}/g' | \
-                    sed -e 's/%%location%%/${{ env.location }}/g' | \
-                    sed -e 's/%%managementsubid%%/${{ env.managementsubid }}/g'`
+                do policySetDefinition=`jq -r .properties.policyDefinitionId $f | \
+                    sed -e 's/%%policydefinitionmg%%/${{ env.entlzprefix }}/g'`
                   params=`jq -r .properties.parameters $f | \
-                    sed -e 's/%%policydefinitionmg%%/${{ env.policydefinitionmg }}/g' | \
+                    sed -e 's/%%policydefinitionmg%%/${{ env.entlzprefix }}/g' | \
                     sed -e 's/%%location%%/${{ env.location }}/g' | \
-                    sed -e 's/%%managementsubid%%/${{ env.managementsubid }}/g'`
+                    sed -e 's/%%managementsubid%%/${{ env.managementsubid }}/g' | \
+                    sed -e 's/%%uniqueid%%/${{ env.uniqueid }}/g'`
                   scope=`jq -r .properties.scope $f | \
-                    sed -e 's/%%policydefinitionmg%%/${{ env.policydefinitionmg }}/g' | \
-                    sed -e 's/%%location%%/${{ env.location }}/g' | \
-                    sed -e 's/%%managementsubid%%/${{ env.managementsubid }}/g'`
-                  sku=`jq -r .sku.tier $f`
+                    sed -e 's/%%policydefinitionmg%%/${{ env.entlzprefix }}/g'`
                   identity=`jq -r .identity $f`
                   role=`jq -r .identity.role $f`
                   [[ -z $role ]] && role="Contributor"
@@ -161,27 +137,25 @@ jobs:
                   if [[ $identity = "null" ]];
                   then
                     az policy assignment create \
-                      --name "$name" \
-                      --display-name "$displayName" \
-                      --location "$location" \
+                      --name "`jq -r .name $f`" \
+                      --display-name "`jq -r .properties.displayName $f`" \
+                      --location "${{ env.location }}" \
                       --policy-set-definition "$policySetDefinition" \
                       --params "$params" \
                       --scope "$scope" \
-                      --sku "$sku";
+                      --sku "`jq -r .sku.tier $f`";
                   else
                     az policy assignment create \
-                      --name "$name" \
-                      --display-name "$displayName" \
-                      --location "$location" \
+                      --name "`jq -r .name $f`" \
+                      --display-name "`jq -r .properties.displayName $f`" \
+                      --location "${{ env.location }}" \
                       --policy-set-definition "$policySetDefinition" \
                       --params "$params" \
                       --scope "$scope" \
-                      --sku "$sku" \
+                      --sku "`jq -r .sku.tier $f`" \
                       --assign-identity \
                       --identity-scope "$scope" \
                       --role "$role";
                   fi;
                 done
-
-              # Delay 120
-              sleep 120
+                sleep 60

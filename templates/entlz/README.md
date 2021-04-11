@@ -185,7 +185,7 @@ In this step the Azure subscriptions required to deploy the Enterprise Landing Z
 If existing subscription IDs are provided as pipeline parameters they will be renamed with the above naming standard and moved to the correspondong management group.  If subscription IDs are not provided the pipeline will attempt to create new EA subscriptions and move them to their corresponding management groups.
 
 ## Pipeline 3 - Deploy Platform Management
-The starter pipeline is included at [.github/workflows/entlz-3-platform-management.yml](../../.github/workflows/entlz-2-platform-management.yml).  The pipeline is configured by default to be manually executed.  Before deploying the pipeline customize the environment variables at the top of the template to fit the environment.  These include:
+The starter pipeline is included at [.github/workflows/entlz-3-platform-management.yml](../../.github/workflows/entlz-3-platform-management.yml).  The pipeline is configured by default to be manually executed.  Before deploying the pipeline customize the environment variables at the top of the template to fit the environment.  These include:
 
     entlzprefix (required): 
         Description: 5 character alphanumeric prefix to establish the Management Group naming standard
@@ -203,13 +203,17 @@ The starter pipeline is included at [.github/workflows/entlz-3-platform-manageme
         Description: Sub ID for existing management subscription
         Default Value: <none>
 
+    uniqueid (optional):
+        Description: 3 Char Max Unique suffix STRING to use with resources requiring unique name (ex. logA, Storage Account, etc...)
+        Default Value: "1"
+
 The pipeline calls an Azure Bicep template to deploy the management group hierarchy, [platform-management.bicep](platform-management.bicep).  The following figure shows the management components which are deployed:
 
 ![](media/mgmt_components.png)
 
 
 ## Pipeline 4 - Deploy Platform Policies
-The starter pipeline is included at [.github/workflows/entlz-2-platform-subs.yml](../../.github/workflows/entlz-2-platform-subs.yml).  The pipeline is configured by default to be manually executed.  Before deploying the pipeline customize the environment variables at the top of the template to fit the environment.  These include:
+The starter pipeline is included at [.github/workflows/entlz-4-platform-policies.yml](../../.github/workflows/entlz-4-platform-policies.yml).  The pipeline is configured by default to be manually executed.  Before deploying the pipeline customize the environment variables at the top of the template to fit the environment.  These include:
 
     entlzprefix (required): 
         Description: 5 character alphanumeric prefix to establish the Management Group naming standard
@@ -227,25 +231,9 @@ The starter pipeline is included at [.github/workflows/entlz-2-platform-subs.yml
         Description: Sub ID for existing management subscription, if not provided or left empty EA subscription will be created
         Default Value: <none>
 
-    identitysubid (optional): 
-        Description: Sub ID for existing identity subscription, if not provided or left empty EA subscription will be created
-        Default Value: <none>
-
-    connectivitysubid (optional): 
-        Description: Sub ID for existing connectivity subscription, if not provided or left empty EA subscription will be created
-        Default Value: <none>
-
-    securitysubid (optional): 
-        Description: Sub ID for existing security subscription, if not provided or left empty EA subscription will be created
-        Default Value: <none>
-    
-    offertype (required if any sub ids aren't specified): 
-        Description: EA Subscription Offer (ex. MS-AZR-USGOV-0017P, MS-AZR-0017P)
-        Default Value: MS-AZR-USGOV-0017P
-
-    enracctname (required if any sub ids aren't specified):
-        Description: Enrollment Account identifier required to create EA Subs (ex. ac95a806-c9d3-49e7-83ee-7f82e88c2bd3)
-        Default Value: <none>
+    uniqueid (optional):
+        Description: 3 Char Max Unique suffix STRING to use with resources requiring unique name (ex. logA, Storage Account, etc...)
+        Default Value: "1"
 
 In this step Azure Policies and Policy Initiatives are created and assigned to the management group hierarchy using a Policy-as-Code approach as outlined at [https://docs.microsoft.com/en-us/azure/governance/policy/concepts/policy-as-code](https://docs.microsoft.com/en-us/azure/governance/policy/concepts/policy-as-code).  The following folder structure is used to store custom policy and initiative definitions as well as both builtin and custom policy and initiative assignments.  This is the native format when exporting policy definitions and assignements using the portal export features which allows an administrator to build a policy set within the portal and export it into the folder structure.
 
@@ -293,6 +281,51 @@ This pipeline can be used after the initial Enterprise Landing Zone deployment t
 
 
 ## Pipeline 5 - Deploy Platform RBAC
+The starter pipeline is included at [.github/workflows/entlz-5-platform-rbac.yml](../../.github/workflows/entlz-5-platform-rbac.yml).  The pipeline is configured by default to be manually executed.  Before deploying the pipeline customize the environment variables at the top of the template to fit the environment.  These include:
+
+    entlzprefix (required): 
+        Description: 5 character alphanumeric prefix to establish the Management Group naming standard
+        Default Value: entlz
+
+    environment (required): 
+        Description: Azure Cloud environment for AZ CLI connection
+        Default Value: azureusgovernment
+
+    location (required): 
+        Description: Location to store deployment metadata
+        Default Value: usgovvirginia
+
+
+    Tenant (/)
+        Tenant Root Group
+            **Group: azure-platform-readers | Role: Reader**
+            entlz (Root)
+                **Group: ${entlzprefix}-platform-admins | Role: Owner**
+                **Group: ${entlzprefix}-security-admins | Role: Security Admin**
+                **Group: ${entlzprefix}-network-admins | Role: Network Contributor**
+                **Group: ${entlzprefix}-cost-admins | Role: Cost Management Contributor**
+                entlz-Platform
+                    entlz-Management
+                    entlz-Identity
+                        **Group: ${entlzprefix}-identity-admins | Role: Virtual Machine Contributor**
+                    entlz-Connectivity
+                        **Group: ${entlzprefix}-network-admins | Role: Virtual Machine Contributor**
+                    entlz-Security
+                        **Group: ${entlzprefix}-security-admins | Role: Virtual Machine Contributor**
+                entlz-LandingZones
+                    entlz-Internal
+                        entlz-Internal-Prod
+                        entlz-Internal-NonProd
+                    entlz-External
+                        entlz-External-Prod
+                        entlz-External-NonProd
+                entlz-Decomissioned
+                entlz-Onboarding
+                entlz-Sandboxes
+                    **Group: ${entlzprefix}-sandbox-owners | Role: Owner**
+                    entlz-Sandbox-Management
+                    entlz-Sandbox-LandingZones
+             
 
 ## Pipeline 6 - Deploy Platform Connectivity
 

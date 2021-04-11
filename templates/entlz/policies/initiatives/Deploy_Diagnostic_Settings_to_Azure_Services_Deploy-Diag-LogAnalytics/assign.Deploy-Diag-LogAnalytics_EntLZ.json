@@ -14,7 +14,7 @@
   "notScopes": [],
   "parameters": {
     "logAnalytics": {
-        "value": "/subscriptions/%%managementsubid%%/resourcegroups/%%policydefinitionmg%%-mgmt/providers/microsoft.operationalinsights/workspaces/%%policydefinitionmg%%-la-management-%%location%%"
+        "value": "/subscriptions/%%managementsubid%%/resourcegroups/%%policydefinitionmg%%-mgmt/providers/microsoft.operationalinsights/workspaces/%%policydefinitionmg%%-loga-%%location%%%%uniqueid%%"
     }
  },
   "enforcementMode": "Default"
