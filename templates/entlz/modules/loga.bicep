@@ -37,26 +37,26 @@ resource loga 'Microsoft.OperationalInsights/workspaces@2020-10-01'={
   }
 }
 
-resource agenthealthassessment 'Microsoft.OperationsManagement/solutions@2015-11-01-preview'={
-  name: 'agenthealthassessment(${loga.name})'
+resource AgentHealthAssessment 'Microsoft.OperationsManagement/solutions@2015-11-01-preview'={
+  name: 'AgentHealthAssessment(${loga.name})'
   dependsOn:[
     loga
     aa
   ]
-  location: location
+  location: 'usgovvirginia'
   properties:{
-    workspaceResourceId: loga.id
+    workspaceResourceId: '/subscriptions/07526f72-6689-42be-945f-bb6ad0214b71/resourcegroups/blah/providers/microsoft.operationalinsights/workspaces/logaworkspacejb1'
   }
   plan:{
-    name: 'agenthealthassessment(${loga.name})'
+    name: 'AgentHealthAssessment(${loga.name})'
     product: 'OMSGallery/AgentHealthAssessment'
-    promotionCode: ''
     publisher: 'Microsoft'
+    promotionCode: ''
   }
 }
 
-resource antimalware 'Microsoft.OperationsManagement/solutions@2015-11-01-preview'={
-  name: 'enableAntiMalware(${loga.name})'
+resource AntiMalware 'Microsoft.OperationsManagement/solutions@2015-11-01-preview'={
+  name: 'AntiMalware(${loga.name})'
   dependsOn:[
     loga
     aa
@@ -66,15 +66,15 @@ resource antimalware 'Microsoft.OperationsManagement/solutions@2015-11-01-previe
     workspaceResourceId: loga.id
   }
   plan:{
-    name: 'antimalware(${loga.name})'
+    name: 'AntiMalware(${loga.name})'
     product: 'OMSGallery/AntiMalware'
     promotionCode: ''
     publisher: 'Microsoft'
   }
 }
 
-resource activitylog 'Microsoft.OperationsManagement/solutions@2015-11-01-preview'={
-  name: 'activitylog(${loga.name})'
+resource AzureActivity 'Microsoft.OperationsManagement/solutions@2015-11-01-preview'={
+  name: 'AzureActivity(${loga.name})'
   dependsOn:[
     loga
     aa
@@ -84,15 +84,15 @@ resource activitylog 'Microsoft.OperationsManagement/solutions@2015-11-01-previe
     workspaceResourceId: loga.id
   }
   plan:{
-    name: 'activitylog(${loga.name})'
+    name: 'AzureActivity(${loga.name})'
     product: 'OMSGallery/AzureActivity'
     promotionCode: ''
     publisher: 'Microsoft'
   }
 }
 
-resource changetracking 'Microsoft.OperationsManagement/solutions@2015-11-01-preview'={
-  name: 'changetracking(${loga.name})'
+resource ChangeTracking 'Microsoft.OperationsManagement/solutions@2015-11-01-preview'={
+  name: 'ChangeTracking(${loga.name})'
   dependsOn:[
     loga
     aa
@@ -102,15 +102,15 @@ resource changetracking 'Microsoft.OperationsManagement/solutions@2015-11-01-pre
     workspaceResourceId: loga.id
   }
   plan:{
-    name: 'changetracking(${loga.name})'
+    name: 'ChangeTracking(${loga.name})'
     product: 'OMSGallery/ChangeTracking'
     promotionCode: ''
     publisher: 'Microsoft'
   }
 }
 
-resource vminsights 'Microsoft.OperationsManagement/solutions@2015-11-01-preview'={
-  name: 'vminsights(${loga.name})'
+resource VMInsights 'Microsoft.OperationsManagement/solutions@2015-11-01-preview'={
+  name: 'VMInsights(${loga.name})'
   dependsOn:[
     loga
     aa
@@ -120,7 +120,7 @@ resource vminsights 'Microsoft.OperationsManagement/solutions@2015-11-01-preview
     workspaceResourceId: loga.id
   }
   plan:{
-    name: 'vminsights(${loga.name})'
+    name: 'VMInsights(${loga.name})'
     product: 'OMSGallery/VMInsights'
     promotionCode: ''
     publisher: 'Microsoft'
@@ -128,8 +128,8 @@ resource vminsights 'Microsoft.OperationsManagement/solutions@2015-11-01-preview
 }
 
 
-resource security 'Microsoft.OperationsManagement/solutions@2015-11-01-preview'={
-  name: 'security(${loga.name})'
+resource Security 'Microsoft.OperationsManagement/solutions@2015-11-01-preview'={
+  name: 'Security(${loga.name})'
   dependsOn:[
     loga
     aa
@@ -139,15 +139,15 @@ resource security 'Microsoft.OperationsManagement/solutions@2015-11-01-preview'=
     workspaceResourceId: loga.id
   }
   plan:{
-    name: 'security(${loga.name})'
+    name: 'Security(${loga.name})'
     product: 'OMSGallery/Security'
     promotionCode: ''
     publisher: 'Microsoft'
   }
 }
 
-resource securityinsights 'Microsoft.OperationsManagement/solutions@2015-11-01-preview'={
-  name: 'securityinsights(${loga.name})'
+resource SecurityInsights 'Microsoft.OperationsManagement/solutions@2015-11-01-preview'={
+  name: 'SecurityInsights(${loga.name})'
   dependsOn:[
     loga
     aa
@@ -157,15 +157,15 @@ resource securityinsights 'Microsoft.OperationsManagement/solutions@2015-11-01-p
     workspaceResourceId: loga.id
   }
   plan:{
-    name: 'securityinsights(${loga.name})'
+    name: 'SecurityInsights(${loga.name})'
     product: 'OMSGallery/SecurityInsights'
     promotionCode: ''
     publisher: 'Microsoft'
   }
 }
 
-resource servicemap 'Microsoft.OperationsManagement/solutions@2015-11-01-preview'={
-  name: 'servicemap(${loga.name})'
+resource ServiceMap 'Microsoft.OperationsManagement/solutions@2015-11-01-preview'={
+  name: 'ServiceMap(${loga.name})'
   dependsOn:[
     loga
     aa
@@ -175,15 +175,15 @@ resource servicemap 'Microsoft.OperationsManagement/solutions@2015-11-01-preview
     workspaceResourceId: loga.id
   }
   plan:{
-    name: 'servicemap(${loga.name})'
+    name: 'ServiceMap(${loga.name})'
     product: 'OMSGallery/ServiceMap'
     promotionCode: ''
     publisher: 'Microsoft'
   }
 }
 
-resource sqlassessment 'Microsoft.OperationsManagement/solutions@2015-11-01-preview'={
-  name: 'sqlassessment(${loga.name})'
+resource SQLAssessment 'Microsoft.OperationsManagement/solutions@2015-11-01-preview'={
+  name: 'SQLAssessment(${loga.name})'
   dependsOn:[
     loga
     aa
@@ -193,15 +193,15 @@ resource sqlassessment 'Microsoft.OperationsManagement/solutions@2015-11-01-prev
     workspaceResourceId: loga.id
   }
   plan:{
-    name: 'sqlassessment(${loga.name})'
-    product: 'OMSGallery/SqlAssessment'
+    name: 'SQLAssessment(${loga.name})'
+    product: 'OMSGallery/SQLAssessment'
     promotionCode: ''
     publisher: 'Microsoft'
   }
 }
 
-resource updatemgmt 'Microsoft.OperationsManagement/solutions@2015-11-01-preview'={
-  name: 'updatemgmt(${loga.name})'
+resource Updates 'Microsoft.OperationsManagement/solutions@2015-11-01-preview'={
+  name: 'Updates(${loga.name})'
   dependsOn:[
     loga
     aa
@@ -211,9 +211,10 @@ resource updatemgmt 'Microsoft.OperationsManagement/solutions@2015-11-01-preview
     workspaceResourceId: loga.id
   }
   plan:{
-    name: 'updatemgmt(${loga.name})'
-    product: 'OMSGallery/UpdateMgmt'
+    name: 'Updates(${loga.name})'
+    product: 'OMSGallery/Updates'
     promotionCode: ''
     publisher: 'Microsoft'
   }
 }
+
