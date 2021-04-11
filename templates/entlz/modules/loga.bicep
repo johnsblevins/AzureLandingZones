@@ -43,9 +43,9 @@ resource AgentHealthAssessment 'Microsoft.OperationsManagement/solutions@2015-11
     loga
     aa
   ]
-  location: 'usgovvirginia'
+  location: location
   properties:{
-    workspaceResourceId: '/subscriptions/07526f72-6689-42be-945f-bb6ad0214b71/resourcegroups/blah/providers/microsoft.operationalinsights/workspaces/logaworkspacejb1'
+    workspaceResourceId: loga.id
   }
   plan:{
     name: 'AgentHealthAssessment(${loga.name})'

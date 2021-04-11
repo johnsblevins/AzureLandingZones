@@ -5,7 +5,7 @@ var location = deployment().location
 targetScope = 'subscription'
 
 resource managementrg 'Microsoft.Resources/resourceGroups@2020-10-01' = {
-  name: 'management'
+  name: '${entlzprefix}-management'
   location: location
 }
 
