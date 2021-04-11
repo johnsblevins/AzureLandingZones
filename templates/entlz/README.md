@@ -26,8 +26,8 @@ The reference implementation for this solution is based on the CAF enterprise sc
 ## Deployment Order
 The Enterprise Landing Zone is deployed through a series of build/release pipline scripts packaged as GitHub actions.  A prerequisite script is used to create a service principal with the required roles in Azure.  This service prinicipal is then used by GitHub Actions to connect to Azure and deploy the pipelines.  After the initial deployment the pipelines can be used to manage the environment using Infrastructure-as-Code.  The deployment order is as follows:
 
-1. Deploy Prerequisites (script) - [templates/entlz/scripts/entlz_prereqs.sh](templates/entlz/scripts/entlz_prereqs.sh)
-2. Deploy Management Group Hierarchy (pipeline) - [.github/workflows/entlz-1-platform-mgs.yml](.github/workflows/entlz-1-platform-mgs.yml)
+1. Deploy Prerequisites (script) - [templates/entlz/scripts/entlz_prereqs.sh](entlz/scripts/entlz_prereqs.sh)
+2. Deploy Management Group Hierarchy (pipeline) - [.github/workflows/entlz-1-platform-mgs.yml](~/.github/workflows/entlz-1-platform-mgs.yml)
 3. Deploy Platform Subscriptions (pipeline) - [.github/workflows/entlz-2-platform-subs.yml](.github/workflows/entlz-2-platform-subs.yml)
 4. Deploy Platform Management Components (pipeline) - [.github/workflows/entlz-3-platform-management.yml](.github/workflows/entlz-3-platform-management.yml)
 5. Deploy Platform Policies (pipeline) - [.github/workflows/entlz-4-platform-policies.yml](.github/workflows/entlz-4-platform-policies.yml)
