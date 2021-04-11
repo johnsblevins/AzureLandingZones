@@ -33,8 +33,9 @@ sleep 15
 
 objId=$(az ad sp show --id $appId --query objectId --output tsv)
 
-# Add Service Principal to Group
+# Add Service Principal and Currently Logged in User to Platform Owner Group
 az ad group member add --group $platformOwnerGroup --member-id $objId
+az ad group member add --group $platformOwnerGroup --member-id `az ad signed-in-user show --query objectId --output tsv`
 
 # Assign Azure-Platform-Owners Group Owner role to Tenant Root Group Scope
 az role assignment create --role "Owner" --scope / --assignee $platformOwnerGroup
