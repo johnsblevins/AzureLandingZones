@@ -98,7 +98,7 @@ The starter pipeline is included at [.github/workflows/entlz-1-platform-mgs.yml]
         Description: Location to store deployment metadata
         Default Value: usgovvirginia
 
-The following figure shows the management group hierarchy which will be created using "entlz" as the prefix value for demonstration purposes:
+An Azure Bicep template is used to deploy the management group hierarchy, [platform-mgs.bicep](platform-mgs.bicep).  The following figure shows the management group hierarchy which will be created using "entlz" as the prefix value for demonstration purposes:
 
     Tenant (/)
         Tenant Root Group
@@ -122,6 +122,7 @@ The following figure shows the management group hierarchy which will be created 
                     entlz-Sandbox-LandingZones
 
 In addition, the Management Group Hierarchy settings are configured such that the "entlz-Onboarding" management group is configured as the default management group for new subscriptions and RBAC for the Management Group hierarchy is set to require "Management Group Contributor" role to add/remove/modify management groups.  This prevents non-privileged users from making changes to the management group hierarchy or creating their own branches.
+![](media/mg_settings.png)
 
 ## Pipeline 2 - Deploy Platform Policies
 The starter pipeline is included at [.github/workflows/entlz-2-platform-subs.yml](../../.github/workflows/entlz-2-platform-subs.yml).  The pipeline is configured by default to be manually executed.  Before deploying the pipeline customize the environment variables at the top of the template to fit the environment.  These include:

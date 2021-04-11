@@ -40,7 +40,7 @@ az ad group member add --group $platformOwnerGroup --member-id `az ad signed-in-
 # Assign Azure-Platform-Owners Group Owner role to Tenant Root Group Scope
 az role assignment create --role "Owner" --scope / --assignee $platformOwnerGroup
 
-# Assign azure-entlz-deployer Service Principal Global Reader role in AAD
+# Assign azure-entlz-deployer Service Principal Groups Administrator role in AAD
 az rest --method post \
     --url "${graphURI}beta/roleManagement/directory/roleAssignments" \
     --headers "{\"content-type\":\"application/json\"}" \
