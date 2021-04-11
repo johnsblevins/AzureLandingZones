@@ -4,13 +4,13 @@ env:
   entlzprefix: elz1  
   environment: azureusgovernment
   location: usgovvirginia  
-  managementsubid:
-  identitysubid:
-  connectivitysubid:
-  securitysubid:
+  managementsubid: 07526f72-6689-42be-945f-bb6ad0214b71
+  identitysubid: 787e871a-84ba-43be-86bf-86bd1e408a4a
+  connectivitysubid: b30166b8-dd1b-4fa2-9ad7-057614257b06
+  securitysubid: ac95a806-c9d3-49e7-83ee-7f82e88c2bd3
   subownergroup: azure-platform-owners
   offertype: MS-AZR-USGOV-0017P
-  enracctname: b5f3295f-c2be-4afb-8880-5c0ce9be2db3
+  enracctname: 
 
 # Controls when the action will run. 
 on:
@@ -37,10 +37,11 @@ jobs:
           with:
             azcliversion: 2.21.0
             inlineScript: |
+              managementuri=$(az cloud show --query endpoints.resourceManager --output tsv)
               if [[ -z "${{ env.managementsubid }}" ]];
               then
                 az config set extension.use_dynamic_install=yes_without_prompt
-                managementuri=$(az cloud show --query endpoints.resourceManager --output tsv)
+
                 subownergroupid=$(az ad group list --display-name ${{ env.subownergroup }}  --query [].objectId -o tsv)
 
                 # Check if Sub already exists
@@ -64,6 +65,11 @@ jobs:
                 fi;
               else
                 echo "Management subscription already exists...skipping"
+                echo "Management subscription already exists...renaming"
+                az rest --method post \
+                --url "${managementuri}subscriptions/${{ env.managementsubid }}/providers/Microsoft.Subscription/rename?api-version=2019-10-01-preview" \
+                --headers "{\"content-type\":\"application/json\"}" \
+                --body "{   \"subscriptionName\": \"$managementsubname\"}"
               fi;
 
         - name: Create Identity Sub
@@ -74,10 +80,11 @@ jobs:
           with:
             azcliversion: 2.21.0
             inlineScript: |
+              managementuri=$(az cloud show --query endpoints.resourceManager --output tsv)
               if [[ -z "${{ env.identitysubid }}" ]];
               then
                 az config set extension.use_dynamic_install=yes_without_prompt
-                managementuri=$(az cloud show --query endpoints.resourceManager --output tsv)
+
                 subownergroupid=$(az ad group list --display-name ${{ env.subownergroup }}  --query [].objectId -o tsv)
 
                 # Check if Sub already exists
@@ -98,7 +105,11 @@ jobs:
                   echo "Identity subscription already exists...skipping"
                 fi;
               else
-                echo "Identity subscription already exists...skipping"
+                echo "Identity subscription already exists...renaming"
+                az rest --method post \
+                --url "${managementuri}subscriptions/${{ env.identitysubid }}/providers/Microsoft.Subscription/rename?api-version=2019-10-01-preview" \
+                --headers "{\"content-type\":\"application/json\"}" \
+                --body "{   \"subscriptionName\": \"$identitysubname\"}"
               fi;
 
         - name: Create Connectivity Sub
@@ -109,10 +120,11 @@ jobs:
           with:
             azcliversion: 2.21.0
             inlineScript: |
+              managementuri=$(az cloud show --query endpoints.resourceManager --output tsv)
               if [[ -z "${{ env.connectivitysubid }}" ]];
               then
                 az config set extension.use_dynamic_install=yes_without_prompt
-                managementuri=$(az cloud show --query endpoints.resourceManager --output tsv)
+
                 subownergroupid=$(az ad group list --display-name ${{ env.subownergroup }}  --query [].objectId -o tsv)
 
                 # Check if Sub already exists
@@ -133,7 +145,11 @@ jobs:
                   echo "Connectivity subscription already exists...skipping"
                 fi;
               else
-                echo "Connectivity subscription already exists...skipping"
+                echo "Conenctivity subscription already exists...renaming"
+                az rest --method post \
+                --url "${managementuri}subscriptions/${{ env.connectivitysubid }}/providers/Microsoft.Subscription/rename?api-version=2019-10-01-preview" \
+                --headers "{\"content-type\":\"application/json\"}" \
+                --body "{   \"subscriptionName\": \"$connectivitysubname\"}"
               fi;
 
         - name: Create Security Sub
@@ -144,6 +160,7 @@ jobs:
           with:
             azcliversion: 2.21.0
             inlineScript: |
+              managementuri=$(az cloud show --query endpoints.resourceManager --output tsv)
               if [[ -z "${{ env.securitysubid }}" ]];
               then
                 
@@ -151,7 +168,7 @@ jobs:
                 if [[ -z `az account list --query "[?name=='${{ env.securitysubname }}'].name" --output tsv` ]];
                 then
                   az config set extension.use_dynamic_install=yes_without_prompt
-                  managementuri=$(az cloud show --query endpoints.resourceManager --output tsv)
+
                   subownergroupid=$(az ad group list --display-name ${{ env.subownergroup }}  --query [].objectId -o tsv)
 
                   # REST Call to Create Subscription
@@ -169,7 +186,11 @@ jobs:
                   echo "Security subscription already exists...skipping"
                 fi;
               else
-                echo "Security subscription already exists...skipping"
+                echo "Security subscription already exists...renaming"
+                az rest --method post \
+                --url "${managementuri}subscriptions/${{ env.securitysubid }}/providers/Microsoft.Subscription/rename?api-version=2019-10-01-preview" \
+                --headers "{\"content-type\":\"application/json\"}" \
+                --body "{   \"subscriptionName\": \"$securitysubname\"}"
               fi;
 
         - name: Log in to Azure Again

@@ -200,10 +200,10 @@ jobs:
               az role assignment create --assignee $group --scope /providers/Microsoft.Management/managementGroups/${{ env.entlzprefix }}-identity --role "Virtual Machine Contributor"
 
 
-              # {entlzprefix}-sandbox-admins
+              # {entlzprefix}-sandbox-owners
               # role: owner
               # scope: {entlzprefix}-Sandboxes management group
-              group=$(az ad group list --query "[?displayName=='${{ env.entlzprefix}}-sandbox-admins'].objectId" --output tsv)
+              group=$(az ad group list --query "[?displayName=='${{ env.entlzprefix}}-sandbox-owners'].objectId" --output tsv)
               if [[ -z $group ]] ;
               then
                   graphURI=$(az cloud show --query endpoints.microsoftGraphResourceId --output tsv)
@@ -211,9 +211,9 @@ jobs:
                       --url "${graphURI}beta/groups" \
                       --headers "{\"content-type\":\"application/json\"}" \
                       --body "{   \"description\": \"Members have Owner rights at sandbox MG\", 
-                                  \"displayName\": \"${{ env.entlzprefix}}-sandbox-admins\", 
+                                  \"displayName\": \"${{ env.entlzprefix}}-sandbox-owners\", 
                                   \"isAssignableToRole\": \"false\", 
-                                  \"mailNickname\": \"${{ env.entlzprefix}}-sandbox-admins\",
+                                  \"mailNickname\": \"${{ env.entlzprefix}}-sandbox-owners\",
                                   \"mailEnabled\": \"false\",
                                   \"securityEnabled\": \"true\",
                                   \"visibility\": \"Private\"
@@ -221,7 +221,7 @@ jobs:
                       --query id \
                       --output tsv)
               else
-                  echo "${{ env.entlzprefix}}-sandbox-admins group already exists"
+                  echo "${{ env.entlzprefix}}-sandbox-owners group already exists"
               fi;
               sleep 15
 

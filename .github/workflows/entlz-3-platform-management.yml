@@ -16,10 +16,9 @@ jobs:
     build-and-deploy:
         runs-on: ubuntu-latest
         env:
-          entlzprefix: jblz4
+          entlzprefix: elz1
           environment: azureusgovernment
           location: usgovvirginia
-          policydefinitionmg: jblz4
           managementsubid: 07526f72-6689-42be-945f-bb6ad0214b71
           
         steps:
@@ -31,9 +30,15 @@ jobs:
             environment: ${{ env.environment }}
             enable-AzPSSession: false
         
-        - name: Deploy Policy Definitions
+        - name: Deploy Management Components
           uses: azure/CLI@v1
           with:
             azcliversion: 2.21.0
             inlineScript: |
-              echo blah
+              # Deploy Management Components to Management Subscription
+                az deployment subscription create \
+                  --name "entlz-management-${{ env.location }}" \
+                  --subscription "${{ env.managementsubid }} \
+                  --location ${{ env.location }} \
+                  --template-file templates/entlz/platform-management.bicep \
+                  --parameters entlzprefix=${{ env.entlzprefix }}
