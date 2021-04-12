@@ -52,26 +52,26 @@ jobs:
             azcliversion: 2.21.0
             inlineScript: |
               entlzprefix=${{ env.entlzprefix }}
-              location=${{ env.location }}
-              connectivitysubid=${{ env.connectivitysubid }}
-              identitysubid=${{ env.identitysubid }}
-              securitysubid=${{ env.securitysubid }}
-              managementsubid=${{ env.managementsubid }}
-              hubvnetprefix=${{ env.hubvnetprefix }}
-              gwtype=${{ env.gwtype }}
-              gwsubnetprefix=${{ env.gwsubnetprefix }}
-              fwtype=${{ env.fwtype }}
-              fwsubnetprefix=${{ env.fwsubnetprefix }}
-              bastionsubnetprefix=${{ env.bastionsubnetprefix }}
-              managementvnetname=${{ env.managementvnetname }}
-              managementvnetprefix=${{ env.managementvnetprefix }}
-              managementsubnetprefix=${{ env.managementsubnetprefix }}
-              identityvnetname=${{ env.identityvnetname }}
-              identityvnetprefix=${{ env.identityvnetprefix }}
-              identitysubnetprefix=${{ env.identitysubnetprefix }}
-              securityvnetname=${{ env.securityvnetname }}
-              securityvnetprefix=${{ env.securityvnetprefix }}
-              securitysubnetprefix=${{ env.securitysubnetprefix }}
+#              location=${{ env.location }}
+#              connectivitysubid=${{ env.connectivitysubid }}
+#              identitysubid=${{ env.identitysubid }}
+#              securitysubid=${{ env.securitysubid }}
+#              managementsubid=${{ env.managementsubid }}
+#              hubvnetprefix=${{ env.hubvnetprefix }}
+#              gwtype=${{ env.gwtype }}
+#              gwsubnetprefix=${{ env.gwsubnetprefix }}
+#              fwtype=${{ env.fwtype }}
+#              fwsubnetprefix=${{ env.fwsubnetprefix }}
+#              bastionsubnetprefix=${{ env.bastionsubnetprefix }}
+#              managementvnetname=${{ env.managementvnetname }}
+#              managementvnetprefix=${{ env.managementvnetprefix }}
+#              managementsubnetprefix=${{ env.managementsubnetprefix }}
+#              identityvnetname=${{ env.identityvnetname }}
+#              identityvnetprefix=${{ env.identityvnetprefix }}
+#              identitysubnetprefix=${{ env.identitysubnetprefix }}
+#              securityvnetname=${{ env.securityvnetname }}
+#              securityvnetprefix=${{ env.securityvnetprefix }}
+#              securitysubnetprefix=${{ env.securitysubnetprefix }}
 
 #              az deployment mg create \
 #                  --name "$entlzprefix-connectivity-$location" \
