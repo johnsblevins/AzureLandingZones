@@ -69,6 +69,7 @@ jobs:
               identitysubnetprefix=${{ env.identitysubnetprefix }}
               securityvnetprefix=${{ env.securityvnetprefix }}
               securitysubnetprefix=${{ env.securitysubnetprefix }}
+
               az deployment mg create \
                   --name "$entlzprefix-connectivity-$location" \
                   --management-group-id $entlzprefix \
@@ -87,12 +88,9 @@ jobs:
                       fwtype=$fwtype \
                       fwsubnetprefix=$fwsubnetprefix \
                       bastionsubnetprefix=$bastionsubnetprefix \
-                      managementvnetname=$managementvnetname \
                       managementvnetprefix=$managementvnetprefix \
                       managementsubnetprefix=$managementsubnetprefix \
-                      identityvnetname=$identityvnetname \
                       identityvnetprefix=$identityvnetprefix \
                       identitysubnetprefix=$identitysubnetprefix \
-                      securityvnetname=$securityvnetname \
                       securityvnetprefix=$securityvnetprefix \
                       securitysubnetprefix=$securitysubnetprefix
