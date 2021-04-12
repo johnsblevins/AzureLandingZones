@@ -52,52 +52,47 @@ jobs:
             azcliversion: 2.21.0
             inlineScript: |
               entlzprefix=${{ env.entlzprefix }}
-#              location=${{ env.location }}
-#              connectivitysubid=${{ env.connectivitysubid }}
-#              identitysubid=${{ env.identitysubid }}
-#              securitysubid=${{ env.securitysubid }}
-#              managementsubid=${{ env.managementsubid }}
-#              hubvnetprefix=${{ env.hubvnetprefix }}
-#              gwtype=${{ env.gwtype }}
-#              gwsubnetprefix=${{ env.gwsubnetprefix }}
-#              fwtype=${{ env.fwtype }}
-#              fwsubnetprefix=${{ env.fwsubnetprefix }}
-#              bastionsubnetprefix=${{ env.bastionsubnetprefix }}
-#              managementvnetname=${{ env.managementvnetname }}
-#              managementvnetprefix=${{ env.managementvnetprefix }}
-#              managementsubnetprefix=${{ env.managementsubnetprefix }}
-#              identityvnetname=${{ env.identityvnetname }}
-#              identityvnetprefix=${{ env.identityvnetprefix }}
-#              identitysubnetprefix=${{ env.identitysubnetprefix }}
-#              securityvnetname=${{ env.securityvnetname }}
-#              securityvnetprefix=${{ env.securityvnetprefix }}
-#              securitysubnetprefix=${{ env.securitysubnetprefix }}
-
-#              az deployment mg create \
-#                  --name "$entlzprefix-connectivity-$location" \
-#                  --management-group-id $entlzprefix \
-#                  --location "$location" \
-#                  --template-file "templates/entlz/platform-connectivity-vnethubspoke.bicep" \
-#                  --parameters \
-#                      entlzprefix=$entlzprefix \
-#                      location=$location \
-#                      connectivitysubid=$connectivitysubid \
-#                      identitysubid=$identitysubid \
-#                      securitysubid=$securitysubid \
-#                      managementsubid=$managementsubid \
-#                      hubvnetprefix=$hubvnetprefix \
-#                      gwtype=$gwtype \
-#                      gwsubnetprefix=$gwsubnetprefix \
-#                      fwtype=$fwtype \
-#                      fwsubnetprefix=$fwsubnetprefix \
-#                      bastionsubnetprefix=$bastionsubnetprefix \
-#                      managementvnetname=$managementvnetname \
-#                      managementvnetprefix=$managementvnetprefix \
-#                      managementsubnetprefix=$managementsubnetprefix \
-#                      identityvnetname=$identityvnetname \
-#                      identityvnetprefix=$identityvnetprefix \
-#                      identitysubnetprefix=$identitysubnetprefix \
-#                      securityvnetname=$securityvnetname \
-#                      securityvnetprefix=$securityvnetprefix \
-#                      securitysubnetprefix=$securitysubnetprefix \
-#                  --verbose
+              location=${{ env.location }}
+              connectivitysubid=${{ env.connectivitysubid }}
+              identitysubid=${{ env.identitysubid }}
+              securitysubid=${{ env.securitysubid }}
+              managementsubid=${{ env.managementsubid }}
+              hubvnetprefix=${{ env.hubvnetprefix }}
+              gwtype=${{ env.gwtype }}
+              gwsubnetprefix=${{ env.gwsubnetprefix }}
+              fwtype=${{ env.fwtype }}
+              fwsubnetprefix=${{ env.fwsubnetprefix }}
+              bastionsubnetprefix=${{ env.bastionsubnetprefix }}
+              managementvnetprefix=${{ env.managementvnetprefix }}
+              managementsubnetprefix=${{ env.managementsubnetprefix }}
+              identityvnetprefix=${{ env.identityvnetprefix }}
+              identitysubnetprefix=${{ env.identitysubnetprefix }}
+              securityvnetprefix=${{ env.securityvnetprefix }}
+              securitysubnetprefix=${{ env.securitysubnetprefix }}
+              az deployment mg create \
+                  --name "$entlzprefix-connectivity-$location" \
+                  --management-group-id $entlzprefix \
+                  --location "$location" \
+                  --template-file "templates/entlz/platform-connectivity-vnethubspoke.bicep" \
+                  --parameters \
+                      entlzprefix=$entlzprefix \
+                      location=$location \
+                      connectivitysubid=$connectivitysubid \
+                      identitysubid=$identitysubid \
+                      securitysubid=$securitysubid \
+                      managementsubid=$managementsubid \
+                      hubvnetprefix=$hubvnetprefix \
+                      gwtype=$gwtype \
+                      gwsubnetprefix=$gwsubnetprefix \
+                      fwtype=$fwtype \
+                      fwsubnetprefix=$fwsubnetprefix \
+                      bastionsubnetprefix=$bastionsubnetprefix \
+                      managementvnetname=$managementvnetname \
+                      managementvnetprefix=$managementvnetprefix \
+                      managementsubnetprefix=$managementsubnetprefix \
+                      identityvnetname=$identityvnetname \
+                      identityvnetprefix=$identityvnetprefix \
+                      identitysubnetprefix=$identitysubnetprefix \
+                      securityvnetname=$securityvnetname \
+                      securityvnetprefix=$securityvnetprefix \
+                      securitysubnetprefix=$securitysubnetprefix
