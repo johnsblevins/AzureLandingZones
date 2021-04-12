@@ -4,7 +4,7 @@ The Enterprise Landing Zone architecture is modular by design and allows organiz
 
 The following diagram, available in the starter [Visio](visio/entlz.vsdx), depicts a fully deployed architecture using a VNET hub-and-spoke with ExpressRoute connectivity model:
 
-![CAF Enterprise Scale](media/cafentscale.png)
+![CAF Enterprise Scale](media/entlz-overview.png)
 
 The items highlighted in green are deployed using the automation in this solution.  This enables the enterprise scaffolding under which User Landing Zones are then deployed and managed.  The Subscription is the scale unit for deploying new user landing zones and included in this solution is automation to create new subscriptions and move them to the correct management group.  The following classes of User Landing Zones are available, with no required customization, within this framework:
 
