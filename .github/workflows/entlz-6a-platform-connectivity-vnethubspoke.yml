@@ -99,4 +99,5 @@ jobs:
                       identitysubnetprefix=$identitysubnetprefix \
                       securityvnetname=$securityvnetname \
                       securityvnetprefix=$securityvnetprefix \
-                      securitysubnetprefix=$securitysubnetprefix
+                      securitysubnetprefix=$securitysubnetprefix \
+                  --verbose
