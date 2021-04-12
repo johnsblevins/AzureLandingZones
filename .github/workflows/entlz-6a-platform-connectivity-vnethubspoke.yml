@@ -70,27 +70,27 @@ jobs:
               securityvnetprefix=${{ env.securityvnetprefix }}
               securitysubnetprefix=${{ env.securitysubnetprefix }}
 
-#              az deployment mg create \
-#                  --name "$entlzprefix-connectivity-$location" \
-#                  --management-group-id $entlzprefix \
-#                  --location "$location" \
-#                  --template-file "templates/entlz/platform-connectivity-vnethubspoke.bicep" \
-#                  --parameters \
-#                      entlzprefix=$entlzprefix \
-#                      location=$location \
-#                      connectivitysubid=$connectivitysubid \
-#                      identitysubid=$identitysubid \
-#                      securitysubid=$securitysubid \
-#                      managementsubid=$managementsubid \
-#                      hubvnetprefix=$hubvnetprefix \
-#                      gwtype=$gwtype \
-#                      gwsubnetprefix=$gwsubnetprefix \
-#                      fwtype=$fwtype \
-#                      fwsubnetprefix=$fwsubnetprefix \
-#                      bastionsubnetprefix=$bastionsubnetprefix \
-#                      managementvnetprefix=$managementvnetprefix \
-#                      managementsubnetprefix=$managementsubnetprefix \
-#                      identityvnetprefix=$identityvnetprefix \
-#                      identitysubnetprefix=$identitysubnetprefix \
-#                      securityvnetprefix=$securityvnetprefix \
-#                      securitysubnetprefix=$securitysubnetprefix
+              az deployment mg create \
+                  --name "${entlzprefix}-connectivity-${location}" \
+                  --management-group-id $entlzprefix \
+                  --location $location \
+                  --template-file "templates/entlz/platform-connectivity-vnethubspoke.bicep" \
+                  --parameters \
+                      entlzprefix=$entlzprefix \
+                      location=$location \
+                      connectivitysubid=$connectivitysubid \
+                      identitysubid=$identitysubid \
+                      securitysubid=$securitysubid \
+                      managementsubid=$managementsubid \
+                      hubvnetprefix=$hubvnetprefix \
+                      gwtype=$gwtype \
+                      gwsubnetprefix=$gwsubnetprefix \
+                      fwtype=$fwtype \
+                      fwsubnetprefix=$fwsubnetprefix \
+                      bastionsubnetprefix=$bastionsubnetprefix \
+                      managementvnetprefix=$managementvnetprefix \
+                      managementsubnetprefix=$managementsubnetprefix \
+                      identityvnetprefix=$identityvnetprefix \
+                      identitysubnetprefix=$identitysubnetprefix \
+                      securityvnetprefix=$securityvnetprefix \
+                      securitysubnetprefix=$securitysubnetprefix
