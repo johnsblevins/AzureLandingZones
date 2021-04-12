@@ -46,7 +46,7 @@ jobs:
             environment: ${{ env.environment }}
             enable-AzPSSession: false
         
-        - name: Deploy Policy Definitions
+        - name: Deploy Connectivity Components
           uses: azure/CLI@v1
           with:
             azcliversion: 2.21.0
@@ -54,7 +54,7 @@ jobs:
               # Deploy Connectivity Components to Platform Management Group
                 az deployment mg create \
                   --name "${{ env.entlzprefix }}-connectivity-${{ env.location }}" \
-                  --management-group-id ${{ env.location }} \
+                  --management-group-id ${{ env.entlzprefix }} \
                   --location "${{ env.location }}" \
                   --template-file "templates/entlz/platform-connectivity-vnethubspoke.bicep" \
                   --parameters \
