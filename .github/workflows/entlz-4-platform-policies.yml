@@ -160,25 +160,6 @@ jobs:
                 done
                 sleep 120
 
-        - name: Trigger Policy Evaluation Scan on Platform Subs 
-          uses: azure/CLI@v1
-          with:
-            azcliversion: 2.21.0
-            inlineScript: |
-              az account set -s ${{ env.managementsubid }}
-              az policy state trigger-scan --no-wait
-
-              az account set -s ${{ env.identitysubid }}
-              az policy state trigger-scan --no-wait
-
-              az account set -s ${{ env.connectivitysubid }}
-              az policy state trigger-scan --no-wait
-
-              az account set -s ${{ env.securitysubid }}
-              az policy state trigger-scan --no-wait
-
-              sleep 1200
-              
         - name: Remediate Policies on Platform Subs 
           uses: azure/CLI@v1
           with:
