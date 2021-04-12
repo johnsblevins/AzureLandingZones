@@ -37,7 +37,7 @@ jobs:
                 # Deploy Management Groups using template
 
                 az deployment tenant create \
-                  --name "entlz-managementgroups-${{ env.location }}" \
+                  --name "${{ env.entlzprefix }}-managementgroups-${{ env.location }}" \
                   --location ${{ env.location }} \
                   --template-file templates/entlz/platform-mgs.bicep \
                   --parameters entlzprefix=${{ env.entlzprefix }}

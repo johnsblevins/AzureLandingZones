@@ -40,7 +40,7 @@ jobs:
             inlineScript: |
               # Deploy Management Components to Management Subscription
                 az deployment sub create \
-                  --name "entlz-management-${{ env.location }}" \
+                  --name "${{ env.entlzprefix }}-management-${{ env.location }}" \
                   --subscription "${{ env.managementsubid }}" \
                   --location "${{ env.location }}" \
                   --template-file "templates/entlz/platform-management.bicep" \

@@ -1,6 +1,6 @@
 # Deploy Enterprise Landing Zone
 
-The Enterprise Landing Zone architecture is modular by design and allows organizations to start with a foundational landing zone that provides the required governance, security and connectivity needed to support their application portfolios at scale in cloud.  A policy-based governance model is enforced that can be managed at scale through Policy-as-Code and additional compliance frameworks can be layered on top of the base deployment where needed to meet security requirements.  The reference architecture allows for the deployment of either a VNET or VWAN based hub-and-spoke transit network model as well as support for enabling either ExpressRoute or VPN hybrid connetivity.  The architecture provides a scale mechanism for enabling mission owner workloads and can scale to support multi-tenant, multi-region and multi-sovereign deployments.
+The Enterprise Landing Zone architecture is modular by design and allows organizations to start with a foundational landing zone that provides the required governance, security and connectivity needed to support their application portfolios at scale in cloud.  A policy-based governance model is enforced that can be managed through Policy-as-Code and additional compliance frameworks can be layered on top of the base deployment where needed to meet security requirements.  The reference architecture allows for the deployment of either a VNET or VWAN based hub-and-spoke transit network model as well as support for enabling either ExpressRoute or VPN hybrid connetivity.  The architecture provides a scale mechanism for enabling mission owner workloads and can support multi-tenant, multi-region and multi-sovereign deployments.
 
 The following diagram, available in the starter [Visio](visio/entlz.vsdx), depicts a fully deployed architecture using a VNET hub-and-spoke with ExpressRoute connectivity model:
 
@@ -24,7 +24,7 @@ The reference implementation for this solution is based on the CAF enterprise sc
 
 # Deploy the Enterprise Landing Zone
 ## Deployment Order
-The Enterprise Landing Zone is deployed through a series of build/release pipline scripts packaged as GitHub actions.  A prerequisite script is used to create a service principal with the required roles in Azure.  This service prinicipal is then used by GitHub Actions to connect to Azure and deploy the pipelines.  After the initial deployment the pipelines can be used to manage the environment using Infrastructure-as-Code.  The deployment order is as follows:
+The Enterprise Landing Zone is deployed through a series of build/release pipline scripts packaged as GitHub actions (GitLab scripts included as well).  A prerequisite script is used to create a service principal with the required roles in Azure to perform the pipeline deployments.  This service prinicipal is then used by GitHub Actions (or GitLab Runners) to connect to Azure and deploy the pipelines.  After the initial deployment the pipelines can be used to manage the environment using Infrastructure-as-Code.  The deployment order is as follows:
 
 1. Deploy Prerequisites (script) - [templates/entlz/scripts/entlz_prereqs.sh](scripts/entlz_prereqs.sh)
 2. Deploy Management Group Hierarchy (pipeline) - [.github/workflows/entlz-1-platform-mgs.yml](../../.github/workflows/entlz-1-platform-mgs.yml)
@@ -32,6 +32,9 @@ The Enterprise Landing Zone is deployed through a series of build/release piplin
 4. Deploy Platform Management Components (pipeline) - [.github/workflows/entlz-3-platform-management.yml](../../.github/workflows/entlz-3-platform-management.yml)
 5. Deploy Platform Policies (pipeline) - [.github/workflows/entlz-4-platform-policies.yml](../../.github/workflows/entlz-4-platform-policies.yml)
 6. Deploy Platform Connectivity Components (pipeline) - [.github/workflows/entlz-5-platform-connectivity-vnethubspoke.yml](../../.github/workflows/entlz-5-platform-connectivity-vnethubspoke.yml)
+7. Deploy Platform Compliance Components (pipeline) 
+
+Once deployed these same pipeline templates can be used to manage the Enterprise Landing Zone going forward using IaC and CICD processes.
 
 ## Prerequistes
 1. Login to the Azure Portal with an account that has the "Global Administrator" role in Azure Active Directory.  In the Azure Active Directory blade select properties and then select "Yes" for the option to enable "Access management for Azure resources" and click Save.  This grants the "User Access Administrator" role to the logged in user at the tenant root (/) scope.
@@ -277,7 +280,8 @@ The Policy-as-Code pipeline consists of four steps:
 
     Script loops through the initiative folder structure and looks for all files matching the "assign.*.json" pattern.  Each assignement is deployed to the scope provided in the assignment JSON file.  Assignment scopes are generalized in these files by using the pattern %%entlzprefix%%  to refer to the enterprise scale root management group.  The script finds and replaces all instances of this pattern with the value provided in entlzprefix environment variable when making assignments.
 
-The default set of policy assignments on the management group hierarchy is as follows:
+The following graphic shows the default set of policy assignments within the management group hierarchy:
+
     Tenant (/)
         Tenant Root Group
             entlz (Root)
@@ -344,11 +348,12 @@ The starter pipeline is included at [.github/workflows/entlz-5-platform-rbac.yml
         Description: Location to store deployment metadata
         Default Value: usgovvirginia
 
+The following graphic shows the default set of rbac assignments within the management group hierarchy:
 
     Tenant (/)
+        **Group: azure-platform-readers | Role: Reader**
         Tenant Root Group
-            **Group: azure-platform-readers | Role: Reader**
-            entlz (Root)
+            entlz (Enterprise Landing Zone Root)
                 **Group: ${entlzprefix}-platform-admins | Role: Owner**
                 **Group: ${entlzprefix}-security-admins | Role: Security Admin**
                 **Group: ${entlzprefix}-network-admins | Role: Network Contributor**

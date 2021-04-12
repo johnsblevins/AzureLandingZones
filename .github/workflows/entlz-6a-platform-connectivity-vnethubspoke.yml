@@ -1,31 +1,48 @@
 name: entlz-6a-platform-connectivity-vnethubspoke
 
+env:
+  entlzprefix: elz1  
+  environment: azureusgovernment
+  location: usgovvirginia  
+  managementsubid: 07526f72-6689-42be-945f-bb6ad0214b71
+  identitysubid: 787e871a-84ba-43be-86bf-86bd1e408a4a
+  connectivitysubid: b30166b8-dd1b-4fa2-9ad7-057614257b06
+  securitysubid: ac95a806-c9d3-49e7-83ee-7f82e88c2bd3
+  hubvnetprefix: 10.0.0.0/23
+  gwtype: = ''
+  gwsubnetprefix: 10.0.0.64/27
+  fwtype: ''
+  fwsubnetprefix: 10.0.0.0/26
+  bastionsubnetprefix: 10.0.0.96/27
+  managementvnetprefix: 10.0.2.0/23
+  managementsubnetprefix: 10.0.2.0/26
+  identityvnetprefix: 10.0.4.0/23
+  identitysubnetprefix: 10.0.4.0/26
+  securityvnetprefix: 10.0.6.0/23
+  securitysubnetprefix: 10.0.6.0/26
+
 # Controls when the action will run. 
 on:
-  # Allows you to run this workflow manually from the Actions tab
-  push:
-    branches:
-      - master
-    paths:
-      - 'templates/entlz/vnethubspoke.bicep'
-      - '.github/workflows/entlz-5-platform-connectivity-vnethubspoke.yml'
+    # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+  
+#  push:
+#    branches:
+#      - master
+#    paths:
+#      - 'templates/entlz/vnethubspoke.bicep'
+#      - '.github/workflows/entlz-5-platform-connectivity-vnethubspoke.yml'
 
 jobs:
     build-and-deploy:
         runs-on: ubuntu-latest
-        env:
-          entlzprefix: jblz4
-          environment: azureusgovernment
-          location: usgovvirginia
-          policydefinitionmg: jblz4
-          managementsubid: 07526f72-6689-42be-945f-bb6ad0214b71
           
         steps:
         - uses: actions/checkout@master        
         - name: Log in with Azure
           uses: azure/login@v1
           with:
-            creds: ${{ secrets.JOBLEVINMAG_AZURE_CREDS }}
+            creds: ${{ secrets.AZGOV_CREDS }}
             environment: ${{ env.environment }}
             enable-AzPSSession: false
         
@@ -34,4 +51,31 @@ jobs:
           with:
             azcliversion: 2.21.0
             inlineScript: |
-              echo blah
+              # Deploy Connectivity Components to Platform Management Group
+                az deployment mg create \
+                  --name "${{ env.entlzprefix }}-connectivity-${{ env.location }}" \
+                  --management-group-id ${{ env.location }} \
+                  --location "${{ env.location }}" \
+                  --template-file "templates/entlz/platform-connectivity-vnethubspoke.bicep" \
+                  --parameters \
+                      entlzprefix=${{ env.entlzprefix }} \
+                      location=${{ env.location }} \
+                      connectivitysubid=${{ env.connectivitysubid }} \
+                      identitysubid=${{ env.identitysubid }} \
+                      securitysubid=${{ env.securitysubid }} \
+                      managementsubid=${{ env.managementsubid }} \
+                      hubvnetprefix=${{ env.hubvnetprefix }} \
+                      gwtype=${{ env.gwtype }} \
+                      gwsubnetprefix=${{ env.gwsubnetprefix }} \
+                      fwtype=${{ env.fwtype }} \
+                      fwsubnetprefix=${{ env.fwsubnetprefix }} \
+                      bastionsubnetprefix=${{ env.bastionsubnetprefix }} \
+                      managementvnetname=${{ env.managementvnetname }} \
+                      managementvnetprefix=${{ env.managementvnetprefix }} \
+                      managementsubnetprefix=${{ env.managementsubnetprefix }} \
+                      identityvnetname=${{ env.identityvnetname }} \
+                      identityvnetprefix=${{ env.identityvnetprefix }} \
+                      identitysubnetprefix=${{ env.identitysubnetprefix }} \
+                      securityvnetname=${{ env.securityvnetname }} \
+                      securityvnetprefix=${{ env.securityvnetprefix }} \
+                      securitysubnetprefix=${{ env.securitysubnetprefix }}
