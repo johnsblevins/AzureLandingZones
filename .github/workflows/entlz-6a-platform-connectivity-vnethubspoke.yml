@@ -73,31 +73,31 @@ jobs:
               securityvnetprefix=${{ env.securityvnetprefix }}
               securitysubnetprefix=${{ env.securitysubnetprefix }}
 
-              az deployment mg create \
-                  --name "$entlzprefix-connectivity-$location" \
-                  --management-group-id $entlzprefix \
-                  --location "$location" \
-                  --template-file "templates/entlz/platform-connectivity-vnethubspoke.bicep" \
-                  --parameters \
-                      entlzprefix=$entlzprefix \
-                      location=$location \
-                      connectivitysubid=$connectivitysubid \
-                      identitysubid=$identitysubid \
-                      securitysubid=$securitysubid \
-                      managementsubid=$managementsubid \
-                      hubvnetprefix=$hubvnetprefix \
-                      gwtype=$gwtype \
-                      gwsubnetprefix=$gwsubnetprefix \
-                      fwtype=$fwtype \
-                      fwsubnetprefix=$fwsubnetprefix \
-                      bastionsubnetprefix=$bastionsubnetprefix \
-                      managementvnetname=$managementvnetname \
-                      managementvnetprefix=$managementvnetprefix \
-                      managementsubnetprefix=$managementsubnetprefix \
-                      identityvnetname=$identityvnetname \
-                      identityvnetprefix=$identityvnetprefix \
-                      identitysubnetprefix=$identitysubnetprefix \
-                      securityvnetname=$securityvnetname \
-                      securityvnetprefix=$securityvnetprefix \
-                      securitysubnetprefix=$securitysubnetprefix \
-                  --verbose
+#              az deployment mg create \
+#                  --name "$entlzprefix-connectivity-$location" \
+#                  --management-group-id $entlzprefix \
+#                  --location "$location" \
+#                  --template-file "templates/entlz/platform-connectivity-vnethubspoke.bicep" \
+#                  --parameters \
+#                      entlzprefix=$entlzprefix \
+#                      location=$location \
+#                      connectivitysubid=$connectivitysubid \
+#                      identitysubid=$identitysubid \
+#                      securitysubid=$securitysubid \
+#                      managementsubid=$managementsubid \
+#                      hubvnetprefix=$hubvnetprefix \
+#                      gwtype=$gwtype \
+#                      gwsubnetprefix=$gwsubnetprefix \
+#                      fwtype=$fwtype \
+#                      fwsubnetprefix=$fwsubnetprefix \
+#                      bastionsubnetprefix=$bastionsubnetprefix \
+#                      managementvnetname=$managementvnetname \
+#                      managementvnetprefix=$managementvnetprefix \
+#                      managementsubnetprefix=$managementsubnetprefix \
+#                      identityvnetname=$identityvnetname \
+#                      identityvnetprefix=$identityvnetprefix \
+#                      identitysubnetprefix=$identitysubnetprefix \
+#                      securityvnetname=$securityvnetname \
+#                      securityvnetprefix=$securityvnetprefix \
+#                      securitysubnetprefix=$securitysubnetprefix \
+#                  --verbose
