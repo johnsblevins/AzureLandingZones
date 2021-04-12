@@ -10,13 +10,10 @@ param gwsubnetprefix string = ''
 param fwtype string = ''
 param fwsubnetprefix string = ''
 param bastionsubnetprefix string = ''
-param managementvnetname string
 param managementvnetprefix string
 param managementsubnetprefix string
-param identityvnetname string
 param identityvnetprefix string
 param identitysubnetprefix string
-param securityvnetname string
 param securityvnetprefix string
 param securitysubnetprefix string
 
