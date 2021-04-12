@@ -4,15 +4,11 @@ param connectivitysubid string
 param identitysubid string
 param securitysubid string
 param managementsubid string
-param hubvnetname string
 param hubvnetprefix string
-param gwname string = ''
 param gwtype string = ''
 param gwsubnetprefix string = ''
-param fwname string = ''
 param fwtype string = ''
 param fwsubnetprefix string = ''
-param bastionname string = ''
 param bastionsubnetprefix string = ''
 param managementvnetname string
 param managementvnetprefix string
@@ -30,16 +26,16 @@ module connectivitysub 'platform-connectivity-vnethubspoke-modules/connectivity-
   name: 'connectivitysub'
   scope: subscription(connectivitysubid)
   params:{
-    bastionname: bastionname
+    bastionname: '${entlzprefix}-hub-bastion-${location}'
     bastionsubnetprefix: bastionsubnetprefix
     entlzprefix: entlzprefix
-    fwname: fwname
+    fwname: '${entlzprefix}-hub-fw-${location}'
     fwsubnetprefix: fwsubnetprefix
     fwtype: fwtype
-    gwname: gwname
+    gwname: '${entlzprefix}-hub-gw-${location}'
     gwsubnetprefix: gwsubnetprefix
     gwtype: gwtype
-    hubvnetname: hubvnetname
+    hubvnetname: '${entlzprefix}-hub-vnet-${location}'
     hubvnetprefix: hubvnetprefix
   }
 }
@@ -50,29 +46,29 @@ module managementsub 'platform-connectivity-vnethubspoke-modules/management-sub.
   params:{
     entlzprefix: entlzprefix
     managementsubnetprefix: managementsubnetprefix
-    managementvnetname: managementvnetname
+    managementvnetname: '${entlzprefix}-management-vnet-${location}'
     managementvnetprefix: managementvnetprefix
   }
 }
 
 module identitysub 'platform-connectivity-vnethubspoke-modules/identity-sub.bicep' ={
-  name: 'managementsub'
-  scope: subscription(managementsubid)
+  name: 'identitysub'
+  scope: subscription(identitysubid)
   params:{
     entlzprefix: entlzprefix
     identitysubnetprefix: identitysubnetprefix
-    identityvnetname: identityvnetname
+    identityvnetname: '${entlzprefix}-identity-vnet-${location}'
     identityvnetprefix: identityvnetprefix
   }
 }
 
 module securitysub 'platform-connectivity-vnethubspoke-modules/security-sub.bicep' ={
-  name: 'managementsub'
-  scope: subscription(managementsubid)
+  name: 'securitysub'
+  scope: subscription(securitysubid)
   params:{
     entlzprefix: entlzprefix
     securitysubnetprefix: securitysubnetprefix
-    securityvnetname: securityvnetname
+    securityvnetname: '${entlzprefix}-security-vnet-${location}'
     securityvnetprefix: securityvnetprefix
   }
 }

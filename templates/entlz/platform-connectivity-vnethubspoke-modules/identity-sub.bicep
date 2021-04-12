@@ -7,7 +7,7 @@ targetScope='subscription'
 
 var location = deployment().location
 
-resource connectivityrg 'Microsoft.Resources/resourceGroups@2021-01-01'={
+resource connectivityrg 'Microsoft.Resources/resourceGroups@2020-10-01'={
   location: location
   name: '${entlzprefix}-identity-connectivity-${location}'
 }
