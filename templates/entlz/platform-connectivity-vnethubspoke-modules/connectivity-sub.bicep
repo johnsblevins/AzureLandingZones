@@ -1,4 +1,5 @@
 param entlzprefix string
+param environment string
 param hubvnetname string
 param hubvnetprefix string
 param gwname string
@@ -7,6 +8,7 @@ param gwsubnetprefix string
 param fwname string
 param fwtype string
 param fwsubnetprefix string
+param fwmanagementsubnetprefix string
 param bastionname string
 param bastionsubnetprefix string
 
@@ -33,5 +35,8 @@ module hubvnet 'modules/hubvnet.bicep' = {
     bastionsubnetprefix: bastionsubnetprefix
     fwname: fwname
     fwtype: fwtype
+    environment: environment
+    fwmanagementsubnetprefix: fwmanagementsubnetprefix
+    gwtype: gwtype
   }
 }

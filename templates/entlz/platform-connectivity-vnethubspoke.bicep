@@ -19,7 +19,7 @@ param securitysubnetprefix string
 
 targetScope='managementGroup'
 
-module connectivitysub 'platform-connectivity-vnethubspoke-modules/connectivity-sub.bicep'={
+module connectivitysub 'platform-connectivity-vnethubspoke-modules/connectivity-sub.bicep' ={
   name: 'connectivitysub'
   scope: subscription(connectivitysubid)
   params:{
