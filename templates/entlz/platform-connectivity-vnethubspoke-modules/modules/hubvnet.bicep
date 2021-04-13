@@ -187,7 +187,7 @@ resource fw 'Microsoft.Network/azureFirewalls@2020-11-01'={
             id: fwpip.id
           }
           subnet: {
-            id: fwmanagementsubnet.id
+            id: fwsubnet.id
           }
         }
       }
@@ -199,7 +199,7 @@ resource fw 'Microsoft.Network/azureFirewalls@2020-11-01'={
           id: fwmanagementpip.id
         }
         subnet:{
-          id: fwsubnet.id
+          id: fwmanagementsubnet.id
         }
       }
     }
