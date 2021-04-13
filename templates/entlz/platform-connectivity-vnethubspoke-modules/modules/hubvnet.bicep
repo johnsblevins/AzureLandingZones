@@ -171,6 +171,7 @@ resource fw 'Microsoft.Network/azureFirewalls@2020-11-01'={
   properties:{
     ipConfigurations: [
       {
+        name: '${fwname}-ipconfiguration'
         properties:{
           publicIPAddress: {
             id: fwpip.id
@@ -182,6 +183,7 @@ resource fw 'Microsoft.Network/azureFirewalls@2020-11-01'={
       }
     ]
     managementIpConfiguration: {
+      name: '${fwname}-managementipconfiguration'
       properties:{
         publicIPAddress: {
           id: fwmanagementpip.id
