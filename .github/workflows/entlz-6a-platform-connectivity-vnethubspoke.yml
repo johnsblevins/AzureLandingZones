@@ -99,5 +99,5 @@ jobs:
                       identitysubnetprefix=$identitysubnetprefix \
                       securityvnetprefix=$securityvnetprefix \
                       securitysubnetprefix=$securitysubnetprefix \
-                      environment=$environment
+                      environment=$environment \
                       fwmanagementsubnetprefix=$fwmanagementsubnetprefix

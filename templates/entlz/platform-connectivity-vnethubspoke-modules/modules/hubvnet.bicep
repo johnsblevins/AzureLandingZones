@@ -30,6 +30,23 @@ resource hubvnet 'Microsoft.Network/virtualNetworks@2020-08-01'= {
   }
 }
 
+resource fwmanagementrt 'Microsoft.Network/routeTables@2020-11-01' = {
+  location: location
+  name: fwmanagementrtname
+  properties:{
+    disableBgpRoutePropagation: true
+    routes:[
+      {
+        name: 'defaultroute'
+        properties: {
+          addressPrefix: '0.0.0.0/0'
+          nextHopType: 'VirtualNetworkGateway'          
+        }        
+      }
+    ]
+  }
+}
+
 resource fwrt 'Microsoft.Network/routeTables@2020-11-01' = {
   location: location
   name: fwrtname
@@ -54,22 +71,7 @@ resource fwrt 'Microsoft.Network/routeTables@2020-11-01' = {
   }
 }
 
-resource fwmanagementrt 'Microsoft.Network/routeTables@2020-11-01' = {
-  location: location
-  name: fwmanagementrtname
-  properties:{
-    disableBgpRoutePropagation: true
-    routes:[
-      {
-        name: 'defaultroute'
-        properties: {
-          addressPrefix: '0.0.0.0/0'
-          nextHopType: 'Internet'          
-        }        
-      }
-    ]
-  }
-}
+
 
 resource gwsubnet 'Microsoft.Network/virtualNetworks/subnets@2020-11-01' = if(!(empty(gwsubnetprefix))) {
   parent: hubvnet
@@ -82,12 +84,28 @@ resource gwsubnet 'Microsoft.Network/virtualNetworks/subnets@2020-11-01' = if(!(
   }
 }
 
+resource fwmanagementsubnet 'Microsoft.Network/virtualNetworks/subnets@2020-11-01' = if(!(empty(fwmanagementsubnetprefix))) {
+  parent: hubvnet
+  name: fwmanagementsubnetname
+  dependsOn: [
+    hubvnet
+    gwsubnet
+    fwmanagementrt
+  ]
+  properties:{
+    addressPrefix: fwmanagementsubnetprefix
+    routeTable: {
+      id: fwmanagementrt.id
+    }
+  }
+}
+
 resource fwsubnet 'Microsoft.Network/virtualNetworks/subnets@2020-11-01' = if(!(empty(fwsubnetprefix))) {
   parent: hubvnet
   name: fwsubnetname
   dependsOn: [
     hubvnet
-    gwsubnet
+    fwmanagementsubnet    
     fwrt
   ]
   properties:{
@@ -99,28 +117,14 @@ resource fwsubnet 'Microsoft.Network/virtualNetworks/subnets@2020-11-01' = if(!(
 
 }
 
-resource fwmanagementsubnet 'Microsoft.Network/virtualNetworks/subnets@2020-11-01' = if(!(empty(fwmanagementsubnetprefix))) {
-  parent: hubvnet
-  name: fwmanagementsubnetname
-  dependsOn: [
-    hubvnet
-    fwsubnet
-    fwmanagementrt
-  ]
-  properties:{
-    addressPrefix: fwmanagementsubnetprefix
-    routeTable: {
-      id: fwmanagementrt.id
-    }
-  }
-}
+
 
 resource bastionsubnet 'Microsoft.Network/virtualNetworks/subnets@2020-11-01' = if(!(empty(bastionsubnetprefix))) {
   parent: hubvnet
   name: bastionsubnetname
   dependsOn: [
     hubvnet
-    fwmanagementsubnet
+    fwsubnet
   ]
   properties:{
     addressPrefix: bastionsubnetprefix
