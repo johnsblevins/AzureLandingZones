@@ -1,4 +1,5 @@
 param entlzprefix string
+param environment string
 param location string
 param connectivitysubid string
 param identitysubid string
@@ -9,6 +10,7 @@ param gwtype string = ''
 param gwsubnetprefix string = ''
 param fwtype string = ''
 param fwsubnetprefix string = ''
+param fwmanagementsubnetprefix string = ''
 param bastionsubnetprefix string = ''
 param managementvnetprefix string
 param managementsubnetprefix string
@@ -34,6 +36,8 @@ module connectivitysub 'platform-connectivity-vnethubspoke-modules/connectivity-
     gwtype: gwtype
     hubvnetname: '${entlzprefix}-hub-vnet-${location}'
     hubvnetprefix: hubvnetprefix
+    environment: environment
+    fwmanagementsubnetprefix: fwmanagementsubnetprefix
   }
 }
 
