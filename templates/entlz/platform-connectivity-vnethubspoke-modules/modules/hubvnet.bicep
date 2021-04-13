@@ -40,6 +40,7 @@ resource fwsubnet 'Microsoft.Network/virtualNetworks/subnets@2020-11-01' = if(!(
   name: fwsubnetname
   dependsOn: [
     hubvnet
+    gwsubnet
   ]
   properties:{
     addressPrefix: fwsubnetprefix
@@ -51,6 +52,7 @@ resource bastionsubnet 'Microsoft.Network/virtualNetworks/subnets@2020-11-01' = 
   name: bastionsubnetname
   dependsOn: [
     hubvnet
+    fwsubnet
   ]
   properties:{
     addressPrefix: bastionsubnetprefix
