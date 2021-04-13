@@ -92,7 +92,9 @@ resource fwsubnet 'Microsoft.Network/virtualNetworks/subnets@2020-11-01' = if(!(
   ]
   properties:{
     addressPrefix: fwsubnetprefix
-    routeTable: fwrt
+    routeTable: {
+      id: fwrt.id
+    }
   }
 
 }
@@ -107,7 +109,9 @@ resource fwmanagementsubnet 'Microsoft.Network/virtualNetworks/subnets@2020-11-0
   ]
   properties:{
     addressPrefix: fwmanagementsubnetprefix
-    routeTable: fwmanagementrt
+    routeTable: {
+      id: fwmanagementrt.id
+    }
   }
 }
 
