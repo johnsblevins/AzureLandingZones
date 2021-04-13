@@ -137,6 +137,11 @@ resource fwpip 'Microsoft.Network/publicIPAddresses@2020-11-01'={
   sku: {
     name:'Standard'
   }
+  zones:[
+    '1'
+    '2'
+    '3'
+  ]
   properties:{
     publicIPAllocationMethod: 'Static'
     publicIPAddressVersion: 'IPv4'    
@@ -149,6 +154,11 @@ resource fwmanagementpip 'Microsoft.Network/publicIPAddresses@2020-11-01'={
   sku: {
     name:'Standard'
   }
+  zones:[
+    '1'
+    '2'
+    '3'
+  ]
   properties:{
     publicIPAllocationMethod: 'Static'
     publicIPAddressVersion: 'IPv4'    
