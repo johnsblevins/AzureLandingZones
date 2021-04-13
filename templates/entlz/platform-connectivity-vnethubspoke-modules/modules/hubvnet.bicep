@@ -172,7 +172,9 @@ resource fw 'Microsoft.Network/azureFirewalls@2020-11-01'={
     ipConfigurations: [
       {
         properties:{
-          publicIPAddress: fwpip
+          publicIPAddress: {
+            id: fwpip.id
+          }
           subnet: {
             id: '${hubvnet.id}/subnets/${fwsubnetname}'
           }
@@ -181,7 +183,9 @@ resource fw 'Microsoft.Network/azureFirewalls@2020-11-01'={
     ]
     managementIpConfiguration: {
       properties:{
-        publicIPAddress: fwmanagementpip
+        publicIPAddress: {
+          id: fwmanagementpip.id
+        }
         subnet:{
           id: '${hubvnet.id}/subnets/${fwmanagementsubnetname}'
         }
