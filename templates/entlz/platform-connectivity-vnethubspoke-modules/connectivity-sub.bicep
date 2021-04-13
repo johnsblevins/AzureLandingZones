@@ -31,5 +31,7 @@ module hubvnet 'modules/hubvnet.bicep' = {
     gwsubnetprefix: gwsubnetprefix
     fwsubnetprefix: fwsubnetprefix
     bastionsubnetprefix: bastionsubnetprefix
+    fwname: fwname
+    fwtype: fwtype
   }
 }
