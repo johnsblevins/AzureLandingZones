@@ -17,7 +17,6 @@ var fwmanagementsubnetname = 'AzureFirewallManagementSubnet'
 var fwmanagementrtname = '${hubvnetname}-fwmanagement-rt'
 var bastionsubnetname = 'AzureBastionSubnet'
 var fwnexthoptype = (gwtype=='Vpn')?'VirtualNetworkGateway':'VnetLocal'
-var azureipranges = (environment=='azureusgovernment')?'AzureGovernment':'AzureCloud'
 
 resource hubvnet 'Microsoft.Network/virtualNetworks@2020-08-01'= {
   name: hubvnetname
@@ -40,7 +39,7 @@ resource fwrt 'Microsoft.Network/routeTables@2020-11-01' = {
       {
         name: 'azureipranges'
         properties: {
-          addressPrefix: azureipranges
+          addressPrefix: 'AzureCloud'
           nextHopType: fwnexthoptype
         }        
       }
