@@ -40,14 +40,14 @@ resource fwrt 'Microsoft.Network/routeTables@2020-11-01' = {
         name: 'azureipranges'
         properties: {
           addressPrefix: 'AzureCloud'
-          nextHopType: fwnexthoptype
+          nextHopType: 'Internet'
         }        
       }
       {
         name: 'defaultroute'
         properties: {
           addressPrefix: '0.0.0.0/0'
-          nextHopType: 'VirtualNetworkGateway'     
+          nextHopType: fwnexthoptype     
         }        
       }
     ]
@@ -106,7 +106,7 @@ resource fwmanagementsubnet 'Microsoft.Network/virtualNetworks/subnets@2020-11-0
     fwmanagementrt
   ]
   properties:{
-    addressPrefix: fwsubnetprefix
+    addressPrefix: fwmanagementsubnetprefix
     routeTable: fwmanagementrt
   }
 }
