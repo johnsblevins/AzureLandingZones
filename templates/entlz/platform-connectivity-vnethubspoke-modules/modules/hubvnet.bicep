@@ -47,7 +47,7 @@ resource fwrt 'Microsoft.Network/routeTables@2020-11-01' = {
         name: 'defaultroute'
         properties: {
           addressPrefix: '0.0.0.0/0'
-          nextHopType: fwnexthoptype     
+          nextHopType: 'Internet'     
         }        
       }
     ]
