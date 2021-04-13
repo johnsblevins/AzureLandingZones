@@ -30,7 +30,7 @@ on:
     branches:
       - master
     paths:
-      - 'templates/entlz/platform-connectivity-vnethubspoke*'
+      - 'templates/entlz/platform-connectivity-vnethubspoke**'
       - '.github/workflows/entlz-6a-platform-connectivity-vnethubspoke.yml'
 
 jobs:
