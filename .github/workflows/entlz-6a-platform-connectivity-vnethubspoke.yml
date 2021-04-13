@@ -10,10 +10,12 @@ env:
   securitysubid: ac95a806-c9d3-49e7-83ee-7f82e88c2bd3
   hubvnetprefix: 10.0.0.0/23
   gwtype: none
-  gwsubnetprefix: 10.0.0.64/27
+  gwsubnetprefix: 
+#  gwsubnetprefix: 10.0.0.64/27
   fwtype: none
   fwsubnetprefix: 10.0.0.0/26
-  bastionsubnetprefix: 10.0.0.96/27
+  bastionsubnetprefix: 
+#  bastionsubnetprefix: 10.0.0.96/27
   managementvnetprefix: 10.0.2.0/23
   managementsubnetprefix: 10.0.2.0/26
   identityvnetprefix: 10.0.4.0/23
