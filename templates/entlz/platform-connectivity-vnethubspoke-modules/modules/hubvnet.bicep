@@ -155,7 +155,7 @@ resource fwmanagementpip 'Microsoft.Network/publicIPAddresses@2020-11-01'={
   }
 }
 
-/*
+
 resource fw 'Microsoft.Network/azureFirewalls@2020-11-01'={
   location: location
   name: fwname
@@ -194,5 +194,3 @@ resource fw 'Microsoft.Network/azureFirewalls@2020-11-01'={
     }
   }
 }
-
-*/
