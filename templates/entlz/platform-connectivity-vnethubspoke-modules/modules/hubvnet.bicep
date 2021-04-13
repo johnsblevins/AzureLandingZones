@@ -57,14 +57,14 @@ resource fwrt 'Microsoft.Network/routeTables@2020-11-01' = {
         name: 'azureipranges'
         properties: {
           addressPrefix: 'AzureCloud'
-          nextHopType: 'VirtualNetworkGateway'
+          nextHopType: 'Internet'
         }        
       }
       {
         name: 'defaultroute'
         properties: {
           addressPrefix: '0.0.0.0/0'
-          nextHopType: 'Internet'     
+          nextHopType: 'VirtualNetworkGateway'     
         }        
       }
     ]
