@@ -51,7 +51,7 @@ resource fwrt 'Microsoft.Network/routeTables@2020-11-01' = {
   location: location
   name: fwrtname
   properties:{
-    disableBgpRoutePropagation: true
+    disableBgpRoutePropagation: false
     routes:[
       {
         name: 'azureipranges'
