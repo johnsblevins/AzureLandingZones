@@ -5,12 +5,15 @@ var location = resourceGroup().location
 resource sa 'Microsoft.Storage/storageAccounts@2021-02-01' = {
   location: location
   name: saname
-  kind: 'Storage'
+  kind: 'StorageV2'
   sku: {
-    name: 'Premium_LRS'
+    name: 'Standard_ZRS'
     tier: 'Premium'
   }
+
   properties: {
+
     supportsHttpsTrafficOnly: true
+
   }
 }
