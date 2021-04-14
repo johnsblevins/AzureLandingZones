@@ -203,7 +203,7 @@ resource fw 'Microsoft.Network/azureFirewalls@2020-11-01'={
         }
       }
     }
-    threatIntelMode: 'Alert'    
+    threatIntelMode: 'Deny'    
     sku:{
       name:'AZFW_VNet'
       tier:'Standard'

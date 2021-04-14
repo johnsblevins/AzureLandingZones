@@ -22,3 +22,14 @@ module loga 'modules/loga.bicep'={
     loganame: '${entlzprefix}-loga-${location}${uniqueid}'
   }
 }
+
+module sa 'modules/sa.bicep' = {
+  name: 'sa'
+  dependsOn:[
+    managementrg
+  ]
+  scope: managementrg
+  params:{
+    saname: '${entlzprefix}sa${location}${uniqueid}'
+  }
+}
