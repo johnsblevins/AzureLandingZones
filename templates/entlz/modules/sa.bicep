@@ -7,7 +7,7 @@ resource sa 'Microsoft.Storage/storageAccounts@2021-02-01' = {
   name: saname
   kind: 'StorageV2'
   sku: {
-    name: 'Premium_ZRS'
+    name: 'Premium_LRS'
     tier: 'Premium'
   }
   properties: {
