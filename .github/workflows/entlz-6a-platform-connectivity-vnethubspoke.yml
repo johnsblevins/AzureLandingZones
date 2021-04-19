@@ -81,24 +81,24 @@ jobs:
                   --location $location \
                   --template-file "templates/entlz/platform-connectivity-vnethubspoke/platform-connectivity-vnethubspoke.bicep" \
                   --parameters \
-                    bastionsubnetprefix="$bastionsubnetprefix" \
-                    connectivitysubid="$connectivitysubid" \
-                    entlzprefix="$entlzprefix" \
-                    environment="$environment" \
-                    fwmanagementsubnetprefix="$fwmanagementsubnetprefix" \
-                    fwsubnetprefix="$fwsubnetprefix" \
-                    fwtype="$fwtype" \
-                    gwsubnetprefix="$gwsubnetprefix" \
-                    gwtype="$gwtype" \
-                    hubmanagementsubnetprefix="$hubmanagementsubnetprefix" \
-                    hubvnetprefix="$hubvnetprefix" \
-                    identitysubid="$identitysubid" \
-                    identitysubnetprefix="$identitysubnetprefix" \
-                    identityvnetprefix="$identityvnetprefix" \
-                    location="$location" \
-                    managementsubid="$managementsubid" \
-                    managementsubnetprefix="$managementsubnetprefix" \
-                    managementvnetprefix="$managementvnetprefix" \
-                    securitysubid="$securitysubid" \
-                    securitysubnetprefix="$securitysubnetprefix" \
-                    securityvnetprefix="$securityvnetprefix"
+                    bastionsubnetprefix="${bastionsubnetprefix}" \
+                    connectivitysubid="${connectivitysubid}" \
+                    entlzprefix="${entlzprefix}" \
+                    environment="${environment}" \
+                    fwmanagementsubnetprefix="${fwmanagementsubnetprefix}" \
+                    fwsubnetprefix="${fwsubnetprefix}" \
+                    fwtype="${fwtype}" \
+                    gwsubnetprefix="${gwsubnetprefix}" \
+                    gwtype="${gwtype}" \
+                    hubmanagementsubnetprefix="${hubmanagementsubnetprefix}" \
+                    hubvnetprefix="${hubvnetprefix}" \
+                    identitysubid="${identitysubid}" \
+                    identitysubnetprefix="${identitysubnetprefix}" \
+                    identityvnetprefix="${identityvnetprefix}" \
+                    location="${location}" \
+                    managementsubid="${managementsubid}" \
+                    managementsubnetprefix="${managementsubnetprefix}" \
+                    managementvnetprefix="${managementvnetprefix}" \
+                    securitysubid="${securitysubid}" \
+                    securitysubnetprefix="${securitysubnetprefix}" \
+                    securityvnetprefix="${securityvnetprefix}"
