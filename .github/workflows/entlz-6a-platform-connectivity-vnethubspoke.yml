@@ -74,6 +74,7 @@ jobs:
               securitysubnetprefix="${{ env.securitysubnetprefix }}"
               securityvnetprefix="${{ env.securityvnetprefix }}"
 
+              echo "${connectivitysubid}blahdeeblah"
               az deployment mg create \
                   --name "${entlzprefix}-connectivity-${location}" \
                   --management-group-id $entlzprefix \
