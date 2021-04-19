@@ -2,7 +2,8 @@ param entlzprefix string
 param environment string
 param hubvnetname string
 param hubvnetprefix string
-param gwname string
+param vpngwname string
+param ergwname string
 param gwtype string
 param gwsubnetprefix string
 param fwname string
@@ -55,7 +56,8 @@ module hubvnet 'hub.bicep' = {
     environment: environment
     fwmanagementsubnetprefix: fwmanagementsubnetprefix
     gwtype: gwtype
-    gwname: gwname
+    vpngwname: vpngwname
+    ergwname: ergwname
     identityvnetprefix: identityvnetprefix
     managementvnetprefix: managementvnetprefix
     securityvnetprefix: securityvnetprefix

@@ -4,7 +4,8 @@ param identityvnetprefix string
 param securityvnetprefix string
 param managementvnetprefix string
 param gwtype string
-param gwname string
+param vpngwname string
+param ergwname string
 param gwsubnetprefix string
 param fwsubnetprefix string
 param fwmanagementsubnetprefix string
@@ -282,9 +283,9 @@ resource fw 'Microsoft.Network/azureFirewalls@2020-11-01'= if( !(empty(fwsubnetp
   }
 }
 
-resource gwpip1 'Microsoft.Network/publicIPAddresses@2020-11-01'=  if( !(empty(gwsubnetprefix)) && !(empty(gwtype)) ){
+resource vpngwpip1 'Microsoft.Network/publicIPAddresses@2020-11-01'=  if( !(empty(gwsubnetprefix)) && (gwtype=='Vpn') ){
   location: location
-  name: '${gwname}-pip-1'
+  name: '${vpngwname}-pip-1'
   sku: {
     name:'Standard'
   }
@@ -299,9 +300,26 @@ resource gwpip1 'Microsoft.Network/publicIPAddresses@2020-11-01'=  if( !(empty(g
   }
 }
 
-resource gwpip2 'Microsoft.Network/publicIPAddresses@2020-11-01'= if( !(empty(gwsubnetprefix)) &&  (gwtype=='Vpn') ){
+resource vpngwpip2 'Microsoft.Network/publicIPAddresses@2020-11-01'= if( !(empty(gwsubnetprefix)) &&  (gwtype=='Vpn') ){
   location: location
-  name: '${gwname}-pip-2'
+  name: '${vpngwname}-pip-2'
+  sku: {
+    name:'Standard'
+  }
+  zones:[
+    '1'
+    '2'
+    '3'
+  ]
+  properties:{
+    publicIPAllocationMethod: 'Static'
+    publicIPAddressVersion: 'IPv4'    
+  }
+}
+
+resource ergwpip 'Microsoft.Network/publicIPAddresses@2020-11-01'=  if( !(empty(gwsubnetprefix)) && (gwtype=='ExpressRoute') ){
+  location: location
+  name: '${ergwname}-pip'
   sku: {
     name:'Standard'
   }
@@ -318,11 +336,11 @@ resource gwpip2 'Microsoft.Network/publicIPAddresses@2020-11-01'= if( !(empty(gw
 
 resource vpngw 'Microsoft.Network/virtualNetworkGateways@2020-11-01' = if( !(empty(gwsubnetprefix)) &&  (gwtype=='Vpn') ) {
   location: location
-  name: gwname
+  name: vpngwname
   dependsOn:[
     gwsubnet
-    gwpip1
-    gwpip2
+    vpngwpip1
+    vpngwpip2
   ]
   properties:{
     gatewayType: gwtype
@@ -332,22 +350,22 @@ resource vpngw 'Microsoft.Network/virtualNetworkGateways@2020-11-01' = if( !(emp
     activeActive: true
     ipConfigurations:[
       {
-        name: '${gwname}-ipconfig1'
+        name: '${vpngwname}-ipconfig1'
         properties:{
           subnet: gwsubnet
           privateIPAllocationMethod:'Static'
           publicIPAddress: {
-            id: gwpip1.id
+            id: vpngwpip1.id
           }          
         }
       }
       {
-        name: '${gwname}-ipconfig2'
+        name: '${vpngwname}-ipconfig2'
         properties:{
           subnet: gwsubnet
           privateIPAllocationMethod:'Static'
           publicIPAddress: {
-            id: gwpip2.id
+            id: vpngwpip2.id
           }          
         }
       }
@@ -358,10 +376,10 @@ resource vpngw 'Microsoft.Network/virtualNetworkGateways@2020-11-01' = if( !(emp
 
 resource ergw 'Microsoft.Network/virtualNetworkGateways@2020-11-01' = if( !(empty(gwsubnetprefix)) && ( gwtype=='ExpressRoute') ) {
   location: location
-  name: gwname
+  name: ergwname
   dependsOn:[
     gwsubnet
-    gwpip1
+    ergwpip
   ]
   properties:{
     gatewayType: gwtype
@@ -371,12 +389,12 @@ resource ergw 'Microsoft.Network/virtualNetworkGateways@2020-11-01' = if( !(empt
     activeActive: true
     ipConfigurations:[
       {
-        name: '${gwname}-ipconfig1'
+        name: '${ergwname}-ipconfig1'
         properties:{
           subnet: gwsubnet
           privateIPAllocationMethod:'Static'
           publicIPAddress: {
-            id: gwpip1.id
+            id: ergwpip.id
           }          
         }
       }

@@ -27,7 +27,8 @@ var fwname = '${entlzprefix}-hub-fw-${location}'
 var managementvnetname = '${entlzprefix}-management-vnet-${location}'
 var identityvnetname = '${entlzprefix}-identity-vnet-${location}'
 var securityvnetname = '${entlzprefix}-security-vnet-${location}'
-var gwname = '${entlzprefix}-hub-gw-${location}'
+var vpngwname = '${entlzprefix}-hub-vpngw-${location}'
+var ergwname = '${entlzprefix}-hub-ergw-${location}'
 var hubvnetname = '${entlzprefix}-hub-vnet-${location}'
 var gwsubnetname = 'GatewaySubnet'
 var fwsubnetname = 'AzureFirewallSubnet'
@@ -55,7 +56,8 @@ module connectivitysub 'modules/connectivity-sub.bicep' ={
     fwname: fwname
     fwsubnetprefix: fwsubnetprefix
     fwtype: fwtype
-    gwname: gwname
+    vpngwname: vpngwname
+    ergwname: ergwname
     gwsubnetprefix: gwsubnetprefix
     gwtype: gwtype
     hubvnetname: hubvnetname
