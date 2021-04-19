@@ -101,4 +101,4 @@ jobs:
                     managementvnetprefix=$managementvnetprefix \
                     securitysubid=$securitysubid \
                     securitysubnetprefix=$securitysubnetprefix \
-                    securityvnetprefix=$securityvnetprefix                  
+                    securityvnetprefix=$securityvnetprefix
