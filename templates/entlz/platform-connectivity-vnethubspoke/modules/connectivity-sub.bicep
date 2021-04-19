@@ -34,7 +34,7 @@ targetScope='subscription'
 
 resource hubconnectivityrg 'Microsoft.Resources/resourceGroups@2020-10-01'={
   location: location
-  name: hubconnectivityrgname
+  name: 'hubconnectivityrgname'
 }
 
 module hubvnet 'hub.bicep' = {
