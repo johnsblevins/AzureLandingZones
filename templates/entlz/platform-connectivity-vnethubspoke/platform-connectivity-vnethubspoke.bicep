@@ -45,7 +45,6 @@ var fwip=concat(fwsubnetoctets[0],fwsubnetoctets[1],fwsubnetoctets[2],fwlastocte
 var hubconnectivityrgname = '${entlzprefix}-hub-connectivity-${location}'
 var managementconnectivityrgname = '${entlzprefix}-management-connectivity-${location}'
 
-/*
 module connectivitysub 'modules/connectivity-sub.bicep' ={
   name: 'connectivitysub'
   scope: subscription(connectivitysubid)
@@ -83,7 +82,7 @@ module connectivitysub 'modules/connectivity-sub.bicep' ={
     hubconnectivityrgname: hubconnectivityrgname
   }
 }
-*/
+/*
 module managementsub 'modules/management-sub.bicep' ={
   name: 'managementsub'
   scope: subscription(managementsubid)
@@ -93,9 +92,10 @@ module managementsub 'modules/management-sub.bicep' ={
     managementvnetname: managementvnetname
     managementvnetprefix: managementvnetprefix
     managementconnectivityrgname:  managementconnectivityrgname
+    location: location
   }
 }
-/*
+
 module identitysub 'modules/identity-sub.bicep' ={
   name: 'identitysub'
   scope: subscription(identitysubid)

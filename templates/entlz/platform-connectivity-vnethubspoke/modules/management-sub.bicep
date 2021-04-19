@@ -3,10 +3,9 @@ param managementvnetname string
 param managementvnetprefix string
 param managementsubnetprefix string
 param managementconnectivityrgname string
+param location string
 
 targetScope='subscription'
-
-var location = deployment().location
 
 resource connectivityrg 'Microsoft.Resources/resourceGroups@2020-10-01'={
   location: location
@@ -18,7 +17,7 @@ module managemetnvnet 'spoke.bicep' = {
   dependsOn:[
     connectivityrg
   ]
-  name: '${entlzprefix}-management-vnet-${location}'
+  name: managementvnetname
   params:{
     spokevnetname: managementvnetname
     spokevnetprefix: managementvnetprefix    

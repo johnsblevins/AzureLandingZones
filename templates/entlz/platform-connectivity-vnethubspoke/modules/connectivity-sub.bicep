@@ -37,7 +37,7 @@ resource hubconnectivityrg 'Microsoft.Resources/resourceGroups@2020-10-01'={
   name: hubconnectivityrgname
 }
 
-module hubvnet 'modules/hub.bicep' = {
+module hubvnet 'hub.bicep' = {
   scope: hubconnectivityrg
   dependsOn:[
     hubconnectivityrg
