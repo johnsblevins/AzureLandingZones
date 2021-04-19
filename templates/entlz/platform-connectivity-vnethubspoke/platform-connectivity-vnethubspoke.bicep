@@ -19,6 +19,7 @@ param managementvnetprefix string
 param securitysubid string
 param securitysubnetprefix string
 param securityvnetprefix string
+param logaworkspaceid string
 
 targetScope='managementGroup'
 
@@ -45,6 +46,7 @@ var fwlastoctet=string(int(fwsubnetoctets[3])+4)
 var fwip=concat(fwsubnetoctets[0],'.',fwsubnetoctets[1],'.',fwsubnetoctets[2],'.',fwlastoctet)
 var hubconnectivityrgname = '${entlzprefix}-hub-connectivity-${location}'
 var managementconnectivityrgname = '${entlzprefix}-management-connectivity-${location}'
+var fwpolicyname = '${fwname}-policy'
 
 module connectivitysub 'modules/connectivity-sub.bicep' ={
   name: 'connectivitysub'
@@ -82,6 +84,8 @@ module connectivitysub 'modules/connectivity-sub.bicep' ={
     gwrtname: gwrtname
     fwip: fwip
     hubconnectivityrgname: hubconnectivityrgname
+    fwpolicyname: fwpolicyname
+    logaworkspaceid: logaworkspaceid
   }
 }
 /*

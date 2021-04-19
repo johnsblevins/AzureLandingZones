@@ -30,7 +30,8 @@ param hubmanagementrtname string
 param gwrtname string
 param fwip string
 param hubconnectivityrgname string
-
+param fwpolicyname string
+param logaworkspaceid string
 
 targetScope='subscription'
 
@@ -73,6 +74,8 @@ module hubvnet 'hub.bicep' = {
     hubmanagementrtname: hubmanagementrtname
     gwrtname: gwrtname
     fwip: fwip
-    location: location    
+    location: location
+    fwpolicyname: fwpolicyname
+    logaworkspaceid: logaworkspaceid
   }
 }

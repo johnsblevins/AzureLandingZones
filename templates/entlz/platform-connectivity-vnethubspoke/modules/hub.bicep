@@ -26,6 +26,8 @@ param fwmanagementrtname string
 param hubmanagementrtname string
 param gwrtname string
 param fwip string
+param fwpolicyname string
+param logaworkspaceid string
 
 resource hubvnet 'Microsoft.Network/virtualNetworks@2020-08-01'= {
   name: hubvnetname
@@ -238,12 +240,33 @@ resource fwmanagementpip 'Microsoft.Network/publicIPAddresses@2020-11-01'={
   }
 }
 
+resource fwpolicy 'Microsoft.Network/firewallPolicies@2020-11-01'={
+  location: location
+  name: fwpolicyname
+  properties:{
+    threatIntelMode:'Deny'
+    insights:{
+      isEnabled: true
+      logAnalyticsResources:{
+        defaultWorkspaceId: {
+          id: logaworkspaceid
+        }        
+      }
+      retentionDays: 360      
+    }
+    sku:{
+      tier: fwtype
+    }    
+  }
+}
+
 resource fw 'Microsoft.Network/azureFirewalls@2020-11-01'= if( !(empty(fwsubnetprefix)) && !(empty(fwmanagementsubnetprefix)) && ( fwtype=='Standard' || fwtype=='Premium') ){
   location: location
   name: fwname
   dependsOn:[
     hubvnet
     fwpip
+    fwpolicy
   ]
   zones:[
     '1'
@@ -279,6 +302,9 @@ resource fw 'Microsoft.Network/azureFirewalls@2020-11-01'= if( !(empty(fwsubnetp
     sku:{
       name:'AZFW_VNet'
       tier: fwtype
+    }
+    firewallPolicy:{
+      id: fwpolicy.id
     }
   }
 }
@@ -368,7 +394,6 @@ resource vpngw 'Microsoft.Network/virtualNetworkGateways@2020-11-01' = if( !(emp
           subnet: {
             id: gwsubnet.id
           }
-          privateIPAllocationMethod:'Static'
           publicIPAddress: {
             id: vpngwpip2.id
           }          
@@ -398,7 +423,6 @@ resource ergw 'Microsoft.Network/virtualNetworkGateways@2020-11-01' = if( !(empt
         name: '${ergwname}-ipconfig1'
         properties:{
           subnet: gwsubnet
-          privateIPAllocationMethod:'Static'
           publicIPAddress: {
             id: ergwpip.id
           }          
