@@ -1,5 +1,6 @@
 name: entlz-6a-platform-connectivity-vnethubspoke
 
+
 env:
   bastionsubnetprefix: 10.0.0.160/27
   connectivitysubid: b30166b8-dd1b-4fa2-9ad7-057614257b06
