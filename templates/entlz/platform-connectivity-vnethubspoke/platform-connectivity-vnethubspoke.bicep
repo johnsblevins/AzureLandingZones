@@ -42,9 +42,8 @@ var gwftname = '${hubvnetname}-gw-rt'
 var fwsubnetoctets=split(split(fwsubnetprefix,'/')[0],'.')
 var fwlastoctet=string(int(fwsubnetoctets[3])+4)
 var fwip=concat(fwsubnetoctets[0],fwsubnetoctets[1],fwsubnetoctets[2],fwlastoctet)
-
 var hubconnectivityrgname = '${entlzprefix}-hub-connectivity-${location}'
-
+/*
 module connectivitysub 'platform-connectivity-vnethubspoke-modules/connectivity-sub.bicep' ={
   name: 'connectivitysub'
   scope: subscription(connectivitysubid)
@@ -82,7 +81,7 @@ module connectivitysub 'platform-connectivity-vnethubspoke-modules/connectivity-
     hubconnectivityrgname: hubconnectivityrgname
   }
 }
-/*
+
 module managementsub 'platform-connectivity-vnethubspoke-modules/management-sub.bicep' ={
   name: 'managementsub'
   scope: subscription(managementsubid)
