@@ -46,7 +46,7 @@ var hubconnectivityrgname = '${entlzprefix}-hub-connectivity-${location}'
 var managementconnectivityrgname = '${entlzprefix}-management-connectivity-${location}'
 
 /*
-module connectivitysub 'platform-connectivity-vnethubspoke-modules/connectivity-sub.bicep' ={
+module connectivitysub 'modules/connectivity-sub.bicep' ={
   name: 'connectivitysub'
   scope: subscription(connectivitysubid)
   params:{
@@ -84,7 +84,7 @@ module connectivitysub 'platform-connectivity-vnethubspoke-modules/connectivity-
   }
 }
 */
-module managementsub 'platform-connectivity-vnethubspoke-modules/management-sub.bicep' ={
+module managementsub 'modules/management-sub.bicep' ={
   name: 'managementsub'
   scope: subscription(managementsubid)
   params:{
@@ -96,7 +96,7 @@ module managementsub 'platform-connectivity-vnethubspoke-modules/management-sub.
   }
 }
 /*
-module identitysub 'platform-connectivity-vnethubspoke-modules/identity-sub.bicep' ={
+module identitysub 'modules/identity-sub.bicep' ={
   name: 'identitysub'
   scope: subscription(identitysubid)
   params:{
@@ -107,7 +107,7 @@ module identitysub 'platform-connectivity-vnethubspoke-modules/identity-sub.bice
   }
 }
 
-module securitysub 'platform-connectivity-vnethubspoke-modules/security-sub.bicep' ={
+module securitysub 'modules/security-sub.bicep' ={
   name: 'securitysub'
   scope: subscription(securitysubid)
   params:{
