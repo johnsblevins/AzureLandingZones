@@ -345,6 +345,7 @@ resource vpngw 'Microsoft.Network/virtualNetworkGateways@2020-11-01' = if( !(emp
   properties:{
     gatewayType: gwtype
     sku: {
+      name: gwtier
       tier: gwtier
     }
     activeActive: true
@@ -388,6 +389,7 @@ resource ergw 'Microsoft.Network/virtualNetworkGateways@2020-11-01' = if( !(empt
   properties:{
     gatewayType: gwtype
     sku: {
+      name: gwtier
       tier: gwtier
     }
     activeActive: true
