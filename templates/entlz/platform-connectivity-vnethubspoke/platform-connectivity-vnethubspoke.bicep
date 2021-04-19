@@ -37,7 +37,7 @@ var hubmanagementsubnetname = 'HubManagement'
 var gwtier = ( gwtype=='ExpressRoute'?'ErGw1AZ':'VpnGw2AZ' )
 var fwrtname = '${hubvnetname}-fw-rt'
 var fwmanagementrtname = '${hubvnetname}-fwmanagement-rt'
-var managementrtname = '${hubvnetname}-management-rt'
+var hubmanagementrtname = '${hubvnetname}-management-rt'
 var gwftname = '${hubvnetname}-gw-rt'
 var fwsubnetoctets=split(split(fwsubnetprefix,'/')[0],'.')
 var fwlastoctet=string(int(fwsubnetoctets[3])+4)
@@ -76,7 +76,7 @@ module connectivitysub 'modules/connectivity-sub.bicep' ={
     gwtier: gwtier
     fwrtname: fwrtname
     fwmanagementrtname: fwmanagementrtname
-    managementrtname: managementrtname
+    hubmanagementrtname: hubmanagementrtname
     gwftname: gwftname
     fwip: fwip
     hubconnectivityrgname: hubconnectivityrgname

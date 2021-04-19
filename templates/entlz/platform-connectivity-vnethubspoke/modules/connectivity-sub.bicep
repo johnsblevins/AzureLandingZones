@@ -25,7 +25,7 @@ param hubmanagementsubnetname string
 param gwtier string
 param fwrtname string
 param fwmanagementrtname string
-param managementrtname string
+param hubmanagementrtname string
 param gwftname string
 param fwip string
 param hubconnectivityrgname string
@@ -67,7 +67,7 @@ module hubvnet 'hub.bicep' = {
     gwtier: gwtier
     fwrtname: fwrtname
     fwmanagementrtname: fwmanagementrtname
-    managementrtname: managementrtname
+    hubmanagementrtname: hubmanagementrtname
     gwftname: gwftname
     fwip: fwip
     location: location

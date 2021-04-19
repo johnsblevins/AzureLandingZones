@@ -22,7 +22,7 @@ param hubmanagementsubnetname string
 param gwtier string
 param fwrtname string
 param fwmanagementrtname string
-param managementrtname string
+param hubmanagementrtname string
 param gwftname string
 param fwip string
 
@@ -74,7 +74,7 @@ resource fwrt 'Microsoft.Network/routeTables@2020-11-01' = {
 
 resource hubmanagementrt 'Microsoft.Network/routeTables@2020-11-01' = {
   location: location
-  name: fwrtname
+  name: hubmanagementrtname
   properties:{
     disableBgpRoutePropagation: false
     routes:[
