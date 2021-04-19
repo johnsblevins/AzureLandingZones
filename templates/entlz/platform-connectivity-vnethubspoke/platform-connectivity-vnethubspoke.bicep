@@ -42,7 +42,7 @@ var hubmanagementrtname = '${hubvnetname}-management-rt'
 var gwrtname = '${hubvnetname}-gw-rt'
 var fwsubnetoctets=split(split(fwsubnetprefix,'/')[0],'.')
 var fwlastoctet=string(int(fwsubnetoctets[3])+4)
-var fwip=concat(fwsubnetoctets[0],fwsubnetoctets[1],fwsubnetoctets[2],fwlastoctet)
+var fwip=concat(fwsubnetoctets[0],'.',fwsubnetoctets[1],'.',fwsubnetoctets[2],'.',fwlastoctet)
 var hubconnectivityrgname = '${entlzprefix}-hub-connectivity-${location}'
 var managementconnectivityrgname = '${entlzprefix}-management-connectivity-${location}'
 

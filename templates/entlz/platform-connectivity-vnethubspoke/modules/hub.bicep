@@ -352,7 +352,9 @@ resource vpngw 'Microsoft.Network/virtualNetworkGateways@2020-11-01' = if( !(emp
       {
         name: '${vpngwname}-ipconfig1'
         properties:{
-          subnet: gwsubnet
+          subnet: {
+            id: gwsubnet.id
+          }
           privateIPAllocationMethod:'Static'
           publicIPAddress: {
             id: vpngwpip1.id
@@ -362,7 +364,9 @@ resource vpngw 'Microsoft.Network/virtualNetworkGateways@2020-11-01' = if( !(emp
       {
         name: '${vpngwname}-ipconfig2'
         properties:{
-          subnet: gwsubnet
+          subnet: {
+            id: gwsubnet.id
+          }
           privateIPAllocationMethod:'Static'
           publicIPAddress: {
             id: vpngwpip2.id

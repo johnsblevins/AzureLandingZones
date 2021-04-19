@@ -35,7 +35,7 @@ param hubconnectivityrgname string
 targetScope='subscription'
 
 resource hubconnectivityrg 'Microsoft.Resources/resourceGroups@2020-10-01'={
-  name: 'hubconnectivityrgname'
+  name: hubconnectivityrgname
   location: 'usgovvirginia'  
 }
 
