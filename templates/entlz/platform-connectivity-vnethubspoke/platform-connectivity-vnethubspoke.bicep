@@ -81,7 +81,7 @@ module connectivitysub 'platform-connectivity-vnethubspoke-modules/connectivity-
     hubconnectivityrgname: hubconnectivityrgname
   }
 }
-
+*/
 module managementsub 'platform-connectivity-vnethubspoke-modules/management-sub.bicep' ={
   name: 'managementsub'
   scope: subscription(managementsubid)
@@ -92,7 +92,7 @@ module managementsub 'platform-connectivity-vnethubspoke-modules/management-sub.
     managementvnetprefix: managementvnetprefix
   }
 }
-
+/*
 module identitysub 'platform-connectivity-vnethubspoke-modules/identity-sub.bicep' ={
   name: 'identitysub'
   scope: subscription(identitysubid)
