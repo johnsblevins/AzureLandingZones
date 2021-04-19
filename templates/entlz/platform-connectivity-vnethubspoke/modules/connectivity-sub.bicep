@@ -33,8 +33,8 @@ param hubconnectivityrgname string
 targetScope='subscription'
 
 resource hubconnectivityrg 'Microsoft.Resources/resourceGroups@2020-10-01'={
-  location: 'usgovvirginia'
   name: 'hubconnectivityrgname'
+  location: 'usgovvirginia'  
 }
 
 module hubvnet 'hub.bicep' = {
