@@ -382,7 +382,6 @@ resource vpngw 'Microsoft.Network/virtualNetworkGateways@2020-11-01' = if( !(emp
           subnet: {
             id: gwsubnet.id
           }
-          privateIPAllocationMethod:'Static'
           publicIPAddress: {
             id: vpngwpip1.id
           }          
