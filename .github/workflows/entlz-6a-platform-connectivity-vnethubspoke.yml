@@ -74,10 +74,11 @@ jobs:
               securitysubnetprefix=${{ env.securitysubnetprefix }}
               securityvnetprefix=${{ env.securityvnetprefix }}
 
+              echo "${location}blah"
               az deployment mg create \
                   --name "${entlzprefix}-connectivity-${location}" \
                   --management-group-id $entlzprefix \
-                  --location $location \
+                  --location "$location" \
                   --template-file "templates/entlz/platform-connectivity-vnethubspoke/platform-connectivity-vnethubspoke.bicep" \
                   --parameters \
                     bastionsubnetprefix=$bastionsubnetprefix \
