@@ -45,12 +45,14 @@ var fwip=concat(fwsubnetoctets[0],fwsubnetoctets[1],fwsubnetoctets[2],fwlastocte
 var hubconnectivityrgname = '${entlzprefix}-hub-connectivity-${location}'
 var managementconnectivityrgname = '${entlzprefix}-management-connectivity-${location}'
 
+output subid string = '${connectivitysubid}blahdeeblah'
+/*
 module myrg 'modules/blah.bicep'={
   name: 'myrgdeployment'
   scope: subscription(connectivitysubid)  
 }
 
-/*
+
 module connectivitysub 'modules/connectivity-sub.bicep' ={
   name: 'connectivitysub'
   scope: subscription(connectivitysubid)
