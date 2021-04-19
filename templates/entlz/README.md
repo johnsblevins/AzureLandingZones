@@ -383,6 +383,9 @@ The following graphic shows the default set of rbac assignments within the manag
 
 ## Pipeline 6 - Deploy Platform Connectivity
 
+For assistance determining what type of Hybrid Connectivity to select see:
+* [Define an Azure Network Topology](https://docs.microsoft.com/en-us/azure/cloud-adoption-framework/ready/enterprise-scale/network-topology-and-connectivity#define-an-azure-network-topology)  
+
 ## User Landing Zone Pipelines
 
 ## Enterprise Service Pipelines

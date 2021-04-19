@@ -38,5 +38,6 @@ module hubvnet 'modules/hubvnet.bicep' = {
     environment: environment
     fwmanagementsubnetprefix: fwmanagementsubnetprefix
     gwtype: gwtype
+    gwname: gwname
   }
 }

@@ -19,25 +19,9 @@ The solutions contained in this repository extend the base CAF aligned architect
 ## Step 1 - Deploying Enterprise-scale Landing Zone
 The **Enterprise Scale Landing Zone** should be deployed first to create the overall cloud management structure and governance for the hosting environment.  This includes the management group hierarchy, policies, connectivity, and management components needed to centrally administer the entire environment.  Landing Zones are deployed using Blueprints or with custom Azure Resource Manager (ARM) or Terraform templates.  It is recommended to use the most current CAF Enterprise Scale Landing Zone templates as a starting point for the organization and then adjust based on requirements.  The public source repositories for these templates should be checked into the organizational source control, then managed and deployed through a CICD pipeline using Infrastructure-as-Code.  The organziational platform team will then be responsible for managing the Enterprise Scale Landing zone using build and release process automation to make configuration changes to the environment.  The following diagram depicts a high level enterprise scale landing zone you can deploy with the solution:
 
-![](media/entlz-small.png)
+![](media/entlz-overview.png)
 
-The following three templates for deploying the Enterprise Scale Landing Zone exist:
-* [Hybrid Connectivity with VWAN Hub and Spoke (Contoso)](https://github.com/Azure/Enterprise-Scale/blob/main/docs/reference/contoso/Readme.md)
-* [Hybrid Connectivity with VNET Hub-and-Spoke (AdventureWorks)](https://github.com/Azure/Enterprise-Scale/blob/main/docs/reference/adventureworks/README.md)
-* [No Hybrid Connectivity (WingTip)](https://github.com/Azure/Enterprise-Scale/blob/main/docs/reference/wingtip/README.md)
-
-These templates are identical except for the hybrid connectivity components which are deployed along with the solution.  For assistance determining what type of Hybrid Connectivity to select see:
-* [Define an Azure Network Topology](https://docs.microsoft.com/en-us/azure/cloud-adoption-framework/ready/enterprise-scale/network-topology-and-connectivity#define-an-azure-network-topology)  
-
-### Deploy to MAG with CICD Pipeline
-Once a template has been selected see the following link for guidance on deploying these templates to a Microsoft Azure Government (MAG) environment using CICD pipeline:
-* [Deploy Enterprise Scale templates to MAG using CICD Pipeline](templates/entscalelz/README.md).
-
-### Customizing the Default templates
-The default templates are intended to be a good starting point for organizations but as their cloud portfolios grow and requirements change the templates will need to be updated accordingly.  It is recommended to establish a Platform DevOps Team responsible for incorporating changes to the Enterprise Scale Architecture through the use of Infrastructure-as-Code and Agile development process.  Manual changes to the environment either through the Azure Portal or management APIs should be strictly limited and a CICD build and release pipeline should be utilized to incorporate modifications to the environment.  This repository contains the following sample customized implementations:
-* [Custom Implementation of Hybrid Connectivity with VWAN Hub and Spoke](templates/es-hubspoke-template)
-* [Custom Implementation of Hybrid Connectivity with VNET Hub-and-Spoke](templates/es-vwan-template)
-* [Custom Implementation with No Hybrid Connectivity](templates/es-template)
+The Enterprise Landing Zone template is available [HERE](templates/entlz).  
 
 ## Step 2 - Deploy App Landing Zones
 Select a scenario:

@@ -1,6 +1,7 @@
 param hubvnetname string
 param hubvnetprefix string
-param gwtype string = 'Vpn'
+param gwtype string
+param gwname string
 param gwsubnetprefix string
 param fwsubnetprefix string
 param fwmanagementsubnetprefix string
@@ -12,10 +13,12 @@ param environment string
 var location= resourceGroup().location
 var gwsubnetname = 'GatewaySubnet'
 var fwsubnetname = 'AzureFirewallSubnet'
-var fwrtname = '${hubvnetname}-fw-rt'
-var fwmanagementsubnetname = 'AzureFirewallManagementSubnet'
-var fwmanagementrtname = '${hubvnetname}-fwmanagement-rt'
 var bastionsubnetname = 'AzureBastionSubnet'
+var fwmanagementsubnetname = 'AzureFirewallManagementSubnet'
+
+var fwrtname = '${hubvnetname}-fw-rt'
+var fwmanagementrtname = '${hubvnetname}-fwmanagement-rt'
+
 var fwnexthoptype = (gwtype=='Vpn')?'VirtualNetworkGateway':'VnetLocal'
 
 resource hubvnet 'Microsoft.Network/virtualNetworks@2020-08-01'= {
@@ -71,8 +74,6 @@ resource fwrt 'Microsoft.Network/routeTables@2020-11-01' = {
   }
 }
 
-
-
 resource gwsubnet 'Microsoft.Network/virtualNetworks/subnets@2020-11-01' = if(!(empty(gwsubnetprefix))) {
   parent: hubvnet
   name: gwsubnetname
@@ -116,8 +117,6 @@ resource fwsubnet 'Microsoft.Network/virtualNetworks/subnets@2020-11-01' = if(!(
   }
 
 }
-
-
 
 resource bastionsubnet 'Microsoft.Network/virtualNetworks/subnets@2020-11-01' = if(!(empty(bastionsubnetprefix))) {
   parent: hubvnet
@@ -210,3 +209,51 @@ resource fw 'Microsoft.Network/azureFirewalls@2020-11-01'={
     }
   }
 }
+
+resource gwpip 'Microsoft.Network/publicIPAddresses@2020-11-01'={
+  location: location
+  name: '${gwname}-pip'
+  sku: {
+    name:'Standard'
+  }
+  zones:[
+    '1'
+    '2'
+    '3'
+  ]
+  properties:{
+    publicIPAllocationMethod: 'Static'
+    publicIPAddressVersion: 'IPv4'    
+  }
+}
+
+resource vnetgw 'Microsoft.Network/virtualNetworkGateways@2020-11-01' = if( !(empty(gwsubnetprefix)) && ( (gwtype=='Vpn') || (gwtype=='ExpressRoute') ) ) {
+  location: location
+  name: gwname
+  dependsOn:[
+    gwsubnet
+    gwpip
+  ]
+  properties:{
+    gatewayType: gwtype
+    sku: {
+      name: 'VpnGw2AZ'
+      tier: 'VpnGw2AZ'
+    }
+    activeActive: true
+    ipConfigurations:[
+      {
+        name: '${gwname}-ipconfig'
+        properties:{
+          subnet: gwsubnet
+          privateIPAllocationMethod:'Static'
+          publicIPAddress: {
+            id: gwpip.id
+          }          
+        }
+      }
+    ]
+    vpnType: 'RouteBased'    
+  }
+}
+
