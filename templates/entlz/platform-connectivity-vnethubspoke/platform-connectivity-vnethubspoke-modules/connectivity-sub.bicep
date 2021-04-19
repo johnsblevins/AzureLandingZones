@@ -28,19 +28,19 @@ param fwmanagementrtname string
 param managementrtname string
 param gwftname string
 param fwip string
-param connectivityrgname string
+param hubconnectivityrgname string
 
 targetScope='subscription'
 
-resource connectivityrg 'Microsoft.Resources/resourceGroups@2020-10-01'={
+resource hubconnectivityrg 'Microsoft.Resources/resourceGroups@2020-10-01'={
   location: location
-  name: connectivityrgname
+  name: hubconnectivityrgname
 }
 
 module hubvnet 'modules/hub.bicep' = {
-  scope: connectivityrg
+  scope: hubconnectivityrg
   dependsOn:[
-    connectivityrg
+    hubconnectivityrg
   ]
   name: hubvnetname
   params:{

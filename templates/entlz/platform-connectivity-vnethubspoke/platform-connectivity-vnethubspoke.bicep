@@ -42,7 +42,7 @@ var fwsubnetoctets=split(split(fwsubnetprefix,'/')[0],'.')
 var fwlastoctet=string(int(fwsubnetoctets[3])+4)
 var fwip=concat(fwsubnetoctets[0],fwsubnetoctets[1],fwsubnetoctets[2],fwlastoctet)
 
-var connectivityrgname = '${entlzprefix}-hub-connectivity-${location}'
+var hubconnectivityrgname = '${entlzprefix}-hub-connectivity-${location}'
 
 module connectivitysub 'platform-connectivity-vnethubspoke-modules/connectivity-sub.bicep' ={
   name: 'connectivitysub'
@@ -78,7 +78,7 @@ module connectivitysub 'platform-connectivity-vnethubspoke-modules/connectivity-
     managementrtname: managementrtname
     gwftname: gwftname
     fwip: fwip
-    connectivityrgname: connectivityrgname
+    hubconnectivityrgname: hubconnectivityrgname
   }
 }
 
