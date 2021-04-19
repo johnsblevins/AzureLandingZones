@@ -1,28 +1,26 @@
 name: entlz-6a-platform-connectivity-vnethubspoke
-
-
 env:
-  bastionsubnetprefix: 10.0.0.160/27
-  connectivitysubid: b30166b8-dd1b-4fa2-9ad7-057614257b06
-  entlzprefix: elz1
-  environment: azureusgovernment
-  fwmanagementsubnetprefix: 10.0.0.64/26
-  fwsubnetprefix: 10.0.0.0/26
-  fwtype: Standard
-  gwsubnetprefix: 10.0.0.128/27
-  gwtype: Vpn
-  hubmanagementsubnetprefix: 10.0.1.0/26
-  hubvnetprefix: 10.0.0.0/23
-  identitysubid: 787e871a-84ba-43be-86bf-86bd1e408a4a
-  identitysubnetprefix: 10.0.4.0/26
-  identityvnetprefix: 10.0.4.0/23
-  location: usgovvirginia
-  managementsubid: 07526f72-6689-42be-945f-bb6ad0214b71
-  managementsubnetprefix: 10.0.2.0/26
-  managementvnetprefix: 10.0.2.0/23
-  securitysubid: ac95a806-c9d3-49e7-83ee-7f82e88c2bd3
-  securitysubnetprefix: 10.0.6.0/26
-  securityvnetprefix: 10.0.6.0/23
+  bastionsubnetprefix: 10.0.0.160/27
+  connectivitysubid: b30166b8-dd1b-4fa2-9ad7-057614257b06
+  entlzprefix: elz1
+  environment: azureusgovernment
+  fwmanagementsubnetprefix: 10.0.0.64/26
+  fwsubnetprefix: 10.0.0.0/26
+  fwtype: Standard
+  gwsubnetprefix: 10.0.0.128/27
+  gwtype: Vpn
+  hubmanagementsubnetprefix: 10.0.1.0/26
+  hubvnetprefix: 10.0.0.0/23
+  identitysubid: 787e871a-84ba-43be-86bf-86bd1e408a4a
+  identitysubnetprefix: 10.0.4.0/26
+  identityvnetprefix: 10.0.4.0/23
+  location: usgovvirginia
+  managementsubid: 07526f72-6689-42be-945f-bb6ad0214b71
+  managementsubnetprefix: 10.0.2.0/26
+  managementvnetprefix: 10.0.2.0/23
+  securitysubid: ac95a806-c9d3-49e7-83ee-7f82e88c2bd3
+  securitysubnetprefix: 10.0.6.0/26
+  securityvnetprefix: 10.0.6.0/23
 
 # Controls when the action will run. 
 on:
