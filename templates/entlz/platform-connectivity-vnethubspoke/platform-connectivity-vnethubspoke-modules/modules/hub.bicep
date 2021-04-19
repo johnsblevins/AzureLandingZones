@@ -1,25 +1,30 @@
 param hubvnetname string
 param hubvnetprefix string
+param identityvnetprefix string
+param securityvnetprefix string
+param managementvnetprefix string
 param gwtype string
 param gwname string
 param gwsubnetprefix string
 param fwsubnetprefix string
 param fwmanagementsubnetprefix string
+param hubmanagementsubnetprefix string
 param bastionsubnetprefix string
 param fwname string
 param fwtype string
 param environment string
-
-var location= resourceGroup().location
-var gwsubnetname = 'GatewaySubnet'
-var fwsubnetname = 'AzureFirewallSubnet'
-var bastionsubnetname = 'AzureBastionSubnet'
-var fwmanagementsubnetname = 'AzureFirewallManagementSubnet'
-
-var fwrtname = '${hubvnetname}-fw-rt'
-var fwmanagementrtname = '${hubvnetname}-fwmanagement-rt'
-
-var fwnexthoptype = (gwtype=='Vpn')?'VirtualNetworkGateway':'VnetLocal'
+param location string
+param gwsubnetname string
+param fwsubnetname string
+param bastionsubnetname string
+param fwmanagementsubnetname string
+param hubmanagementsubnetname string
+param gwtier string
+param fwrtname string
+param fwmanagementrtname string
+param managementrtname string
+param gwftname string
+param fwip string
 
 resource hubvnet 'Microsoft.Network/virtualNetworks@2020-08-01'= {
   name: hubvnetname
@@ -56,18 +61,71 @@ resource fwrt 'Microsoft.Network/routeTables@2020-11-01' = {
   properties:{
     disableBgpRoutePropagation: false
     routes:[
-      {
-        name: 'azureipranges'
-        properties: {
-          addressPrefix: 'AzureCloud'
-          nextHopType: 'Internet'
-        }        
-      }
-      {
+    {
         name: 'defaultroute'
         properties: {
           addressPrefix: '0.0.0.0/0'
           nextHopType: 'VirtualNetworkGateway'     
+        }        
+      }
+    ]
+  }
+}
+
+resource hubmanagementrt 'Microsoft.Network/routeTables@2020-11-01' = {
+  location: location
+  name: fwrtname
+  properties:{
+    disableBgpRoutePropagation: false
+    routes:[
+    {
+        name: 'defaultroute'
+        properties: {
+          addressPrefix: '0.0.0.0/0'
+          nextHopType: 'VirtualAppliance'
+          nextHopIpAddress: fwip     
+        }        
+      }
+    ]
+  }
+}
+
+resource gwrt 'Microsoft.Network/routeTables@2020-11-01' = {
+  location: location
+  name: fwrtname
+  properties:{
+    disableBgpRoutePropagation: false
+    routes:[
+      {
+        name: 'managementsubnet'
+        properties: {
+          addressPrefix: hubmanagementsubnetprefix
+          nextHopType: 'VirtualAppliance'
+          nextHopIpAddress: fwip     
+        }        
+      }
+      {
+        name: 'identityvnet'
+        properties: {
+          addressPrefix: identityvnetprefix
+          nextHopType: 'VirtualAppliance'
+          nextHopIpAddress: fwip     
+        }        
+      }
+      {
+        name: 'securityvnet'
+        properties: {
+          addressPrefix: securityvnetprefix
+          nextHopType: 'VirtualAppliance'
+          nextHopIpAddress: fwip     
+        }        
+      }
+      {
+        name: 'managementvnet'
+        properties: {
+          addressPrefix: managementvnetprefix
+          nextHopType: 'VirtualAppliance'
+          nextHopIpAddress: fwip     
         }        
       }
     ]
@@ -118,12 +176,27 @@ resource fwsubnet 'Microsoft.Network/virtualNetworks/subnets@2020-11-01' = if(!(
 
 }
 
+resource hubmanagementsubnet 'Microsoft.Network/virtualNetworks/subnets@2020-11-01' = if(!(empty(bastionsubnetprefix))) {
+  parent: hubvnet
+  name: hubmanagementsubnetname
+  dependsOn: [
+    hubvnet
+    fwsubnet
+  ]
+  properties:{
+    addressPrefix: hubmanagementsubnetprefix
+    routeTable:{
+      id: hubmanagementrt.id
+    }
+  }
+}
+
 resource bastionsubnet 'Microsoft.Network/virtualNetworks/subnets@2020-11-01' = if(!(empty(bastionsubnetprefix))) {
   parent: hubvnet
   name: bastionsubnetname
   dependsOn: [
     hubvnet
-    fwsubnet
+    hubmanagementsubnet
   ]
   properties:{
     addressPrefix: bastionsubnetprefix
@@ -164,8 +237,7 @@ resource fwmanagementpip 'Microsoft.Network/publicIPAddresses@2020-11-01'={
   }
 }
 
-
-resource fw 'Microsoft.Network/azureFirewalls@2020-11-01'={
+resource fw 'Microsoft.Network/azureFirewalls@2020-11-01'= if( !(empty(fwsubnetprefix)) && !(empty(fwmanagementsubnetprefix)) && ( fwtype=='Standard' || fwtype=='Premium') ){
   location: location
   name: fwname
   dependsOn:[
@@ -205,14 +277,14 @@ resource fw 'Microsoft.Network/azureFirewalls@2020-11-01'={
     threatIntelMode: 'Deny'    
     sku:{
       name:'AZFW_VNet'
-      tier:'Standard'
+      tier: fwtype
     }
   }
 }
 
-resource gwpip 'Microsoft.Network/publicIPAddresses@2020-11-01'={
+resource gwpip1 'Microsoft.Network/publicIPAddresses@2020-11-01'=  if( !(empty(gwsubnetprefix)) && !(empty(gwtype)) ){
   location: location
-  name: '${gwname}-pip'
+  name: '${gwname}-pip-1'
   sku: {
     name:'Standard'
   }
@@ -227,28 +299,55 @@ resource gwpip 'Microsoft.Network/publicIPAddresses@2020-11-01'={
   }
 }
 
-resource vnetgw 'Microsoft.Network/virtualNetworkGateways@2020-11-01' = if( !(empty(gwsubnetprefix)) && ( (gwtype=='Vpn') || (gwtype=='ExpressRoute') ) ) {
+resource gwpip2 'Microsoft.Network/publicIPAddresses@2020-11-01'= if( !(empty(gwsubnetprefix)) &&  (gwtype=='Vpn') ){
+  location: location
+  name: '${gwname}-pip-2'
+  sku: {
+    name:'Standard'
+  }
+  zones:[
+    '1'
+    '2'
+    '3'
+  ]
+  properties:{
+    publicIPAllocationMethod: 'Static'
+    publicIPAddressVersion: 'IPv4'    
+  }
+}
+
+resource vpngw 'Microsoft.Network/virtualNetworkGateways@2020-11-01' = if( !(empty(gwsubnetprefix)) &&  (gwtype=='Vpn') ) {
   location: location
   name: gwname
   dependsOn:[
     gwsubnet
-    gwpip
+    gwpip1
+    gwpip2
   ]
   properties:{
     gatewayType: gwtype
     sku: {
-      name: 'VpnGw2AZ'
-      tier: 'VpnGw2AZ'
+      tier: gwtier
     }
     activeActive: true
     ipConfigurations:[
       {
-        name: '${gwname}-ipconfig'
+        name: '${gwname}-ipconfig1'
         properties:{
           subnet: gwsubnet
           privateIPAllocationMethod:'Static'
           publicIPAddress: {
-            id: gwpip.id
+            id: gwpip1.id
+          }          
+        }
+      }
+      {
+        name: '${gwname}-ipconfig2'
+        properties:{
+          subnet: gwsubnet
+          privateIPAllocationMethod:'Static'
+          publicIPAddress: {
+            id: gwpip2.id
           }          
         }
       }
@@ -257,3 +356,31 @@ resource vnetgw 'Microsoft.Network/virtualNetworkGateways@2020-11-01' = if( !(em
   }
 }
 
+resource ergw 'Microsoft.Network/virtualNetworkGateways@2020-11-01' = if( !(empty(gwsubnetprefix)) && ( gwtype=='ExpressRoute') ) {
+  location: location
+  name: gwname
+  dependsOn:[
+    gwsubnet
+    gwpip1
+  ]
+  properties:{
+    gatewayType: gwtype
+    sku: {
+      tier: gwtier
+    }
+    activeActive: true
+    ipConfigurations:[
+      {
+        name: '${gwname}-ipconfig1'
+        properties:{
+          subnet: gwsubnet
+          privateIPAllocationMethod:'Static'
+          publicIPAddress: {
+            id: gwpip1.id
+          }          
+        }
+      }
+    ]
+    vpnType: 'RouteBased'    
+  }
+}

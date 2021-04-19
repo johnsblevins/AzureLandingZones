@@ -1,28 +1,27 @@
 name: entlz-6a-platform-connectivity-vnethubspoke
 
 env:
-  entlzprefix: elz1  
-  environment: azureusgovernment
-  location: usgovvirginia  
-  managementsubid: 07526f72-6689-42be-945f-bb6ad0214b71
-  identitysubid: 787e871a-84ba-43be-86bf-86bd1e408a4a
-  connectivitysubid: b30166b8-dd1b-4fa2-9ad7-057614257b06
-  securitysubid: ac95a806-c9d3-49e7-83ee-7f82e88c2bd3
-  hubvnetprefix: 10.0.0.0/23
-  gwtype: none
-  gwsubnetprefix: 
-#  gwsubnetprefix: 10.0.0.128/27
-  fwtype: none
-  fwsubnetprefix: 10.0.0.0/26
-  fwmanagementsubnetprefix: 10.0.0.64/26
-  bastionsubnetprefix: 
-#  bastionsubnetprefix: 10.0.0.160/27
-  managementvnetprefix: 10.0.2.0/23
-  managementsubnetprefix: 10.0.2.0/26
-  identityvnetprefix: 10.0.4.0/23
-  identitysubnetprefix: 10.0.4.0/26
-  securityvnetprefix: 10.0.6.0/23
-  securitysubnetprefix: 10.0.6.0/26
+  bastionsubnetprefix: 10.0.0.160/27
+  connectivitysubid: b30166b8-dd1b-4fa2-9ad7-057614257b06
+  entlzprefix: elz1
+  environment: azureusgovernment
+  fwmanagementsubnetprefix: 10.0.0.64/26
+  fwsubnetprefix: 10.0.0.0/26
+  fwtype: Standard
+  gwsubnetprefix: 10.0.0.128/27
+  gwtype: Vpn
+  hubmanagementsubnetprefix: 10.0.1.0/26
+  hubvnetprefix: 10.0.0.0/23
+  identitysubid: 787e871a-84ba-43be-86bf-86bd1e408a4a
+  identitysubnetprefix: 10.0.4.0/26
+  identityvnetprefix: 10.0.4.0/23
+  location: usgovvirginia
+  managementsubid: 07526f72-6689-42be-945f-bb6ad0214b71
+  managementsubnetprefix: 10.0.2.0/26
+  managementvnetprefix: 10.0.2.0/23
+  securitysubid: ac95a806-c9d3-49e7-83ee-7f82e88c2bd3
+  securitysubnetprefix: 10.0.6.0/26
+  securityvnetprefix: 10.0.6.0/23
 
 # Controls when the action will run. 
 on:
@@ -54,50 +53,52 @@ jobs:
           with:
             azcliversion: 2.21.0
             inlineScript: |
-              entlzprefix=${{ env.entlzprefix }}
-              location=${{ env.location }}
-              connectivitysubid=${{ env.connectivitysubid }}
-              identitysubid=${{ env.identitysubid }}
-              securitysubid=${{ env.securitysubid }}
-              managementsubid=${{ env.managementsubid }}
-              hubvnetprefix=${{ env.hubvnetprefix }}
-              gwtype=${{ env.gwtype }}
-              gwsubnetprefix=${{ env.gwsubnetprefix }}
-              fwtype=${{ env.fwtype }}
-              fwsubnetprefix=${{ env.fwsubnetprefix }}
-              bastionsubnetprefix=${{ env.bastionsubnetprefix }}
-              managementvnetprefix=${{ env.managementvnetprefix }}
-              managementsubnetprefix=${{ env.managementsubnetprefix }}
-              identityvnetprefix=${{ env.identityvnetprefix }}
-              identitysubnetprefix=${{ env.identitysubnetprefix }}
-              securityvnetprefix=${{ env.securityvnetprefix }}
-              securitysubnetprefix=${{ env.securitysubnetprefix }}
-              environment=${{ env.environment }}
-              fwmanagementsubnetprefix=${{ env.fwmanagementsubnetprefix }}
+              bastionsubnetprefix=${{ env.bastionsubnetprefix }}
+              connectivitysubid=${{ env.connectivitysubid }}
+              entlzprefix=${{ env.entlzprefix }}
+              environment=${{ env.environment }}
+              fwmanagementsubnetprefix=${{ env.fwmanagementsubnetprefix }}
+              fwsubnetprefix=${{ env.fwsubnetprefix }}
+              fwtype=${{ env.fwtype }}
+              gwsubnetprefix=${{ env.gwsubnetprefix }}
+              gwtype=${{ env.gwtype }}
+              hubmanagementsubnetprefix=${{ env.hubmanagementsubnetprefix}}
+              hubvnetprefix=${{ env.hubvnetprefix }}
+              identitysubid=${{ env.identitysubid }}
+              identitysubnetprefix=${{ env.identitysubnetprefix }}
+              identityvnetprefix=${{ env.identityvnetprefix }}
+              location=${{ env.location }}
+              managementsubid=${{ env.managementsubid }}
+              managementsubnetprefix=${{ env.managementsubnetprefix }}
+              managementvnetprefix=${{ env.managementvnetprefix }}
+              securitysubid=${{ env.securitysubid }}
+              securitysubnetprefix=${{ env.securitysubnetprefix }}
+              securityvnetprefix=${{ env.securityvnetprefix }}
 
               az deployment mg create \
                   --name "${entlzprefix}-connectivity-${location}" \
                   --management-group-id $entlzprefix \
                   --location $location \
-                  --template-file "templates/entlz/platform-connectivity-vnethubspoke.bicep" \
+                  --template-file "templates/entlz/platform-connectivity-vnethubspoke/platform-connectivity-vnethubspoke.bicep" \
                   --parameters \
-                      entlzprefix=$entlzprefix \
-                      location=$location \
-                      connectivitysubid=$connectivitysubid \
-                      identitysubid=$identitysubid \
-                      securitysubid=$securitysubid \
-                      managementsubid=$managementsubid \
-                      hubvnetprefix=$hubvnetprefix \
-                      gwtype=$gwtype \
-                      gwsubnetprefix=$gwsubnetprefix \
-                      fwtype=$fwtype \
-                      fwsubnetprefix=$fwsubnetprefix \
-                      bastionsubnetprefix=$bastionsubnetprefix \
-                      managementvnetprefix=$managementvnetprefix \
-                      managementsubnetprefix=$managementsubnetprefix \
-                      identityvnetprefix=$identityvnetprefix \
-                      identitysubnetprefix=$identitysubnetprefix \
-                      securityvnetprefix=$securityvnetprefix \
-                      securitysubnetprefix=$securitysubnetprefix \
-                      environment=$environment \
-                      fwmanagementsubnetprefix=$fwmanagementsubnetprefix
+                    bastionsubnetprefix=$bastionsubnetprefix \
+                    connectivitysubid=$connectivitysubid \
+                    entlzprefix=$entlzprefix \
+                    environment=$environment \
+                    fwmanagementsubnetprefix=$fwmanagementsubnetprefix \
+                    fwsubnetprefix=$fwsubnetprefix \
+                    fwtype=$fwtype \
+                    gwsubnetprefix=$gwsubnetprefix \
+                    gwtype=$gwtype \
+                    hubmanagementsubnetprefix=$hubmanagementsubnetprefix \
+                    hubvnetprefix=$hubvnetprefix \
+                    identitysubid=$identitysubid \
+                    identitysubnetprefix=$identitysubnetprefix \
+                    identityvnetprefix=$identityvnetprefix \
+                    location=$location \
+                    managementsubid=$managementsubid \
+                    managementsubnetprefix=$managementsubnetprefix \
+                    managementvnetprefix=$managementvnetprefix \
+                    securitysubid=$securitysubid \
+                    securitysubnetprefix=$securitysubnetprefix \
+                    securityvnetprefix=$securityvnetprefix                  

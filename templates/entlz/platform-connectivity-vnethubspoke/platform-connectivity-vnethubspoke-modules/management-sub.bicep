@@ -12,7 +12,7 @@ resource connectivityrg 'Microsoft.Resources/resourceGroups@2020-10-01'={
   name: '${entlzprefix}-management-connectivity-${location}'
 }
 
-module managemetnvnet 'modules/spokevnet.bicep' = {
+module managemetnvnet 'modules/spoke.bicep' = {
   scope: connectivityrg
   dependsOn:[
     connectivityrg
