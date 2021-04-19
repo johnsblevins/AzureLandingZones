@@ -21,6 +21,7 @@ param securitysubnetprefix string
 param securityvnetprefix string
 
 targetScope='managementGroup'
+
 var bastioname = '${entlzprefix}-hub-bastion-${location}'
 var fwname = '${entlzprefix}-hub-fw-${location}'
 var managementvnetname = '${entlzprefix}-management-vnet-${location}'
@@ -81,7 +82,7 @@ module connectivitysub 'platform-connectivity-vnethubspoke-modules/connectivity-
     hubconnectivityrgname: hubconnectivityrgname
   }
 }
-
+/*
 module managementsub 'platform-connectivity-vnethubspoke-modules/management-sub.bicep' ={
   name: 'managementsub'
   scope: subscription(managementsubid)
@@ -115,3 +116,4 @@ module securitysub 'platform-connectivity-vnethubspoke-modules/security-sub.bice
   }
 }
 
+*/
