@@ -142,12 +142,7 @@
              }
             }
            ],
-           "logs": [
-            {
-             "category": "VMProtectionAlerts",
-             "enabled": "[parameters('logsEnabled')]"
-            }
-           ]
+           "logs": []
           }
          }
         ],

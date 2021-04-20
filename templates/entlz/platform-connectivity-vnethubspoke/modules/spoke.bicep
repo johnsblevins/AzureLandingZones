@@ -36,7 +36,7 @@ resource spokevnet 'Microsoft.Network/virtualNetworks@2020-08-01'= {
     ]
   }  
 }
-
+/*
 resource spoketohubpeer 'Microsoft.Network/virtualNetworks/virtualNetworkPeerings@2020-11-01'={
   name: spoketohubpeername
   parent: spokevnet
@@ -49,7 +49,7 @@ resource spoketohubpeer 'Microsoft.Network/virtualNetworks/virtualNetworkPeering
     }      
   }
 }
-
+*/
 module hubtospokepeer 'peering.bicep'={
   name: hubtospokepeername
   scope: hubvnetrg
@@ -63,3 +63,4 @@ module hubtospokepeer 'peering.bicep'={
 }
 
 output spokevnetid string = spokevnet.id
+output hubvnetid string = hubvnet.id
