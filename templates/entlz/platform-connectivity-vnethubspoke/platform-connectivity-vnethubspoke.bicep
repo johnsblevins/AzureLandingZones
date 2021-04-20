@@ -103,7 +103,7 @@ module managementsub 'modules/management-sub.bicep' ={
     location: location
     hubtospokepeername: hubtomanagementspokepeername
     hubvnetname: hubvnetname
-    hubvnetrg: hubconnectivityrgname
+    hubvnetrgname: hubconnectivityrgname
     hubvnetsub: connectivitysubid
     spoketohubpeername: managementspoketohubpeername
   }

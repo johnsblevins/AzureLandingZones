@@ -6,7 +6,7 @@ param managementconnectivityrgname string
 param location string
 param hubtospokepeername string
 param hubvnetname string
-param hubvnetrg string
+param hubvnetrgname string
 param hubvnetsub string
 param spoketohubpeername string
 
@@ -29,7 +29,7 @@ module managemetnvnet 'spoke.bicep' = {
     managementsubnetprefix: managementsubnetprefix
     hubtospokepeername: hubtospokepeername
     hubvnetname: hubvnetname
-    hubvnetrg: hubvnetrg
+    hubvnetrgname: hubvnetrgname
     hubvnetsub: hubvnetsub
     spoketohubpeername: spoketohubpeername
   }
