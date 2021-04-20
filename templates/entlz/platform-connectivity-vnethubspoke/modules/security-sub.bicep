@@ -12,17 +12,17 @@ param spoketohubpeername string
 
 targetScope='subscription'
 
-resource connectivityrg 'Microsoft.Resources/resourceGroups@2020-10-01'={
+resource securityconnectivityrg 'Microsoft.Resources/resourceGroups@2020-10-01'={
   location: location
   name: securityconnectivityrgname
 }
 
-module managemetnvnet 'spoke.bicep' = {
-  scope: connectivityrg
+module securityvnet 'spoke.bicep' = {
+  scope: securityconnectivityrg
   dependsOn:[
-    connectivityrg
+    securityconnectivityrg
   ]
-  name: '${entlzprefix}-security-vnet-${location}'
+  name: securityvnetname
   params:{
     spokevnetname: securityvnetname
     spokevnetprefix: securityvnetprefix    
