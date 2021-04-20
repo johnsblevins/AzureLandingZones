@@ -42,8 +42,8 @@ module spoketohubpeer 'peering.bicep'={
   scope: resourceGroup()
   params:{
     dstVNETName: hubvnet.name
-    dstVNETRG: resourceGroup().name
-    dstVNETSub: subscription().subscriptionId
+    dstVNETRG: hubvnetrg.name
+    dstVNETSub: hubvnetsub
     peerName: spoketohubpeername
     srcVNETName: spokevnetname
     allowForwardedTraffic: true
