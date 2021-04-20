@@ -397,7 +397,6 @@ resource ergw 'Microsoft.Network/virtualNetworkGateways@2020-11-01' = if( !(empt
       name: gwtier
       tier: gwtier
     }
-    activeActive: true
     ipConfigurations:[
       {
         name: '${ergwname}-ipconfig1'
