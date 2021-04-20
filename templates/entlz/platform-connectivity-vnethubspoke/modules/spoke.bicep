@@ -36,20 +36,23 @@ resource spokevnet 'Microsoft.Network/virtualNetworks@2020-08-01'= {
     ]
   }  
 }
-/*
-resource spoketohubpeer 'Microsoft.Network/virtualNetworks/virtualNetworkPeerings@2020-11-01'={
+
+module spoketohubpeer 'peering.bicep'={
   name: spoketohubpeername
-  parent: spokevnet
-  properties:{
-    allowForwardedTraffic:true      
-    allowVirtualNetworkAccess:true
-    useRemoteGateways:true
-    remoteVirtualNetwork:{
-      id: hubvnet.id
-    }      
+  scope: resourceGroup()
+  params:{
+    dstVNETName: hubvnet.name
+    dstVNETRG: resourceGroup().name
+    dstVNETSub: subscription().subscriptionId
+    peerName: spoketohubpeername
+    srcVNETName: spokevnetname
+    allowForwardedTraffic: true
+    allowGatewayTransit: true
+    allowVirtualNetworkAccess: false
+    useRemoteGateways: true
   }
 }
-*/
+
 module hubtospokepeer 'peering.bicep'={
   name: hubtospokepeername
   scope: hubvnetrg
@@ -59,6 +62,10 @@ module hubtospokepeer 'peering.bicep'={
     dstVNETSub: subscription().subscriptionId
     peerName: hubtospokepeername
     srcVNETName: hubvnetname
+    allowForwardedTraffic: false
+    allowGatewayTransit: true
+    allowVirtualNetworkAccess: true
+    useRemoteGateways: false
   }
 }
 
