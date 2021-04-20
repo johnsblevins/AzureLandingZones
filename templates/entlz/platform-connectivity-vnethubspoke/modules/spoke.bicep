@@ -34,17 +34,19 @@ resource spokevnet 'Microsoft.Network/virtualNetworks@2020-08-01'= {
         }
       }
     ]
-  }
-  resource spoketohubpeer 'virtualNetworkPeerings@2020-11-01'={
-    name: spoketohubpeername
-    properties:{
-      allowForwardedTraffic:true      
-      allowVirtualNetworkAccess:true
-      useRemoteGateways:true
-      remoteVirtualNetwork:{
-        id: hubvnet.id
-      }      
-    }
+  }  
+}
+
+resource spoketohubpeer 'Microsoft.Network/virtualNetworks/virtualNetworkPeerings@2020-11-01'={
+  name: spoketohubpeername
+  parent: spokevnet
+  properties:{
+    allowForwardedTraffic:true      
+    allowVirtualNetworkAccess:true
+    useRemoteGateways:true
+    remoteVirtualNetwork:{
+      id: hubvnet.id
+    }      
   }
 }
 
