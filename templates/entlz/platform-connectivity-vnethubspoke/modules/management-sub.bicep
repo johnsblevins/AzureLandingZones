@@ -4,6 +4,11 @@ param managementvnetprefix string
 param managementsubnetprefix string
 param managementconnectivityrgname string
 param location string
+param hubtospokepeername string
+param hubvnetname string
+param hubvnetrg string
+param hubvnetsub string
+param spoketohubpeername string
 
 targetScope='subscription'
 
@@ -22,5 +27,10 @@ module managemetnvnet 'spoke.bicep' = {
     spokevnetname: managementvnetname
     spokevnetprefix: managementvnetprefix    
     managementsubnetprefix: managementsubnetprefix
+    hubtospokepeername: hubtospokepeername
+    hubvnetname: hubvnetname
+    hubvnetrg: hubvnetrg
+    hubvnetsub: hubvnetsub
+    spoketohubpeername: spoketohubpeername
   }
 }
