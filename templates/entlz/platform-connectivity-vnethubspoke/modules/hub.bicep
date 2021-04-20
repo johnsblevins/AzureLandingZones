@@ -29,17 +29,7 @@ param fwip string
 param fwpolicyname string
 param logaworkspaceid string
 
-resource hubvnet 'Microsoft.Network/virtualNetworks@2020-08-01'= {
-  name: hubvnetname
-  location: location
-  properties:{
-    addressSpace: {
-      addressPrefixes: [
-        hubvnetprefix   
-      ]
-    }        
-  }
-}
+
 
 resource fwmanagementrt 'Microsoft.Network/routeTables@2020-11-01' = {
   location: location
@@ -135,74 +125,65 @@ resource gwrt 'Microsoft.Network/routeTables@2020-11-01' = {
   }
 }
 
-resource gwsubnet 'Microsoft.Network/virtualNetworks/subnets@2020-11-01' = if(!(empty(gwsubnetprefix))) {
-  parent: hubvnet
-  name: gwsubnetname
-  dependsOn: [
-    hubvnet
-  ]
-  properties:{
-    addressPrefix: gwsubnetprefix
-  }
-}
-
-resource fwmanagementsubnet 'Microsoft.Network/virtualNetworks/subnets@2020-11-01' = if(!(empty(fwmanagementsubnetprefix))) {
-  parent: hubvnet
-  name: fwmanagementsubnetname
-  dependsOn: [
-    hubvnet
-    gwsubnet
-    fwmanagementrt
-  ]
-  properties:{
-    addressPrefix: fwmanagementsubnetprefix
-    routeTable: {
-      id: fwmanagementrt.id
-    }
-  }
-}
-
-resource fwsubnet 'Microsoft.Network/virtualNetworks/subnets@2020-11-01' = if(!(empty(fwsubnetprefix))) {
-  parent: hubvnet
-  name: fwsubnetname
-  dependsOn: [
-    hubvnet
-    fwmanagementsubnet    
+resource hubvnet 'Microsoft.Network/virtualNetworks@2020-08-01'= {
+  name: hubvnetname
+  location: location
+  dependsOn:[
     fwrt
+    fwmanagementrt
+    hubmanagementrt
+    gwrt
   ]
   properties:{
-    addressPrefix: fwsubnetprefix
-    routeTable: {
-      id: fwrt.id
-    }
-  }
-
-}
-
-resource hubmanagementsubnet 'Microsoft.Network/virtualNetworks/subnets@2020-11-01' = if(!(empty(bastionsubnetprefix))) {
-  parent: hubvnet
-  name: hubmanagementsubnetname
-  dependsOn: [
-    hubvnet
-    fwsubnet
-  ]
-  properties:{
-    addressPrefix: hubmanagementsubnetprefix
-    routeTable:{
-      id: hubmanagementrt.id
-    }
-  }
-}
-
-resource bastionsubnet 'Microsoft.Network/virtualNetworks/subnets@2020-11-01' = if(!(empty(bastionsubnetprefix))) {
-  parent: hubvnet
-  name: bastionsubnetname
-  dependsOn: [
-    hubvnet
-    hubmanagementsubnet
-  ]
-  properties:{
-    addressPrefix: bastionsubnetprefix
+    addressSpace: {
+      addressPrefixes: [
+        hubvnetprefix   
+      ]
+    }  
+    subnets:[
+      {        
+        name: gwsubnetname        
+        properties:{
+          addressPrefix: gwsubnetprefix
+          routeTable:{
+            id: gwrt.id
+          }
+        }
+      }
+      {
+        name: fwmanagementsubnetname        
+        properties:{
+          addressPrefix: fwmanagementsubnetprefix
+          routeTable: {
+            id: fwmanagementrt.id
+          }
+        }
+      }
+      {
+        name: fwsubnetname
+        properties:{
+          addressPrefix: fwsubnetprefix
+          routeTable: {
+            id: fwrt.id
+          }
+        }
+      }
+      {
+        name: hubmanagementsubnetname
+        properties:{
+          addressPrefix: hubmanagementsubnetprefix
+          routeTable:{
+            id: hubmanagementrt.id
+          }
+        }
+      }
+      {
+        name: bastionsubnetname
+        properties:{
+          addressPrefix: bastionsubnetprefix
+        }
+      }
+    ]      
   }
 }
 
@@ -282,7 +263,7 @@ resource fw 'Microsoft.Network/azureFirewalls@2020-11-01'= if( !(empty(fwsubnetp
             id: fwpip.id
           }
           subnet: {
-            id: fwsubnet.id
+            id: '${hubvnet.id}/subnets/${fwsubnetname}'
           }
         }
       }
@@ -294,7 +275,7 @@ resource fw 'Microsoft.Network/azureFirewalls@2020-11-01'= if( !(empty(fwsubnetp
           id: fwmanagementpip.id
         }
         subnet:{
-          id: fwmanagementsubnet.id
+          id: '${hubvnet.id}/subnets/${fwmanagementsubnetname}'
         }
       }
     }
@@ -364,7 +345,7 @@ resource vpngw 'Microsoft.Network/virtualNetworkGateways@2020-11-01' = if( !(emp
   location: location
   name: vpngwname
   dependsOn:[
-    gwsubnet
+    hubvnet
     vpngwpip1
     vpngwpip2
   ]
@@ -380,7 +361,7 @@ resource vpngw 'Microsoft.Network/virtualNetworkGateways@2020-11-01' = if( !(emp
         name: '${vpngwname}-ipconfig1'
         properties:{
           subnet: {
-            id: gwsubnet.id
+            id: '${hubvnet.id}/subnets/${gwsubnetname}'
           }
           publicIPAddress: {
             id: vpngwpip1.id
@@ -391,7 +372,7 @@ resource vpngw 'Microsoft.Network/virtualNetworkGateways@2020-11-01' = if( !(emp
         name: '${vpngwname}-ipconfig2'
         properties:{
           subnet: {
-            id: gwsubnet.id
+            id: '${hubvnet.id}/subnets/${gwsubnetname}'
           }
           publicIPAddress: {
             id: vpngwpip2.id
@@ -407,7 +388,7 @@ resource ergw 'Microsoft.Network/virtualNetworkGateways@2020-11-01' = if( !(empt
   location: location
   name: ergwname
   dependsOn:[
-    gwsubnet
+    hubvnet
     ergwpip
   ]
   properties:{
@@ -421,7 +402,9 @@ resource ergw 'Microsoft.Network/virtualNetworkGateways@2020-11-01' = if( !(empt
       {
         name: '${ergwname}-ipconfig1'
         properties:{
-          subnet: gwsubnet
+          subnet: {
+            id: '${hubvnet.id}/subnets/${gwsubnetname}'
+          }
           publicIPAddress: {
             id: ergwpip.id
           }          
