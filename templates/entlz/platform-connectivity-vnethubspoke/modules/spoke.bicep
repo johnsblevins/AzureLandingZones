@@ -6,6 +6,8 @@ param hubvnetsub string
 param hubvnetrgname string
 param spoketohubpeername string
 param hubtospokepeername string
+param spokevnetrtname string
+param fwip string
 
 resource hubvnetrg 'Microsoft.Resources/resourceGroups@2020-10-01' existing={
   name: hubvnetrgname
@@ -17,8 +19,41 @@ resource hubvnet 'Microsoft.Network/virtualNetworks@2020-08-01' existing={
   scope: resourceGroup('${hubvnetsub}','${hubvnetrg}')
 }
 
+resource spokert 'Microsoft.Network/routeTables@2020-11-01'={
+  name: spokevnetrtname
+  location: resourceGroup().location
+  properties:{
+    disableBgpRoutePropagation: true
+    routes:[
+      {
+        name: 'defaultroute'
+        properties: {
+          addressPrefix: '0.0.0.0/0'
+          nextHopIpAddress: fwip
+          nextHopType: 'VirtualAppliance'
+        }
+      }
+    ]
+  }
+}
+
+resource spokertlock 'Microsoft.Authorization/locks@2016-09-01'={
+  name: 'routetablelock'
+  dependsOn:[
+    spokert
+  ]
+  properties: {
+    level: 'ReadOnly'    
+  }
+  scope: spokert
+}
+
 resource spokevnet 'Microsoft.Network/virtualNetworks@2020-08-01'= {
   name: spokevnetname
+  dependsOn:[
+    spokert
+    spokertlock
+  ]
   location: resourceGroup().location
   properties:{
     addressSpace: {
@@ -31,6 +66,9 @@ resource spokevnet 'Microsoft.Network/virtualNetworks@2020-08-01'= {
         name: 'management'
         properties:{
           addressPrefix: managementsubnetprefix     
+          routeTable:{
+            id: spokevnetrtname
+          }
         }
       }
     ]

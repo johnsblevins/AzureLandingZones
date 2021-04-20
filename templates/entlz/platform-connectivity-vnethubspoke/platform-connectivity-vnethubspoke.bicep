@@ -24,37 +24,40 @@ param logaworkspaceid string
 targetScope='managementGroup'
 
 var bastioname = '${entlzprefix}-hub-bastion-${location}'
-var fwname = '${entlzprefix}-hub-fw-${location}'
-var managementvnetname = '${entlzprefix}-management-vnet-${location}'
-var identityvnetname = '${entlzprefix}-identity-vnet-${location}'
-var securityvnetname = '${entlzprefix}-security-vnet-${location}'
-var vpngwname = '${entlzprefix}-hub-vpngw-${location}'
-var ergwname = '${entlzprefix}-hub-ergw-${location}'
-var hubvnetname = '${entlzprefix}-hub-vnet-${location}'
-var gwsubnetname = 'GatewaySubnet'
-var fwsubnetname = 'AzureFirewallSubnet'
 var bastionsubnetname = 'AzureBastionSubnet'
-var fwmanagementsubnetname = 'AzureFirewallManagementSubnet'
-var hubmanagementsubnetname = 'HubManagement'
-var gwtier = ( gwtype=='ExpressRoute'?'ErGw1AZ':'VpnGw2AZ' )
-var fwrtname = '${hubvnetname}-fw-rt'
+var ergwname = '${entlzprefix}-hub-ergw-${location}'
+var fw_subnetoctets=split(split(fwsubnetprefix,'/')[0],'.')
+var fw_lastoctet=string(int(fw_subnetoctets[3])+4)
+var fwip=concat(fw_subnetoctets[0],'.',fw_subnetoctets[1],'.',fw_subnetoctets[2],'.',fw_lastoctet)
 var fwmanagementrtname = '${hubvnetname}-fwmanagement-rt'
-var hubmanagementrtname = '${hubvnetname}-management-rt'
-var gwrtname = '${hubvnetname}-gw-rt'
-var fwsubnetoctets=split(split(fwsubnetprefix,'/')[0],'.')
-var fwlastoctet=string(int(fwsubnetoctets[3])+4)
-var fwip=concat(fwsubnetoctets[0],'.',fwsubnetoctets[1],'.',fwsubnetoctets[2],'.',fwlastoctet)
-var hubconnectivityrgname = '${entlzprefix}-hub-connectivity-${location}'
-var managementconnectivityrgname = '${entlzprefix}-management-connectivity-${location}'
+var fwmanagementsubnetname = 'AzureFirewallManagementSubnet'
+var fwname = '${entlzprefix}-hub-fw-${location}'
 var fwpolicyname = '${fwname}-policy'
-var hubtomanagementspokepeername = 'hub-to-management-${location}'
-var managementspoketohubpeername = 'management-to-hub-${location}'
-var identityconnectivityrgname = '${entlzprefix}-identity-connectivity-${location}'
+var fwrtname = '${hubvnetname}-fw-rt'
+var fwsubnetname = 'AzureFirewallSubnet'
+var gwrtname = '${hubvnetname}-gw-rt'
+var gwsubnetname = 'GatewaySubnet'
+var gwtier = ( gwtype=='ExpressRoute'?'ErGw1AZ':'VpnGw2AZ' )
+var hubconnectivityrgname = '${entlzprefix}-hub-connectivity-${location}'
+var hubmanagementrtname = '${hubvnetname}-management-rt'
+var hubmanagementsubnetname = 'HubManagement'
 var hubtoidentityspokepeername = 'hub-to-identity-${location}'
-var identityspoketohubpeername = 'identity-to-hub-${location}'
-var securityconnectivityrgname = '${entlzprefix}-security-connectivity-${location}'
+var hubtomanagementspokepeername = 'hub-to-management-${location}'
 var hubtosecurityspokepeername = 'hub-to-security-${location}'
+var hubvnetname = '${entlzprefix}-hub-vnet-${location}'
+var identityconnectivityrgname = '${entlzprefix}-identity-connectivity-${location}'
+var identityspoketohubpeername = 'identity-to-hub-${location}'
+var identityvnetname = '${entlzprefix}-identity-vnet-${location}'
+var managementconnectivityrgname = '${entlzprefix}-management-connectivity-${location}'
+var managementspoketohubpeername = 'management-to-hub-${location}'
+var managementvnetname = '${entlzprefix}-management-vnet-${location}'
+var managementvnetrtname = '${subscription(managementsubid)}-locked-rt'
+var identityvnetrtname = '${subscription(identitysubid)}-locked-rt'
+var securityconnectivityrgname = '${entlzprefix}-security-connectivity-${location}'
 var securityspoketohubpeername = 'security-to-hub-${location}'
+var securityvnetname = '${entlzprefix}-security-vnet-${location}'
+var securityvnetrtname = '${subscription(securitysubid)}-locked-rt'
+var vpngwname = '${entlzprefix}-hub-vpngw-${location}'
 
 module connectivitysub 'modules/connectivity-sub.bicep' ={
   name: 'connectivitysub'
@@ -115,6 +118,8 @@ module managementsub 'modules/management-sub.bicep' ={
     hubvnetrgname: hubconnectivityrgname
     hubvnetsub: connectivitysubid
     spoketohubpeername: managementspoketohubpeername
+    fwip: fwip
+    spokevnetrtname: managementvnetrtname
   }
 }
 
@@ -136,6 +141,8 @@ module identitysub 'modules/identity-sub.bicep' ={
     hubvnetrgname: hubconnectivityrgname
     hubvnetsub: connectivitysubid
     spoketohubpeername: identityspoketohubpeername
+    fwip: fwip
+    spokevnetrtname: identityvnetrtname
   }
 }
 
@@ -158,6 +165,8 @@ module securitysub 'modules/security-sub.bicep' ={
     hubvnetrgname: hubconnectivityrgname
     hubvnetsub: connectivitysubid
     spoketohubpeername: securityspoketohubpeername
+    fwip: fwip
+    spokevnetrtname: securityvnetrtname
   }
 }
 
