@@ -17,8 +17,8 @@ resource srcVNET 'Microsoft.Network/virtualNetworks@2020-08-01' existing={
       dstVNET
     ]
     properties:{
-      allowForwardedTraffic: true
-      allowGatewayTransit: false
+      allowForwardedTraffic: false
+      allowGatewayTransit: true
       allowVirtualNetworkAccess: true
       remoteVirtualNetwork: {
         id: dstVNET.id

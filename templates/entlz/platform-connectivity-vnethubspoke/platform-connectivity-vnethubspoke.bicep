@@ -49,6 +49,12 @@ var managementconnectivityrgname = '${entlzprefix}-management-connectivity-${loc
 var fwpolicyname = '${fwname}-policy'
 var hubtomanagementspokepeername = 'hub-to-management-${location}'
 var managementspoketohubpeername = 'management-to-hub-${location}'
+var identityconnectivityrgname = '${entlzprefix}-identity-connectivity-${location}'
+var hubtoidentityspokepeername = 'hub-to-identity-${location}'
+var identityspoketohubpeername = 'identity-to-hub-${location}'
+var securityconnectivityrgname = '${entlzprefix}-security-connectivity-${location}'
+var hubtosecurityspokepeername = 'hub-to-security-${location}'
+var securityspoketohubpeername = 'security-to-hub-${location}'
 
 module connectivitysub 'modules/connectivity-sub.bicep' ={
   name: 'connectivitysub'
@@ -108,7 +114,7 @@ module managementsub 'modules/management-sub.bicep' ={
     spoketohubpeername: managementspoketohubpeername
   }
 }
-/*
+
 module identitysub 'modules/identity-sub.bicep' ={
   name: 'identitysub'
   scope: subscription(identitysubid)
@@ -117,8 +123,16 @@ module identitysub 'modules/identity-sub.bicep' ={
     identitysubnetprefix: identitysubnetprefix
     identityvnetname: identityvnetname
     identityvnetprefix: identityvnetprefix
+    identityconnectivityrgname:  identityconnectivityrgname
+    location: location
+    hubtospokepeername: hubtoidentityspokepeername
+    hubvnetname: hubvnetname
+    hubvnetrgname: hubconnectivityrgname
+    hubvnetsub: connectivitysubid
+    spoketohubpeername: identityspoketohubpeername
   }
 }
+
 
 module securitysub 'modules/security-sub.bicep' ={
   name: 'securitysub'
@@ -128,7 +142,14 @@ module securitysub 'modules/security-sub.bicep' ={
     securitysubnetprefix: securitysubnetprefix
     securityvnetname: securityvnetname
     securityvnetprefix: securityvnetprefix
+    securityconnectivityrgname:  securityconnectivityrgname
+    location: location
+    hubtospokepeername: hubtosecurityspokepeername
+    hubvnetname: hubvnetname
+    hubvnetrgname: hubconnectivityrgname
+    hubvnetsub: connectivitysubid
+    spoketohubpeername: securityspoketohubpeername
   }
 }
 
-*/
+

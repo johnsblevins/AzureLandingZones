@@ -2,25 +2,35 @@ param entlzprefix string
 param identityvnetname string
 param identityvnetprefix string
 param identitysubnetprefix string
+param identityconnectivityrgname string
+param location string
+param hubtospokepeername string
+param hubvnetname string
+param hubvnetrgname string
+param hubvnetsub string
+param spoketohubpeername string
 
 targetScope='subscription'
 
-var location = deployment().location
-
 resource connectivityrg 'Microsoft.Resources/resourceGroups@2020-10-01'={
   location: location
-  name: '${entlzprefix}-identity-connectivity-${location}'
+  name: identityconnectivityrgname
 }
 
-module managemetnvnet 'modules/spoke.bicep' = {
+module managemetnvnet 'spoke.bicep' = {
   scope: connectivityrg
   dependsOn:[
     connectivityrg
   ]
-  name: '${entlzprefix}-identity-vnet-${location}'
+  name: identityvnetname
   params:{
     spokevnetname: identityvnetname
     spokevnetprefix: identityvnetprefix    
     managementsubnetprefix: identitysubnetprefix
+    hubtospokepeername: hubtospokepeername
+    hubvnetname: hubvnetname
+    hubvnetrgname: hubvnetrgname
+    hubvnetsub: hubvnetsub
+    spoketohubpeername: spoketohubpeername
   }
 }
