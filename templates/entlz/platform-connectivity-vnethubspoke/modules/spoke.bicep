@@ -7,7 +7,7 @@ param hubvnetrgname string
 param spoketohubpeername string
 param hubtospokepeername string
 
-resource hubvnetrg 'Microsoft.Resources/resourceGroups@2021-01-01' existing={
+resource hubvnetrg 'Microsoft.Resources/resourceGroups@2020-10-01' existing={
   name: hubvnetrgname
   scope: subscription('${hubvnetsub}')
 }
