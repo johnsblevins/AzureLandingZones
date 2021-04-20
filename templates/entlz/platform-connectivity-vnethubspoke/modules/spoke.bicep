@@ -13,7 +13,7 @@ resource hubvnetrg 'Microsoft.Resources/resourceGroups@2020-10-01' existing={
 }
 
 resource hubvnet 'Microsoft.Network/virtualNetworks@2020-08-01' existing={
-  name: '${hubvnetname}'
+  name: hubvnetname
   scope: resourceGroup('${hubvnetsub}','${hubvnetrg}')
 }
 
@@ -49,7 +49,7 @@ resource spokevnet 'Microsoft.Network/virtualNetworks@2020-08-01'= {
 }
 
 module hubtospokepeer 'peering.bicep'={
-  name: 'hubtospokepeerdeployment'
+  name: hubtospokepeername
   scope: hubvnetrg
   params:{
     dstVNETName: spokevnet.name

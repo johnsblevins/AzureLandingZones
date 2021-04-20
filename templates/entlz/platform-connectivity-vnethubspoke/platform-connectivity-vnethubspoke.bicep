@@ -100,6 +100,9 @@ module connectivitysub 'modules/connectivity-sub.bicep' ={
 module managementsub 'modules/management-sub.bicep' ={
   name: 'managementsub'
   scope: subscription(managementsubid)
+  dependsOn:[
+    connectivitysub
+  ]
   params:{
     entlzprefix: entlzprefix
     managementsubnetprefix: managementsubnetprefix
@@ -118,6 +121,9 @@ module managementsub 'modules/management-sub.bicep' ={
 module identitysub 'modules/identity-sub.bicep' ={
   name: 'identitysub'
   scope: subscription(identitysubid)
+  dependsOn:[
+    managementsub
+  ]
   params:{
     entlzprefix: entlzprefix
     identitysubnetprefix: identitysubnetprefix
@@ -137,6 +143,9 @@ module identitysub 'modules/identity-sub.bicep' ={
 module securitysub 'modules/security-sub.bicep' ={
   name: 'securitysub'
   scope: subscription(securitysubid)
+  dependsOn: [
+    identitysub
+  ]
   params:{
     entlzprefix: entlzprefix
     securitysubnetprefix: securitysubnetprefix
