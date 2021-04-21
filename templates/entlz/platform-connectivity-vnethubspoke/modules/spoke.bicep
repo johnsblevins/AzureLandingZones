@@ -37,22 +37,11 @@ resource spokert 'Microsoft.Network/routeTables@2020-11-01'={
   }
 }
 
-resource spokertlock 'Microsoft.Authorization/locks@2016-09-01'={
-  name: 'routetablelock'
-  dependsOn:[
-    spokert
-  ]
-  properties: {
-    level: 'ReadOnly'    
-  }
-  scope: spokert
-}
 
 resource spokevnet 'Microsoft.Network/virtualNetworks@2020-08-01'= {
   name: spokevnetname
   dependsOn:[
     spokert
-    spokertlock
   ]
   location: resourceGroup().location
   properties:{
@@ -77,6 +66,9 @@ resource spokevnet 'Microsoft.Network/virtualNetworks@2020-08-01'= {
 
 module spoketohubpeer 'peering.bicep'={
   name: spoketohubpeername
+  dependsOn:[
+    spokevnet
+  ]
   scope: resourceGroup()
   params:{
     dstVNETName: hubvnet.name
@@ -93,6 +85,9 @@ module spoketohubpeer 'peering.bicep'={
 
 module hubtospokepeer 'peering.bicep'={
   name: hubtospokepeername
+  dependsOn:[
+    spokevnet
+  ]
   scope: hubvnetrg
   params:{
     dstVNETName: spokevnet.name
@@ -106,6 +101,19 @@ module hubtospokepeer 'peering.bicep'={
     useRemoteGateways: false
   }
 }
+
+resource spokertlock 'Microsoft.Authorization/locks@2016-09-01'={
+  name: 'routetablelock'
+  dependsOn:[
+    spoketohubpeer
+    hubtospokepeer
+  ]
+  properties: {
+    level: 'ReadOnly'    
+  }
+  scope: spokert
+}
+
 
 output spokevnetid string = spokevnet.id
 output hubvnetid string = hubvnet.id
