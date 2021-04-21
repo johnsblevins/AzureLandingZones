@@ -11,12 +11,12 @@ env:
   subownergroup: azure-platform-owners
   offertype: MS-AZR-USGOV-0017P
   enracctname: 
-  vnetprefix: '10.128.0.0/23'
-  managementsubnetprefix: '10.128.0.0/26'
-  websubnetprefix: '10.128.64.0/26'
-  appsubnetprefix: '10.128.128.0/26'
-  datasubnetprefix: '10.128.196.0/26'
-  fwip: '10.0.0.4'
+  vnetprefix: 10.128.0.0/23
+  managementsubnetprefix: 10.128.0.0/26
+  websubnetprefix: 10.128.64.0/26
+  appsubnetprefix: 10.128.128.0/26
+  datasubnetprefix: 10.128.196.0/26
+  fwip: 10.0.0.4
   hubvnetname: elz1-hub-vnet-usgovvirginia
   hubvnetrgname: elz1-hub-connectivity-usgovvirginia
   hubvnetsubid: b30166b8-dd1b-4fa2-9ad7-057614257b06
@@ -139,7 +139,6 @@ jobs:
               appsubnetprefix=${{ env.appsubnetprefix }}
               datasubnetprefix=${{ env.datasubnetprefix }}              
               devenvironment=${{ env.devenvironment }}
-              entlzprefix=${{ env.entlzprefix }}
               fwip=${{ env.fwip }}
               hosting=${{ env.hosting }}              
               hubvnetname=${{ env.hubvnetname }}
