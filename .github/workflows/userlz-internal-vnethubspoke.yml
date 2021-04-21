@@ -7,7 +7,7 @@ env:
   devenvironment: np # 2 digit environment code: pr - (pr)od, np - (n)on-(p)rod  
   entlzprefix: elz1 # Enterprise Scale Landing Zone Prefix (use existing)
   azureenvironment: azureusgovernment
-  azurelocation: usgovvirginia
+  location: usgovvirginia
   subownergroup: azure-platform-owners
   offertype: MS-AZR-USGOV-0017P
   enracctname: 
