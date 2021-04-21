@@ -139,7 +139,7 @@ jobs:
               appsubnetprefix=${{ env.appsubnetprefix }}
               datasubnetprefix=${{ env.datasubnetprefix }}              
               devenvironment=${{ env.devenvironment }}
-              fwip=${{ env.fwip }}
+              fwip="10.0.0.4"
               hosting=${{ env.hosting }}              
               hubvnetname=${{ env.hubvnetname }}
               hubvnetrgname=${{ env.hubvnetrgname }}
@@ -157,7 +157,7 @@ jobs:
                 -p  appsubnetprefix=$appsubnetprefix \
                     datasubnetprefix=$datasubnetprefix \
                     devenvironment=$devenvironment \
-                    fwip="10.0.0.4" \
+                    fwip=$fwip \
                     hosting=$hosting \
                     hubvnetsubid=$hubvnetsubid \
                     hubvnetname=$hubvnetname \
