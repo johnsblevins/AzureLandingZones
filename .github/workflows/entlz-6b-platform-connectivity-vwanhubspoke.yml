@@ -3,6 +3,8 @@ name: entlz-6b-platform-connectivity-vwanhubspoke
 # Controls when the action will run. 
 on:
   # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+  
   push:
     branches:
       - dev
