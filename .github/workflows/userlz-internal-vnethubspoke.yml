@@ -13,9 +13,9 @@ env:
   enracctname: 
   vnetprefix: 10.128.0.0/23
   managementsubnetprefix: 10.128.0.0/26
-  websubnetprefix: 10.128.64.0/26
-  appsubnetprefix: 10.128.128.0/26
-  datasubnetprefix: 10.128.196.0/26
+  websubnetprefix: 10.128.0.64/26
+  appsubnetprefix: 10.128.0.128/26
+  datasubnetprefix: 10.128.0.196/26
   fwip: 10.0.0.4
   hubvnetname: elz1-hub-vnet-usgovvirginia
   hubvnetrgname: elz1-hub-connectivity-usgovvirginia
