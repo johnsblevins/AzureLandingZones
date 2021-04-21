@@ -25,7 +25,7 @@ jobs:
         
           
         steps:
-        - uses: actions/checkout@master        
+        - uses: actions/checkout@dev        
         - name: Log in with Azure
           uses: azure/login@v1
           with:

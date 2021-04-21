@@ -21,7 +21,7 @@ jobs:
           managementsubid: 07526f72-6689-42be-945f-bb6ad0214b71
           
         steps:
-        - uses: actions/checkout@master        
+        - uses: actions/checkout@dev        
         - name: Log in with Azure
           uses: azure/login@v1
           with:
