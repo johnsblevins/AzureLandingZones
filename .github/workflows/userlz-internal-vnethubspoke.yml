@@ -115,10 +115,10 @@ jobs:
           with:
             azcliversion: 2.21.0
             inlineScript: |
+              az config set extension.use_dynamic_install=yes_without_prompt
               subname="${{ env.program }}-${{ env.hosting }}-${{ env.devenvironment }}"
               mgname="${{ env.program }}-${{ env.hosting }}-${{ env.devenvironment }}"         
-              subId=$(az account subscription list --query "[?displayName=='$subName'].subscriptionId" --output tsv)
-              az config set extension.use_dynamic_install=yes_without_prompt
+              subId=$(az account subscription list --query "[?displayName=='$subName'].subscriptionId" --output tsv)              
               az account management-group subscription add --name "$mgname" \
               --subscription $subId
 
