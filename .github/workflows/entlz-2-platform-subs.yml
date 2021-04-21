@@ -17,12 +17,19 @@ on:
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
+  push:
+      branches:
+        - dev
+      paths:
+        - '.github/workflows/entlz-2-platform-subs.yml'
 
 jobs:
     build-and-deploy:
         runs-on: ubuntu-latest
         steps:
-        - uses: actions/checkout@master        
+        - uses: actions/checkout@v2
+          with:
+            ref: dev
         - name: Log in with Azure
           uses: azure/login@v1
           with:

@@ -1,1 +1,0 @@
-[Azure Policies on GitHub](https://github.com/Azure/azure-policy)
