@@ -3,7 +3,7 @@ param datasubnetprefix string //Data Subnet Prefix
 param devenvironment string //(pr)od, (n)on(p)rod - 2 character MAX - pr or np
 param fwip string //
 param hosting string //(ext)ernal, (int)ernal, (s)and(b)o(x) - 3 character MAX - ext, int or sbx
-param hubvnetsub string //
+param hubvnetsubid string //
 param hubvnetrgname string  //
 param hubvnetname string //
 param managementsubnetprefix string //Management Subnet Prefix
@@ -20,6 +20,7 @@ var spokevnetname = '${subname}-vnet-${location}'
 var hubtospokepeername = '${hubvnetname}-to-${spokevnetname}'
 var spoketohubpeername = '${spokevnetname}-to-${hubvnetname}'
 var spokevnetrtname = '${subname}-routetable-${location}'
+var spokevnetnsgname = '${subname}-nsg-${location}'
 var diskencryptionsetname = '${subname}-diskencryptionset-${location}'
 var keyvaultname = '${subname}-keyvault-${location}'
 var keyvaultkeyname = '${subname}-deskey-${location}'
@@ -44,12 +45,16 @@ module spokevnet 'modules/spoke.bicep'={
     hubtospokepeername: hubtospokepeername
     hubvnetname: hubvnetname
     hubvnetrgname: hubvnetrgname
-    hubvnetsub: hubvnetsub
     managementsubnetprefix: managementsubnetprefix
     spoketohubpeername: spoketohubpeername
     spokevnetname: spokevnetname
     spokevnetprefix: vnetprefix
     spokevnetrtname: spokevnetrtname
+    appsubnetprefix: appsubnetprefix
+    datasubnetprefix: datasubnetprefix
+    hubvnetsubid: hubvnetsubid
+    spokensgname: spokevnetnsgname
+    websubnetprefix: websubnetprefix
   }
 }
 
