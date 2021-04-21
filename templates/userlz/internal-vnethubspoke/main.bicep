@@ -9,6 +9,7 @@ param hubvnetname string //
 param managementsubnetprefix string //Management Subnet Prefix
 param program string // Program Name - 5 character MAX
 param subname string
+param uniqueid string
 param vnetprefix string //prod, nonprod, sandbox
 param websubnetprefix string //Web Subnet Prefix
 
@@ -22,7 +23,7 @@ var spoketohubpeername = '${spokevnetname}-to-${hubvnetname}'
 var spokevnetrtname = '${subname}-routetable-${location}'
 var spokevnetnsgname = '${subname}-nsg-${location}'
 var diskencryptionsetname = '${subname}-diskencryptionset-${location}'
-var keyvaultname = '${subname}-keyvault-${location}'
+var keyvaultname = '${subname}kv${location}${uniqueid}'
 var keyvaultkeyname = '${subname}-deskey-${location}'
 
 targetScope = 'subscription'

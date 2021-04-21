@@ -20,6 +20,7 @@ env:
   hubvnetname: elz1-hub-vnet-usgovvirginia
   hubvnetrgname: elz1-hub-connectivity-usgovvirginia
   hubvnetsubid: b30166b8-dd1b-4fa2-9ad7-057614257b06
+  uniqueid: 1
 
 # Controls when the action will run. 
 on:
@@ -139,7 +140,7 @@ jobs:
               appsubnetprefix=${{ env.appsubnetprefix }}
               datasubnetprefix=${{ env.datasubnetprefix }}              
               devenvironment=${{ env.devenvironment }}
-              fwip=${{ env.fwip }}
+              fwip="${{ env.fwip }}"
               hosting=${{ env.hosting }}              
               hubvnetname=${{ env.hubvnetname }}
               hubvnetrgname=${{ env.hubvnetrgname }}
@@ -150,6 +151,7 @@ jobs:
               subname="${{ env.program }}-${{ env.hosting }}-${{ env.devenvironment }}"
               vnetprefix=${{ env.vnetprefix }}
               websubnetprefix=${{ env.websubnetprefix }}
+              uniqueid="${{ env.uniqueid }}"
               
 
               az deployment sub create -f templates/userlz/internal-vnethubspoke/main.bicep \
@@ -166,4 +168,5 @@ jobs:
                     program=$program \
                     subname=$subname \
                     vnetprefix=$vnetprefix \
-                    websubnetprefix=$websubnetprefix
+                    websubnetprefix=$websubnetprefix \
+                    uniqueid=$uniqueid
