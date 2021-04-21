@@ -20,7 +20,7 @@ on:
     branches:
       - dev
     paths:
-      - 'templates/userlz-internal-vnethubspoke/**'
+      - 'templates/userlz/internal-vnethubspoke/**'
       - '.github/workflows/userlz-internal-vnethubspoke.yml'
 
 jobs:
