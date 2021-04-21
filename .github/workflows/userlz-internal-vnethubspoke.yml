@@ -33,16 +33,16 @@ jobs:
             environment: ${{ env.azureenvironment }}
             enable-AzPSSession: false
 
-        - name: Create Management Group
+        - name: Create Management Group (if not exists)
           uses: azure/CLI@v1
           with:
             azcliversion: 2.21.0
             inlineScript: |
               mgid=$(az account management-group list --query "[?displayName=='$program-$hosting-$devenvironment'].id" --output tsv)
-              if[[ -z mgid ]];
+              if [[ -z $mgid ]];
               then
-                parentmgid=$(az account management-group list --query "[?displayName=='$entlzprefix-$hosting-$devenvironment'].id" --output tsv)
-                az account management-group create --name "$program-$hosting-$devenvironment" --display-name "$program-$hosting-$devenvironment" --parent $parentmgid
+                parentmgid=$(az account management-group list --query "[?displayName=='$entlzprefix-$hosting-$devenvironment'].id" --output tsv);
+                az account management-group create --name "$program-$hosting-$devenvironment" --display-name "$program-$hosting-$devenvironment" --parent $parentmgid;
               fi;
 
 #        - name: Provision EA Subscription
