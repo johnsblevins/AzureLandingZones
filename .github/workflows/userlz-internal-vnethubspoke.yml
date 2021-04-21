@@ -1,0 +1,105 @@
+name: userlz-vnethubspoke-internal
+
+env:
+  subid: 49a3b652-465d-4e7b-9db3-90058495a37b
+  program: prog1 # 5 digit progam code
+  hosting: int # 3 digit hosting code: int - (int)ernal, ext - (ext)ernal, sbx - (s)and(b)o(x)
+  devenvironment: np # 2 digit environment code: pr - (pr)od, np - (n)on-(p)rod  
+  entlzprefix: elz1 # Enterprise Scale Landing Zone Prefix (use existing)
+  azureenvironment: azureusgovernment
+  azurelocation: usgovvirginia
+
+# Controls when the action will run. 
+on:
+  # Allows you to run this workflow manually from the Actions tab
+#  workflow_dispatch:
+  push:
+    branches:
+      - master
+    paths:
+      - 'templates/userlz-internal-vnethubspoke/**'
+      - '.github/workflows/userlz-internal-vnethubspoke.yml'
+
+jobs:
+    build-and-deploy:
+        runs-on: ubuntu-latest
+        steps:
+        - uses: actions/checkout@master
+        
+        - name: Log in with Azure
+          uses: azure/login@v1
+          with:
+            creds: ${{ secrets.AZGOV_CREDS }}
+            environment: ${{ env.azureenvironment }}
+            enable-AzPSSession: false
+
+        - name: Create Management Group
+          uses: azure/CLI@v1
+          with:
+            azcliversion: 2.21.0
+            inlineScript: |
+              mgid=$(az account management-group list --query "[?displayName=='$program-$hosting-$devenvironment'].id" --output tsv)
+              if( -z mgid );
+              then
+                parentmgid=$(az account management-group list --query "[?displayName=='$entlzprefix-$hosting-$devenvironment'].id" --output tsv)
+                az account management-group create --name "$program-$hosting-$devenvironment" --display-name "$program-$hosting-$devenvironment" --parent $parentmgid
+              fi;
+
+#        - name: Provision EA Subscription
+#          uses: azure/CLI@v1
+#          with:
+#            azcliversion: 2.21.0
+#            inlineScript: |
+#              az config set extension.use_dynamic_install=yes_without_prompt
+#              resourceManagerURI=$(az cloud show --query 'endpoints.resourceManager' -o tsv)
+#              subName="${{ secrets.USERLZ_PROGRAM_TYPE }}-${{ secrets.USERLZ_PROGRAM_ENV }}-${{ secrets.USERLZ_PROGRAM_NAME }}"
+#              az rest --method post \
+#              --uri "${resourceManagerURI}providers/Microsoft.Billing/enrollmentAccounts/${{ secrets.USERLZ_ENROLLMENT_ACCOUNT_NAME }}/providers/Microsoft.Subscription/createSubscription?api-version=2019-10-01-preview" \
+#              --headers "{\"content-type\":\"application/json\"}" \
+#              --body "{\"displayName\": \"${subName}\", \"offerType\": \"${{ secrets.USERLZ_OFFER_TYPE }}\", \"owners\": [{\"objectId\": \"${{ secrets.USERLZ_SUBSCRIPTION_OWNER }}\"}]}"
+#              sleep 30
+#        
+#        - name: Apply Tags to Subscription
+#          uses: azure/CLI@v1
+#          with:
+#            azcliversion: 2.21.0
+#            inlineScript: |
+#              NOW=$(date +"%m/%d/%Y_%I:%M:%S_%p")
+#              subName="${{ secrets.USERLZ_PROGRAM_TYPE }}-${{ secrets.USERLZ_PROGRAM_ENV }}-${{ secrets.USERLZ_PROGRAM_NAME }}"
+#              subId=$(az account subscription list --query "[?displayName=='$subName'].subscriptionId" --output tsv)
+#              az tag create --resource-id /subscriptions/$subId --tags createdOn="$NOW" programType="${{ secrets.USERLZ_PROGRAM_TYPE }}" programEnv="${{ secrets.USERLZ_PROGRAM_ENV }}" programName="${{ secrets.USERLZ_PROGRAM_NAME }}" ${{ secrets.USERLZ_TAGS }}
+#
+#        - name: Log in to Azure Again
+#          uses: azure/login@v1
+#          with:
+#            creds: ${{ secrets.USERLZ_AZURE_GOV_CREDENTIALS }}
+#            environment: ${{ secrets.USERLZ_AZURE_ENVIRONMENT }}
+#            enable-AzPSSession: false
+#
+#        - name: Move Subscription to Management Group
+#          uses: azure/CLI@v1
+#          with:
+#            azcliversion: 2.21.0
+#            inlineScript: |
+#              subName="${{ secrets.USERLZ_PROGRAM_TYPE }}-${{ secrets.USERLZ_PROGRAM_ENV }}-${{ secrets.USERLZ_PROGRAM_NAME }}"
+#              subId=$(az account subscription list --query "[?displayName=='$subName'].subscriptionId" --output tsv)
+#              az account management-group subscription add --name "${{ secrets.USERLZ_MANAGEMENT_GROUP }}" \
+#              --subscription $subId
+
+#        - name: User Landing Zone Deployment
+#          uses: azure/CLI@v1
+#         with:
+#            azcliversion: 2.21.0
+#            inlineScript: |
+#                az deployment sub create -f templates/userlz/userlz-internal/templates/main.bicep -l ${{ secrets.USERLZ_LOCATION }} -p programName=${{ secrets.USERLZ_PROGRAM_NAME }} \
+#                programType=${{ secrets.USERLZ_PROGRAM_TYPE }} programEnv=${{ secrets.USERLZ_PROGRAM_ENV }} vnetPrefix= ${{ secrets.USERLZ_VNET_PREFIX }} \
+#                mgmtSubnetPrefix=${{ secrets.MGMT_SUBNET_PREFIX }} webSubnetPrefix= ${{ secrets.USERLZ_WEB_SUBNET_PREFIX  }} \
+#                appSubnetPrefix=${{ secrets.APP_SUBNET_PREFIX }} dataSubnetPrefix=${{ secrets.DATA_SUBNET_PREFIX }} firewallIP=${{ secrets.FIREWALL_IP }}
+
+#        - name: Remove Subscription Deployment Account as Owner
+#          uses: azure/CLI@v1
+#          with:
+#            azcliversion: 2.21.0
+#            inlineScript: |
+#              az account management-group subscription add --name "${{ secrets.USERLZ_MANAGEMENT_GROUP }}" \
+#              --subscription ${{ secrets.USERLZ_SUBNAME }}

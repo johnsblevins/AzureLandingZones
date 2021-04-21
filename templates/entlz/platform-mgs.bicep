@@ -97,7 +97,7 @@ module internalProd 'modules/parentedmg.bicep'={
     internal
   ]
   params:{
-    name: '${entlzprefix}-internal-prod'
+    name: '${entlzprefix}-int-pr'
     parentId: internal.outputs.mgId
   }
 }
@@ -108,7 +108,7 @@ module internalNonProd 'modules/parentedmg.bicep'={
     internal
   ]
   params:{
-    name: '${entlzprefix}-internal-nonprod'
+    name: '${entlzprefix}-int-np'
     parentId: internal.outputs.mgId
   }
 }
@@ -130,7 +130,7 @@ module externalProd 'modules/parentedmg.bicep'={
     external
   ]
   params:{
-    name: '${entlzprefix}-external-prod'
+    name: '${entlzprefix}-ext-pr'
     parentId: external.outputs.mgId
   }
 }
@@ -141,7 +141,7 @@ module externalNonProd 'modules/parentedmg.bicep'={
     external
   ]
   params:{
-    name: '${entlzprefix}-external-nonprod'
+    name: '${entlzprefix}-ext-np'
     parentId: external.outputs.mgId
   }
 }
