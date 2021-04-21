@@ -4,7 +4,7 @@ env:
   subid: 49a3b652-465d-4e7b-9db3-90058495a37b
   program: prog1 # 5 digit progam code
   hosting: int # 3 digit hosting code: int - (int)ernal, ext - (ext)ernal, sbx - (s)and(b)o(x)
-  devenvironment: pr # 2 digit environment code: pr - (pr)od, np - (n)on-(p)rod  
+  devenvironment: np # 2 digit environment code: pr - (pr)od, np - (n)on-(p)rod  
   entlzprefix: elz1 # Enterprise Scale Landing Zone Prefix (use existing)
   azureenvironment: azureusgovernment
   azurelocation: usgovvirginia
@@ -45,15 +45,17 @@ jobs:
               entlzprefix=${{ env.entlzprefix }}
               program=${{ env.program }}
               hosting=${{ env.hosting }}
-              devenvironment=${{ env.devenvironment }} 
-              mgid=$(az account management-group list --query "[?displayName=='$program-$hosting-$devenvironment'].id" --output tsv)
+              devenvironment=${{ env.devenvironment }}
+              mgname="${{ env.program }}-${{ env.hosting }}-${{ env.devenvironment }}"
+              parentmgname="${{ env.entlzprefix }}-${{ env.hosting }}-${{ env.devenvironment }}"              
+              mgid=$(az account management-group list --query "[?displayName=='$mgname'].id" --output tsv)
               if [[ -z $mgid ]];
               then
-                parentmgid=$(az account management-group list --query "[?displayName=='$entlzprefix-$hosting-$devenvironment'].id" --output tsv);
-                az account management-group create --name "$program-$hosting-$devenvironment" --display-name "$program-$hosting-$devenvironment" --parent $parentmgid;
+                parentmgid=$(az account management-group list --query "[?displayName=='$parentmgname'].id" --output tsv);
+                az account management-group create --name "$mgname" --display-name "$mgname" --parent $parentmgid;
               fi;
 
-        - name: Provision EA Subscription
+        - name: Provision Subscription
           uses: azure/CLI@v1
           with:
             azcliversion: 2.21.0
@@ -63,7 +65,7 @@ jobs:
               hosting=${{ env.hosting }}
               devenvironment=${{ env.devenvironment }}
               subid=${{ env.subid }}
-              subname="$program-$hosting-$devenvironment"
+              subname="${{ env.program }}-${{ env.hosting }}-${{ env.devenvironment }}"
               offertype=${{ env.offertype }}
               subownergroup=${{ env.subownergroup }}
               enracctname=${{ env.enracctname }}
@@ -74,8 +76,8 @@ jobs:
                 az config set extension.use_dynamic_install=yes_without_prompt
                 subownergroupid=$(az ad group list --display-name $subownergroup --query [].objectId -o tsv)
                 # Check if Sub already exists
-                subId=$(az account subscription list --query "[?displayName=='$subname'].subscriptionId" --output tsv)
-                if [[ -z $subId ]];
+                subid=$(az account subscription list --query "[?displayName=='$subname'].subscriptionId" --output tsv)
+                if [[ -z $subid ]];
                 then
                   echo "Creating Internal Subscription..."
                   # REST Call to Create Subscription
@@ -87,9 +89,8 @@ jobs:
 
                   echo "Assigning default tags..."
                   # Assign Default Tags to Subscription
-                  NOW=$(date +"%m/%d/%Y_%I:%M:%S_%p")
-                  subId=$(az account subscription list --query "[?displayName=='$subname'].subscriptionId" --output tsv)
-                  az tag create --resource-id /subscriptions/$subId --tags createdOn="$NOW" programType="int" programEnv="prod" programName="${{ env.entlzprefix }}"
+                  NOW=$(date +"%m/%d/%Y_%I:%M:%S_%p")                  
+                  az tag create --resource-id /subscriptions/$subid --tags createdOn="$NOW"
                 else
                   echo "Subscription with name "$subname" already exists...skipping"
                 fi;
@@ -100,35 +101,25 @@ jobs:
                 --headers "{\"content-type\":\"application/json\"}" \
                 --body "{   \"subscriptionName\": \"$subname\"}"
               fi;
+              az tag create --resource-id /subscriptions/$subid --tags entlzprefix="$entlzprefix" program="$program" hosting="$hosting" devenvironment="$devenvironment"
 
+        - name: Log in to Azure Again
+          uses: azure/login@v1
+          with:
+            creds: ${{ secrets.AZGOV_CREDS }}
+            environment: ${{ env.azureenvironment }}
+            enable-AzPSSession: false
 
-#        
-#        - name: Apply Tags to Subscription
-#          uses: azure/CLI@v1
-#          with:
-#            azcliversion: 2.21.0
-#            inlineScript: |
-#              NOW=$(date +"%m/%d/%Y_%I:%M:%S_%p")
-#              subName="${{ secrets.USERLZ_PROGRAM_TYPE }}-${{ secrets.USERLZ_PROGRAM_ENV }}-${{ secrets.USERLZ_PROGRAM_NAME }}"
-#              subId=$(az account subscription list --query "[?displayName=='$subName'].subscriptionId" --output tsv)
-#              az tag create --resource-id /subscriptions/$subId --tags createdOn="$NOW" programType="${{ secrets.USERLZ_PROGRAM_TYPE }}" programEnv="${{ secrets.USERLZ_PROGRAM_ENV }}" programName="${{ secrets.USERLZ_PROGRAM_NAME }}" ${{ secrets.USERLZ_TAGS }}
-#
-#        - name: Log in to Azure Again
-#          uses: azure/login@v1
-#          with:
-#            creds: ${{ secrets.USERLZ_AZURE_GOV_CREDENTIALS }}
-#            environment: ${{ secrets.USERLZ_AZURE_ENVIRONMENT }}
-#            enable-AzPSSession: false
-#
-#        - name: Move Subscription to Management Group
-#          uses: azure/CLI@v1
-#          with:
-#            azcliversion: 2.21.0
-#            inlineScript: |
-#              subName="${{ secrets.USERLZ_PROGRAM_TYPE }}-${{ secrets.USERLZ_PROGRAM_ENV }}-${{ secrets.USERLZ_PROGRAM_NAME }}"
-#              subId=$(az account subscription list --query "[?displayName=='$subName'].subscriptionId" --output tsv)
-#              az account management-group subscription add --name "${{ secrets.USERLZ_MANAGEMENT_GROUP }}" \
-#              --subscription $subId
+        - name: Move Subscription to Management Group
+          uses: azure/CLI@v1
+          with:
+            azcliversion: 2.21.0
+            inlineScript: |
+              subname="${{ env.program }}-${{ env.hosting }}-${{ env.devenvironment }}"
+              mgname="${{ env.program }}-${{ env.hosting }}-${{ env.devenvironment }}"         
+              subId=$(az account subscription list --query "[?displayName=='$subName'].subscriptionId" --output tsv)
+              az account management-group subscription add --name "$mgname" \
+              --subscription $subId
 
 #        - name: User Landing Zone Deployment
 #          uses: azure/CLI@v1
