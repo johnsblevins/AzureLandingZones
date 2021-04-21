@@ -42,10 +42,10 @@ jobs:
           with:
             azcliversion: 2.21.0
             inlineScript: |
-              $entlzprefix=${{ env.entlzprefix}}
-              $program=${{ env.program}}
-              $hosting=${{ env.hosting}}
-              $devenvironment=${{ env.devenvironment}}              
+              entlzprefix=${{ env.entlzprefix }}
+              program=${{ env.program }}
+              hosting=${{ env.hosting }}
+              devenvironment=${{ env.devenvironment }} 
               mgid=$(az account management-group list --query "[?displayName=='$program-$hosting-$devenvironment'].id" --output tsv)
               if [[ -z $mgid ]];
               then
@@ -58,10 +58,10 @@ jobs:
           with:
             azcliversion: 2.21.0
             inlineScript: |
-              $entlzprefix=${{ env.entlzprefix}}
-              $program=${{ env.program}}
-              $hosting=${{ env.hosting}}
-              $devenvironment=${{ env.devenvironment}}
+              entlzprefix=${{ env.entlzprefix }}
+              program=${{ env.program }}
+              hosting=${{ env.hosting }}
+              devenvironment=${{ env.devenvironment }}
               subid=${{ env.subid }}
               subname="$program-$hosting-$devenvironment"
               offertype=${{ env.offertype }}
@@ -91,7 +91,7 @@ jobs:
                   subId=$(az account subscription list --query "[?displayName=='$subname'].subscriptionId" --output tsv)
                   az tag create --resource-id /subscriptions/$subId --tags createdOn="$NOW" programType="int" programEnv="prod" programName="${{ env.entlzprefix }}"
                 else
-                  echo "Subscription with sepcified name "$subname" already exists...skipping"
+                  echo "Subscription with name "$subname" already exists...skipping"
                 fi;
               else
                 echo "Subscription already exists...renaming"
