@@ -16,7 +16,7 @@ env:
   websubnetprefix: 10.128.64.0/26
   appsubnetprefix: 10.128.128.0/26
   datasubnetprefix: 10.128.196.0/26
-  fwip: 10.0.0.4
+  #fwip: "10.0.0.4"
   hubvnetname: elz1-hub-vnet-usgovvirginia
   hubvnetrgname: elz1-hub-connectivity-usgovvirginia
   hubvnetsubid: b30166b8-dd1b-4fa2-9ad7-057614257b06
@@ -157,7 +157,7 @@ jobs:
                 -p  appsubnetprefix=$appsubnetprefix \
                     datasubnetprefix=$datasubnetprefix \
                     devenvironment=$devenvironment \
-                    fwip=$fwip \
+                    fwip="10.0.0.4" \
                     hosting=$hosting \
                     hubvnetsubid=$hubvnetsubid \
                     hubvnetname=$hubvnetname \
