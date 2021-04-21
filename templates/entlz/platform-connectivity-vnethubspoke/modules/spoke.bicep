@@ -56,7 +56,7 @@ resource spokevnet 'Microsoft.Network/virtualNetworks@2020-08-01'= {
         properties:{
           addressPrefix: managementsubnetprefix     
           routeTable:{
-            id: spokevnetrtname
+            id: spokert.id
           }
         }
       }
