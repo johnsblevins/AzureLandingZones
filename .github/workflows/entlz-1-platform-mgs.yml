@@ -11,11 +11,11 @@ on:
   workflow_dispatch:
 
   push:
-  branches:
-    - dev
-  paths:
-    - 'templates/entlz/platform-mgs.bicep'
-    - '.github/workflows/entlz-1-platform-mgs.yml'
+    branches:
+      - dev
+    paths:
+      - 'templates/entlz/platform-mgs.bicep'
+      - '.github/workflows/entlz-1-platform-mgs.yml'
 
 jobs:
     build-and-deploy:
