@@ -23,7 +23,7 @@ var spoketohubpeername = '${spokevnetname}-to-${hubvnetname}'
 var spokevnetrtname = '${subname}-routetable-${location}'
 var spokevnetnsgname = '${subname}-nsg-${location}'
 var diskencryptionsetname = '${subname}-diskencryptionset-${location}'
-var keyvaultname = '${subname}kv${location}${uniqueid}'
+var keyvaultname = '${replace(subname,'-','')}kv${substring(location,0,8)}${uniqueid}'
 var keyvaultkeyname = '${subname}-deskey-${location}'
 
 targetScope = 'subscription'
