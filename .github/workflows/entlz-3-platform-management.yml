@@ -14,7 +14,7 @@ on:
 
   push:
     branches:
-      - master
+      - dev
     paths:
       - 'templates/entlz/platform-management.bicep'
       - 'templates/entlz/modules/**'

@@ -31,7 +31,7 @@ on:
   
 #  push:
 #    branches:
-#      - master
+#      - dev
 #    paths:
 #      - 'templates/entlz/platform-connectivity-vnethubspoke**'
 #      - '.github/workflows/entlz-6a-platform-connectivity-vnethubspoke.yml'

@@ -5,7 +5,7 @@ on:
   # Allows you to run this workflow manually from the Actions tab
   push:
     branches:
-      - master
+      - dev
     paths:
       - 'templates/entlz/vwanhubspoke.bicep'
       - '.github/workflows/entlz-5-platform-connectivity-vwanhubspoke.yml'

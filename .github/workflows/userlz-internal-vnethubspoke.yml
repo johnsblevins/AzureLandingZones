@@ -18,7 +18,7 @@ on:
   workflow_dispatch:
   push:
     branches:
-      - master
+      - dev
     paths:
       - 'templates/userlz-internal-vnethubspoke/**'
       - '.github/workflows/userlz-internal-vnethubspoke.yml'

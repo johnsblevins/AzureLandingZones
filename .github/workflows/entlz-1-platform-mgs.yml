@@ -12,7 +12,7 @@ on:
 
   #  push:
   #  branches:
-  #    - master
+  #    - dev
   #  paths:
   #    - 'templates/entlz/platform-mgs.bicep'
   #    - '.github/workflows/entlz-1-platform-mgs.yml'
