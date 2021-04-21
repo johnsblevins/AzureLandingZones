@@ -4,7 +4,7 @@ env:
   subid: 49a3b652-465d-4e7b-9db3-90058495a37b
   program: prog1 # 5 digit progam code
   hosting: int # 3 digit hosting code: int - (int)ernal, ext - (ext)ernal, sbx - (s)and(b)o(x)
-  devenvironment: np # 2 digit environment code: pr - (pr)od, np - (n)on-(p)rod  
+  devenvironment: pr # 2 digit environment code: pr - (pr)od, np - (n)on-(p)rod  
   entlzprefix: elz1 # Enterprise Scale Landing Zone Prefix (use existing)
   azureenvironment: azureusgovernment
   azurelocation: usgovvirginia
