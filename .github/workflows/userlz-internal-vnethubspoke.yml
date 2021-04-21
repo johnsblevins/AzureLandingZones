@@ -118,9 +118,8 @@ jobs:
               az config set extension.use_dynamic_install=yes_without_prompt
               subname="${{ env.program }}-${{ env.hosting }}-${{ env.devenvironment }}"
               mgname="${{ env.program }}-${{ env.hosting }}-${{ env.devenvironment }}"         
-              subId=$(az account subscription list --query "[?displayName=='$subName'].subscriptionId" --output tsv)              
-              az account management-group subscription add --name "$mgname" \
-              --subscription $subId
+              subid=$(az account subscription list --query "[?displayName=='$subname'].subscriptionId" --output tsv)              
+              az account management-group subscription add --name "$mgname" --subscription $subid
 
 #        - name: User Landing Zone Deployment
 #          uses: azure/CLI@v1
