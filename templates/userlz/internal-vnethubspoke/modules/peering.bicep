@@ -3,6 +3,10 @@ param dstVNETSub string
 param dstVNETName string
 param dstVNETRG string
 param peerName string
+param allowForwardedTraffic bool
+param allowGatewayTransit bool
+param allowVirtualNetworkAccess bool
+param useRemoteGateways bool
 
 resource dstVNET 'Microsoft.Network/virtualNetworks@2020-08-01' existing={
   name: '${dstVNETName}'
@@ -17,9 +21,10 @@ resource srcVNET 'Microsoft.Network/virtualNetworks@2020-08-01' existing={
       dstVNET
     ]
     properties:{
-      allowForwardedTraffic: true
-      allowGatewayTransit: false
-      allowVirtualNetworkAccess: true
+      allowForwardedTraffic: allowForwardedTraffic
+      allowGatewayTransit: allowGatewayTransit
+      allowVirtualNetworkAccess: allowVirtualNetworkAccess
+      useRemoteGateways: useRemoteGateways
       remoteVirtualNetwork: {
         id: dstVNET.id
       }

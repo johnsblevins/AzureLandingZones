@@ -11,6 +11,15 @@ env:
   subownergroup: azure-platform-owners
   offertype: MS-AZR-USGOV-0017P
   enracctname: 
+  vnetprefix: '10.128.0.0/23'
+  managementsubnetprefix: '10.128.0.0/26'
+  websubnetprefix: '10.128.64.0/26'
+  appsubnetprefix: '10.128.128.0/26'
+  datasubnetprefix: '10.128.196.0/26'
+  fwip: '10.0.0.4'
+  hubvnetname: elz1-hub-vnet-usgovvirginia
+  hubvnetrgname: elz1-hub-connectivity-usgovvirginia
+  hubvnetsubid: b30166b8-dd1b-4fa2-9ad7-057614257b06
 
 # Controls when the action will run. 
 on:
@@ -121,20 +130,40 @@ jobs:
               subid=$(az account subscription list --query "[?displayName=='$subname'].subscriptionId" --output tsv)              
               az account management-group subscription add --name "$mgname" --subscription $subid
 
-#        - name: User Landing Zone Deployment
-#          uses: azure/CLI@v1
-#         with:
-#            azcliversion: 2.21.0
-#            inlineScript: |
-#                az deployment sub create -f templates/userlz/userlz-internal/templates/main.bicep -l ${{ secrets.USERLZ_LOCATION }} -p programName=${{ secrets.USERLZ_PROGRAM_NAME }} \
-#                programType=${{ secrets.USERLZ_PROGRAM_TYPE }} programEnv=${{ secrets.USERLZ_PROGRAM_ENV }} vnetPrefix= ${{ secrets.USERLZ_VNET_PREFIX }} \
-#                mgmtSubnetPrefix=${{ secrets.MGMT_SUBNET_PREFIX }} webSubnetPrefix= ${{ secrets.USERLZ_WEB_SUBNET_PREFIX  }} \
-#                appSubnetPrefix=${{ secrets.APP_SUBNET_PREFIX }} dataSubnetPrefix=${{ secrets.DATA_SUBNET_PREFIX }} firewallIP=${{ secrets.FIREWALL_IP }}
+        - name: User Landing Zone Deployment
+          uses: azure/CLI@v1
+         with:
+            azcliversion: 2.21.0
+            inlineScript: |
+              appsubnetprefix=${{ env.appsubnetprefix }}
+              datasubnetprefix=${{ env.datasubnetprefix }}              
+              devenvironment=${{ env.devenvironment }}
+              entlzprefix=${{ env.entlzprefix }}
+              fwip=${{ env.fwip }}
+              hosting=${{ env.hosting }}              
+              hubvnetname=${{ env.hubvnetname }}
+              hubvnetrgname=${{ env.hubvnetrgname }}
+              hubvnetsubid=${{ env.hubvnetsubid }}
+              location=${{ env.location }}
+              managementsubnetprefix=${{ env.managementsubnetprefix }}
+              program=${{ env.program }}
+              subname="${{ env.program }}-${{ env.hosting }}-${{ env.devenvironment }}"
+              vnetprefix=${{ env.vnetprefix }}
+              websubnetprefix=${{ env.websubnetprefix }}
+              
 
-#        - name: Remove Subscription Deployment Account as Owner
-#          uses: azure/CLI@v1
-#          with:
-#            azcliversion: 2.21.0
-#            inlineScript: |
-#              az account management-group subscription add --name "${{ secrets.USERLZ_MANAGEMENT_GROUP }}" \
-#              --subscription ${{ secrets.USERLZ_SUBNAME }}
+              az deployment sub create -f templates/userlz/internal-vnethubspoke/main.bicep \
+                -l $location \
+                -p  appsubnetprefix=$appsubnetprefix \
+                    datasubnetprefix=$datasubnetprefix \
+                    devenvironment=$devenvironment \
+                    fwip=$fwip \
+                    hosting=$hosting \
+                    hubvnetsubid=$hubvnetsubid \
+                    hubvnetname=$hubvnetname \
+                    hubvnetrgname=$hubvnetrgname \
+                    managementsubnetprefix=$managementsubnetprefix \                    
+                    program=$program \
+                    subname=$subname \
+                    vnetprefix=$vnetprefix \
+                    websubnetprefix=$websubnetprefix

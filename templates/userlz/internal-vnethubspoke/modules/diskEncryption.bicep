@@ -1,14 +1,14 @@
-param kvName string
-param kvKeyName string
-param tenantId string
-param diskESName string
+param kvname string
+param kvkeyname string
+param tenantid string
+param diskesname string
 
 resource kv 'Microsoft.KeyVault/vaults@2019-09-01' = {
-  name: '${kvName}'
+  name: '${kvname}'
   location: resourceGroup().location
   properties:{    
     createMode: 'default'
-    tenantId: '${tenantId}'
+    tenantId: '${tenantid}'
     sku: {
       name: 'premium'
       family: 'A'
@@ -23,7 +23,7 @@ resource kv 'Microsoft.KeyVault/vaults@2019-09-01' = {
 }
 
 resource kvKey 'Microsoft.KeyVault/vaults/keys@2019-09-01' = {
-  name: '${kvKeyName}'
+  name: '${kvkeyname}'
   dependsOn:[
     kv
   ]
@@ -35,7 +35,7 @@ resource kvKey 'Microsoft.KeyVault/vaults/keys@2019-09-01' = {
 }
 
 resource diskES 'Microsoft.Compute/diskEncryptionSets@2020-09-30' = {
-  name: '${diskESName}'
+  name: '${diskesname}'
   dependsOn:[
     kvKey
   ]
@@ -64,7 +64,7 @@ resource kvAccess 'Microsoft.KeyVault/vaults/accessPolicies@2019-09-01' = {
     accessPolicies:[
       {
         objectId: diskES.identity.principalId        
-        tenantId: tenantId
+        tenantId: tenantid
         permissions:{
           keys:[
             'list'
@@ -78,6 +78,30 @@ resource kvAccess 'Microsoft.KeyVault/vaults/accessPolicies@2019-09-01' = {
   }
 }
 
-output kvID string = kv.id
+resource diskencryptionsetlock 'Microsoft.Authorization/locks@2016-09-01'={
+  name: 'diskencryptionsetlock'
+  dependsOn:[
+    diskES
+    kvAccess
+  ]
+  properties: {
+    level: 'ReadOnly'    
+  }
+  scope: diskES
+}
+
+resource keyvaultlock 'Microsoft.Authorization/locks@2016-09-01'={
+  name: 'keyvaultlock'
+  dependsOn:[
+    diskES
+    kvAccess
+  ]
+  properties: {
+    level: 'ReadOnly'    
+  }
+  scope: kv
+}
+
+output kvid string = kv.id
 
 

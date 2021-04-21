@@ -1,131 +1,68 @@
-param programName string // Program Name - 5 character MAX
-param programType string //(ext)ernal, (int)ernal, (s)and(b)o(x) - 3 character MAX - ext, int or sbx
-param programEnv string //(pr)od, (n)on(p)rod - 2 character MAX - pr or np
-param vnetPrefix string //prod, nonprod, sandbox
-param mgmtSubnetPrefix string //Management Subnet Prefix
-param webSubnetPrefix string //Web Subnet Prefix
-param appSubnetPrefix string //App Subnet Prefix
-param dataSubnetPrefix string //Data Subnet Prefix
-param firewallIP string //
-param HubVNETSub string //
-param HubVNETRG string  //
-param HubVNETName string //
-param peerSpokeToHub string //
-param peerHubToSpoke string //
+param appsubnetprefix string //App Subnet Prefix
+param datasubnetprefix string //Data Subnet Prefix
+param devenvironment string //(pr)od, (n)on(p)rod - 2 character MAX - pr or np
+param fwip string //
+param hosting string //(ext)ernal, (int)ernal, (s)and(b)o(x) - 3 character MAX - ext, int or sbx
+param hubvnetsub string //
+param hubvnetrgname string  //
+param hubvnetname string //
+param managementsubnetprefix string //Management Subnet Prefix
+param program string // Program Name - 5 character MAX
+param subname string
+param vnetprefix string //prod, nonprod, sandbox
+param websubnetprefix string //Web Subnet Prefix
 
-var resourcePrefix = '${programName}-${programType}-${programEnv}'
-var tenantId = subscription().tenantId
+var tenantid = subscription().tenantId
+var location = deployment().location
+var connectivityrgname = '${subname}-connectivity-${location}'
+var diskencryptionrgname = '${subname}-diskencryption-${location}'
+var spokevnetname = '${subname}-vnet-${location}'
+var hubtospokepeername = '${hubvnetname}-to-${spokevnetname}'
+var spoketohubpeername = '${spokevnetname}-to-${hubvnetname}'
+var spokevnetrtname = '${subname}-routetable-${location}'
+var diskencryptionsetname = '${subname}-diskencryptionset-${location}'
+var keyvaultname = '${subname}-keyvault-${location}'
+var keyvaultkeyname = '${subname}-deskey-${location}'
 
 targetScope = 'subscription'
 
-resource connectivityRG 'Microsoft.Resources/resourceGroups@2020-10-01' = {
-  name: '${resourcePrefix}-connectivity'
-  location: deployment().location
+resource connectivityrg 'Microsoft.Resources/resourceGroups@2020-10-01' = {
+  name: connectivityrgname
+  location: location
 }
 
-resource lockedRG 'Microsoft.Resources/resourceGroups@2020-10-01' = {
-  name: '${resourcePrefix}-lockedRG'
-  location: deployment().location
+resource diskencryptionrg 'Microsoft.Resources/resourceGroups@2020-10-01' = {
+  name: diskencryptionrgname
+  location: location
 }
 
-module lockedNSG 'modules/nsg.bicep'={
-  name: 'lockedNSG'
-  dependsOn:[
-    lockedRG
-  ]
-  scope: lockedRG
+module spokevnet 'modules/spoke.bicep'={
+  name: spokevnetname
+  scope: connectivityrg
   params:{
-    nsgName: '${resourcePrefix}-lockedNSG'
+    fwip: fwip
+    hubtospokepeername: hubtospokepeername
+    hubvnetname: hubvnetname
+    hubvnetrgname: hubvnetrgname
+    hubvnetsub: hubvnetsub
+    managementsubnetprefix: managementsubnetprefix
+    spoketohubpeername: spoketohubpeername
+    spokevnetname: spokevnetname
+    spokevnetprefix: vnetprefix
+    spokevnetrtname: spokevnetrtname
   }
 }
 
-module lockedRouteTable 'modules/routeTable.bicep'={
-  name: 'lockedRouteTable'
+module diskencryption 'modules/diskEncryption.bicep' ={
+  name: diskencryptionsetname
   dependsOn:[
-    lockedRG
+    diskencryptionrg
   ]
-  scope: lockedRG
+  scope: diskencryptionrg
   params:{
-    rtName: '${resourcePrefix}-lockedRT'
-    firewallIP: firewallIP
-  }
-}
-
-module lockedDiskEncryption 'modules/diskEncryption.bicep' ={
-  name: 'lockedDiskES'
-  dependsOn:[
-    lockedRG
-  ]
-  scope: lockedRG
-  params:{
-    kvName:'${resourcePrefix}-lockedKV'
-    kvKeyName: '${resourcePrefix}-DESKey'
-    tenantId: '${tenantId}'
-    diskESName:'${resourcePrefix}-lockedDES'
-  }
-}
-
-module vnetDeploy 'modules/vnet.bicep' = {
-  name: 'deployProgramVnet'
-  dependsOn:[
-    lockedNSG
-    lockedRouteTable
-    lockedDiskEncryption
-  ]
-  scope: connectivityRG
-  params: {
-    vnetName: '${resourcePrefix}-vnet'
-    vnetPrefix: vnetPrefix
-    mgmtSubnetPrefix: mgmtSubnetPrefix
-    webSubnetPrefix: webSubnetPrefix
-    appSubnetPrefix: appSubnetPrefix
-    dataSubnetPrefix: dataSubnetPrefix
-    nsgID: lockedNSG.outputs.nsgID
-    rtID: lockedRouteTable.outputs.rtId
-  }
-}
-
-module rgLock 'modules/lock.bicep'={
-  name: 'rgLock'
-  scope: lockedRG
-  dependsOn:[
-    lockedNSG
-    lockedRouteTable
-    lockedDiskEncryption    
-  ]
-}
-
-module spokeToHubPeer 'modules/peering.bicep'={
-  name: 'spokeToHubPeer'
-  dependsOn:[
-    vnetDeploy
-  ]
-  scope: connectivityRG
-  params:{
-    srcVNETName:'${resourcePrefix}-vnet'
-    dstVNETName: HubVNETName
-    dstVNETRG: HubVNETRG
-    dstVNETSub: HubVNETSub
-    peerName: '${resourcePrefix}-to-hub'  
-  }
-}
-
-resource hubVNETRG 'Microsoft.Resources/resourceGroups@2020-10-01' existing={
-  name: '${HubVNETRG}'
-  scope: subscription('${HubVNETSub}')
-}
-
-module hubToSpokePeer 'modules/peering.bicep'={
-  name: 'hubToSpokePeer'
-  dependsOn:[
-    vnetDeploy
-  ]
-  scope: hubVNETRG
-  params:{
-    srcVNETName:'${HubVNETName}'
-    dstVNETName: '${resourcePrefix}-vnet'
-    dstVNETRG: connectivityRG.name
-    dstVNETSub: subscription().subscriptionId
-    peerName: 'hub-to-${resourcePrefix}'  
+    kvname: keyvaultname
+    kvkeyname: keyvaultkeyname
+    tenantid: tenantid
+    diskesname: diskencryptionsetname
   }
 }
