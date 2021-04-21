@@ -39,7 +39,7 @@ jobs:
             azcliversion: 2.21.0
             inlineScript: |
               mgid=$(az account management-group list --query "[?displayName=='$program-$hosting-$devenvironment'].id" --output tsv)
-              if( -z mgid );
+              if[[ -z mgid ]];
               then
                 parentmgid=$(az account management-group list --query "[?displayName=='$entlzprefix-$hosting-$devenvironment'].id" --output tsv)
                 az account management-group create --name "$program-$hosting-$devenvironment" --display-name "$program-$hosting-$devenvironment" --parent $parentmgid
