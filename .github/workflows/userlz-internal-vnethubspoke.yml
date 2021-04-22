@@ -209,43 +209,43 @@ jobs:
                     subkvname=$subkvname \
                     subkvkeyname=$subkvkeyname
                     
-        - name: Assign RBAC
-          uses: azure/CLI@v1
-          with:
-            azcliversion: 2.21.0
-            inlineScript: |
-              devenvironment=${{ env.devenvironment }}
-              hosting=${{ env.hosting }}              
-              program=${{ env.program }}
-              subname="${{ env.program }}-${{ env.hosting }}-${{ env.devenvironment }}"
-              contributorgroupname="${{ env.program }}-${{ env.hosting }}-${{ env.devenvironment }}-contributors"
-              contributorgrouproles=${{ env.contributorgrouproles }}
-              
-              contributorgroup=$(az ad group show -g contributorgroupname --query objectId --output tsv)
-              if [[ -z $contributorgroup ]] ;
-              then
-                  graphURI=$(az cloud show --query endpoints.microsoftGraphResourceId --output tsv)
-                  contributorgroup=$(az rest --method post \
-                      --url "${graphURI}beta/groups" \
-                      --headers "{\"content-type\":\"application/json\"}" \
-                      --body "{   \"description\": \"Members are contributors in the $subname subscription\", 
-                                  \"displayName\": \"$contributorgroupname\", 
-                                  \"isAssignableToRole\": \"false\", 
-                                  \"mailNickname\": \"$contributorgroupname\",
-                                  \"mailEnabled\": \"false\",
-                                  \"securityEnabled\": \"true\",
-                                  \"visibility\": \"Private\"
-                              }" \
-                      --query id \
-                      --output tsv)
-              else
-                  echo "$contributorgroupname group already exists"
-              fi;
-
-              subid=$(az account subscription list --query "[?displayName=='$subname'].subscriptionId" --output tsv)  
-              az account set -s $subid
-
-              for role in ;
-                do az role assignment create --assignee $contributorgroup --role $role --scope "/subscriptions/$subid"
-              done
-                    
+#        - name: Assign RBAC
+#          uses: azure/CLI@v1
+#          with:
+#            azcliversion: 2.21.0
+#            inlineScript: |
+#              devenvironment=${{ env.devenvironment }}
+#              hosting=${{ env.hosting }}              
+#              program=${{ env.program }}
+#              subname="${{ env.program }}-${{ env.hosting }}-${{ env.devenvironment }}"
+#              contributorgroupname="${{ env.program }}-${{ env.hosting }}-${{ env.devenvironment }}-contributors"
+#              contributorgrouproles=${{ env.contributorgrouproles }}
+#              
+#              contributorgroup=$(az ad group show -g contributorgroupname --query objectId --output tsv)
+#              if [[ -z $contributorgroup ]] ;
+#              then
+#                  graphURI=$(az cloud show --query endpoints.microsoftGraphResourceId --output tsv)
+#                  contributorgroup=$(az rest --method post \
+#                      --url "${graphURI}beta/groups" \
+#                      --headers "{\"content-type\":\"application/json\"}" \
+#                      --body "{   \"description\": \"Members are contributors in the $subname subscription\", 
+#                                  \"displayName\": \"$contributorgroupname\", 
+#                                  \"isAssignableToRole\": \"false\", 
+#                                  \"mailNickname\": \"$contributorgroupname\",
+#                                  \"mailEnabled\": \"false\",
+#                                  \"securityEnabled\": \"true\",
+#                                  \"visibility\": \"Private\"
+#                              }" \
+#                      --query id \
+#                      --output tsv)
+#              else
+#                  echo "$contributorgroupname group already exists"
+#              fi;
+#
+#              subid=$(az account subscription list --query "[?displayName=='$subname'].subscriptionId" --output tsv)  
+#              az account set -s $subid
+#
+#              for role in ;
+#                do az role assignment create --assignee $contributorgroup --role $role --scope "/subscriptions/$subid"
+#              done
+#                    
