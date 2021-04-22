@@ -263,7 +263,7 @@ jobs:
              
               IFS="," read -a contributorgrouprolesarray <<< $contributorgrouproles
               for role in "${contributorgrouprolesarray[@]}" ;
-                do az role assignment create --assignee $contributorgroup --role "${role}" --scope "/providers/Microsoft.Management/managementGroups/$mgname"
+                do az role assignment create --assignee $contributorgroup --role "$role" --scope "/providers/Microsoft.Management/managementGroups/$mgname"
               done
                     
 
