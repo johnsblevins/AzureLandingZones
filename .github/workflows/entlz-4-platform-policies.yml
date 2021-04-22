@@ -17,7 +17,7 @@ on:
       - dev
     paths:
       - 'templates/entlz/policies/*'
-      - '.github/workflows/entlz-2-platform-policies.yml'
+      - '.github/workflows/entlz-4-platform-policies.yml'
 
 jobs:
     build-and-deploy:
