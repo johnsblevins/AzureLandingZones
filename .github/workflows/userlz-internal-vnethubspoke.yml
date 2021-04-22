@@ -236,7 +236,7 @@ jobs:
               contributorgroupname="${{ env.program }}-${{ env.hosting }}-${{ env.devenvironment }}-contributors"
               contributorgrouproles=${{ env.contributorgrouproles }}
               
-              contributorgroup=$(az ad group show -g $contributorgroupname --query objectId --output tsv)
+              contributorgroup=$(az ad group list --query "[?displayName=='$contributorgroupname'].objectId" --output tsv)
               if [[ -z $contributorgroup ]] ;
               then
                   graphURI=$(az cloud show --query endpoints.microsoftGraphResourceId --output tsv)
