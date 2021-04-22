@@ -31,6 +31,21 @@ jobs:
             environment: ${{ env.environment }}
             enable-AzPSSession: false
 
+        
+        - name: Deploy Custom RBAC Definitions
+          uses: azure/CLI@v1
+          with:
+            azcliversion: 2.21.0
+            inlineScript: |
+              entlzprefix=${{ env.entlzprefix }}
+              # Deploy Policy Definitions
+              for f in $(find templates/entlz/rbac/customroles -name *.json); 
+                do  \
+                    roledefinition=$(jq -r . $f | sed -e "s/%%rbacdefinitionmg%%/$entlzprefix/g")
+                    az role definition create --role-definition "$roledefinition"                    
+              done
+              sleep 60
+
         - name: Create and Assign RBAC Groups in Hierarchy
           uses: azure/CLI@v1
           with:

@@ -48,7 +48,7 @@ jobs:
             environment: ${{ env.azureenvironment }}
             enable-AzPSSession: false
 
-        - name: Create Management Group (if not exists)
+        - name: Create Management Group
           uses: azure/CLI@v1
           with:
             azcliversion: 2.21.0
