@@ -1,10 +1,10 @@
-param kvname string
-param kvkeyname string
+param subkvname string
+param subkvkeyname string
 param tenantid string
-param diskesname string
+param subdesname string
 
 resource kv 'Microsoft.KeyVault/vaults@2019-09-01' = {
-  name: '${kvname}'
+  name: '${subkvname}'
   location: resourceGroup().location
   properties:{    
     createMode: 'default'
@@ -23,7 +23,7 @@ resource kv 'Microsoft.KeyVault/vaults@2019-09-01' = {
 }
 
 resource kvKey 'Microsoft.KeyVault/vaults/keys@2019-09-01' = {
-  name: '${kvkeyname}'
+  name: '${subkvkeyname}'
   dependsOn:[
     kv
   ]
@@ -35,7 +35,7 @@ resource kvKey 'Microsoft.KeyVault/vaults/keys@2019-09-01' = {
 }
 
 resource diskES 'Microsoft.Compute/diskEncryptionSets@2020-09-30' = {
-  name: '${diskesname}'
+  name: '${subdesname}'
   dependsOn:[
     kvKey
   ]

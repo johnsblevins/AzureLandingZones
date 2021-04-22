@@ -151,8 +151,11 @@ jobs:
               subname="${{ env.program }}-${{ env.hosting }}-${{ env.devenvironment }}"
               vnetprefix=${{ env.vnetprefix }}
               websubnetprefix=${{ env.websubnetprefix }}
-              uniqueid="${{ env.uniqueid }}"
-              
+              subrtname = "${{ env.program }}-${{ env.hosting }}-${{ env.devenvironment }}-rt-${{ env.location }}"
+              subnsgname = "${{ env.program }}-${{ env.hosting }}-${{ env.devenvironment }}-nsg-${{ env.location }}"
+              subdesname = "${{ env.program }}-${{ env.hosting }}-${{ env.devenvironment }}-des-${{ env.location }}"
+              subkvname = "${{ env.program }}${{ env.hosting }}${{ env.devenvironment }}kv${${{ env.location }},0,8}1"
+              subkvkeyname = "${{ env.program }}-${{ env.hosting }}-${{ env.devenvironment }}-deskey-${{ env.location }}"
 
               az deployment sub create -f templates/userlz/internal-vnethubspoke/main.bicep \
                 -l $location \
@@ -169,4 +172,9 @@ jobs:
                     subname=$subname \
                     vnetprefix=$vnetprefix \
                     websubnetprefix=$websubnetprefix \
-                    uniqueid=$uniqueid
+                    subrtname=$subrtname \
+                    subnsgname=$subnsgname \
+                    subdesname=$subdesname \
+                    subkvname=$subkvname \
+                    subkvkeyname=$subkvkeyname
+                    
