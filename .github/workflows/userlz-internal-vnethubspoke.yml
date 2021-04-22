@@ -165,25 +165,25 @@ jobs:
               az account set -s $subid
 
               nsglock=$(az lock list --resource-group $connectivityrgname --resource $subnsgname --resource-type Microsoft.Network/networkSecurityGroups --query [].id --output tsv)
-              if [[ ! -z nsglock ]];
+              if [[ ! -z $nsglock ]];
               then
                 az lock delete --ids $nsglock
               fi;
 
               rtlock=$(az lock list --resource-group $connectivityrgname --resource $subrtname --resource-type Microsoft.Network/routeTables --query [].id --output tsv)
-              if [[ ! -z nsglock ]];
+              if [[ ! -z $nsglock ]];
               then
                 az lock delete --ids $rtlock
               fi;
 
               deslock=$(az lock list --resource-group $diskencryptionrgname --resource $subdesname --resource-type Microsoft.Network/diskEncryptionSets --query [].id --output tsv)
-              if [[ ! -z deslock ]];
+              if [[ ! -z $deslock ]];
               then
                 az lock delete --ids $deslock
               fi;
 
               kvlock=$(az lock list --resource-group $diskencryptionrgname --resource $subkvname --resource-type Microsoft.Network/keyVaults --query [].id --output tsv)
-              if [[ ! -z kvlock ]];
+              if [[ ! -z $kvlock ]];
               then
                 az lock delete --ids $kvlock
               fi;
