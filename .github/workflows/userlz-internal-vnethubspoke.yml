@@ -176,13 +176,13 @@ jobs:
                 az lock delete --ids $rtlock
               fi;
 
-              deslock=$(az lock list --resource-group $diskencryptionrgname --resource $subdesname --resource-type Microsoft.Network/diskEncryptionSets --query [].id --output tsv)
+              deslock=$(az lock list --resource-group $diskencryptionrgname --resource $subdesname --resource-type Microsoft.Compute/diskEncryptionSets --query [].id --output tsv)
               if [[ ! -z $deslock ]];
               then
                 az lock delete --ids $deslock
               fi;
 
-              kvlock=$(az lock list --resource-group $diskencryptionrgname --resource $subkvname --resource-type Microsoft.Network/keyVaults --query [].id --output tsv)
+              kvlock=$(az lock list --resource-group $diskencryptionrgname --resource $subkvname --resource-type Microsoft.KeyVault/vaults --query [].id --output tsv)
               if [[ ! -z $kvlock ]];
               then
                 az lock delete --ids $kvlock
