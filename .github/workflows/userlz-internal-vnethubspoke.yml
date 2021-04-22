@@ -40,34 +40,33 @@ jobs:
         steps:
         - uses: actions/checkout@v2
           with:
-            ref: dev           
+            ref: dev
         - name: Log in with Azure
           uses: azure/login@v1
           with:
             creds: ${{ secrets.AZGOV_CREDS }}
             environment: ${{ env.azureenvironment }}
             enable-AzPSSession: false
-#
-#        - name: Create Management Group
-#          uses: azure/CLI@v1
-#          with:
-#            azcliversion: 2.21.0
-#            inlineScript: |
-#              entlzprefix=${{ env.entlzprefix }}
-#              program=${{ env.program }}
-#              hosting=${{ env.hosting }}
-#              devenvironment=${{ env.devenvironment }}
-#              mgname="${{ env.program }}-${{ env.hosting }}-${{ env.devenvironment }}"
-#              parentmgname="${{ env.entlzprefix }}-${{ env.hosting }}-${{ env.devenvironment }}"              
-#              mgid=$(az account management-group list --query "[?displayName=='$mgname'].id" --output tsv)
-#              if [[ -z $mgid ]];
-#              then
-#                parentmgid=$(az account management-group list --query "[?displayName=='$parentmgname'].id" --output tsv);
-#                az account management-group create --name "$mgname" --display-name "$mgname" --parent $parentmgid;
-#              fi;
+
+        - name: Create Management Group
+          uses: azure/CLI@v1
+          with:
+            azcliversion: 2.21.0
+            inlineScript: |
+              entlzprefix=${{ env.entlzprefix }}
+              program=${{ env.program }}
+              hosting=${{ env.hosting }}
+              devenvironment=${{ env.devenvironment }}
+              mgname="${{ env.program }}-${{ env.hosting }}-${{ env.devenvironment }}"
+              parentmgname="${{ env.entlzprefix }}-${{ env.hosting }}-${{ env.devenvironment }}"              
+              mgid=$(az account management-group list --query "[?displayName=='$mgname'].id" --output tsv)
+              if [[ -z $mgid ]];
+              then
+                parentmgid=$(az account management-group list --query "[?displayName=='$parentmgname'].id" --output tsv);
+                az account management-group create --name "$mgname" --display-name "$mgname" --parent $parentmgid;
+              fi;
 
         - name: Provision Subscription
-          id: ProvisionSubscription
           uses: azure/CLI@v1
           with:
             azcliversion: 2.21.0
