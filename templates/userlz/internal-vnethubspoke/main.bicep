@@ -67,9 +67,9 @@ module diskencryption 'modules/diskEncryption.bicep' ={
   ]
   scope: diskencryptionrg
   params:{
-    kvname: subkvname
-    kvkeyname: subkvkeyname
+    subkvname: subkvname
+    subkvkeyname: subkvkeyname
     tenantid: tenantid
-    diskesname: subdesname
+    subdesname: subdesname
   }
 }
