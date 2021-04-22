@@ -16,7 +16,7 @@ env:
   websubnetprefix: 10.128.0.64/26
   appsubnetprefix: 10.128.0.128/26
   datasubnetprefix: 10.128.0.192/26
-  fwip: 10.0.0.4
+  fwip: "10.0.0.4"
   hubvnetname: elz1-hub-vnet-usgovvirginia
   hubvnetrgname: elz1-hub-connectivity-usgovvirginia
   hubvnetsubid: b30166b8-dd1b-4fa2-9ad7-057614257b06
@@ -66,186 +66,185 @@ jobs:
                 az account management-group create --name "$mgname" --display-name "$mgname" --parent $parentmgid;
               fi;
 
-#        - name: Provision Subscription
-#          uses: azure/CLI@v1
-#          with:
-#            azcliversion: 2.21.0
-#            inlineScript: |
-#              entlzprefix=${{ env.entlzprefix }}
-#              program=${{ env.program }}
-#              hosting=${{ env.hosting }}
-#              devenvironment=${{ env.devenvironment }}
-#              subid=${{ env.subid }}
-#              subname="${{ env.program }}-${{ env.hosting }}-${{ env.devenvironment }}"
-#              offertype=${{ env.offertype }}
-#              subownergroup=${{ env.subownergroup }}
-#              enracctname=${{ env.enracctname }}
-#
-#              managementuri=$(az cloud show --query endpoints.resourceManager --output tsv)
-#              if [[ -z $subid ]];
-#              then
-#                az config set extension.use_dynamic_install=yes_without_prompt
-#                subownergroupid=$(az ad group list --display-name $subownergroup --query [].objectId -o tsv)
-#                # Check if Sub already exists
-#                subid=$(az account subscription list --query "[?displayName=='$subname'].subscriptionId" --output tsv)
-#                if [[ -z $subid ]];
-#                then
-#                  echo "Creating Internal Subscription..."
-#                  # REST Call to Create Subscription
-#                  az rest --method post \
-#                  --url "${managementuri}providers/Microsoft.Billing/enrollmentAccounts/$enracctname/providers/Microsoft.Subscription/createSubscription?api-version=2019-10-01-preview" \
-#                  --headers "{\"content-type\":\"application/json\"}" \
-#                  --body "{\"displayName\": \"$subname\", \"offerType\": \"$offertype }}\", \"owners\": [{\"objectId\": \"$subownergroupid\"}]}"
-#                  sleep 60
-#
-#                  echo "Assigning default tags..."
-#                  # Assign Default Tags to Subscription
-#                  NOW=$(date +"%m/%d/%Y_%I:%M:%S_%p")                  
-#                  az tag create --resource-id /subscriptions/$subid --tags createdOn="$NOW"
-#                else
-#                  echo "Subscription with name "$subname" already exists...skipping"
-#                fi;
-#              else
-#                echo "Subscription already exists...renaming"
-#                az rest --method post \
-#                --url "${managementuri}subscriptions/$subid/providers/Microsoft.Subscription/rename?api-version=2019-10-01-preview" \
-#                --headers "{\"content-type\":\"application/json\"}" \
-#                --body "{   \"subscriptionName\": \"$subname\"}"
-#              fi;
-#              az tag create --resource-id /subscriptions/$subid --tags entlzprefix="$entlzprefix" program="$program" hosting="$hosting" devenvironment="$devenvironment"
-#              
-#        - name: Log in to Azure Again
-#          uses: azure/login@v1
-#          with:
-#            creds: ${{ secrets.AZGOV_CREDS }}
-#            environment: ${{ env.azureenvironment }}
-#            enable-AzPSSession: false
-#
-#        - name: Move Subscription to Management Group
-#          uses: azure/CLI@v1
-#          with:
-#            azcliversion: 2.21.0
-#            inlineScript: |
-#              az config set extension.use_dynamic_install=yes_without_prompt
-#              subname="${{ env.program }}-${{ env.hosting }}-${{ env.devenvironment }}"
-#              mgname="${{ env.program }}-${{ env.hosting }}-${{ env.devenvironment }}"         
-#              subid=$(az account subscription list --query "[?displayName=='$subname'].subscriptionId" --output tsv)              
-#              az account management-group subscription add --name "$mgname" --subscription $subid
-#
-#        - name: User Landing Zone Deployment
-#          uses: azure/CLI@v1
-#          with:
-#            azcliversion: 2.21.0
-#            inlineScript: |
-#              appsubnetprefix=${{ env.appsubnetprefix }}
-#              datasubnetprefix=${{ env.datasubnetprefix }}              
-#              devenvironment=${{ env.devenvironment }}
-#              fwip="${{ env.fwip }}"
-#              hosting=${{ env.hosting }}              
-#              hubvnetname=${{ env.hubvnetname }}
-#              hubvnetrgname=${{ env.hubvnetrgname }}
-#              hubvnetsubid=${{ env.hubvnetsubid }}
-#              location=${{ env.location }}
-#              managementsubnetprefix=${{ env.managementsubnetprefix }}
-#              program=${{ env.program }}
-#              subname="${{ env.program }}-${{ env.hosting }}-${{ env.devenvironment }}"
-#              vnetprefix=${{ env.vnetprefix }}
-#              websubnetprefix=${{ env.websubnetprefix }}
-#              subname="${{ env.program }}-${{ env.hosting }}-${{ env.devenvironment }}"
-#              subrtname="${{ env.program }}-${{ env.hosting }}-${{ env.devenvironment }}-rt-${{ env.location }}"
-#              subnsgname="${{ env.program }}-${{ env.hosting }}-${{ env.devenvironment }}-nsg-${{ env.location }}"
-#              subdesname="${{ env.program }}-${{ env.hosting }}-${{ env.devenvironment }}-des-${{ env.location }}"
-#              subkvname="${{ env.program }}${{ env.hosting }}${{ env.devenvironment }}kv${${{ env.location }},0,8}"
-#              subkvkeyname="${{ env.program }}-${{ env.hosting }}-${{ env.devenvironment }}-deskey-${{ env.location }}"
-#              connectivityrgname="${{ env.program }}-${{ env.hosting }}-${{ env.devenvironment }}-connectivity-${{ env.location }}"
-#              diskencryptionrgname="${{ env.program }}-${{ env.hosting }}-${{ env.devenvironment }}-diskencryption-${{ env.location }}"
-#
-#              subid=$(az account subscription list --query "[?displayName=='$subname'].subscriptionId" --output tsv)  
-#
-#              az account set -s $subid
-#
-#              nsglock=$(az lock list --resource-group $connectivityrgname --resource $subnsgname --resource-type Microsoft.Network/networkSecurityGroups --query [].id --output tsv)
-#              if [[ ! -z nsglock ]];
-#              then
-#                az lock delete --ids $nsglock
-#              fi;
-#
-#              rtlock=$(az lock list --resource-group $connectivityrgname --resource $subrtname --resource-type Microsoft.Network/routeTables --query [].id --output tsv)
-#              if [[ ! -z nsglock ]];
-#              then
-#                az lock delete --ids $rtlock
-#              fi;
-#
-#              deslock=$(az lock list --resource-group $diskencryptionrgname --resource $subdesname --resource-type Microsoft.Network/diskEncryptionSets --query [].id --output tsv)
-#              if [[ ! -z deslock ]];
-#              then
-#                az lock delete --ids $deslock
-#              fi;
-#
-#              kvlock=$(az lock list --resource-group $diskencryptionrgname --resource $subkvname --resource-type Microsoft.Network/keyVaults --query [].id --output tsv)
-#              if [[ ! -z kvlock ]];
-#              then
-#                az lock delete --ids $kvlock
-#              fi;
-#
-#              az deployment sub create -f templates/userlz/internal-vnethubspoke/main.bicep \
-#                -l $location \
-#                -p  appsubnetprefix=$appsubnetprefix \
-#                    datasubnetprefix=$datasubnetprefix \
-#                    devenvironment=$devenvironment \
-#                    fwip=$fwip \
-#                    hosting=$hosting \
-#                    hubvnetsubid=$hubvnetsubid \
-#                    hubvnetname=$hubvnetname \
-#                    hubvnetrgname=$hubvnetrgname \
-#                    managementsubnetprefix=$managementsubnetprefix \
-#                    program=$program \
-#                    subname=$subname \
-#                    vnetprefix=$vnetprefix \
-#                    websubnetprefix=$websubnetprefix \
-#                    subrtname=$subrtname \
-#                    subnsgname=$subnsgname \
-#                    subdesname=$subdesname \
-#                    subkvname=$subkvname \
-#                    subkvkeyname=$subkvkeyname
+        - name: Provision Subscription
+          uses: azure/CLI@v1
+          with:
+            azcliversion: 2.21.0
+            inlineScript: |
+              entlzprefix=${{ env.entlzprefix }}
+              program=${{ env.program }}
+              hosting=${{ env.hosting }}
+              devenvironment=${{ env.devenvironment }}
+              subid=${{ env.subid }}
+              subname="${{ env.program }}-${{ env.hosting }}-${{ env.devenvironment }}"
+              offertype=${{ env.offertype }}
+              subownergroup=${{ env.subownergroup }}
+              enracctname=${{ env.enracctname }}
 
-#        - name: Assign RBAC
-#          uses: azure/CLI@v1
-#          with:
-#            azcliversion: 2.21.0
-#            inlineScript: |
-#              devenvironment=${{ env.devenvironment }}
-#              hosting=${{ env.hosting }}              
-#              program=${{ env.program }}
-#              subname="${{ env.program }}-${{ env.hosting }}-${{ env.devenvironment }}"
-#              contributorgroupname="${{ env.program }}-${{ env.hosting }}-${{ env.devenvironment }}-contributors"
-#              contributorgrouproles=${{ env.contributorgrouproles }}
-#              
-#              contributorgroup=$(az ad group show -g contributorgroupname --query objectId --output tsv)
-#              if [[ -z $contributorgroup ]] ;
-#              then
-#                  graphURI=$(az cloud show --query endpoints.microsoftGraphResourceId --output tsv)
-#                  contributorgroup=$(az rest --method post \
-#                      --url "${graphURI}beta/groups" \
-#                      --headers "{\"content-type\":\"application/json\"}" \
-#                      --body "{   \"description\": \"Members are contributors in the $subname subscription\", 
-#                                  \"displayName\": \"$contributorgroupname\", 
-#                                  \"isAssignableToRole\": \"false\", 
-#                                  \"mailNickname\": \"$contributorgroupname\",
-#                                  \"mailEnabled\": \"false\",
-#                                  \"securityEnabled\": \"true\",
-#                                  \"visibility\": \"Private\"
-#                              }" \
-#                      --query id \
-#                      --output tsv)
-#              else
-#                  echo "$contributorgroupname group already exists"
-#              fi;
-#
-#              subid=$(az account subscription list --query "[?displayName=='$subname'].subscriptionId" --output tsv)  
-#              az account set -s $subid
-#
-#              for role in ;
-#                do az role assignment create --assignee $contributorgroup --role $role --scope "/subscriptions/$subid"
-#              done
-#                    
+              managementuri=$(az cloud show --query endpoints.resourceManager --output tsv)
+              if [[ -z $subid ]];
+              then
+                az config set extension.use_dynamic_install=yes_without_prompt
+                subownergroupid=$(az ad group list --display-name $subownergroup --query [].objectId -o tsv)
+                # Check if Sub already exists
+                subid=$(az account subscription list --query "[?displayName=='$subname'].subscriptionId" --output tsv)
+                if [[ -z $subid ]];
+                then
+                  echo "Creating Internal Subscription..."
+                  # REST Call to Create Subscription
+                  az rest --method post \
+                  --url "${managementuri}providers/Microsoft.Billing/enrollmentAccounts/$enracctname/providers/Microsoft.Subscription/createSubscription?api-version=2019-10-01-preview" \
+                  --headers "{\"content-type\":\"application/json\"}" \
+                  --body "{\"displayName\": \"$subname\", \"offerType\": \"$offertype }}\", \"owners\": [{\"objectId\": \"$subownergroupid\"}]}"
+                  sleep 60
+
+                  echo "Assigning default tags..."
+                  # Assign Default Tags to Subscription
+                  NOW=$(date +"%m/%d/%Y_%I:%M:%S_%p")                  
+                  az tag create --resource-id /subscriptions/$subid --tags createdOn="$NOW"
+                else
+                  echo "Subscription with name "$subname" already exists...skipping"
+                fi;
+              else
+                echo "Subscription already exists...renaming"
+                az rest --method post \
+                --url "${managementuri}subscriptions/$subid/providers/Microsoft.Subscription/rename?api-version=2019-10-01-preview" \
+                --headers "{\"content-type\":\"application/json\"}" \
+                --body "{   \"subscriptionName\": \"$subname\"}"
+              fi;
+              az tag create --resource-id /subscriptions/$subid --tags entlzprefix="$entlzprefix" program="$program" hosting="$hosting" devenvironment="$devenvironment"
+              
+        - name: Log in to Azure Again
+          uses: azure/login@v1
+          with:
+            creds: ${{ secrets.AZGOV_CREDS }}
+            environment: ${{ env.azureenvironment }}
+            enable-AzPSSession: false
+
+        - name: Move Subscription to Management Group
+          uses: azure/CLI@v1
+          with:
+            azcliversion: 2.21.0
+            inlineScript: |
+              az config set extension.use_dynamic_install=yes_without_prompt
+              subname="${{ env.program }}-${{ env.hosting }}-${{ env.devenvironment }}"
+              mgname="${{ env.program }}-${{ env.hosting }}-${{ env.devenvironment }}"         
+              subid=$(az account subscription list --query "[?displayName=='$subname'].subscriptionId" --output tsv)              
+              az account management-group subscription add --name "$mgname" --subscription $subid
+
+        - name: User Landing Zone Deployment
+          uses: azure/CLI@v1
+          with:
+            azcliversion: 2.21.0
+            inlineScript: |
+              appsubnetprefix=${{ env.appsubnetprefix }}
+              datasubnetprefix=${{ env.datasubnetprefix }}              
+              devenvironment=${{ env.devenvironment }}
+              fwip="${{ env.fwip }}"
+              hosting=${{ env.hosting }}              
+              hubvnetname=${{ env.hubvnetname }}
+              hubvnetrgname=${{ env.hubvnetrgname }}
+              hubvnetsubid=${{ env.hubvnetsubid }}
+              location=${{ env.location }}
+              managementsubnetprefix=${{ env.managementsubnetprefix }}
+              program=${{ env.program }}
+              subname="${{ env.program }}-${{ env.hosting }}-${{ env.devenvironment }}"
+              vnetprefix=${{ env.vnetprefix }}
+              websubnetprefix=${{ env.websubnetprefix }}
+              subname="${{ env.program }}-${{ env.hosting }}-${{ env.devenvironment }}"
+              subrtname="${{ env.program }}-${{ env.hosting }}-${{ env.devenvironment }}-rt-${{ env.location }}"
+              subnsgname="${{ env.program }}-${{ env.hosting }}-${{ env.devenvironment }}-nsg-${{ env.location }}"
+              subdesname="${{ env.program }}-${{ env.hosting }}-${{ env.devenvironment }}-des-${{ env.location }}"
+              subkvname="${{ env.program }}${{ env.hosting }}${{ env.devenvironment }}kv${${{ env.location }},0,8}"
+              subkvkeyname="${{ env.program }}-${{ env.hosting }}-${{ env.devenvironment }}-deskey-${{ env.location }}"
+              connectivityrgname="${{ env.program }}-${{ env.hosting }}-${{ env.devenvironment }}-connectivity-${{ env.location }}"
+              diskencryptionrgname="${{ env.program }}-${{ env.hosting }}-${{ env.devenvironment }}-diskencryption-${{ env.location }}"
+
+              subid=$(az account subscription list --query "[?displayName=='$subname'].subscriptionId" --output tsv)  
+
+              az account set -s $subid
+
+              nsglock=$(az lock list --resource-group $connectivityrgname --resource $subnsgname --resource-type Microsoft.Network/networkSecurityGroups --query [].id --output tsv)
+              if [[ ! -z nsglock ]];
+              then
+                az lock delete --ids $nsglock
+              fi;
+
+              rtlock=$(az lock list --resource-group $connectivityrgname --resource $subrtname --resource-type Microsoft.Network/routeTables --query [].id --output tsv)
+              if [[ ! -z nsglock ]];
+              then
+                az lock delete --ids $rtlock
+              fi;
+
+              deslock=$(az lock list --resource-group $diskencryptionrgname --resource $subdesname --resource-type Microsoft.Network/diskEncryptionSets --query [].id --output tsv)
+              if [[ ! -z deslock ]];
+              then
+                az lock delete --ids $deslock
+              fi;
+
+              kvlock=$(az lock list --resource-group $diskencryptionrgname --resource $subkvname --resource-type Microsoft.Network/keyVaults --query [].id --output tsv)
+              if [[ ! -z kvlock ]];
+              then
+                az lock delete --ids $kvlock
+              fi;
+
+              az deployment sub create -f templates/userlz/internal-vnethubspoke/main.bicep \
+                -l $location \
+                -p  appsubnetprefix=$appsubnetprefix \
+                    datasubnetprefix=$datasubnetprefix \
+                    devenvironment=$devenvironment \
+                    fwip=$fwip \
+                    hosting=$hosting \
+                    hubvnetsubid=$hubvnetsubid \
+                    hubvnetname=$hubvnetname \
+                    hubvnetrgname=$hubvnetrgname \
+                    managementsubnetprefix=$managementsubnetprefix \
+                    program=$program \
+                    subname=$subname \
+                    vnetprefix=$vnetprefix \
+                    websubnetprefix=$websubnetprefix \
+                    subrtname=$subrtname \
+                    subnsgname=$subnsgname \
+                    subdesname=$subdesname \
+                    subkvname=$subkvname \
+                    subkvkeyname=$subkvkeyname
+        - name: Assign RBAC
+          uses: azure/CLI@v1
+          with:
+            azcliversion: 2.21.0
+            inlineScript: |
+              devenvironment=${{ env.devenvironment }}
+              hosting=${{ env.hosting }}              
+              program=${{ env.program }}
+              subname="${{ env.program }}-${{ env.hosting }}-${{ env.devenvironment }}"
+              contributorgroupname="${{ env.program }}-${{ env.hosting }}-${{ env.devenvironment }}-contributors"
+              contributorgrouproles=${{ env.contributorgrouproles }}
+              
+              contributorgroup=$(az ad group show -g contributorgroupname --query objectId --output tsv)
+              if [[ -z $contributorgroup ]] ;
+              then
+                  graphURI=$(az cloud show --query endpoints.microsoftGraphResourceId --output tsv)
+                  contributorgroup=$(az rest --method post \
+                      --url "${graphURI}beta/groups" \
+                      --headers "{\"content-type\":\"application/json\"}" \
+                      --body "{   \"description\": \"Members are contributors in the $subname subscription\", 
+                                  \"displayName\": \"$contributorgroupname\", 
+                                  \"isAssignableToRole\": \"false\", 
+                                  \"mailNickname\": \"$contributorgroupname\",
+                                  \"mailEnabled\": \"false\",
+                                  \"securityEnabled\": \"true\",
+                                  \"visibility\": \"Private\"
+                              }" \
+                      --query id \
+                      --output tsv)
+              else
+                  echo "$contributorgroupname group already exists"
+              fi;
+
+              subid=$(az account subscription list --query "[?displayName=='$subname'].subscriptionId" --output tsv)  
+              az account set -s $subid
+
+              for role in ;
+                do az role assignment create --assignee $contributorgroup --role $role --scope "/subscriptions/$subid"
+              done
+                    
