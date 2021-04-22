@@ -179,6 +179,7 @@
                     "Microsoft.DBforPostgreSQL/servers/topQueryStatistics",
                     "Microsoft.DBforPostgreSQL/servers/virtualNetworkRules",
                     "Microsoft.DBforPostgreSQL/servers/waitStatistics",
+                    "Microsoft.DevTestLab/schedules",
                     "Microsoft.DocumentDB/databaseAccountNames",
                     "Microsoft.DocumentDB/databaseAccounts",
                     "Microsoft.DocumentDB/databaseAccounts/apis/databases",
