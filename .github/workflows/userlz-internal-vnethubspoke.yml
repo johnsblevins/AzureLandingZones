@@ -261,7 +261,7 @@ jobs:
               subid=$(az account subscription list --query "[?displayName=='$subname'].subscriptionId" --output tsv)  
               az account set -s $subid
 
-              for role in $contributorgrouproles ;
+              for role in "${contributorgrouproles[@]}" ;
                 do az role assignment create --assignee $contributorgroup --role $role --scope "/providers/Microsoft.Management/managementGroups/$mgname"
               done
                     
