@@ -235,6 +235,7 @@ jobs:
               subname="${{ env.program }}-${{ env.hosting }}-${{ env.devenvironment }}"
               contributorgroupname="${{ env.program }}-${{ env.hosting }}-${{ env.devenvironment }}-contributors"
               contributorgrouproles=${{ env.contributorgrouproles }}
+              mgname="${{ env.program }}-${{ env.hosting }}-${{ env.devenvironment }}"
               
               contributorgroup=$(az ad group list --query "[?displayName=='$contributorgroupname'].objectId" --output tsv)
               if [[ -z $contributorgroup ]] ;
@@ -260,7 +261,7 @@ jobs:
               subid=$(az account subscription list --query "[?displayName=='$subname'].subscriptionId" --output tsv)  
               az account set -s $subid
 
-              for role in ;
-                do az role assignment create --assignee $contributorgroup --role $role --scope "/subscriptions/$subid"
+              for role in $contributorgrouproles ;
+                do az role assignment create --assignee $contributorgroup --role $role --scope "/providers/Microsoft.Management/managementGroups/$mgname"
               done
                     
