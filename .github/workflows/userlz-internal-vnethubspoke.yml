@@ -164,28 +164,44 @@ jobs:
 
               az account set -s $subid
 
-              nsglock=$(az lock list --resource-group $connectivityrgname --resource $subnsgname --resource-type Microsoft.Network/networkSecurityGroups --query [].id --output tsv)
-              if [[ ! -z $nsglock ]];
+              nsg=$(az network nsg list --query "[?name=='$subnsgname']" --output tsv )
+              if [[ ! -z $nsg ]];
               then
-                az lock delete --ids $nsglock
+                nsglock=$(az lock list --resource-group $connectivityrgname --resource $subnsgname --resource-type Microsoft.Network/networkSecurityGroups --query [].id --output tsv)
+                if [[ ! -z $nsglock ]];
+                then
+                  az lock delete --ids $nsglock
+                fi;
               fi;
 
-              rtlock=$(az lock list --resource-group $connectivityrgname --resource $subrtname --resource-type Microsoft.Network/routeTables --query [].id --output tsv)
-              if [[ ! -z $nsglock ]];
+              rt=$(az network route-table list --query "[?name=='$subrtname']" --output tsv )
+              if [[ ! -z $rt ]];
               then
-                az lock delete --ids $rtlock
+                rtlock=$(az lock list --resource-group $connectivityrgname --resource $subrtname --resource-type Microsoft.Network/routeTables --query [].id --output tsv)
+                if [[ ! -z $rtlock ]];
+                then
+                  az lock delete --ids $rtlock
+                fi;
               fi;
 
-              deslock=$(az lock list --resource-group $diskencryptionrgname --resource $subdesname --resource-type Microsoft.Compute/diskEncryptionSets --query [].id --output tsv)
-              if [[ ! -z $deslock ]];
+              des=$(az disk-encryption-set list --query "[?name=='$subdesname']" --output tsv )
+              if [[ ! -z $des ]];
               then
-                az lock delete --ids $deslock
+                deslock=$(az lock list --resource-group $diskencryptionrgname --resource $subdesname --resource-type Microsoft.Compute/diskEncryptionSets --query [].id --output tsv)
+                if [[ ! -z $deslock ]];
+                then
+                  az lock delete --ids $deslock
+                fi;
               fi;
 
-              kvlock=$(az lock list --resource-group $diskencryptionrgname --resource $subkvname --resource-type Microsoft.KeyVault/vaults --query [].id --output tsv)
-              if [[ ! -z $kvlock ]];
+              kv=$(az keyvault list --query "[?name=='$subkvname']" --output tsv )
+              if [[ ! -z $kv ]];
               then
-                az lock delete --ids $kvlock
+                kvlock=$(az lock list --resource-group $diskencryptionrgname --resource $subkvname --resource-type Microsoft.KeyVault/vaults --query [].id --output tsv)
+                if [[ ! -z $kvlock ]];
+                then
+                  az lock delete --ids $kvlock
+                fi;
               fi;
 
               az deployment sub create -f templates/userlz/internal-vnethubspoke/main.bicep \
