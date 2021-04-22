@@ -20,7 +20,7 @@ env:
   hubvnetname: elz1-hub-vnet-usgovvirginia
   hubvnetrgname: elz1-hub-connectivity-usgovvirginia
   hubvnetsubid: b30166b8-dd1b-4fa2-9ad7-057614257b06
-  contributorgrouproles: ("Resource Group Contributor" "Virtual Machine Contributor")
+  contributorgrouproles: "('Resource Group Contributor' 'Virtual Machine Contributor')"
 
 # Controls when the action will run. 
 on:
