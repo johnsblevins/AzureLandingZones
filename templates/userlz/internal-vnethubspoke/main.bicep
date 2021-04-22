@@ -9,7 +9,6 @@ param hubvnetname string //
 param managementsubnetprefix string //Management Subnet Prefix
 param program string // Program Name - 5 character MAX
 param subname string
-param uniqueid string
 param vnetprefix string //prod, nonprod, sandbox
 param websubnetprefix string //Web Subnet Prefix
 param subrtname string
