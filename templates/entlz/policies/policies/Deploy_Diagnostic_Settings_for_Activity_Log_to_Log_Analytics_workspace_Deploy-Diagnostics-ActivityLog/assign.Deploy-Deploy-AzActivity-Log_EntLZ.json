@@ -9,12 +9,12 @@
  },
  "properties": {
   "displayName": "Deploy-AzActivity-Log",
-  "policyDefinitionId": "/providers/Microsoft.Management/managementGroups/%%policydefinitionmg%%/providers/Microsoft.Authorization/policyDefinitions/Deploy-Diagnostics-ActivityLog",
-  "scope": "/providers/Microsoft.Management/managementGroups/%%policydefinitionmg%%",
+  "policyDefinitionId": "/providers/Microsoft.Management/managementGroups/%%entlzprefix%%/providers/Microsoft.Authorization/policyDefinitions/Deploy-Diagnostics-ActivityLog",
+  "scope": "/providers/Microsoft.Management/managementGroups/%%entlzprefix%%",
   "notScopes": [],
   "parameters": {
       "logAnalytics": {
-        "value": "/subscriptions/%%managementsubid%%/resourcegroups/%%policydefinitionmg%%-management-%%location%%/providers/microsoft.operationalinsights/workspaces/%%policydefinitionmg%%-loga-%%location%%%%uniqueid%%"
+        "value": "/subscriptions/%%managementsubid%%/resourcegroups/%%entlzprefix%%-management-%%location%%/providers/microsoft.operationalinsights/workspaces/%%entlzprefix%%-loga-%%location%%%%uniqueid%%"
       },
       "logsEnabled": {
         "value": "True"

@@ -10,7 +10,7 @@
  "properties": {
   "displayName": "Deploy-SQL-Audit",
   "policyDefinitionId": "a6fb4358-5bf4-4ad7-ba82-2cd2f41ce5e9",
-  "scope": "/providers/Microsoft.Management/managementGroups/%%policydefinitionmg%%-landingzones",
+  "scope": "/providers/Microsoft.Management/managementGroups/%%entlzprefix%%-landingzones",
   "notScopes": [],
   "parameters": {},
   "enforcementMode": "Default"

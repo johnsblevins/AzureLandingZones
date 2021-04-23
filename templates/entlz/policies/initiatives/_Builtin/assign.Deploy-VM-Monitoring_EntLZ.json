@@ -10,11 +10,11 @@
     "properties": {
      "displayName": "Deploy-VM-Monitoring",
      "policyDefinitionId": "55f3eceb-5573-4f18-9695-226972c6d74a",
-     "scope": "/providers/Microsoft.Management/managementGroups/%%policydefinitionmg%%",
+     "scope": "/providers/Microsoft.Management/managementGroups/%%entlzprefix%%",
      "notScopes": [],
      "parameters": {
         "logAnalytics_1": {
-            "value": "/subscriptions/%%managementsubid%%/resourcegroups/%%policydefinitionmg%%-management-%%location%%/providers/microsoft.operationalinsights/workspaces/%%policydefinitionmg%%-loga-%%location%%%%uniqueid%%"
+            "value": "/subscriptions/%%managementsubid%%/resourcegroups/%%entlzprefix%%-management-%%location%%/providers/microsoft.operationalinsights/workspaces/%%entlzprefix%%-loga-%%location%%%%uniqueid%%"
         }
     },
      "enforcementMode": "Default"

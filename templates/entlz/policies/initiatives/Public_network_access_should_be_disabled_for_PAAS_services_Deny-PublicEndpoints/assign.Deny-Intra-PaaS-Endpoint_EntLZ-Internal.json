@@ -9,8 +9,8 @@
  },
  "properties": {
   "displayName": "Deny-Intra-PaaS-Endpoint",
-  "policyDefinitionId": "/providers/Microsoft.Management/managementGroups/%%policydefinitionmg%%/providers/Microsoft.Authorization/policySetDefinitions/Deny-PublicEndpoints",
-  "scope": "/providers/Microsoft.Management/managementGroups/%%policydefinitionmg%%-internal",
+  "policyDefinitionId": "/providers/Microsoft.Management/managementGroups/%%entlzprefix%%/providers/Microsoft.Authorization/policySetDefinitions/Deny-PublicEndpoints",
+  "scope": "/providers/Microsoft.Management/managementGroups/%%entlzprefix%%-internal",
   "notScopes": [],
   "parameters": {}, 
   "enforcementMode": "Default"

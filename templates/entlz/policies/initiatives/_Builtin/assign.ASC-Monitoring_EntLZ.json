@@ -10,7 +10,7 @@
     "properties": {
      "displayName": "ASC-Monitoring",
      "policyDefinitionId": "1f3afdf9-d0c9-4c3d-847f-89da613e70a8",
-     "scope": "/providers/Microsoft.Management/managementGroups/%%policydefinitionmg%%",
+     "scope": "/providers/Microsoft.Management/managementGroups/%%entlzprefix%%",
      "notScopes": [],
      "parameters": {
     },

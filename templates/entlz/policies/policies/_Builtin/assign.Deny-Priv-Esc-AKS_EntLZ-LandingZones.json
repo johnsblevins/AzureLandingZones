@@ -6,7 +6,7 @@
     "properties": {
      "displayName": "Deny-Priv-Esc-AKS",
      "policyDefinitionId": "1c6e92c9-99f0-4e55-9cf2-0c234dc48f99",
-     "scope": "/providers/Microsoft.Management/managementGroups/%%policydefinitionmg%%-landingzones",
+     "scope": "/providers/Microsoft.Management/managementGroups/%%entlzprefix%%-landingzones",
      "notScopes": [],
      "parameters": {},
      "enforcementMode": "Default"
