@@ -3,6 +3,9 @@
   "name": "A0",
   "tier": "Free"
  },
+ "identity": {
+    "type": "SystemAssigned" 
+ },
  "properties": {
   "displayName": "Deploy-Nsg-FlowLogs",
   "policyDefinitionId": "/providers/Microsoft.Management/managementGroups/%%entlzprefix%%/providers/Microsoft.Authorization/policyDefinitions/Deploy-Nsg-FlowLogs",
