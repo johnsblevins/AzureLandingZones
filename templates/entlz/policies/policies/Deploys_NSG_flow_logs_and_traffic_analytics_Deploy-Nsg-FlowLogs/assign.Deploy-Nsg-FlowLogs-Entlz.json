@@ -1,0 +1,32 @@
+{
+ "sku": {
+  "name": "A0",
+  "tier": "Free"
+ },
+ "properties": {
+  "displayName": "Deploy-Nsg-FlowLogs",
+  "policyDefinitionId": "/providers/Microsoft.Management/managementGroups/%%entlzprefix%%/providers/Microsoft.Authorization/policyDefinitions/Deploy-Nsg-FlowLogs",
+  "scope": "/providers/Microsoft.Management/managementGroups/%%entlzprefix%%",
+  "notScopes": [],
+  "parameters": {
+    "retention": {
+        "value": 360
+    },
+    "storageAccountResourceId": {
+        "value": "/subscriptions/%%managementsubid%%/resourcegroups/%%entlzprefix%%-management-%%location%%/providers/microsoft.operationalinsights/workspaces/%%entlzprefix%%sa%%location%%%%uniqueid%%"
+    },
+    "trafficAnalyticsInterval": {
+        "value": 10
+    },
+    "flowAnalyticsEnabled": {
+        "value": "true"
+    },
+    "logAnalytics": {
+        "value": "/subscriptions/%%managementsubid%%/resourcegroups/%%entlzprefix%%-management-%%location%%/providers/microsoft.operationalinsights/workspaces/%%entlzprefix%%-loga-%%location%%%%uniqueid%%"
+    }
+  },
+  "enforcementMode": "Default"
+ },
+ "type": "Microsoft.Authorization/policyAssignments",
+ "name": "Deploy-Nsg-FlowLogs"
+}
