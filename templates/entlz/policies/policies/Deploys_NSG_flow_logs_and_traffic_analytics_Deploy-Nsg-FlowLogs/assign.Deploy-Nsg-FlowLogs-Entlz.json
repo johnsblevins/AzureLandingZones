@@ -22,7 +22,7 @@
         "value": 10
     },
     "flowAnalyticsEnabled": {
-        "value": "true"
+        "value": true
     },
     "logAnalytics": {
         "value": "/subscriptions/%%managementsubid%%/resourcegroups/%%entlzprefix%%-management-%%location%%/providers/microsoft.operationalinsights/workspaces/%%entlzprefix%%-loga-%%location%%%%uniqueid%%"
