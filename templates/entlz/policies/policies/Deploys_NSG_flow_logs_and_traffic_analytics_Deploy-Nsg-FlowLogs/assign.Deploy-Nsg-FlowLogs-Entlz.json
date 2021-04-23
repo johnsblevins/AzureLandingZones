@@ -4,7 +4,8 @@
   "tier": "Free"
  },
  "identity": {
-    "type": "SystemAssigned" 
+    "type": "SystemAssigned",
+    "role": ""
  },
  "properties": {
   "displayName": "Deploy-Nsg-FlowLogs",
