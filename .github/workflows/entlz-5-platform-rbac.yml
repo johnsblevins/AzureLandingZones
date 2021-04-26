@@ -38,13 +38,41 @@ jobs:
             azcliversion: 2.21.0
             inlineScript: |
               entlzprefix=${{ env.entlzprefix }}
-              # Deploy Policy Definitions
-              for f in $(find templates/entlz/rbac/customroles -name *.json); 
+              # Deploy RBAC Definitions
+              for f in $(find templates/entlz/rbac/roles -name *.json); 
                 do  \
                     roledefinition=$(jq -r . $f | sed -e "s/%%rbacdefinitionmg%%/$entlzprefix/g")
                     az role definition create --role-definition "$roledefinition"                    
               done
               sleep 60
+
+        - name: Deploy Custom RBAC Definitions
+          uses: azure/CLI@v1
+          with:
+            azcliversion: 2.21.0
+            inlineScript: |
+                # Deploy Initiative Assignments
+              for f in $(find templates/entlz/rbac/roles -name assign.*.json);
+                do assignee=`jq -r .ObjectId $f`                    
+                  role=`jq -r .RoleDefinitionName $f`
+                  scope=`jq -r .Scope $f`
+                  
+                  isGroup=$(az ad group list --query "[?objectId=='$assignee']")
+                  isUser=$(az ad user list --query "[?objectId=='$assignee']")
+                  isApp=$(az ad app list --query "[?objectId=='$assignee']")
+
+                  if [[ -z $isGroup &&  -z $isUser &&  -z $isApp ]]; 
+                    then echo "Object with Object Id not found."; 
+                    else 
+                        az role assignment create \
+                        --assignee "$assignee" \
+                        --role "$role" \
+                        --scope "$scope"
+                  fi
+                                   
+                done
+                sleep 120
+
 
         - name: Create and Assign RBAC Groups in Hierarchy
           uses: azure/CLI@v1
