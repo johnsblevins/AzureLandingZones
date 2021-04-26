@@ -42,19 +42,19 @@ Enterprise Landing Zone Pipelines:
 
 [5. Deploy Platform RBAC](README.md#5-Deploy-Platform-RBAC)
 
-[6. Deploy Platform Connectivity Components](README.md#6-Deploy-Platform-Connectivity-VNET-Hub-and-Spoke)
+[6a. Deploy Platform Connectivity VNET Hub and Spoke](README.md#6a-Deploy-Platform-Connectivity-VNET-Hub-and-Spoke)
 
-[7. Deploy Platform Subscriptions](README.md#7-Deploy-Platform-Compliance-CMMC)    
+[7a. Deploy Platform Compliance CMMC](README.md#7a-Deploy-Platform-Compliance-CMMC)    
     
 [8. Deploy Platform Workbooks](README.md#8-Deploy-Platform-Workbooks)    
     
-User Laning Zone Pipelines:
+User Landing Zone Pipelines:
 
-[1. Deploy Internal Landing Zone](README.md#1-Internal-Landing-Zone)
+[1. Deploy Internal Landing Zone](README.md#1-Deploy-Internal-Landing-Zone)
 
-[2. Deploy External Landing Zone](README.md#2-External-Landing-Zone)
+[2. Deploy External Landing Zone](README.md#2-Deploy-External-Landing-Zone)
 
-[3. Deploy Sandbox Landing Zone](README.md#3.-Sandbox-Landing-Zone)
+[3. Deploy Sandbox Landing Zone](README.md#3-Deploy-Sandbox-Landing-Zone)
 
 
 # Prerequisites
@@ -410,12 +410,12 @@ The following graphic shows the default set of rbac assignments within the manag
                     entlz-Sandbox-LandingZones
              
 
-## 6. Deploy Platform Connectivity
+## 6a. Deploy Platform Connectivity VNET Hub and Spoke
 
 For assistance determining what type of Hybrid Connectivity to select see:
 * [Define an Azure Network Topology](https://docs.microsoft.com/en-us/azure/cloud-adoption-framework/ready/enterprise-scale/network-topology-and-connectivity#define-an-azure-network-topology)  
 
-## 7. Deploy Platform Compliance
+## 7a. Deploy Platform Compliance CMMC
 
 ## 8. Deploy Platform Workbooks
 
