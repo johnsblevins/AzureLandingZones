@@ -40,8 +40,15 @@ jobs:
               # Deploy RBAC Definitions
               for f in $(find templates/entlz/rbac/roles -name role.json); 
                 do  \
-                    roledefinition=$(jq -r . $f | sed -e "s/%%rbacdefinitionmg%%/$entlzprefix/g")
-                    az role definition create --role-definition "$roledefinition"                    
+                    rolename=$(jq -r .Name $f)
+                    roleexists=$(az role definition list --query "[?roleName=='$rolename']")
+                    if [[ -z roleexists ]];
+                    then
+                      roledefinition=$(jq -r . $f | sed -e "s/%%rbacdefinitionmg%%/$entlzprefix/g")
+                      az role definition create --role-definition "$roledefinition"                    
+                    else
+                      echo "Role Definition Already Exists...skipping."
+                    fi;
               done
               sleep 60
 
