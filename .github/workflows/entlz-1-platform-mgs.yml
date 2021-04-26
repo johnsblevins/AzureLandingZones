@@ -13,11 +13,7 @@ on:
       location: usgovvirginia
 
   repository_dispatch:
-    types: [entlz1platformmgs]
-      ref: ${{ github.event.client_payload.ref }}
-      entlzprefix: ${{ github.event.client_payload.entlz }}
-      environment: ${{ github.event.client_payload.azureusgovernment }}
-      location: ${{ github.event.client_payload.usgovvirginia }}
+    types: [myevent]
 #  push:
 #    branches:
 #      - dev
