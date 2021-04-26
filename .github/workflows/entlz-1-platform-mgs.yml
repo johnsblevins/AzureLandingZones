@@ -1,7 +1,5 @@
 name: entlz-1-platform-mgs
 
-
-
 # Controls when the action will run. 
 on:
   # Allows you to run this workflow manually from the Actions tab
@@ -39,14 +37,12 @@ env:
 jobs:
     build-and-deploy:
         runs-on: ubuntu-latest
-        
         steps:
         - uses: actions/checkout@v2
           with: 
             ref: ${{ env.ref }}
         - name: Branch name
-          run: echo running on branch ${GITHUB_REF##*/}
-          run: echo ${GITHUB_EVENT_NAME}
+          run: echo running on branch ${GITHUB_REF##*/}; echo ${GITHUB_EVENT_NAME}
         - name: Log in with Azure
           uses: azure/login@v1
           with:
