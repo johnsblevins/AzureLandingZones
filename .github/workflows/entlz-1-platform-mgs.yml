@@ -39,8 +39,6 @@ jobs:
 
         steps:
         - uses: actions/checkout@v2
-          with: 
-            ref: ${GITHUB_REF##*/}
         - name: Branch name
           run: echo running on branch ${GITHUB_REF##*/}
         - name: Log in with Azure
