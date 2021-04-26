@@ -46,12 +46,12 @@ jobs:
               done
               sleep 60
 
-        - name: Deploy Custom RBAC Definitions
+        - name: Deploy RBAC Assignments
           uses: azure/CLI@v1
           with:
             azcliversion: 2.21.0
             inlineScript: |
-                # Deploy Initiative Assignments
+              # Deploy Initiative Assignments
               for f in $(find templates/entlz/rbac/roles -name assign.*.json);
                 do assignee=`jq -r .ObjectId $f`                    
                   role=`jq -r .RoleDefinitionName $f`
