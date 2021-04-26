@@ -184,10 +184,10 @@ jobs:
                 done
                 sleep 120
 
-        - name: Remediate Policies on Platform Subs 
-          uses: azure/CLI@v1
-          with:
-            azcliversion: 2.21.0
-            inlineScript: |
-              az policy remediation create --name Deploy-AzActivity-Log --policy-assignment Deploy-AzActivity-Log --resource-discovery-mode ReEvaluateCompliance
-              az policy remediation create --name Deploy-Resource-Diag --policy-assignment Deploy-Resource-Diag --resource-discovery-mode ReEvaluateCompliance
+#        - name: Remediate Policies on Platform Subs 
+#          uses: azure/CLI@v1
+#          with:
+#            azcliversion: 2.21.0
+#            inlineScript: |
+#              az policy remediation create --name Deploy-AzActivity-Log --policy-assignment Deploy-AzActivity-Log --resource-discovery-mode ReEvaluateCompliance
+#              az policy remediation create --name Deploy-Resource-Diag --policy-assignment Deploy-Resource-Diag --resource-discovery-mode ReEvaluateCompliance
