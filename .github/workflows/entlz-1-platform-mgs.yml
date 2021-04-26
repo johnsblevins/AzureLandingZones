@@ -31,14 +31,13 @@ jobs:
     build-and-deploy:
         runs-on: ubuntu-latest
         env:
-          ref: ${GITHUB_REF##*/}
           entlzprefix: ${{ github.event.inputs.entlzprefix }}
           environment: ${{ github.event.inputs.environment }}
           location: ${{ github.event.inputs.location }}
         steps:
         - uses: actions/checkout@v2
           with: 
-            ref: ${{ env.ref }}
+            ref: ${GITHUB_REF##*/}
         - name: Branch name
           run: echo running on branch ${{ env.ref }}; echo ${GITHUB_EVENT_NAME}
         - name: Log in with Azure
