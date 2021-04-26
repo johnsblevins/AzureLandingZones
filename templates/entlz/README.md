@@ -26,27 +26,27 @@ The reference implementation for this solution is based on the CAF enterprise sc
 ## Deployment Order
 The Enterprise Landing Zone is deployed through a series of build/release pipline scripts packaged as GitHub actions (GitLab scripts included as well).  A prerequisite script is used to create a service principal with the required roles in Azure to perform the pipeline deployments.  This service prinicipal is then used by GitHub Actions (or GitLab Runners) to connect to Azure and deploy the pipelines.  After the initial deployment the pipelines can be used to manage the environment using Infrastructure-as-Code.  The deployment order is as follows:
 
-0. Deploy Prerequisites (scripts) 
+0. [README.md#Prerequisites](Deploy Prerequisites) (scripts) 
         
-    a. AAD and Azure Prereqs [templates/entlz/scripts/entlz_prereqs.sh](scripts/entlz_prereqs.sh)
+    a. AAD and Azure Prereqs
         
-    b. EA Enrollment Prereqs [templates/entlz/scripts/entlz_ea_prereqs.sh](scripts/entlz_ea_prereqs.sh)
-1. Deploy Management Group Hierarchy (pipeline) - [.github/workflows/entlz-1-platform-mgs.yml](../../.github/workflows/entlz-1-platform-mgs.yml)
-2. Deploy Platform Subscriptions (pipeline) - [.github/workflows/entlz-2-platform-subs.yml](../../.github/workflows/entlz-2-platform-subs.yml)
-3. Deploy Platform Management Components (pipeline) - [.github/workflows/entlz-3-platform-management.yml](../../.github/workflows/entlz-3-platform-management.yml)
-4. Deploy Platform Policies (pipeline) - [.github/workflows/entlz-4-platform-policies.yml](../../.github/workflows/entlz-4-platform-policies.yml)
-5. Deploy Platform RBAC (pipeline) - [.github/workflows/entlz-5-platform-rbac.yml](../../.github/workflows/entlz-5-platform-rbac.yml)
+    b. EA Enrollment Prereqs
+1. [README.md#Deploy Platform Management Groups](Deploy Platform Management Groups) (pipeline)
+2. Deploy Platform Subscriptions (pipeline)
+3. Deploy Platform Management Components (pipeline)
+4. Deploy Platform Policies (pipeline)
+5. Deploy Platform RBAC (pipeline)
 6. Deploy Platform Connectivity Components (pipeline) - 
     
-    a. VNET Hub and Spoke - [.github/workflows/entlz-6a-platform-connectivity-vnethubspoke.yml](../../.github/workflows/entlz-6a-platform-connectivity-vnethubspoke.yml)    
+    a. VNET Hub and Spoke
 7. Deploy Platform Compliance Components (pipeline) 
     
-    a. CMMC - [.github/workflows/entlz-7a-platform-compliance-cmmc.yml](../../.github/workflows/entlz-7a-platform-compliance-cmmc.yml)
-8. Deploy Platform Workbooks (pipeline) - [.github/workflows/entlz-8-platform-workbooks.yml](../../.github/workflows/entlz-8-platform-workbooks.yml)
+    a. CMMC
+8. Deploy Platform Workbooks (pipeline)
 
 Once deployed these same pipeline templates can be used to manage the Enterprise Landing Zone going forward using IaC and CICD processes.
 
-## Prerequistes
+## Prerequisites
 1. Login to the Azure Portal with an account that has the "Global Administrator" role in Azure Active Directory.  In the Azure Active Directory blade select properties and then select "Yes" for the option to enable "Access management for Azure resources" and click Save.  This grants the "User Access Administrator" role to the logged in user at the tenant root (/) scope.
 
 ![](media/aad_props.png)
@@ -95,7 +95,7 @@ The group has "Owner" role at the Enrollment Account scope (/providers/Microsoft
 ![](media/billing_roles.png)
 
 
-## Pipeline 1 - Deploy Platform Managment Groups
+## Deploy Platform Management Groups
  
 The starter pipeline is included at [.github/workflows/entlz-1-platform-mgs.yml](../../.github/workflows/entlz-1-platform-mgs.yml).  The pipeline is configured by default to be manually executed.  Before deploying the pipeline customize the environment variables at the top of the template to fit the environment.  These include:
 
