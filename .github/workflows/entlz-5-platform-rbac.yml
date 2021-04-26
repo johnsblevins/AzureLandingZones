@@ -42,7 +42,7 @@ jobs:
               for f in $(find templates/entlz/rbac/roles -name role.json); 
                 do  \
                     rolename=$(jq -r .Name $f)
-                    roleexists=$(az role definition list --query "[?roleName=='$rolename']")
+                    roleexists=$(az role definition list --query "[?roleName=='$rolename']" --output tsv) 
                     if [[ -z $roleexists ]];
                     then
                       roledefinition=$(jq -r . $f | sed -e "s/%%rbacdefinitionmg%%/$entlzprefix/g")
