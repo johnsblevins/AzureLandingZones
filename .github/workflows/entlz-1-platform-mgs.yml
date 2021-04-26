@@ -23,7 +23,7 @@ jobs:
         steps:
         - uses: actions/checkout@v2
           with:
-            ref: dev
+            ref: ${GITHUB_REF##*/}
         - name: Log in with Azure
           uses: azure/login@v1
           with:
