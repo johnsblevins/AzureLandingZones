@@ -1,5 +1,5 @@
 {                        
-    "Name": "Resource Group Contributor",                            
+    "Name": "Migrate Contributor",                            
     "description": "",
     "assignableScopes": [
         "/providers/Microsoft.Management/managementGroups/%%rbacdefinitionmg%%"
