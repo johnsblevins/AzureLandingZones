@@ -4,7 +4,7 @@ The Enterprise Landing Zone architecture is modular by design and allows organiz
 
 The following diagram, available in the starter [Visio](visio/entlz.vsdx), depicts a fully deployed architecture using a VNET hub-and-spoke with ExpressRoute connectivity model:
 
-![CAF Enterprise Scale](media/entlz-overview.png)
+[<img src="media/entlz-overview.png" width="800"/>](media/entlz-overview.png)
 
 The items highlighted in green are deployed using the automation in this solution.  This enables the enterprise scaffolding under which User Landing Zones are then deployed and managed.  The Subscription is the scale unit for deploying new user landing zones and included in this solution is automation to create new subscriptions and move them to the correct management group.  The following classes of User Landing Zones are available, with no required customization, within this framework:
 
@@ -26,30 +26,41 @@ The reference implementation for this solution is based on the CAF enterprise sc
 ## Deployment Order
 The Enterprise Landing Zone is deployed through a series of build/release pipline scripts packaged as GitHub actions (GitLab scripts included as well).  A prerequisite script is used to create a service principal with the required roles in Azure to perform the pipeline deployments.  This service prinicipal is then used by GitHub Actions (or GitLab Runners) to connect to Azure and deploy the pipelines.  After the initial deployment the pipelines can be used to manage the environment using Infrastructure-as-Code.  The deployment order is as follows:
 
-0. [README.md#Prerequisites](Deploy Prerequisites) (scripts) 
-        
-    a. AAD and Azure Prereqs
-        
-    b. EA Enrollment Prereqs
-1. [README.md#Deploy Platform Management Groups](Deploy Platform Management Groups) (pipeline)
-2. Deploy Platform Subscriptions (pipeline)
-3. Deploy Platform Management Components (pipeline)
-4. Deploy Platform Policies (pipeline)
-5. Deploy Platform RBAC (pipeline)
-6. Deploy Platform Connectivity Components (pipeline) - 
-    
-    a. VNET Hub and Spoke
-7. Deploy Platform Compliance Components (pipeline) 
-    
-    a. CMMC
-8. Deploy Platform Workbooks (pipeline)
+Prerequisites:
 
-Once deployed these same pipeline templates can be used to manage the Enterprise Landing Zone going forward using IaC and CICD processes.
+[1. Deploy Prerequisites](README.md#Prerequisites)
 
-## Prerequisites
+Enterprise Landing Zone Pipelines:
+
+[1. Deploy Platform Management Groups](README.md#1.-Deploy-Platform-Management-Groups)
+
+[2. Deploy Platform Subscriptions](README.md#2.-Deploy-Platform-Subscriptions)
+
+[3. Deploy Platform Management Components](README.md#3.-Deploy-Platform-Management-Components)
+
+[4. Deploy Platform Policies](README.md#4.-Deploy-Platform-Policies)
+
+[5. Deploy Platform RBAC](README.md#5.-Deploy-Platform-RBAC)
+
+[6. Deploy Platform Connectivity Components](README.md#6.-Deploy-Platform-Connectivity-VNET-Hub-and-Spoke)
+
+[7. Deploy Platform Subscriptions](README.md#7.-Deploy-Platform-Compliance-CMMC)    
+    
+[8. Deploy Platform Workbooks](README.md#8.-Deploy-Platform-Workbooks)    
+    
+User Laning Zone Pipelines:
+
+[1. Deploy Internal Landing Zone](README.md#1.-Internal-Landing-Zone)
+
+[2. Deploy External Landing Zone](README.md#2.-External-Landing-Zone)
+
+[3. Deploy Sandbox Landing Zone](README.md#3.-Sandbox-Landing-Zone)
+
+
+# Prerequisites
 1. Login to the Azure Portal with an account that has the "Global Administrator" role in Azure Active Directory.  In the Azure Active Directory blade select properties and then select "Yes" for the option to enable "Access management for Azure resources" and click Save.  This grants the "User Access Administrator" role to the logged in user at the tenant root (/) scope.
 
-![](media/aad_props.png)
+[<img src="media/aad_props.png" width="600"/>](media/aad_props.png)
 
 2. Create a Service Principal and Assign Azure Roles
 
@@ -58,16 +69,20 @@ The following script creates an **"azure-platform-owners"** group and an applica
 [templates/entlz/scripts/entlz_prereqs.sh](scripts/entlz_prereqs.sh)
 
 The group with service account is visible in Azure Active Directory:
-![](media/platowner_group.png)
+
+[<img src="media/platowner_group.png" width="800"/>](media/platowner_group.png)
 
 The group has "Owner" role at Tenant Root (/) Level:
-![](media/platowner_roles.png)
 
-Access to this group should be tightly restricted.  Make a note of the App Registration Application (Object) ID and Tenant (Directory) ID: 
-![](media/appreg.png)
+[<img src="media/platowner_roles.png" width="1000"/>](media/platowner_roles.png)
+
+Access to this group should be tightly restricted.  Make a note of the App Registration Application (Object) ID and Tenant (Directory) ID:
+
+[<img src="media/appreg.png" width="800"/>](media/appreg.png)
 
 Generate a new secret for the app registration:
-![](media/appreg_secret.png)
+
+[<img src="media/appreg_secret.png" width="800"/>](media/appreg_secret.png)
 
 Save the credential object to a GitHub Action Secret.  The following format is required:
 ```
@@ -79,7 +94,8 @@ Save the credential object to a GitHub Action Secret.  The following format is r
 }
 ```
 **subscriptionId** must be set to a valid subscription id.  Any active subscription will work; nothing will be modified within the subscription.
-![](media/github_secret.png)
+
+[<img src="media/github_secret.png" width="600"/>](media/github_secret.png)
 
 
 3. (OPTIONAL BUT HIGHLY RECOMMENDED) Assign EA Roles for Sub Creation
@@ -89,13 +105,16 @@ It is recommended to grant the "azure-entlz-deployer" service principal the nece
 [templates/entlz/scripts/entlz_ea_prereqs.sh](scripts/entlz_ea_prereqs.sh)
 
 The group with service account is visible in Azure Active Directory:
-![](media/subcreator_group.png)
+
+[<img src="media/subcreator_group.png" width="600"/>](media/subcreator_group.png)
 
 The group has "Owner" role at the Enrollment Account scope (/providers/Microsoft.Billing/enrollmentAccounts/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx):
-![](media/billing_roles.png)
 
+[<img src="media/billing_roles.png" width="800"/>](media/billing_roles.png)
 
-## Deploy Platform Management Groups
+# Deploy Enterprise Landing Zone Platform (Pipelines)
+
+## 1. Deploy Platform Management Groups
  
 The starter pipeline is included at [.github/workflows/entlz-1-platform-mgs.yml](../../.github/workflows/entlz-1-platform-mgs.yml).  The pipeline is configured by default to be manually executed.  Before deploying the pipeline customize the environment variables at the top of the template to fit the environment.  These include:
 
@@ -137,7 +156,7 @@ An Azure Bicep template is used to deploy the management group hierarchy, [platf
 In addition, the Management Group Hierarchy settings are configured such that the "entlz-Onboarding" management group is configured as the default management group for new subscriptions and RBAC for the Management Group hierarchy is set to require "Management Group Contributor" role to add/remove/modify management groups.  This prevents non-privileged users from making changes to the management group hierarchy or creating their own branches.
 ![](media/mg_settings.png)
 
-## Pipeline 2 - Deploy Platform Subscriptions
+## 2. Deploy Platform Subscriptions
 The starter pipeline is included at [.github/workflows/entlz-2-platform-subs.yml](../../.github/workflows/entlz-2-platform-subs.yml).  The pipeline is configured by default to be manually executed.  Before deploying the pipeline customize the environment variables at the top of the template to fit the environment.  These include:
 
     entlzprefix (required): 
@@ -197,7 +216,7 @@ In this step the Azure subscriptions required to deploy the Enterprise Landing Z
 
 If existing subscription IDs are provided as pipeline parameters they will be renamed with the above naming standard and moved to the correspondong management group.  If subscription IDs are not provided the pipeline will attempt to create new EA subscriptions and move them to their corresponding management groups.
 
-## Pipeline 3 - Deploy Platform Management
+## 3. Deploy Platform Management Components
 The starter pipeline is included at [.github/workflows/entlz-3-platform-management.yml](../../.github/workflows/entlz-3-platform-management.yml).  The pipeline is configured by default to be manually executed.  Before deploying the pipeline customize the environment variables at the top of the template to fit the environment.  These include:
 
     entlzprefix (required): 
@@ -225,7 +244,7 @@ The pipeline calls an Azure Bicep template to deploy the management group hierar
 ![](media/mgmt_components.png)
 
 
-## Pipeline 4 - Deploy Platform Policies
+## 4. Deploy Platform Policies
 The starter pipeline is included at [.github/workflows/entlz-4-platform-policies.yml](../../.github/workflows/entlz-4-platform-policies.yml).  The pipeline is configured by default to be manually executed.  Before deploying the pipeline customize the environment variables at the top of the template to fit the environment.  These include:
 
     entlzprefix (required): 
@@ -343,7 +362,7 @@ In addition the following assignments are automatically made for all subscriptio
 This pipeline can be used after the initial Enterprise Landing Zone deployment to manage Policy Defintions and Assignments going forward within the environment as Policy-as-Code.
 
 
-## Pipeline 5 - Deploy Platform RBAC
+## 5. Deploy Platform RBAC
 The starter pipeline is included at [.github/workflows/entlz-5-platform-rbac.yml](../../.github/workflows/entlz-5-platform-rbac.yml).  The pipeline is configured by default to be manually executed.  Before deploying the pipeline customize the environment variables at the top of the template to fit the environment.  These include:
 
     entlzprefix (required): 
@@ -391,14 +410,22 @@ The following graphic shows the default set of rbac assignments within the manag
                     entlz-Sandbox-LandingZones
              
 
-## Pipeline 6 - Deploy Platform Connectivity
+## 6. Deploy Platform Connectivity
 
 For assistance determining what type of Hybrid Connectivity to select see:
 * [Define an Azure Network Topology](https://docs.microsoft.com/en-us/azure/cloud-adoption-framework/ready/enterprise-scale/network-topology-and-connectivity#define-an-azure-network-topology)  
 
-## User Landing Zone Pipelines
+## 7. Deploy Platform Compliance
 
-## Enterprise Service Pipelines
+## 8. Deploy Platform Workbooks
+
+# Deploy User Landing Zone (Pipelines)
+
+## 1. Deploy Internal Landing Zone
+
+## 2. Deploy External Landing Zone
+
+## 3. Deploy Sandbox Landing Zone
 
 # List of Modifications from Original templates
 ## Changes required for MAG
