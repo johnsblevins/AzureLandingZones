@@ -32,27 +32,27 @@ Prerequisites:
 
 Enterprise Landing Zone Pipelines:
 
-[1. Deploy Platform Management Groups](README.md#1.-Deploy-Platform-Management-Groups)
+[1. Deploy Platform Management Groups](README.md#1-Deploy-Platform-Management-Groups)
 
-[2. Deploy Platform Subscriptions](README.md#2.-Deploy-Platform-Subscriptions)
+[2. Deploy Platform Subscriptions](README.md#2-Deploy-Platform-Subscriptions)
 
-[3. Deploy Platform Management Components](README.md#3.-Deploy-Platform-Management-Components)
+[3. Deploy Platform Management Components](README.md#3-Deploy-Platform-Management-Components)
 
-[4. Deploy Platform Policies](README.md#4.-Deploy-Platform-Policies)
+[4. Deploy Platform Policies](README.md#4-Deploy-Platform-Policies)
 
-[5. Deploy Platform RBAC](README.md#5.-Deploy-Platform-RBAC)
+[5. Deploy Platform RBAC](README.md#5-Deploy-Platform-RBAC)
 
-[6. Deploy Platform Connectivity Components](README.md#6.-Deploy-Platform-Connectivity-VNET-Hub-and-Spoke)
+[6. Deploy Platform Connectivity Components](README.md#6-Deploy-Platform-Connectivity-VNET-Hub-and-Spoke)
 
-[7. Deploy Platform Subscriptions](README.md#7.-Deploy-Platform-Compliance-CMMC)    
+[7. Deploy Platform Subscriptions](README.md#7-Deploy-Platform-Compliance-CMMC)    
     
-[8. Deploy Platform Workbooks](README.md#8.-Deploy-Platform-Workbooks)    
+[8. Deploy Platform Workbooks](README.md#8-Deploy-Platform-Workbooks)    
     
 User Laning Zone Pipelines:
 
-[1. Deploy Internal Landing Zone](README.md#1.-Internal-Landing-Zone)
+[1. Deploy Internal Landing Zone](README.md#1-Internal-Landing-Zone)
 
-[2. Deploy External Landing Zone](README.md#2.-External-Landing-Zone)
+[2. Deploy External Landing Zone](README.md#2-External-Landing-Zone)
 
 [3. Deploy Sandbox Landing Zone](README.md#3.-Sandbox-Landing-Zone)
 
