@@ -27,19 +27,22 @@ on:
 #    paths:
 #      - 'templates/entlz/platform-mgs.bicep'
 #      - '.github/workflows/entlz-1-platform-mgs.yml'
+
+env:
+  entlzprefix: ${{ github.event.inputs.entlzprefix }}
+  environment: ${{ github.event.inputs.environment }}
+  location: ${{ github.event.inputs.location }}
+
 jobs:
     build-and-deploy:
         runs-on: ubuntu-latest
-        env:
-          entlzprefix: ${{ github.event.inputs.entlzprefix }}
-          environment: ${{ github.event.inputs.environment }}
-          location: ${{ github.event.inputs.location }}
+
         steps:
         - uses: actions/checkout@v2
           with: 
             ref: ${GITHUB_REF##*/}
         - name: Branch name
-          run: echo running on branch ${{ env.ref }}; echo ${GITHUB_EVENT_NAME}
+          run: echo running on branch ${GITHUB_REF##*/}
         - name: Log in with Azure
           uses: azure/login@v1
           with:
