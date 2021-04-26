@@ -26,13 +26,19 @@ The reference implementation for this solution is based on the CAF enterprise sc
 ## Deployment Order
 The Enterprise Landing Zone is deployed through a series of build/release pipline scripts packaged as GitHub actions (GitLab scripts included as well).  A prerequisite script is used to create a service principal with the required roles in Azure to perform the pipeline deployments.  This service prinicipal is then used by GitHub Actions (or GitLab Runners) to connect to Azure and deploy the pipelines.  After the initial deployment the pipelines can be used to manage the environment using Infrastructure-as-Code.  The deployment order is as follows:
 
-1. Deploy Prerequisites (script) - [templates/entlz/scripts/entlz_prereqs.sh](scripts/entlz_prereqs.sh)
-2. Deploy Management Group Hierarchy (pipeline) - [.github/workflows/entlz-1-platform-mgs.yml](../../.github/workflows/entlz-1-platform-mgs.yml)
-3. Deploy Platform Subscriptions (pipeline) - [.github/workflows/entlz-2-platform-subs.yml](../../.github/workflows/entlz-2-platform-subs.yml)
-4. Deploy Platform Management Components (pipeline) - [.github/workflows/entlz-3-platform-management.yml](../../.github/workflows/entlz-3-platform-management.yml)
-5. Deploy Platform Policies (pipeline) - [.github/workflows/entlz-4-platform-policies.yml](../../.github/workflows/entlz-4-platform-policies.yml)
-6. Deploy Platform Connectivity Components (pipeline) - [.github/workflows/entlz-5-platform-connectivity-vnethubspoke.yml](../../.github/workflows/entlz-5-platform-connectivity-vnethubspoke.yml)
+0. Deploy Prerequisites (scripts) 
+    a. AAD and Azure Prereqs [templates/entlz/scripts/entlz_prereqs.sh](scripts/entlz_prereqs.sh)
+    b. EA Enrollment Prereqs [templates/entlz/scripts/entlz_ea_prereqs.sh](scripts/entlz_ea_prereqs.sh)
+1. Deploy Management Group Hierarchy (pipeline) - [.github/workflows/entlz-1-platform-mgs.yml](../../.github/workflows/entlz-1-platform-mgs.yml)
+2. Deploy Platform Subscriptions (pipeline) - [.github/workflows/entlz-2-platform-subs.yml](../../.github/workflows/entlz-2-platform-subs.yml)
+3. Deploy Platform Management Components (pipeline) - [.github/workflows/entlz-3-platform-management.yml](../../.github/workflows/entlz-3-platform-management.yml)
+4. Deploy Platform Policies (pipeline) - [.github/workflows/entlz-4-platform-policies.yml](../../.github/workflows/entlz-4-platform-policies.yml)
+5. Deploy Platform RBAC (pipeline) - [.github/workflows/entlz-5-platform-rbac.yml](../../.github/workflows/entlz-5-platform-rbac.yml)
+6. Deploy Platform Connectivity Components (pipeline) - 
+    a. VNET Hub and Spoke - [.github/workflows/entlz-6a-platform-connectivity-vnethubspoke.yml](../../.github/workflows/entlz-6a-platform-connectivity-vnethubspoke.yml)    
 7. Deploy Platform Compliance Components (pipeline) 
+    a. CMMC - [.github/workflows/entlz-7a-platform-compliance-cmmc.yml](../../.github/workflows/entlz-7a-platform-compliance-cmmc.yml)
+8. Deploy Platform Workbooks (pipeline) - [.github/workflows/entlz-8-platform-workbooks.yml](../../.github/workflows/entlz-8-platform-workbooks.yml)
 
 Once deployed these same pipeline templates can be used to manage the Enterprise Landing Zone going forward using IaC and CICD processes.
 
