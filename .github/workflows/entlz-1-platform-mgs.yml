@@ -28,7 +28,7 @@ on:
 #      - 'templates/entlz/platform-mgs.bicep'
 #      - '.github/workflows/entlz-1-platform-mgs.yml'
 env:
-  ref: ${{ GITHUB_REF##*/ }}
+  ref: 'dev'
   entlzprefix: ${{ github.event.inputs.entlzprefix }}
   environment: ${{ github.event.inputs.environment }}
   location: ${{ github.event.inputs.location }}
@@ -42,7 +42,7 @@ jobs:
           with: 
             ref: ${{ env.ref }}
         - name: Branch name
-          run: echo running on branch ${GITHUB_REF##*/}; echo ${GITHUB_EVENT_NAME}
+          run: echo running on branch ${{ env.ref }}; echo ${GITHUB_EVENT_NAME}
         - name: Log in with Azure
           uses: azure/login@v1
           with:
