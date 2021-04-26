@@ -28,7 +28,7 @@ on:
 #      - 'templates/entlz/platform-mgs.bicep'
 #      - '.github/workflows/entlz-1-platform-mgs.yml'
 env:
-  ref: ${GITHUB_REF##*/}
+  ref: ${{ GITHUB_REF##*/ }}
   entlzprefix: ${{ github.event.inputs.entlzprefix }}
   environment: ${{ github.event.inputs.environment }}
   location: ${{ github.event.inputs.location }}
