@@ -6,16 +6,10 @@ name: entlz-1-platform-mgs
 on:
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
-    env:
-      ref: ${GITHUB_REF##*/}
-      entlzprefix: entlz
-      environment: azureusgovernment
-      location: usgovvirginia
 
   repository_dispatch:
-    types: [myevent]
-      env:
-        ref: ${{ github.event.client_payload.ref }}
+    types: [entlz-1-platform-mgs]
+
 #  push:
 #    branches:
 #      - dev
