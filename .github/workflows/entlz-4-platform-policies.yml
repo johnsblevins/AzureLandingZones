@@ -1,23 +1,23 @@
 name: entlz-4-platform-policies
 
 env:
-  entlzprefix: elz1
+  entlzprefix: entlz
   environment: azureusgovernment
   location: usgovvirginia
-  managementsubid: 07526f72-6689-42be-945f-bb6ad0214b71
-  uniqueid: "2"
+  managementsubid: 
+  uniqueid: "1"
 
 # Controls when the action will run. 
 on:
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
   
-  push:
-    branches:
-      - dev
-    paths:
-      - 'templates/entlz/policies/**'
-      - '.github/workflows/entlz-4-platform-policies.yml'
+#  push:
+#    branches:
+#      - dev
+#    paths:
+#      - 'templates/entlz/policies/**'
+#      - '.github/workflows/entlz-4-platform-policies.yml'
 
 jobs:
     build-and-deploy:

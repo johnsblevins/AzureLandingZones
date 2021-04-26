@@ -5,7 +5,7 @@ env:
   program: prog1 # 5 digit progam code
   hosting: int # 3 digit hosting code: int - (int)ernal, ext - (ext)ernal, sbx - (s)and(b)o(x)
   devenvironment: np # 2 digit environment code: pr - (pr)od, np - (n)on-(p)rod  
-  entlzprefix: elz1 # Enterprise Scale Landing Zone Prefix (use existing)
+  entlzprefix: entlz # Enterprise Scale Landing Zone Prefix (use existing)
   azureenvironment: azureusgovernment
   location: usgovvirginia
   subownergroup: azure-platform-owners
@@ -17,8 +17,8 @@ env:
   appsubnetprefix: 10.128.0.128/26
   datasubnetprefix: 10.128.0.192/26
   fwip: "10.0.0.4"
-  hubvnetname: elz1-hub-vnet-usgovvirginia
-  hubvnetrgname: elz1-hub-connectivity-usgovvirginia
+  hubvnetname: entlz-hub-vnet-usgovvirginia
+  hubvnetrgname: entlz-hub-connectivity-usgovvirginia
   hubvnetsubid: b30166b8-dd1b-4fa2-9ad7-057614257b06
   contributorgrouproles: "Resource Group Contributor,Virtual Machine Contributor"
 
@@ -27,12 +27,12 @@ on:
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
-  push:
-    branches:
-      - dev
-    paths:
-      - 'templates/userlz/internal-vnethubspoke/**'
-      - '.github/workflows/userlz-internal-vnethubspoke.yml'
+#  push:
+#    branches:
+#      - dev
+#    paths:
+#      - 'templates/userlz/internal-vnethubspoke/**'
+#      - '.github/workflows/userlz-internal-vnethubspoke.yml'
 
 jobs:
     build-and-deploy:

@@ -1,24 +1,24 @@
 name: entlz-3-platform-management
 
 env:
-  entlzprefix: elz1
+  entlzprefix: entlz
   environment: azureusgovernment
   location: usgovvirginia
-  managementsubid: 07526f72-6689-42be-945f-bb6ad0214b71
-  uniqueid: "2"
+  managementsubid:
+  uniqueid: "1"
 
 # Controls when the action will run. 
 on:
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
-  push:
-    branches:
-      - dev
-    paths:
-      - 'templates/entlz/platform-management.bicep'
-      - 'templates/entlz/modules/**'
-      - '.github/workflows/entlz-3-platform-management.yml'
+#  push:
+#    branches:
+#      - dev
+#    paths:
+#      - 'templates/entlz/platform-management.bicep'
+#      - 'templates/entlz/modules/**'
+#      - '.github/workflows/entlz-3-platform-management.yml'
 
 jobs:
     build-and-deploy:

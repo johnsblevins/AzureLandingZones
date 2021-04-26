@@ -76,7 +76,7 @@ The group has "Owner" role at Tenant Root (/) Level:
 
 [<img src="media/platowner_roles.png" width="1000"/>](media/platowner_roles.png)
 
-Access to this group should be tightly restricted.  Make a note of the App Registration Application (Object) ID and Tenant (Directory) ID:
+Access to this group should be tightly restricted.  Make a note of the App Registration Application (Client) ID and Tenant (Directory) ID:
 
 [<img src="media/appreg.png" width="800"/>](media/appreg.png)
 
@@ -116,59 +116,41 @@ The group has "Owner" role at the Enrollment Account scope (/providers/Microsoft
 
 ## 1. Deploy Platform Management Groups
  
-The starter pipeline is included at [.github/workflows/entlz-1-platform-mgs.yml](../../.github/workflows/entlz-1-platform-mgs.yml).  The pipeline is configured by default to be manually executed.  Before deploying the pipeline customize the environment variables at the top of the template to fit the environment.  These include:
+The starter pipeline is included at [.github/workflows/entlz-1-platform-mgs.yml](../../.github/workflows/entlz-1-platform-mgs.yml).  The pipeline is configured by default to be manually executed.  Before deploying the pipeline customize the environment variables at the top of the template and as well as CICD pipeline execution steps to fit the environment.  These include:
 
     entlzprefix (required): 
-        Description: 5 character alphanumeric prefix to establish the Management Group naming standard
+        Description: 6 character alphanumeric prefix to establish the Management Group naming standard - must be the same throughout all pipelines.
         Default Value: entlz
 
     environment (required): 
-        Description: Azure Cloud environment for AZ CLI connection
+        Description: Azure Cloud environment for AZ CLI connection (ex. AzureCloud for Azure Commercial, AzureUSGovernment for Azure Government)
         Default Value: azureusgovernment
 
     location (required): 
-        Description: Location to store deployment metadata
+        Description: Location to store deployment metadata - must be the same throughout all pipelines.
         Default Value: usgovvirginia
 
-An Azure Bicep template is used to deploy the management group hierarchy, [platform-mgs.bicep](platform-mgs.bicep).  The following figure shows the management group hierarchy which will be created using "entlz" as the prefix value for demonstration purposes:
+An Azure Bicep template is used to deploy the management group hierarchy, [platform-mgs.bicep](platform-mgs.bicep).  The following figure, available in the starter [Visio](visio/entlz.vsdx), shows the management group hierarchy which will be created using "entlz" as the prefix value for demonstration purposes:
 
-    Tenant (/)
-        Tenant Root Group
-            entlz (Root)
-                entlz-Platform
-                    entlz-Management
-                    entlz-Identity
-                    entlz-Connectivity
-                    entlz-Security
-                entlz-LandingZones
-                    entlz-Internal
-                        entlz-Internal-Prod
-                        entlz-Internal-NonProd
-                    entlz-External
-                        entlz-External-Prod
-                        entlz-External-NonProd
-                entlz-Decomissioned
-                entlz-Onboarding
-                entlz-Sandboxes
-                    entlz-Sandbox-Management
-                    entlz-Sandbox-LandingZones
+[<img src="media/entlz_mgs.png" width="800"/>](media/entlz_mgs.png)
 
 In addition, the Management Group Hierarchy settings are configured such that the "entlz-Onboarding" management group is configured as the default management group for new subscriptions and RBAC for the Management Group hierarchy is set to require "Management Group Contributor" role to add/remove/modify management groups.  This prevents non-privileged users from making changes to the management group hierarchy or creating their own branches.
-![](media/mg_settings.png)
+
+[<img src="media/mg_settings.png" width="600"/>](media/mg_settings.png)
 
 ## 2. Deploy Platform Subscriptions
-The starter pipeline is included at [.github/workflows/entlz-2-platform-subs.yml](../../.github/workflows/entlz-2-platform-subs.yml).  The pipeline is configured by default to be manually executed.  Before deploying the pipeline customize the environment variables at the top of the template to fit the environment.  These include:
+The starter pipeline is included at [.github/workflows/entlz-2-platform-subs.yml](../../.github/workflows/entlz-2-platform-subs.yml).  The pipeline is configured by default to be manually executed.  This pipeline only needs to be executed one time when the Enteprise Landing Zone is being contructed.  It would only be used again if deploying a new set of Landing Zone scaffolding.  Before deploying the pipeline customize the environment variables at the top of the template and as well as CICD pipeline execution steps to fit the environment.  These include:
 
     entlzprefix (required): 
-        Description: 5 character alphanumeric prefix to establish the Management Group naming standard
+        Description: 5 character alphanumeric prefix to establish the Management Group naming standard - must be the same throughout all pipelines.
         Default Value: entlz
 
     environment (required): 
-        Description: Azure Cloud environment for AZ CLI connection
+        Description: Azure Cloud environment for AZ CLI connection (ex. AzureCloud for Azure Commercial, AzureUSGovernment for Azure Government)
         Default Value: azureusgovernment
 
     location (required): 
-        Description: Location to store deployment metadata
+        Description: Location to store deployment metadata - must be the same throughout all pipelines
         Default Value: usgovvirginia
 
     managementsubid (optional): 
@@ -192,79 +174,67 @@ The starter pipeline is included at [.github/workflows/entlz-2-platform-subs.yml
         Default Value: azure-platform-owners
 
     offertype (required if any sub ids aren't specified): 
-        Description: EA Subscription Offer (ex. MS-AZR-USGOV-0017P, MS-AZR-0017P)
+        Description: EA Subscription Offer (ex. MS-AZR-USGOV-0017P for Azure Government EA, MS-AZR-0017P for Azure Commercial EA)
         Default Value: MS-AZR-USGOV-0017P
 
     enracctname (required if any sub ids aren't specified - az billing enrollment-account list --query "[0].name" --output tsv):
         Description: Enrollment Account identifier required to create EA Subs (ex. ac95a806-c9d3-49e7-83ee-7f82e88c2bd3)
         Default Value: <none>
 
-In this step the Azure subscriptions required to deploy the Enterprise Landing Zone are configured.  The following four subscriptions are required:
-    
-    Management 
-        Name/Management Group: ${entlzprefix}-management
-        Description:         
-    Identity 
-        Name/Management Group: ${entlzprefix}-identity
-        Description: 
-    Connectivity 
-        Name/Management Group: ${entlzprefix}-connectivity
-        Description: 
-    Security 
-        Name/Management Group: ${entlzprefix}-security
-        Description: 
+In this step the Azure subscriptions required to deploy the Enterprise Landing Zone are configured.  The following figure, available in the starter [Visio](visio/entlz.vsdx), shows the subscriptions which will be created using "entlz" as the entlzprefix value for demonstration purposes:
 
-If existing subscription IDs are provided as pipeline parameters they will be renamed with the above naming standard and moved to the correspondong management group.  If subscription IDs are not provided the pipeline will attempt to create new EA subscriptions and move them to their corresponding management groups.
+[<img src="media/entlz_subs.png" width="800"/>](media/entlz_subs.png)
+
+If existing subscription IDs are provided as pipeline parameters they will be renamed with the above naming standard and moved to the correspondong management group.  If subscription IDs are not provided the pipeline will attempt to create new EA subscriptions and move them to their corresponding management groups.  Default tags are applied to all subs.
 
 ## 3. Deploy Platform Management Components
-The starter pipeline is included at [.github/workflows/entlz-3-platform-management.yml](../../.github/workflows/entlz-3-platform-management.yml).  The pipeline is configured by default to be manually executed.  Before deploying the pipeline customize the environment variables at the top of the template to fit the environment.  These include:
+The starter pipeline is included at [.github/workflows/entlz-3-platform-management.yml](../../.github/workflows/entlz-3-platform-management.yml).   The pipeline is configured by default to be manually executed.  Before deploying the pipeline customize the environment variables at the top of the template and as well as CICD pipeline execution steps to fit the environment.  These include:
 
     entlzprefix (required): 
-        Description: 5 character alphanumeric prefix to establish the Management Group naming standard
+        Description: 5 character alphanumeric prefix to establish the Management Group naming standard - must be the same throughout all pipelines.
         Default Value: entlz
 
     environment (required): 
-        Description: Azure Cloud environment for AZ CLI connection
+        Description: Azure Cloud environment for AZ CLI connection (ex. AzureCloud for Azure Commercial, AzureUSGovernment for Azure Government)
         Default Value: azureusgovernment
 
     location (required): 
-        Description: Location to store deployment metadata
+        Description: Location to store deployment metadata - must be the same throughout all pipelines
         Default Value: usgovvirginia
 
     managementsubid (required): 
-        Description: Sub ID for existing management subscription
+        Description: Subcription ID for existing management subscription
         Default Value: <none>
 
     uniqueid (optional):
-        Description: 3 Char Max Unique suffix STRING to use with resources requiring unique name (ex. logA, Storage Account, etc...)
+        Description: 3 Char Max Unique suffix STRING to use with resources requiring unique name (ex. logA, Storage Account, etc...) - must be the same throughout all pipelines
         Default Value: "1"
 
-The pipeline calls an Azure Bicep template to deploy the management group hierarchy, [platform-management.bicep](platform-management.bicep).  The following figure shows the management components which are deployed:
+The pipeline calls an Azure Bicep template to deploy the management group hierarchy, [platform-management.bicep](platform-management.bicep).  The following figure, available in the starter [Visio](visio/entlz.vsdx), shows the management components which will be created using "entlz" as the entlzprefix value for demonstration purposes:
 
-![](media/mgmt_components.png)
-
+[<img src="media/mgmt_components.png" width="800"/>](media/mgmt_components.png)
 
 ## 4. Deploy Platform Policies
-The starter pipeline is included at [.github/workflows/entlz-4-platform-policies.yml](../../.github/workflows/entlz-4-platform-policies.yml).  The pipeline is configured by default to be manually executed.  Before deploying the pipeline customize the environment variables at the top of the template to fit the environment.  These include:
+The starter pipeline is included at [.github/workflows/entlz-4-platform-policies.yml](../../.github/workflows/entlz-4-platform-policies.yml).  The pipeline is configured by default to be manually executed.  Before deploying the pipeline customize the environment variables at the top of the template and as well as CICD pipeline execution steps to fit the environment.  These include:
 
     entlzprefix (required): 
-        Description: 5 character alphanumeric prefix to establish the Management Group naming standard
+        Description: 5 character alphanumeric prefix to establish the Management Group naming standard - must be the same throughout all pipelines.
         Default Value: entlz
 
     environment (required): 
-        Description: Azure Cloud environment for AZ CLI connection
+        Description: Azure Cloud environment for AZ CLI connection (ex. AzureCloud for Azure Commercial, AzureUSGovernment for Azure Government)
         Default Value: azureusgovernment
 
     location (required): 
-        Description: Location to store deployment metadata
+        Description: Location to store deployment metadata - must be the same throughout all pipelines
         Default Value: usgovvirginia
 
-    managementsubid (optional): 
-        Description: Sub ID for existing management subscription, if not provided or left empty EA subscription will be created
+    managementsubid (required): 
+        Description: Subcription ID for existing management subscription
         Default Value: <none>
 
     uniqueid (optional):
-        Description: 3 Char Max Unique suffix STRING to use with resources requiring unique name (ex. logA, Storage Account, etc...)
+        Description: 3 Char Max Unique suffix STRING to use with resources requiring unique name (ex. logA, Storage Account, etc...) - must be the same throughout all pipelines
         Default Value: "1"
 
 In this step Azure Policies and Policy Initiatives are created and assigned to the management group hierarchy using a Policy-as-Code approach as outlined at [https://docs.microsoft.com/en-us/azure/governance/policy/concepts/policy-as-code](https://docs.microsoft.com/en-us/azure/governance/policy/concepts/policy-as-code).  The following folder structure is used to store custom policy and initiative definitions as well as both builtin and custom policy and initiative assignments.  This is the native format when exporting policy definitions and assignements using the portal export features which allows an administrator to build a policy set within the portal and export it into the folder structure.
@@ -309,52 +279,9 @@ The Policy-as-Code pipeline consists of four steps:
 
     Script loops through the initiative folder structure and looks for all files matching the "assign.*.json" pattern.  Each assignement is deployed to the scope provided in the assignment JSON file.  Assignment scopes are generalized in these files by using the pattern %%entlzprefix%%  to refer to the enterprise scale root management group.  The script finds and replaces all instances of this pattern with the value provided in entlzprefix environment variable when making assignments.
 
-The following graphic shows the default set of policy assignments within the management group hierarchy:
+ The following figure, available in the starter [Visio](visio/entlz.vsdx), shows the policies which will be created using "entlz" as the entlzprefix value for demonstration purposes:
 
-    Tenant (/)
-        Tenant Root Group
-            entlz (Root)
-                **Initiative: ASC-Monitoring**
-                **Initiative: Deploy-Resource-Diag**
-                **Initiative: Deploy-VM-Monitoring**
-                **Initiative: Deploy-VMSS-Monitoring**
-                **Policy: Allowed-Locations-EntLZ**
-                **Policy: Deploy-ASC-Defender**
-                **Policy: Deploy-AzActivity-Log**
-                entlz-Platform
-                    entlz-Management
-                    entlz-Identity
-                        **Policy: Deny-Public-IP**
-                        **Policy: Deny-RDP-from-Internet**
-                        **Policy: Deny-Subnet-Without-Nsg**
-                        **Policy: Deploy-VM-Backup**
-                    entlz-Connectivity
-                    entlz-Security
-                        **Group: ${entlzprefix}-security-admins | Role: Virtual Machine Contributor**
-                entlz-LandingZones
-                    **Policy: Deny-IP-forwarding**
-                    **Policy: Deny-Priv-Esc-AKS**
-                    **Policy: Deny-Privileged-AKS**
-                    **Policy: Deny-RDP-from-internet**
-                    **Policy: Deny-Subnet-Without-Nsg**
-                    **Policy: Deploy-SQL-Audit**
-                    **Policy: Deploy-SQL-Security**
-                    **Policy: Deploy-VM-Backup**
-                    **Policy: Enforce-Https-Ingress-AKS**
-                    **Policy: Enforce-Secure-Storage**
-                    entlz-Internal
-                        **Initiative: Deny-Intra-PaaS-Endpoint**
-                        **Policy: Allowed-Resource-Types**
-                        entlz-Internal-Prod
-                        entlz-Internal-NonProd
-                    entlz-External
-                        entlz-External-Prod
-                        entlz-External-NonProd
-                entlz-Decomissioned
-                entlz-Onboarding
-                entlz-Sandboxes
-                    entlz-Sandbox-Management
-                    entlz-Sandbox-LandingZones
+[<img src="media/entlz_policies.png" width="1000"/>](media/entlz_policies.png)
 
 In addition the following assignments are automatically made for all subscriptions without explicit assignment:
 * **Initiative** ASC DataProtection
@@ -363,51 +290,54 @@ This pipeline can be used after the initial Enterprise Landing Zone deployment t
 
 
 ## 5. Deploy Platform RBAC
-The starter pipeline is included at [.github/workflows/entlz-5-platform-rbac.yml](../../.github/workflows/entlz-5-platform-rbac.yml).  The pipeline is configured by default to be manually executed.  Before deploying the pipeline customize the environment variables at the top of the template to fit the environment.  These include:
+The starter pipeline is included at [.github/workflows/entlz-5-platform-rbac.yml](../../.github/workflows/entlz-5-platform-rbac.yml).  The pipeline is configured by default to be manually executed.  Before deploying the pipeline customize the environment variables at the top of the template and as well as CICD pipeline execution steps to fit the environment.  These include:
 
     entlzprefix (required): 
-        Description: 5 character alphanumeric prefix to establish the Management Group naming standard
+        Description: 5 character alphanumeric prefix to establish the Management Group naming standard - must be the same throughout all pipelines.
         Default Value: entlz
 
     environment (required): 
-        Description: Azure Cloud environment for AZ CLI connection
+        Description: Azure Cloud environment for AZ CLI connection (ex. AzureCloud for Azure Commercial, AzureUSGovernment for Azure Government)
         Default Value: azureusgovernment
 
     location (required): 
-        Description: Location to store deployment metadata
+        Description: Location to store deployment metadata - must be the same throughout all pipelines
         Default Value: usgovvirginia
 
-The following graphic shows the default set of rbac assignments within the management group hierarchy:
+In this step Azure RBAC Definitions are created and assigned to the management group hierarchy using a RBAC-as-Code approach.  The following folder structure is used to store custom RBAC definitions as well as both builtin and custom RBAC assignments.  This is the native format when exporting RBAC definitions and assignements using the portal export features which allows an administrator to build a RBAC set within the portal and export it into the folder structure.
 
-    Tenant (/)
-        **Group: azure-platform-readers | Role: Reader**
-        Tenant Root Group
-            entlz (Enterprise Landing Zone Root)
-                **Group: ${entlzprefix}-platform-admins | Role: Owner**
-                **Group: ${entlzprefix}-security-admins | Role: Security Admin**
-                **Group: ${entlzprefix}-network-admins | Role: Network Contributor**
-                **Group: ${entlzprefix}-cost-admins | Role: Cost Management Contributor**
-                entlz-Platform
-                    entlz-Management
-                    entlz-Identity
-                        **Group: ${entlzprefix}-identity-admins | Role: Virtual Machine Contributor**
-                    entlz-Connectivity
-                        **Group: ${entlzprefix}-network-admins | Role: Virtual Machine Contributor**
-                    entlz-Security
-                        **Group: ${entlzprefix}-security-admins | Role: Virtual Machine Contributor**
-                entlz-LandingZones
-                    entlz-Internal
-                        entlz-Internal-Prod
-                        entlz-Internal-NonProd
-                    entlz-External
-                        entlz-External-Prod
-                        entlz-External-NonProd
-                entlz-Decomissioned
-                entlz-Onboarding
-                entlz-Sandboxes
-                    **Group: ${entlzprefix}-sandbox-owners | Role: Owner**
-                    entlz-Sandbox-Management
-                    entlz-Sandbox-LandingZones
+        .rbac
+        |- assignmenttemplates _______________          # Sample Assignment templates
+        |  |- assign.RBACName_Identifier.json        # Template definition for Policy
+        |- roles/  ________________________          # Root folder for policy resources
+        |  |- _builtin/  ______________________          # Subfolder for a policy
+        |     |- assign.<name1>.json _________          # Assignment 1 for this policy definition
+        |     |- assign.<name2>.json _________          # Assignment 2 for this policy definition
+        |  |- customrbacrole1/  ______________________          # Subfolder for a policy
+        |     |- role.json _________________          # Policy definition
+        |     |- assign.<name1>.json _________          # Assignment 1 for this policy definition
+        |     |- assign.<name2>.json _________          # Assignment 2 for this policy definition
+        |  |- customrbacrole2/  ______________________          # Subfolder for a policy
+        |     |- role.json _________________          # Policy definition
+        |     |- assign.<name1>.json _________          # Assignment 1 for this policy definition
+        |     |- assign.<name2>.json _________          # Assignment 2 for this policy definition
+
+The Policy-as-Code pipeline consists of two steps:
+    
+1. RBAC Definition Creation
+
+    Script loops through the rbac folder structure and looks for all "role.json" files.  Each Policy Definition is deployed to the Enterprise Landing Zone root management group (ie. value specified in entlzprefix environment variable).  Assignment scopes are generalized in these files by using the pattern %%entlzprefix%%  to refer to the enterprise scale root management group.  The script finds and replaces all instances of this pattern with the value provided in entlzprefix environment variable when creating the defintions. 
+
+2. RBAC Assignments
+    Script loops through the policy folder structure and looks for all files matching the "assign.*.json" pattern.  Each assignement is deployed to the scope provided in the assignment JSON file.  Assignment scopes are generalized in these files by using the pattern %%entlzprefix%%  to refer to the enterprise scale root management group.  The script finds and replaces all instances of this pattern with the value provided in entlzprefix environment variable when making assignments.
+
+ The following figure, available in the starter [Visio](visio/entlz.vsdx), shows the RBAC definitions and assignments which will be created using "entlz" as the entlzprefix value for demonstration purposes:
+
+[<img src="media/entlz_rbacroles.png" width="1000"/>](media/entlz_rbacroles.png)
+
+This pipeline can be used after the initial Enterprise Landing Zone deployment to manage RBAC Defintions and Assignments going forward within the environment as RBAC-as-Code.
+
+    
              
 
 ## 6a. Deploy Platform Connectivity VNET Hub and Spoke
@@ -415,9 +345,108 @@ The following graphic shows the default set of rbac assignments within the manag
 For assistance determining what type of Hybrid Connectivity to select see:
 * [Define an Azure Network Topology](https://docs.microsoft.com/en-us/azure/cloud-adoption-framework/ready/enterprise-scale/network-topology-and-connectivity#define-an-azure-network-topology)  
 
+The starter pipeline is included at [.github/workflows/entlz-6a-platform-connectivity-vnethubspoke.yml](../../.github/workflows/entlz-6a-platform-connectivity-vnethubspoke.yml).  The pipeline is configured by default to be manually executed.  Before deploying the pipeline customize the environment variables at the top of the template and as well as CICD pipeline execution steps to fit the environment.  These include:
+
+    entlzprefix (required): 
+        Description: 5 character alphanumeric prefix to establish the Management Group naming standard - must be the same throughout all pipelines.
+        Default Value: entlz
+
+    environment (required): 
+        Description: Azure Cloud environment for AZ CLI connection (ex. AzureCloud for Azure Commercial, AzureUSGovernment for Azure Government)
+        Default Value: azureusgovernment
+
+    location (required): 
+        Description: Location to store deployment metadata - must be the same throughout all pipelines
+        Default Value: usgovvirginia
+    
+    bastionsubnetprefix (required): 
+        Description: Subnet Prefix (x.x.x.x/x) for Azure Bastion Traffic
+        Default Value: <none>
+
+    connectivitysubid (required): 
+        Description: Subcription ID for existing Connectivity subscription
+        Default Value: <none>
+
+    fwmanagementsubnetprefix (required): 
+        Description: Subnet Prefix (x.x.x.x/x) for Azure Firewall Management Traffic
+        Default Value: <none>
+
+    fwsubnetprefix (required): 
+        Description: Subnet Prefix (x.x.x.x/x) for Azure Firewall User Traffic
+        Default Value: <none>
+
+    fwtype (required): 
+        Description: Azuer Firewall Type (ex. Standard, Premium)
+        Default Value: Standard
+
+    gwsubnetprefix (required): 
+        Description: Subnet Prefix (x.x.x.x/x) for VPN or ExpressRoute Gateway
+        Default Value: <none>
+
+    gwtype (required): 
+        Description: Gateway Type (ex. VPN, ExpressRoute)
+        Default Value: <none>
+
+    hubmanagementsubnetprefix (required): 
+        Description: Subnet Prefix (x.x.x.x/x) for Hub Management Virtual Machines
+        Default Value: <none>
+
+    hubvnetprefix (required): 
+        Description: VNET Prefix (x.x.x.x/x) for Hub Transit Network
+        Default Value: <none>
+
+    identitysubid (required): 
+        Description: Subcription ID for existing identity subscription
+        Default Value: <none>
+
+    identitysubnetprefix (required): 
+        Description: Subnet Prefix (x.x.x.x/x) for Identity Virtual Machines
+        Default Value: <none>
+
+    identityvnetprefix (required): 
+        Description: VNET Prefix (x.x.x.x/x) for Identity Spoke Network
+        Default Value: <none>
+
+    logaworkspaceid (required): 
+        Description: Log Analytics Resource ID (ex. /subscriptions/07526f72-6689-42be-945f-bb6ad0214b71/resourcegroups/entlz-management-usgovvirginia/providers/microsoft.operationalinsights/workspaces/entlz-loga-usgovvirginia1)
+        Default Value: <none>
+
+    managementsubid (required): 
+        Description: Subcription ID for existing Management subscription
+        Default Value: <none>
+
+    managementsubnetprefix (required): 
+        Description: Subnet Prefix (x.x.x.x/x) for Management Virtual Machines
+        Default Value: <none>
+
+    managementvnetprefix (required): 
+        Description: VNET Prefix (x.x.x.x/x) for Management Spoke Network
+        Default Value: <none>
+
+    securitysubid (required): 
+        Description: Subcription ID for existing security subscription
+        Default Value: <none>
+
+    securitysubnetprefix (required): 
+        Description: Subnet Prefix (x.x.x.x/x) for Security Virtual Machines
+        Default Value: <none>
+
+    securityvnetprefix (required): 
+        Description: VNET Prefix (x.x.x.x/x) for Management Spoke Network
+        Default Value: <none>
+
+The following figure, available in the starter [Visio](visio/entlz.vsdx), shows the Connecitivity Components which will be created using "entlz" as the entlzprefix value for demonstration purposes:
+
+[<img src="media/entlz_vnethubspoke.png" width="1000"/>](media/entlz_vnethubspoke.png)
+
+This pipeline can be used after the initial Enterprise Landing Zone deployment to manage Connectivity going forward within the environment as RBAC-as-Code.
+
+
 ## 7a. Deploy Platform Compliance CMMC
+** UNDER CONSTRUCTION **
 
 ## 8. Deploy Platform Workbooks
+** UNDER CONSTRUCTION **
 
 # Deploy User Landing Zone (Pipelines)
 

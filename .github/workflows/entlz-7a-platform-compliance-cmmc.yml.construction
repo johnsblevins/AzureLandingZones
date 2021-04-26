@@ -1,7 +1,7 @@
-name: entlz-7a-platform-compliance-cmmc
+name: entlz-8-platform-workbooks
 
 env:
-  entlzprefix: elz1
+  entlzprefix: entlz
   environment: azureusgovernment
   location: usgovvirginia
 
@@ -10,11 +10,11 @@ on:
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
-  push:
-    branches:
-      - dev
-    paths:
-      - '.github/workflows/entlz-7a-platform-compliance-cmmc.yml'
+#  push:
+#    branches:
+#      - dev
+#    paths:
+#      - '.github/workflows/entlz-7a-platform-compliance-cmmc.yml'
 
 jobs:
     build-and-deploy:

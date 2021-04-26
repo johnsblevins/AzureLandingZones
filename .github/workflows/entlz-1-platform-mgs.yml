@@ -1,7 +1,7 @@
 name: entlz-1-platform-mgs
 
 env:
-  entlzprefix: elz1
+  entlzprefix: entlz
   environment: azureusgovernment
   location: usgovvirginia
 
@@ -10,12 +10,12 @@ on:
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
-  push:
-    branches:
-      - dev
-    paths:
-      - 'templates/entlz/platform-mgs.bicep'
-      - '.github/workflows/entlz-1-platform-mgs.yml'
+#  push:
+#    branches:
+#      - dev
+#    paths:
+#      - 'templates/entlz/platform-mgs.bicep'
+#      - '.github/workflows/entlz-1-platform-mgs.yml'
 
 jobs:
     build-and-deploy:
