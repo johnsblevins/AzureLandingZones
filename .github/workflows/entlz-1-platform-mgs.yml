@@ -26,11 +26,6 @@ on:
 
   repository_dispatch:
     types: [entlz-1-platform-mgs]
-      inputs:
-        entlzprefix:
-          description: 'entlzprefix'
-          required: true
-          default: ${{ github.event.client_payload.ref }}
 
 #  push:
 #    branches:
