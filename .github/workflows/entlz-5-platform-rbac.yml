@@ -1,21 +1,35 @@
 name: entlz-5-platform-rbac
 
-env:
-  entlzprefix: entlz
-  environment: azureusgovernment
-  location: usgovvirginia
+
 
 # Controls when the action will run. 
 on:
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
-
+    inputs:
+      entlzprefix: 
+        description: 'entlzprefix'
+        required: true
+        default: ''
+      environment: 
+        description: 'environment'
+        required: true
+        default: 'azureusgovernment'
+      location: 
+        description: 'location'
+        required: true
+        default: 'usgovvirginia'
 #  push:
 #    branches:
 #        - dev
 #    paths:
 #        - 'templates/entlz/rbac/**'
 #        - '.github/workflows/entlz-5-platform-rbac.yml'
+
+env:
+  entlzprefix: ${{ github.event.inputs.entlzprefix }}
+  environment: ${{ github.event.inputs.environment }}
+  location: ${{ github.event.inputs.location }} 
 
 jobs:
     build-and-deploy:

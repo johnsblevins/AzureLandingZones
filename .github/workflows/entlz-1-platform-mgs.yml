@@ -8,7 +8,7 @@ on:
       entlzprefix: 
         description: 'entlzprefix'
         required: true
-        default: 'elz1'
+        default: ''
       environment: 
         description: 'environment'
         required: true

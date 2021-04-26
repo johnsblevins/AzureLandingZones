@@ -1,17 +1,31 @@
 name: entlz-3-platform-management
 
-env:
-  entlzprefix: entlz
-  environment: azureusgovernment
-  location: usgovvirginia
-  managementsubid:
-  uniqueid: "1"
-
 # Controls when the action will run. 
 on:
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
-
+    inputs:
+      entlzprefix: 
+        description: 'entlzprefix'
+        required: true
+        default: ''
+      environment: 
+        description: 'environment'
+        required: true
+        default: 'azureusgovernment'
+      location: 
+        description: 'location'
+        required: true
+        default: 'usgovvirginia'
+      managementsubid:
+        description: ''
+        required: true
+        default: ''
+      uniqueid:
+        description: ''
+        required: false
+        default: ''      
+      
 #  push:
 #    branches:
 #      - dev
@@ -19,6 +33,13 @@ on:
 #      - 'templates/entlz/platform-management.bicep'
 #      - 'templates/entlz/modules/**'
 #      - '.github/workflows/entlz-3-platform-management.yml'
+
+env:
+  entlzprefix: ${{ github.event.inputs.entlzprefix }}
+  environment: ${{ github.event.inputs.environment }}
+  location: ${{ github.event.inputs.location }} 
+  managementsubid: ${{ github.event.inputs.managementsubid }} 
+  uniqueid: ${{ github.event.inputs.uniqueid }} 
 
 jobs:
     build-and-deploy:
