@@ -43,7 +43,7 @@ jobs:
                 do  \
                     rolename=$(jq -r .Name $f)
                     roleexists=$(az role definition list --query "[?roleName=='$rolename']")
-                    if [[ -z roleexists ]];
+                    if [[ -z $roleexists ]];
                     then
                       roledefinition=$(jq -r . $f | sed -e "s/%%rbacdefinitionmg%%/$entlzprefix/g")
                       az role definition create --role-definition "$roledefinition"                    
