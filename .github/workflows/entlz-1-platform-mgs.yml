@@ -14,6 +14,8 @@ on:
 
   repository_dispatch:
     types: [myevent]
+      env:
+        ref: ${{ github.event.client_payload.ref }}
 #  push:
 #    branches:
 #      - dev
