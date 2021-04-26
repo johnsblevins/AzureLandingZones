@@ -30,7 +30,6 @@ jobs:
             creds: ${{ secrets.AZGOV_CREDS }}
             environment: ${{ env.environment }}
             enable-AzPSSession: false
-
         
         - name: Deploy Custom RBAC Definitions
           uses: azure/CLI@v1
@@ -39,7 +38,7 @@ jobs:
             inlineScript: |
               entlzprefix=${{ env.entlzprefix }}
               # Deploy RBAC Definitions
-              for f in $(find templates/entlz/rbac/roles -name *.json); 
+              for f in $(find templates/entlz/rbac/roles -name role.json); 
                 do  \
                     roledefinition=$(jq -r . $f | sed -e "s/%%rbacdefinitionmg%%/$entlzprefix/g")
                     az role definition create --role-definition "$roledefinition"                    
@@ -51,7 +50,7 @@ jobs:
           with:
             azcliversion: 2.21.0
             inlineScript: |
-              # Deploy Initiative Assignments
+              # Deploy RBAC Assignments
               for f in $(find templates/entlz/rbac/roles -name assign.*.json);
                 do assignee=`jq -r .ObjectId $f`                    
                   role=`jq -r .RoleDefinitionName $f`
