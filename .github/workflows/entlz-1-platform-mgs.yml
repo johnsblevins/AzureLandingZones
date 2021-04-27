@@ -17,6 +17,10 @@ on:
         description: 'location'
         required: true
         default: 'usgovvirginia'    
+      githubsecret:
+        description: 'Github Secret Name with Azure Credentials'
+        required: true
+        default: 'AZGOV_CREDS'
 
   repository_dispatch:
     types: [entlz-1-platform-mgs]
@@ -27,16 +31,6 @@ on:
 #    paths:
 #      - 'templates/entlz/platform-mgs.bicep'
 #      - '.github/workflows/entlz-1-platform-mgs.yml'
-
-#env:
-#  ref: ${{ github.ref }}
-#  entlzprefix: ${{ github.event.inputs.entlzprefix }}
-#  environment: ${{ github.event.inputs.environment }}
-#  location: ${{ github.event.inputs.location }}
-#  ref: ${{ github.event.client_payload.ref }}
-#  entlzprefix: ${{ github.event.client_payload.entlzprefix }}
-#  environment: ${{ github.event.client_payload.environment }}
-#  location: ${{ github.event.client_payload.location }}
 
 jobs:
     build-and-deploy:
@@ -52,11 +46,13 @@ jobs:
               echo "::set-output name=entlzprefix::${{ github.event.inputs.entlzprefix }}"
               echo "::set-output name=environment::${{ github.event.inputs.environment }}"
               echo "::set-output name=location::${{ github.event.inputs.location }}"
+              echo "::set-output name=githubsecret::${{ github.event.inputs.githubsecret }}"
             else
               echo "::set-output name=ref::${{ github.event.client_payload.ref }}"
               echo "::set-output name=entlzprefix::${{ github.event.client_payload.entlzprefix }}"
               echo "::set-output name=environment::${{ github.event.client_payload.environment }}"
               echo "::set-output name=location::${{ github.event.client_payload.location }}"
+              echo "::set-output name=githubsecret::${{ github.event.client_payload.githubsecret }}"
             fi;
         - name: Echo Variables
           run: |
@@ -70,7 +66,7 @@ jobs:
         - name: Log in with Azure
           uses: azure/login@v1
           with:
-            creds: ${{ secrets.AZGOV_CREDS }}
+            creds: ${{ secrets.${{ steps.setvariables.outputs.githubsecret }} }}
             environment: ${{ steps.setvariables.outputs.environment }}
             enable-AzPSSession: false
         - name: Deploy Management Groups
