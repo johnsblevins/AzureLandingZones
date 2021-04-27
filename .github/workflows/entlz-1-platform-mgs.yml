@@ -47,15 +47,15 @@ jobs:
           run: |
             if ${{ github.event.name }} == 'repository_dispatch';
             then
-              echo "::set-output name=ref::${GITHUB_REF##*/}"
-              echo "::set-output name=entlzprefix::${{ github.event.inputs.entlzprefix }}"
-              echo "::set-output name=environment::${{ github.event.inputs.environment }}"
-              echo "::set-output name=location::${{ github.event.inputs.location }}"
+              echo "::set-output name=ref::${GITHUB_REF##*/}\n"
+              echo "::set-output name=entlzprefix::${{ github.event.inputs.entlzprefix }}\n"
+              echo "::set-output name=environment::${{ github.event.inputs.environment }}\n"
+              echo "::set-output name=location::${{ github.event.inputs.location }}\n"
             else
-              echo "::set-output name=ref::${{ github.event.client_payload.ref }}"
-              echo "::set-output name=entlzprefix::${{ github.event.client_payload.entlzprefix }}"
-              echo "::set-output name=environment::${{ github.event.client_payload.environment }}"
-              echo "::set-output name=location::${{ github.event.client_payload.location }}"
+              echo "::set-output name=ref::${{ github.event.client_payload.ref }}\n"
+              echo "::set-output name=entlzprefix::${{ github.event.client_payload.entlzprefix }}\n"
+              echo "::set-output name=environment::${{ github.event.client_payload.environment }}\n"
+              echo "::set-output name=location::${{ github.event.client_payload.location }}\n"
             fi;
         - name: Echo Vars
           run: |
