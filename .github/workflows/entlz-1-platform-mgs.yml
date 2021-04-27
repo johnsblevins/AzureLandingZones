@@ -45,6 +45,7 @@ jobs:
         - uses: actions/checkout@v2
         - name: workflow_dispatch_variables
           if: github.event_name == 'workflow_dispatch'
+          run: echo Using Workflow Dispatch Variables
           env:
             ref: ${{ github.ref }}
             entlzprefix: ${{ github.event.inputs.entlzprefix }}
@@ -52,6 +53,7 @@ jobs:
             location: ${{ github.event.inputs.location }}
         - name: repository_dispatch_variables
           if: github.event_name == 'repository_dispatch'
+          run: echo Using Repository Dispatch Variables
           env:
             ref: ${{ github.event.client_payload.ref }}
             entlzprefix: ${{ github.event.client_payload.entlzprefix }}
