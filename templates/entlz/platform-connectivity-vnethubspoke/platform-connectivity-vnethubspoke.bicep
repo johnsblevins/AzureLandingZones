@@ -29,17 +29,17 @@ var ergwname = '${entlzprefix}-hub-ergw-${location}'
 var fw_subnetoctets=split(split(fwsubnetprefix,'/')[0],'.')
 var fw_lastoctet=string(int(fw_subnetoctets[3])+4)
 var fwip=concat(fw_subnetoctets[0],'.',fw_subnetoctets[1],'.',fw_subnetoctets[2],'.',fw_lastoctet)
-var fwmanagementrtname = '${hubvnetname}-fwmanagement-rt'
+var fwmanagementrtname = '${hubvnetname}-fwmanagement-rt-${location}'
 var fwmanagementsubnetname = 'AzureFirewallManagementSubnet'
 var fwname = '${entlzprefix}-hub-fw-${location}'
 var fwpolicyname = '${fwname}-policy'
-var fwrtname = '${hubvnetname}-fw-rt'
+var fwrtname = '${hubvnetname}-fw-rt-${location}'
 var fwsubnetname = 'AzureFirewallSubnet'
-var gwrtname = '${hubvnetname}-gw-rt'
+var gwrtname = '${hubvnetname}-gw-rt-${location}'
 var gwsubnetname = 'GatewaySubnet'
 var gwtier = ( gwtype=='ExpressRoute'?'ErGw1AZ':'VpnGw2AZ' )
 var hubconnectivityrgname = '${entlzprefix}-hub-connectivity-${location}'
-var hubmanagementrtname = '${hubvnetname}-management-rt'
+var hubmanagementrtname = '${entlzprefix}-management-rt-${location}'
 var hubmanagementsubnetname = 'HubManagement'
 var hubtoidentityspokepeername = 'hub-to-identity-${location}'
 var hubtomanagementspokepeername = 'hub-to-management-${location}'
@@ -48,15 +48,18 @@ var hubvnetname = '${entlzprefix}-hub-vnet-${location}'
 var identityconnectivityrgname = '${entlzprefix}-identity-connectivity-${location}'
 var identityspoketohubpeername = 'identity-to-hub-${location}'
 var identityvnetname = '${entlzprefix}-identity-vnet-${location}'
-var identityvnetrtname = '${entlzprefix}-identity-rt'
+var identityvnetrtname = '${entlzprefix}-identity-rt-${location}'
+var identityvnetnsgname = '${entlzprefix}-identity-nsg-${location}'
 var managementconnectivityrgname = '${entlzprefix}-management-connectivity-${location}'
 var managementspoketohubpeername = 'management-to-hub-${location}'
 var managementvnetname = '${entlzprefix}-management-vnet-${location}'
-var managementvnetrtname = '${entlzprefix}-management-rt'
+var managementvnetrtname = '${entlzprefix}-management-rt-${location}'
+var managementvnetnsgname = '${entlzprefix}-management-nsg-${location}'
 var securityconnectivityrgname = '${entlzprefix}-security-connectivity-${location}'
 var securityspoketohubpeername = 'security-to-hub-${location}'
 var securityvnetname = '${entlzprefix}-security-vnet-${location}'
-var securityvnetrtname = '${entlzprefix}-security-rt'
+var securityvnetrtname = '${entlzprefix}-security-rt-${location}'
+var securityvnetnsgname = '${entlzprefix}-security-nsg-${location}'
 var vpngwname = '${entlzprefix}-hub-vpngw-${location}'
 
 module connectivitysub 'modules/connectivity-sub.bicep' ={
@@ -120,6 +123,7 @@ module managementsub 'modules/management-sub.bicep' ={
     spoketohubpeername: managementspoketohubpeername
     fwip: fwip
     spokevnetrtname: managementvnetrtname
+    spokevnetnsgname: managementvnetnsgname
   }
 }
 
@@ -143,6 +147,7 @@ module identitysub 'modules/identity-sub.bicep' ={
     spoketohubpeername: identityspoketohubpeername
     fwip: fwip
     spokevnetrtname: identityvnetrtname
+    spokevnetnsgname: identityvnetnsgname
   }
 }
 
@@ -167,6 +172,7 @@ module securitysub 'modules/security-sub.bicep' ={
     spoketohubpeername: securityspoketohubpeername
     fwip: fwip
     spokevnetrtname: securityvnetrtname
+    spokevnetnsgname: securityvnetnsgname
   }
 }
 

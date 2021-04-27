@@ -1,0 +1,58 @@
+{
+ "properties": {
+  "displayName": "Enforce route table on all subnets in Entlz",
+  "policyType": "Custom",
+  "mode": "All",
+  "description": "Enforce route table on all subnets in Entlz",
+  "metadata": {
+   "version": "1.0.0",
+   "category": "Network",
+   "createdBy": "1a6c5ab2-307a-4c45-a4c8-b45ac8af8b2e",
+   "createdOn": "2021-03-16T18:45:05.0937352Z",
+   "updatedBy": null,
+   "updatedOn": null
+  },
+  "parameters": {   
+  },
+  "policyRule": {
+   "if": {
+    "anyOf": [
+     {
+      "allOf": [
+       {
+        "field": "type",
+        "equals": "Microsoft.Network/virtualNetworks"
+       },
+       {
+        "not": {
+         "field": "Microsoft.Network/virtualNetworks/subnets[*].routeTable.id",
+         "equals": "[concat('/subscriptions/',subscription().subscriptionId,'/resourceGroups/', subscription().displayName, '-connectivity-', resourceGroup().location , '/providers/Microsoft.Network/routeTables/', subscription().displayName, '-rt-', resourceGroup().location)]"
+        }
+       }
+      ]
+     },
+     {
+      "allOf": [
+       {
+        "field": "type",
+        "equals": "Microsoft.Network/virtualNetworks/subnets"
+       },
+       {
+        "not": {
+         "field": "Microsoft.Network/virtualNetworks/subnets/routeTable.id",
+         "equals": "[concat('/subscriptions/',subscription().subscriptionId,'/resourceGroups/', subscription().displayName, '-connectivity-', resourceGroup().location ,  '/providers/Microsoft.Network/routeTables/', subscription().displayName, '-rt-', resourceGroup().location)]"
+        }
+       }
+      ]
+     }
+    ]
+   },
+   "then": {
+    "effect": "deny"
+   }
+  }
+ },
+ "id": "/providers/Microsoft.Management/managementGroups/caf/providers/Microsoft.Authorization/policyDefinitions/Enforce-Subnet-RT-Entlz",
+ "type": "Microsoft.Authorization/policyDefinitions",
+ "name": "Enforce-Subnet-RT-Entlz"
+}

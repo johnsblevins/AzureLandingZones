@@ -10,7 +10,7 @@
  "properties": {
   "displayName": "Deploy-SQL-Security",
   "policyDefinitionId": "86a912f6-9a06-4e26-b447-11b16ba8659f",
-  "scope": "/providers/Microsoft.Management/managementGroups/%%policydefinitionmg%%-landingzones",
+  "scope": "/providers/Microsoft.Management/managementGroups/%%entlzprefix%%-landingzones",
   "notScopes": [],
   "parameters": {},
   "enforcementMode": "Default"

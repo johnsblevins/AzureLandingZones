@@ -6,7 +6,7 @@
     "properties": {
         "displayName": "Allowed-Resource-Types",
         "policyDefinitionId": "a08ec900-254a-4555-9bf5-e42af04b5c5c",
-        "scope": "/providers/Microsoft.Management/managementGroups/%%policydefinitionmg%%-internal",
+        "scope": "/providers/Microsoft.Management/managementGroups/%%entlzprefix%%-internal",
         "notScopes": [],
         "parameters": {
             "listOfResourceTypesAllowed": {
@@ -179,6 +179,7 @@
                     "Microsoft.DBforPostgreSQL/servers/topQueryStatistics",
                     "Microsoft.DBforPostgreSQL/servers/virtualNetworkRules",
                     "Microsoft.DBforPostgreSQL/servers/waitStatistics",
+                    "Microsoft.DevTestLab/schedules",
                     "Microsoft.DocumentDB/databaseAccountNames",
                     "Microsoft.DocumentDB/databaseAccounts",
                     "Microsoft.DocumentDB/databaseAccounts/apis/databases",

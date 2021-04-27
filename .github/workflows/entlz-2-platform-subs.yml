@@ -1,35 +1,74 @@
 name: entlz-2-platform-subs
 
-env:
-  entlzprefix: elz1  
-  environment: azureusgovernment
-  location: usgovvirginia  
-  managementsubid: 07526f72-6689-42be-945f-bb6ad0214b71
-  identitysubid: 787e871a-84ba-43be-86bf-86bd1e408a4a
-  connectivitysubid: b30166b8-dd1b-4fa2-9ad7-057614257b06
-  securitysubid: ac95a806-c9d3-49e7-83ee-7f82e88c2bd3
-  subownergroup: azure-platform-owners
-  offertype: MS-AZR-USGOV-0017P
-  enracctname: 
-
 # Controls when the action will run. 
 on:
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
+    inputs:
+      entlzprefix: 
+        description: 'entlzprefix'
+        required: true
+        default: ''
+      environment: 
+        description: 'environment'
+        required: true
+        default: 'azureusgovernment'
+      location: 
+        description: 'location'
+        required: true
+        default: 'usgovvirginia'
+      managementsubid:
+        description: ''
+        required: true
+        default: ''
+      identitysubid:
+        description: ''
+        required: true
+        default: ''
+      connectivitysubid:
+        description: ''
+        required: true
+        default: ''
+      securitysubid:
+        description: ''
+        required: true
+        default: ''
+      subownergroup: 
+        description: ''
+        required: true
+        default: 'azure-platform-owners'
+      offertype: 
+        description: ''
+        required: false
+        default: 'MS-AZR-USGOV-0017P'
+      enracctname: 
+        description: ''
+        required: false
+        default: ''
 
-  push:
-      branches:
-        - dev
-      paths:
-        - '.github/workflows/entlz-2-platform-subs.yml'
+  repository_dispatch:
+    types: [entlz-1-platform-subs]
+
+env:
+  entlzprefix: ${{ github.event.inputs.entlzprefix }}
+  environment: ${{ github.event.inputs.environment }}
+  location: ${{ github.event.inputs.location }} 
+  managementsubid: ${{ github.event.inputs.managementsubid }} 
+  identitysubid: ${{ github.event.inputs.identitysubid }} 
+  connectivitysubid: ${{ github.event.inputs.connectivitysubid }} 
+  securitysubid: ${{ github.event.inputs.securitysubid }} 
+  subownergroup: ${{ github.event.inputs.subownergroup }} 
+  offertype: ${{ github.event.inputs.offertype }} 
+  enracctname:  ${{ github.event.inputs.enracctname }} 
+
 
 jobs:
     build-and-deploy:
         runs-on: ubuntu-latest
         steps:
         - uses: actions/checkout@v2
-          with:
-            ref: dev
+        - name: Branch name
+          run: echo running on branch ${GITHUB_REF##*/}
         - name: Log in with Azure
           uses: azure/login@v1
           with:

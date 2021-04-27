@@ -1,23 +1,46 @@
 name: entlz-4-platform-policies
 
-env:
-  entlzprefix: elz1
-  environment: azureusgovernment
-  location: usgovvirginia
-  managementsubid: 07526f72-6689-42be-945f-bb6ad0214b71
-  uniqueid: "2"
 
 # Controls when the action will run. 
 on:
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
+    inputs:
+      entlzprefix: 
+        description: 'entlzprefix'
+        required: true
+        default: ''
+      environment: 
+        description: 'environment'
+        required: true
+        default: 'azureusgovernment'
+      location: 
+        description: 'location'
+        required: true
+        default: 'usgovvirginia'
+      managementsubid:
+        description: ''
+        required: true
+        default: ''
+      uniqueid:
+        description: ''
+        required: false
+        default: ''      
   
-  push:
-    branches:
-      - dev
-    paths:
-      - 'templates/entlz/policies/*'
-      - '.github/workflows/entlz-2-platform-policies.yml'
+#  push:
+#    branches:
+#      - dev
+#    paths:
+#      - 'templates/entlz/policies/**'
+#      - '.github/workflows/entlz-4-platform-policies.yml'
+
+env:
+  entlzprefix: ${{ github.event.inputs.entlzprefix }}
+  environment: ${{ github.event.inputs.environment }}
+  location: ${{ github.event.inputs.location }} 
+  managementsubid: ${{ github.event.inputs.managementsubid }} 
+  uniqueid: ${{ github.event.inputs.uniqueid }} 
+
 
 jobs:
     build-and-deploy:
@@ -25,8 +48,8 @@ jobs:
           
         steps:
         - uses: actions/checkout@v2
-          with:
-            ref: dev
+        - name: Branch name
+          run: echo running on branch ${GITHUB_REF##*/}
         - name: Log in with Azure
           uses: azure/login@v1
           with:
@@ -63,7 +86,7 @@ jobs:
                       --name "`jq -r .name $f`" \
                       --description "`jq -r .properties.description $f`" \
                       --display-name "`jq -r .properties.displayName $f`" \
-                      --definitions "`jq -r .properties.policyDefinitions $f | sed -e 's/%%policydefinitionmg%%/${{ env.entlzprefix }}/g'`" \
+                      --definitions "`jq -r .properties.policyDefinitions $f | sed -e 's/%%entlzprefix%%/${{ env.entlzprefix }}/g'`" \
                       --params "`jq -r .properties.parameters $f`" \
                       --management-group ${{ env.entlzprefix }}
               done
@@ -77,14 +100,14 @@ jobs:
               # Deploy Policy Assignments
               for f in $(find templates/entlz/policies/policies -name assign.*.json);
                 do policy=`jq -r .properties.policyDefinitionId $f | \
-                    sed -e 's/%%policydefinitionmg%%/${{ env.entlzprefix }}/g'`
+                    sed -e 's/%%entlzprefix%%/${{ env.entlzprefix }}/g'`
                   params=`jq -r .properties.parameters $f | \
-                    sed -e 's/%%policydefinitionmg%%/${{ env.entlzprefix }}/g' | \
+                    sed -e 's/%%entlzprefix%%/${{ env.entlzprefix }}/g' | \
                     sed -e 's/%%location%%/${{ env.location }}/g' | \
                     sed -e 's/%%managementsubid%%/${{ env.managementsubid }}/g' | \
                     sed -e 's/%%uniqueid%%/${{ env.uniqueid }}/g'`
                   scope=`jq -r .properties.scope $f | \
-                    sed -e 's/%%policydefinitionmg%%/${{ env.entlzprefix }}/g' `
+                    sed -e 's/%%entlzprefix%%/${{ env.entlzprefix }}/g' `
                   identity=`jq -r .identity $f`
                   role=`jq -r .identity.role $f`
                   [[ -z $role ]] && role="Contributor"
@@ -123,14 +146,14 @@ jobs:
               # Deploy Initiative Assignments
               for f in $(find templates/entlz/policies/initiatives -name assign.*.json);
                 do policySetDefinition=`jq -r .properties.policyDefinitionId $f | \
-                    sed -e 's/%%policydefinitionmg%%/${{ env.entlzprefix }}/g'`
+                    sed -e 's/%%entlzprefix%%/${{ env.entlzprefix }}/g'`
                   params=`jq -r .properties.parameters $f | \
-                    sed -e 's/%%policydefinitionmg%%/${{ env.entlzprefix }}/g' | \
+                    sed -e 's/%%entlzprefix%%/${{ env.entlzprefix }}/g' | \
                     sed -e 's/%%location%%/${{ env.location }}/g' | \
                     sed -e 's/%%managementsubid%%/${{ env.managementsubid }}/g' | \
                     sed -e 's/%%uniqueid%%/${{ env.uniqueid }}/g'`
                   scope=`jq -r .properties.scope $f | \
-                    sed -e 's/%%policydefinitionmg%%/${{ env.entlzprefix }}/g'`
+                    sed -e 's/%%entlzprefix%%/${{ env.entlzprefix }}/g'`
                   identity=`jq -r .identity $f`
                   role=`jq -r .identity.role $f`
                   [[ -z $role ]] && role="Contributor"

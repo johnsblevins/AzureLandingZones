@@ -1,40 +1,131 @@
 name: entlz-6a-platform-connectivity-vnethubspoke
-env:
-  bastionsubnetprefix: 10.0.0.160/27
-  connectivitysubid: b30166b8-dd1b-4fa2-9ad7-057614257b06
-  entlzprefix: elz1
-  environment: azureusgovernment
-  fwmanagementsubnetprefix: 10.0.0.64/26
-  fwsubnetprefix: 10.0.0.0/26
-  fwtype: Standard
-  gwsubnetprefix: 10.0.0.128/27
-  gwtype: ExpressRoute
-  hubmanagementsubnetprefix: 10.0.1.0/26
-  hubvnetprefix: 10.0.0.0/23
-  identitysubid: 787e871a-84ba-43be-86bf-86bd1e408a4a
-  identitysubnetprefix: 10.0.4.0/26
-  identityvnetprefix: 10.0.4.0/23
-  location: usgovvirginia
-  logaworkspaceid: /subscriptions/07526f72-6689-42be-945f-bb6ad0214b71/resourcegroups/elz1-management-usgovvirginia/providers/microsoft.operationalinsights/workspaces/elz1-loga-usgovvirginia2
-  managementsubid: 07526f72-6689-42be-945f-bb6ad0214b71
-  managementsubnetprefix: 10.0.2.0/26
-  managementvnetprefix: 10.0.2.0/23
-  securitysubid: ac95a806-c9d3-49e7-83ee-7f82e88c2bd3
-  securitysubnetprefix: 10.0.6.0/26
-  securityvnetprefix: 10.0.6.0/23
-  
+ 
 
 # Controls when the action will run. 
 on:
     # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
-  
-  push:
-    branches:
-      - dev
-    paths:
-      - 'templates/entlz/platform-connectivity-vnethubspoke**'
-      - '.github/workflows/entlz-6a-platform-connectivity-vnethubspoke.yml'
+    inputs:
+      entlzprefix: 
+        description: 'entlzprefix'
+        required: true
+        default: ''
+      environment: 
+        description: 'environment'
+        required: true
+        default: 'azureusgovernment'
+      location: 
+        description: 'location'
+        required: true
+        default: 'usgovvirginia'
+      bastionsubnetprefix:
+        description: ''
+        required: true
+        default: ''
+      connectivitysubid:
+        description: ''
+        required: true
+        default: ''
+      fwmanagementsubnetprefix:
+        description: ''
+        required: true
+        default: ''
+      fwsubnetprefix:
+        description: ''
+        required: true
+        default: ''
+      fwtype: 
+        description: ''
+        required: true
+        default: 'Standard'
+      gwsubnetprefix:
+        description: ''
+        required: true
+        default: ''
+      gwtype:
+        description: ''
+        required: true
+        default: ''
+      hubmanagementsubnetprefix:
+        description: ''
+        required: true
+        default: ''
+      hubvnetprefix:
+        description: ''
+        required: true
+        default: ''
+      managementsubid:
+        description: ''
+        required: true
+        default: ''
+      managementsubnetprefix:
+        description: ''
+        required: true
+        default: ''
+      managementvnetprefix:
+      identitysubid:
+        description: ''
+        required: true
+        default: ''
+      identitysubnetprefix:
+        description: ''
+        required: true
+        default: ''
+      identityvnetprefix: 
+        description: ''
+        required: true
+        default: ''
+      logaworkspaceid:
+        description: ''
+        required: true
+        default: ''
+      connectivitysubid:
+        description: ''
+        required: true
+        default: ''
+      securitysubid:
+        description: ''
+        required: true
+        default: ''
+      securitysubnetprefix:
+        description: ''
+        required: true
+        default: ''
+      securityvnetprefix:
+        description: ''
+        required: true
+        default: ''
+     
+#  push:
+#    branches:
+#      - dev
+#    paths:
+#      - 'templates/entlz/platform-connectivity-vnethubspoke**'
+#      - '.github/workflows/entlz-6a-platform-connectivity-vnethubspoke.yml'
+
+env:
+  entlzprefix: ${{ github.event.inputs.entlzprefix }}
+  environment: ${{ github.event.inputs.environment }}
+  location: ${{ github.event.inputs.location }}
+  bastionsubnetprefix: ${{ github.event.inputs.bastionsubnetprefix }}
+  connectivitysubid:  ${{ github.event.inputs.connectivitysubid }}
+  fwmanagementsubnetprefix: ${{ github.event.inputs.fwmanagementsubnetprefix }}
+  fwsubnetprefix: ${{ github.event.inputs.fwsubnetprefix }}
+  fwtype: ${{ github.event.inputs.fwtype }}
+  gwsubnetprefix: ${{ github.event.inputs.gwsubnetprefix }}
+  gwtype: ${{ github.event.inputs.gwtype }}
+  hubmanagementsubnetprefix: ${{ github.event.inputs.hubmanagementsubnetprefix }}
+  hubvnetprefix: ${{ github.event.inputs.hubvnetprefix }}
+  identitysubid: ${{ github.event.inputs.identitysubid }}
+  identitysubnetprefix: ${{ github.event.inputs.identitysubnetprefix }}
+  identityvnetprefix:   ${{ github.event.inputs.identityvnetprefix }}
+  logaworkspaceid: ${{ github.event.inputs.logaworkspaceid }}
+  managementsubid: ${{ github.event.inputs.managementsubid }}
+  managementsubnetprefix: ${{ github.event.inputs.managementsubnetprefix }}
+  managementvnetprefix: ${{ github.event.inputs.managementvnetprefix }}
+  securitysubid: ${{ github.event.inputs.securitysubid }}
+  securitysubnetprefix: ${{ github.event.inputs.securitysubnetprefix }}
+  securityvnetprefix: ${{ github.event.inputs.securityvnetprefix }}
 
 jobs:
     build-and-deploy:
@@ -42,8 +133,8 @@ jobs:
           
         steps:
         - uses: actions/checkout@v2
-          with:
-            ref: dev       
+        - name: Branch name
+          run: echo running on branch ${GITHUB_REF##*/}       
         - name: Log in with Azure
           uses: azure/login@v1
           with:

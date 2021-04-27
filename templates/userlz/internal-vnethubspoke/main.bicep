@@ -9,9 +9,13 @@ param hubvnetname string //
 param managementsubnetprefix string //Management Subnet Prefix
 param program string // Program Name - 5 character MAX
 param subname string
-param uniqueid string
 param vnetprefix string //prod, nonprod, sandbox
 param websubnetprefix string //Web Subnet Prefix
+param subrtname string
+param subnsgname string
+param subdesname string
+param subkvname string
+param subkvkeyname string
 
 var tenantid = subscription().tenantId
 var location = deployment().location
@@ -20,11 +24,7 @@ var diskencryptionrgname = '${subname}-diskencryption-${location}'
 var spokevnetname = '${subname}-vnet-${location}'
 var hubtospokepeername = '${hubvnetname}-to-${spokevnetname}'
 var spoketohubpeername = '${spokevnetname}-to-${hubvnetname}'
-var spokevnetrtname = '${subname}-routetable-${location}'
-var spokevnetnsgname = '${subname}-nsg-${location}'
-var diskencryptionsetname = '${subname}-diskencryptionset-${location}'
-var keyvaultname = '${replace(subname,'-','')}kv${substring(location,0,8)}${uniqueid}'
-var keyvaultkeyname = '${subname}-deskey-${location}'
+
 
 targetScope = 'subscription'
 
@@ -50,25 +50,25 @@ module spokevnet 'modules/spoke.bicep'={
     spoketohubpeername: spoketohubpeername
     spokevnetname: spokevnetname
     spokevnetprefix: vnetprefix
-    spokevnetrtname: spokevnetrtname
+    subrtname: subrtname
     appsubnetprefix: appsubnetprefix
     datasubnetprefix: datasubnetprefix
     hubvnetsubid: hubvnetsubid
-    spokensgname: spokevnetnsgname
+    subnsgname: subnsgname
     websubnetprefix: websubnetprefix
   }
 }
 
 module diskencryption 'modules/diskEncryption.bicep' ={
-  name: diskencryptionsetname
+  name: subdesname
   dependsOn:[
     diskencryptionrg
   ]
   scope: diskencryptionrg
   params:{
-    kvname: keyvaultname
-    kvkeyname: keyvaultkeyname
+    subkvname: subkvname
+    subkvkeyname: subkvkeyname
     tenantid: tenantid
-    diskesname: diskencryptionsetname
+    subdesname: subdesname
   }
 }

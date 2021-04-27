@@ -8,8 +8,8 @@ param hubvnetsubid string
 param hubvnetrgname string
 param spoketohubpeername string
 param hubtospokepeername string
-param spokevnetrtname string
-param spokensgname string
+param subrtname string
+param subnsgname string
 param fwip string
 param websubnetprefix string
 
@@ -26,7 +26,7 @@ resource hubvnet 'Microsoft.Network/virtualNetworks@2020-08-01' existing={
 }
 
 resource spokert 'Microsoft.Network/routeTables@2020-11-01'={
-  name: spokevnetrtname
+  name: subrtname
   location: location
   properties:{
     disableBgpRoutePropagation: true
@@ -44,7 +44,7 @@ resource spokert 'Microsoft.Network/routeTables@2020-11-01'={
 }
 
 resource spokensg 'Microsoft.Network/networkSecurityGroups@2020-08-01' = {
-  name: spokensgname
+  name: subnsgname
   location: location
   properties:{
     securityRules:[

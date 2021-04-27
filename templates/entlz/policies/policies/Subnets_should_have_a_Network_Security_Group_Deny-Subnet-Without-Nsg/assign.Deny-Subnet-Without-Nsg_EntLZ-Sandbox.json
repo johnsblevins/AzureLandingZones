@@ -1,0 +1,16 @@
+{
+ "sku": {
+  "name": "A0",
+  "tier": "Free"
+ },
+ "properties": {
+  "displayName": "Deny-Subnet-Without-Nsg",
+  "policyDefinitionId": "/providers/Microsoft.Management/managementGroups/%%entlzprefix%%/providers/Microsoft.Authorization/policyDefinitions/Deny-Subnet-Without-Nsg",
+  "scope": "/providers/Microsoft.Management/managementGroups/%%entlzprefix%%-sandboxes",
+  "notScopes": [],
+  "parameters": {},
+  "enforcementMode": "Default"
+ },
+ "type": "Microsoft.Authorization/policyAssignments",
+ "name": "Deny-Subnet-Without-Nsg"
+}

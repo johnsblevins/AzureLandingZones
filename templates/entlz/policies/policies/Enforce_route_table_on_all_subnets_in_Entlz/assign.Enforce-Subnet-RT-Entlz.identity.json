@@ -1,0 +1,16 @@
+{
+ "sku": {
+  "name": "A0",
+  "tier": "Free"
+ },
+ "properties": {
+  "displayName": "Enforce-Subnet-RT-Entlz.identity",
+  "policyDefinitionId": "/providers/Microsoft.Management/managementGroups/%%entlzprefix%%/providers/Microsoft.Authorization/policyDefinitions/Enforce-Subnet-RT-Entlz",
+  "scope": "/providers/Microsoft.Management/managementGroups/%%entlzprefix%%-identity",
+  "notScopes": [],
+  "parameters": {},
+  "enforcementMode": "Default"
+ },
+ "type": "Microsoft.Authorization/policyAssignments",
+ "name": "Enforce-Subnet-RT-Entlz"
+}

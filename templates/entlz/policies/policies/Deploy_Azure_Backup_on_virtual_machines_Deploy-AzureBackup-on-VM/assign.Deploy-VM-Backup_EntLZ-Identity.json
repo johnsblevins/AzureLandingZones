@@ -9,8 +9,8 @@
  },
  "properties": {
   "displayName": "Deploy-VM-Backup",
-  "policyDefinitionId": "/providers/Microsoft.Management/managementGroups/%%policydefinitionmg%%/providers/Microsoft.Authorization/policyDefinitions/Deploy-AzureBackup-on-VM",
-  "scope": "/providers/Microsoft.Management/managementGroups/%%policydefinitionmg%%-identity",
+  "policyDefinitionId": "/providers/Microsoft.Management/managementGroups/%%entlzprefix%%/providers/Microsoft.Authorization/policyDefinitions/Deploy-AzureBackup-on-VM",
+  "scope": "/providers/Microsoft.Management/managementGroups/%%entlzprefix%%-identity",
   "notScopes": [],
   "parameters": {},
   "enforcementMode": "Default"

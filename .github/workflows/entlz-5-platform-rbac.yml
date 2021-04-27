@@ -1,36 +1,50 @@
 name: entlz-5-platform-rbac
 
-env:
-  entlzprefix: elz1
-  environment: azureusgovernment
-  location: usgovvirginia
+
 
 # Controls when the action will run. 
 on:
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
+    inputs:
+      entlzprefix: 
+        description: 'entlzprefix'
+        required: true
+        default: ''
+      environment: 
+        description: 'environment'
+        required: true
+        default: 'azureusgovernment'
+      location: 
+        description: 'location'
+        required: true
+        default: 'usgovvirginia'
+#  push:
+#    branches:
+#        - dev
+#    paths:
+#        - 'templates/entlz/rbac/**'
+#        - '.github/workflows/entlz-5-platform-rbac.yml'
 
-  push:
-    branches:
-        - dev
-    paths:
-        - 'templates/entlz/platform-mgs.bicep'
-        - '.github/workflows/entlz-1-platform-mgs.yml'
+env:
+  entlzprefix: ${{ github.event.inputs.entlzprefix }}
+  environment: ${{ github.event.inputs.environment }}
+  location: ${{ github.event.inputs.location }} 
 
 jobs:
     build-and-deploy:
         runs-on: ubuntu-latest
         steps:
         - uses: actions/checkout@v2
-          with:
-            ref: dev
+        - name: Branch name
+          run: echo running on branch ${GITHUB_REF##*/}
         - name: Log in with Azure
           uses: azure/login@v1
           with:
             creds: ${{ secrets.AZGOV_CREDS }}
             environment: ${{ env.environment }}
             enable-AzPSSession: false
-
+        
         - name: Create and Assign RBAC Groups in Hierarchy
           uses: azure/CLI@v1
           with:
@@ -228,3 +242,55 @@ jobs:
               sleep 15
 
               az role assignment create --assignee $group --scope /providers/Microsoft.Management/managementGroups/${{ env.entlzprefix }}-sandboxes --role "Owner"
+
+        - name: Deploy Custom RBAC Definitions
+          uses: azure/CLI@v1
+          with:
+            azcliversion: 2.21.0
+            inlineScript: |
+              entlzprefix=${{ env.entlzprefix }}
+              
+              # Deploy Custom RBAC Definitions
+              for f in $(find templates/entlz/rbac/roles -name role.json); 
+                do  \
+                    rolename=$(jq -r .Name $f)
+                    roleexists=$(az role definition list --query "[?roleName=='$rolename']" --output tsv) 
+                    if [[ -z $roleexists ]];
+                    then
+                      roledefinition=$(jq -r . $f | sed -e "s/%%rbacdefinitionmg%%/$entlzprefix/g")
+                      az role definition create --role-definition "$roledefinition"                    
+                    else
+                      echo "Role definition $rolename already exists...skipping."
+                    fi;
+              done
+              sleep 60
+
+        - name: Deploy RBAC Assignments
+          uses: azure/CLI@v1
+          with:
+            azcliversion: 2.21.0
+            inlineScript: |
+              # Deploy RBAC Assignments
+              for f in $(find templates/entlz/rbac/roles -name assign.*.json);
+                do assignee=`jq -r .ObjectId $f`                    
+                  role=`jq -r .RoleDefinitionName $f`
+                  scope=`jq -r .Scope $f`
+                  
+                  isGroup=$(az ad group list --query "[?objectId=='$assignee']")
+                  isUser=$(az ad user list --query "[?objectId=='$assignee']")
+                  isApp=$(az ad app list --query "[?objectId=='$assignee']")
+
+                  if [[ -z $isGroup &&  -z $isUser &&  -z $isApp ]]; 
+                    then echo "Object ID $assignee not found in tenant."; 
+                    else 
+                        az role assignment create \
+                        --assignee "$assignee" \
+                        --role "$role" \
+                        --scope "$scope"
+                  fi
+                                   
+                done
+                sleep 120
+
+
+        

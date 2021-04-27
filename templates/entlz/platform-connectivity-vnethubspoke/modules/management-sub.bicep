@@ -11,6 +11,7 @@ param hubvnetsub string
 param spoketohubpeername string
 param fwip string
 param spokevnetrtname string
+param spokevnetnsgname string
 
 targetScope='subscription'
 
@@ -36,5 +37,6 @@ module managementvnet 'spoke.bicep' = {
     spoketohubpeername: spoketohubpeername
     fwip: fwip
     spokevnetrtname: spokevnetrtname
+    spokevnetnsgname: spokevnetnsgname
   }
 }

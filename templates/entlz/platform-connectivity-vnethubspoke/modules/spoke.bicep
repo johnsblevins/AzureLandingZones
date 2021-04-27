@@ -7,6 +7,7 @@ param hubvnetrgname string
 param spoketohubpeername string
 param hubtospokepeername string
 param spokevnetrtname string
+param spokevnetnsgname string
 param fwip string
 
 resource hubvnetrg 'Microsoft.Resources/resourceGroups@2020-10-01' existing={
@@ -38,10 +39,48 @@ resource spokert 'Microsoft.Network/routeTables@2020-11-01'={
 }
 
 
+resource spokensg 'Microsoft.Network/networkSecurityGroups@2020-08-01' = {
+  name: spokevnetnsgname
+  location: resourceGroup().location
+  properties:{
+    securityRules:[
+      {
+        name:'DefaultInboundRule'
+        properties:{
+          access:'Allow'
+          description: 'Default NSG Rule'
+          destinationAddressPrefix: '*'
+          destinationPortRange:'*'
+          direction: 'Inbound'
+          protocol: '*'
+          sourcePortRange: '*'
+          sourceAddressPrefix: '*'
+          priority: 100
+        }
+      }
+      {
+        name:'DefaultOutboundRule'
+        properties:{
+          access:'Allow'
+          description: 'Default NSG Rule'
+          destinationAddressPrefix: '*'
+          destinationPortRange:'*'
+          direction: 'Outbound'
+          protocol: '*'
+          sourcePortRange: '*'
+          sourceAddressPrefix: '*'
+          priority: 100
+        }
+      }
+    ]
+  }
+}
+
 resource spokevnet 'Microsoft.Network/virtualNetworks@2020-08-01'= {
   name: spokevnetname
   dependsOn:[
     spokert
+    spokensg
   ]
   location: resourceGroup().location
   properties:{
@@ -57,6 +96,9 @@ resource spokevnet 'Microsoft.Network/virtualNetworks@2020-08-01'= {
           addressPrefix: managementsubnetprefix     
           routeTable:{
             id: spokert.id
+          }
+          networkSecurityGroup:{
+            id: spokensg.id
           }
         }
       }
