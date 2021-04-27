@@ -60,13 +60,14 @@ jobs:
             echo ${{ steps.setvariables.outputs.entlzprefix }}
             echo ${{ steps.setvariables.outputs.environment }}
             echo ${{ steps.setvariables.outputs.location }}
+            echo ${{ steps.setvariables.outputs.githubsecret }}
         - uses: actions/checkout@v2        
           with:
             ref: ${{ steps.setvariables.outputs.ref }}        
         - name: Log in with Azure
           uses: azure/login@v1
           with:
-            creds: ${{ secrets.steps.setvariables.outputs.githubsecret }}
+            creds: ${{ `"secrets.${{ steps.setvariables.outputs.githubsecret }}"` }}
             environment: ${{ steps.setvariables.outputs.environment }}
             enable-AzPSSession: false
         - name: Deploy Management Groups
