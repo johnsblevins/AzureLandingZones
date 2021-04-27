@@ -23,19 +23,19 @@ on:
         default: 'AZGOV_CREDS'
       managementsubid:
         description: ''
-        required: true
+        required: false
         default: ''
       identitysubid:
         description: ''
-        required: true
+        required: false
         default: ''
       connectivitysubid:
         description: ''
-        required: true
+        required: false
         default: ''
       securitysubid:
         description: ''
-        required: true
+        required: false
         default: ''
       subownergroup: 
         description: ''
