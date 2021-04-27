@@ -88,10 +88,10 @@ jobs:
               echo "Invalid Event Trigger ${GITHUB_EVENT_NAME} unable to set variables."
             fi;
 
-            if [ ${{ steps.setvariables.outputs.environment }} == 'azurecloud' ];
+            if [ ${{ github.event.client_payload.environment }} == 'azurecloud' ];
             then
               "::set-output name=offertype::MS-AZR-0017P"
-            elif [ ${{ steps.setvariables.outputs.environment }} == 'azureusgovernment' ];
+            elif [ ${{ github.event.client_payload.environment }} == 'azureusgovernment' ];
             then
               "::set-output name=offertype::MS-AZR-USGOV-0017P"
             else
