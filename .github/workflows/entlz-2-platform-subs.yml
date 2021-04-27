@@ -71,7 +71,7 @@ jobs:
               echo "::set-output name=securitysubid::${{ github.event.inputs.securitysubid }}"
               echo "::set-output name=subownergroup::${{ github.event.inputs.subownergroup }}"
               echo "::set-output name=enracctname::${{ github.event.inputs.enracctname }}"              
-              if [ ${{ github.event.client_payload.environment }} == 'azurecloud' ];
+              if [ ${{ github.event.inputs.environment }} == 'azurecloud' ];
               then
                 "::set-output name=offertype::MS-AZR-0017P"
               elif [ ${{ github.event.inputs.environment }} == 'azureusgovernment' ];
