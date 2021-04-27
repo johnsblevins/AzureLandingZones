@@ -28,11 +28,11 @@ on:
 #      - 'templates/entlz/platform-mgs.bicep'
 #      - '.github/workflows/entlz-1-platform-mgs.yml'
 
-env:
-  ref: ${{ github.ref }}
-  entlzprefix: ${{ github.event.inputs.entlzprefix }}
-  environment: ${{ github.event.inputs.environment }}
-  location: ${{ github.event.inputs.location }}
+#env:
+#  ref: ${{ github.ref }}
+#  entlzprefix: ${{ github.event.inputs.entlzprefix }}
+#  environment: ${{ github.event.inputs.environment }}
+#  location: ${{ github.event.inputs.location }}
 #  ref: ${{ github.event.client_payload.ref }}
 #  entlzprefix: ${{ github.event.client_payload.entlzprefix }}
 #  environment: ${{ github.event.client_payload.environment }}
@@ -42,6 +42,20 @@ jobs:
     build-and-deploy:
         runs-on: ubuntu-latest
         steps:
+        - name: workflow_dispatch_variables
+          if: ${{ github.event_name == 'workflow_dispatch' }}
+            env:
+              ref: ${{ github.ref }}
+              entlzprefix: ${{ github.event.inputs.entlzprefix }}
+              environment: ${{ github.event.inputs.environment }}
+              location: ${{ github.event.inputs.location }}
+        - name: repository_dispatch_variables
+          if: ${{ github.event_name == 'repository_dispatch' }}
+            env:
+              ref: ${{ github.event.client_payload.ref }}
+              entlzprefix: ${{ github.event.client_payload.entlzprefix }}
+              environment: ${{ github.event.client_payload.environment }}
+              location: ${{ github.event.client_payload.location }}
         - uses: actions/checkout@v2
           with:
             ref: ${{ env.ref }}
