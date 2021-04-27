@@ -43,6 +43,8 @@ jobs:
         runs-on: ubuntu-latest
         steps:
         - uses: actions/checkout@v2
+          with:
+            ref: ${{ env.ref }}
         - name: Branch name
           run: echo running on branch ${GITHUB_REF##*/}
         - name: Log in with Azure
