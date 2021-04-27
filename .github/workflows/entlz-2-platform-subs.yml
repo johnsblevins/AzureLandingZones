@@ -95,7 +95,7 @@ jobs:
             then
               "::set-output name=offertype::MS-AZR-USGOV-0017P"
             else
-              echo "No Offer Found for Environment ${{ steps.setvariables.outputs.environment }}"
+              echo "No Offer Found for Environment ${{ github.event.client_payload.environment }}"
             fi;
 
         - name: Echo Variables
