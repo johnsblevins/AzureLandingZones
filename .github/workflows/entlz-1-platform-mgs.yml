@@ -42,10 +42,11 @@ jobs:
     build-and-deploy:
         runs-on: ubuntu-latest
         steps:
-        - name: setvariables
+        - name: Set Variables
           id: setvariables         
           run: |
-            if ${GITHUB_EVENT_NAME} == 'workflow_dispatch';
+            echo ${GITHUB_EVENT_NAME} 
+            if [ ${GITHUB_EVENT_NAME} == 'workflow_dispatch' ];
             then
               echo "::set-output name=ref::${GITHUB_REF##*/}"
               echo "::set-output name=entlzprefix::${{ github.event.inputs.entlzprefix }}"
@@ -57,7 +58,7 @@ jobs:
               echo "::set-output name=environment::${{ github.event.client_payload.environment }}"
               echo "::set-output name=location::${{ github.event.client_payload.location }}"
             fi;
-        - name: Echo Vars
+        - name: Echo Variables
           run: |
             echo ${{ steps.setvariables.outputs.ref }}
             echo ${{ steps.setvariables.outputs.entlzprefix }}
