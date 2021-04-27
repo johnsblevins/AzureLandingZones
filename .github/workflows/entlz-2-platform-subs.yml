@@ -114,8 +114,9 @@ jobs:
             echo ${{ steps.setvariables.outputs.offertype }}
 
         - uses: actions/checkout@v2
-        - name: Branch name
-          run: echo running on branch ${GITHUB_REF##*/}
+          with:
+            ref: ${{ steps.setvariables.outputs.ref }}
+        
         - name: Log in with Azure
           uses: azure/login@v1
           with:
@@ -134,9 +135,7 @@ jobs:
               if [[ -z "${{ steps.setvariables.outputs.managementsubid }}" ]];
               then
                 az config set extension.use_dynamic_install=yes_without_prompt
-
                 subownergroupid=$(az ad group list --display-name ${{ steps.setvariables.outputs.subownergroup }}  --query [].objectId -o tsv)
-
                 # Check if Sub already exists
                 if [[ -z `az account list --query "[?name=='${{ env.managementsubname }}'].name" --output tsv` ]];
                 then
@@ -156,9 +155,8 @@ jobs:
                 else
                   echo "Management subscription already exists...skipping"
                 fi;
-              else
-                echo "Management subscription already exists...skipping"
-                echo "Management subscription already exists...renaming"
+              else                
+                echo "Management subscription specified as input...renaming"
                 az rest --method post \
                 --url "${managementuri}subscriptions/${{ steps.setvariables.outputs.managementsubid }}/providers/Microsoft.Subscription/rename?api-version=2019-10-01-preview" \
                 --headers "{\"content-type\":\"application/json\"}" \
@@ -197,7 +195,7 @@ jobs:
                   echo "Identity subscription already exists...skipping"
                 fi;
               else
-                echo "Identity subscription already exists...renaming"
+                echo "Identity subscription specified as input...renaming"
                 az rest --method post \
                 --url "${managementuri}subscriptions/${{ steps.setvariables.outputs.identitysubid }}/providers/Microsoft.Subscription/rename?api-version=2019-10-01-preview" \
                 --headers "{\"content-type\":\"application/json\"}" \
@@ -236,7 +234,7 @@ jobs:
                   echo "Connectivity subscription already exists...skipping"
                 fi;
               else
-                echo "Conenctivity subscription already exists...renaming"
+                echo "Conenctivity subscription specified as input...renaming"
                 az rest --method post \
                 --url "${managementuri}subscriptions/${{ steps.setvariables.outputs.connectivitysubid }}/providers/Microsoft.Subscription/rename?api-version=2019-10-01-preview" \
                 --headers "{\"content-type\":\"application/json\"}" \
@@ -276,7 +274,7 @@ jobs:
                   echo "Security subscription already exists...skipping"
                 fi;
               else
-                echo "Security subscription already exists...renaming"
+                echo "Security subscription specified as input...renaming"
                 az rest --method post \
                 --url "${managementuri}subscriptions/${{ steps.setvariables.outputs.securitysubid }}/providers/Microsoft.Subscription/rename?api-version=2019-10-01-preview" \
                 --headers "{\"content-type\":\"application/json\"}" \
