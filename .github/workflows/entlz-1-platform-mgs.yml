@@ -42,7 +42,8 @@ jobs:
     build-and-deploy:
         runs-on: ubuntu-latest
         steps:
-        - name: setvariables          
+        - name: setvariables
+          id: setvariables         
           run: |
             if ${{ github.event.name }} == 'repository_dispatch';
             then
@@ -56,6 +57,12 @@ jobs:
               echo "::set-output name=environment::${{ github.event.client_payload.environment }}"
               echo "::set-output name=location::${{ github.event.client_payload.location }}"
             fi;
+        - name: Echo Vars
+          run: |
+            echo ${{ steps.setvariables.outputs.ref }}
+            echo ${{ steps.setvariables.outputs.entlzprefix }}
+            echo ${{ steps.setvariables.outputs.environment }}
+            echo ${{ steps.setvariables.outputs.location }}
         - uses: actions/checkout@v2        
           with:
             ref: ${{ steps.setvariables.outputs.ref }}        
