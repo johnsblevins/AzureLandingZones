@@ -47,7 +47,7 @@ on:
         default: ''
 
   repository_dispatch:
-    types: [entlz-1-platform-subs]
+    types: [entlz-2-platform-subs]
 
 jobs:
     build-and-deploy:
@@ -70,7 +70,16 @@ jobs:
               echo "::set-output name=connectivitysubid::${{ github.event.inputs.connectivitysubid }}"
               echo "::set-output name=securitysubid::${{ github.event.inputs.securitysubid }}"
               echo "::set-output name=subownergroup::${{ github.event.inputs.subownergroup }}"
-              echo "::set-output name=enracctname::${{ github.event.inputs.enracctname }}"
+              echo "::set-output name=enracctname::${{ github.event.inputs.enracctname }}"              
+              if [ ${{ github.event.client_payload.environment }} == 'azurecloud' ];
+              then
+                "::set-output name=offertype::MS-AZR-0017P"
+              elif [ ${{ github.event.inputs.environment }} == 'azureusgovernment' ];
+              then
+                "::set-output name=offertype::MS-AZR-USGOV-0017P"
+              else
+                echo "No Offer Found for Environment ${{ github.event.inputs.environment }}"
+              fi;
             elif [ ${GITHUB_EVENT_NAME} == 'repository_dispatch' ];
             then
               echo "::set-output name=ref::${{ github.event.client_payload.ref }}"
@@ -84,19 +93,18 @@ jobs:
               echo "::set-output name=securitysubid::${{ github.event.client_payload.securitysubid }}"
               echo "::set-output name=subownergroup::${{ github.event.client_payload.subownergroup }}"
               echo "::set-output name=enracctname::${{ github.event.client_payload.enracctname }}"
+              if [ ${{ github.event.client_payload.environment }} == 'azurecloud' ];
+                then
+                  "::set-output name=offertype::MS-AZR-0017P"
+              elif [ ${{ github.event.client_payload.environment }} == 'azureusgovernment' ];
+              then
+                "::set-output name=offertype::MS-AZR-USGOV-0017P"
+              else
+                echo "No Offer Found for Environment ${{ github.event.client_payload.environment }}"
+              fi;
             else
               echo "Invalid Event Trigger ${GITHUB_EVENT_NAME} unable to set variables."
-            fi;
-
-            if [ ${{ github.event.client_payload.environment }} == 'azurecloud' ];
-            then
-              "::set-output name=offertype::MS-AZR-0017P"
-            elif [ ${{ github.event.client_payload.environment }} == 'azureusgovernment' ];
-            then
-              "::set-output name=offertype::MS-AZR-USGOV-0017P"
-            else
-              echo "No Offer Found for Environment ${{ github.event.client_payload.environment }}"
-            fi;
+            fi;            
 
         - name: Echo Variables
           run: |
