@@ -71,7 +71,8 @@ jobs:
               echo "::set-output name=securitysubid::${{ github.event.inputs.securitysubid }}"
               echo "::set-output name=subownergroup::${{ github.event.inputs.subownergroup }}"
               echo "::set-output name=enracctname::${{ github.event.inputs.enracctname }}"
-            elif [ ${GITHUB_EVENT_NAME} == 'repository_dispatch' ]
+            elif [ ${GITHUB_EVENT_NAME} == 'repository_dispatch' ];
+            then
               echo "::set-output name=ref::${{ github.event.client_payload.ref }}"
               echo "::set-output name=entlzprefix::${{ github.event.client_payload.entlzprefix }}"
               echo "::set-output name=environment::${{ github.event.client_payload.environment }}"
@@ -83,6 +84,8 @@ jobs:
               echo "::set-output name=securitysubid::${{ github.event.client_payload.securitysubid }}"
               echo "::set-output name=subownergroup::${{ github.event.client_payload.subownergroup }}"
               echo "::set-output name=enracctname::${{ github.event.client_payload.enracctname }}"
+            else
+              echo "Invalid Event Trigger ${GITHUB_EVENT_NAME} unable to set variables."
             fi;
             if [ ${{ steps.setvariables.outputs.environment }} == 'azurecloud' ];
             then

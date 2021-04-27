@@ -49,6 +49,7 @@ jobs:
               echo "::set-output name=location::${{ github.event.inputs.location }}"
               echo "::set-output name=githubsecret::${{ github.event.inputs.githubsecret }}"
             elif [ ${GITHUB_EVENT_NAME} == 'repository_dispatch' ];
+            then
               echo "::set-output name=ref::${{ github.event.client_payload.ref }}"
               echo "::set-output name=entlzprefix::${{ github.event.client_payload.entlzprefix }}"
               echo "::set-output name=environment::${{ github.event.client_payload.environment }}"
