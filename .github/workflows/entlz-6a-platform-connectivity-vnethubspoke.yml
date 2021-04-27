@@ -63,6 +63,9 @@ on:
         required: true
         default: ''
       managementvnetprefix:
+        description: ''
+        required: true
+        default: ''
       identitysubid:
         description: ''
         required: true
