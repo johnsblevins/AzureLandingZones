@@ -42,6 +42,7 @@ jobs:
     build-and-deploy:
         runs-on: ubuntu-latest
         steps:
+        - uses: actions/checkout@v2
         - name: workflow_dispatch_variables
           if: github.event_name == 'workflow_dispatch'
             env:
@@ -56,11 +57,8 @@ jobs:
               entlzprefix: ${{ github.event.client_payload.entlzprefix }}
               environment: ${{ github.event.client_payload.environment }}
               location: ${{ github.event.client_payload.location }}
-        - uses: actions/checkout@v2
-          with:
-            ref: ${{ env.ref }}
         - name: Branch name
-          run: echo running on branch ${GITHUB_REF##*/}
+          run: echo ref - entlzprefix - environment - location _ ${{ env.ref }} - ${{ env.entlzprefix }} - ${{ env.environment }} - ${{ env.location }}
         - name: Log in with Azure
           uses: azure/login@v1
           with:
