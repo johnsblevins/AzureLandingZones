@@ -29,14 +29,18 @@ on:
 #      - '.github/workflows/entlz-1-platform-mgs.yml'
 
 env:
+  ref: ${{ github.ref }}
   entlzprefix: ${{ github.event.inputs.entlzprefix }}
   environment: ${{ github.event.inputs.environment }}
   location: ${{ github.event.inputs.location }}
+#  ref: ${{ github.event.client_payload.ref }}
+#  entlzprefix: ${{ github.event.client_payload.entlzprefix }}
+#  environment: ${{ github.event.client_payload.environment }}
+#  location: ${{ github.event.client_payload.location }}
 
 jobs:
     build-and-deploy:
         runs-on: ubuntu-latest
-
         steps:
         - uses: actions/checkout@v2
         - name: Branch name
