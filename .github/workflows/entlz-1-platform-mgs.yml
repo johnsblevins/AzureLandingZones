@@ -44,7 +44,7 @@ jobs:
         steps:
         - name: setvariables          
           run: |
-            if ${{ GITHUB_EVENT_NAME }} == 'repository_dispatch';
+            if ${{ github.event.name }} == 'repository_dispatch';
             then
               echo "::set-output name=ref::${GITHUB_REF##*/}"
               echo "::set-output name=entlzprefix::${{ github.event.inputs.entlzprefix }}"
