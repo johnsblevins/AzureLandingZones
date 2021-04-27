@@ -39,6 +39,7 @@ jobs:
         - name: Set Variables
           id: setvariables         
           run: |
+            shopt -s nocasematch
             echo ${GITHUB_EVENT_NAME} 
             if [ ${GITHUB_EVENT_NAME} == 'workflow_dispatch' ];
             then
@@ -47,12 +48,14 @@ jobs:
               echo "::set-output name=environment::${{ github.event.inputs.environment }}"
               echo "::set-output name=location::${{ github.event.inputs.location }}"
               echo "::set-output name=githubsecret::${{ github.event.inputs.githubsecret }}"
-            else
+            elif [ ${GITHUB_EVENT_NAME} == 'repository_dispatch' ];
               echo "::set-output name=ref::${{ github.event.client_payload.ref }}"
               echo "::set-output name=entlzprefix::${{ github.event.client_payload.entlzprefix }}"
               echo "::set-output name=environment::${{ github.event.client_payload.environment }}"
               echo "::set-output name=location::${{ github.event.client_payload.location }}"
               echo "::set-output name=githubsecret::${{ github.event.client_payload.githubsecret }}"
+            else
+              echo "Invalid Event Trigger ${GITHUB_EVENT_NAME} unable to set variables."
             fi;
         - name: Echo Variables
           run: |
