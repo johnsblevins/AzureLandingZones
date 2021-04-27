@@ -42,32 +42,29 @@ jobs:
     build-and-deploy:
         runs-on: ubuntu-latest
         steps:
-        - name: workflow_dispatch_variables
-          if: github.event_name == 'workflow_dispatch'
-          run: echo Using Workflow Dispatch Variables
-          env:
-            ref: ${{ github.ref }}
-            entlzprefix: ${{ github.event.inputs.entlzprefix }}
-            environment: ${{ github.event.inputs.environment }}
-            location: ${{ github.event.inputs.location }}
-        - name: repository_dispatch_variables
-          if: github.event_name == 'repository_dispatch'
-          run: echo Using Repository Dispatch Variables
-          env:
-            ref: ${{ github.event.client_payload.ref }}
-            entlzprefix: ${{ github.event.client_payload.entlzprefix }}
-            environment: ${{ github.event.client_payload.environment }}
-            location: ${{ github.event.client_payload.location }}
+        - name: setvariables          
+          run: |
+            if ${{ GITHUB_EVENT_NAME }} == 'repository_dispatch';
+            then
+              echo "::set-output name=ref::${GITHUB_REF##*/}"
+              echo "::set-output name=entlzprefix::${{ github.event.inputs.entlzprefix }}"
+              echo "::set-output name=environment::${{ github.event.inputs.environment }}"
+              echo "::set-output name=location::${{ github.event.inputs.location }}"
+            else
+              echo "::set-output name=ref::${{ github.event.client_payload.ref }}"
+              echo "::set-output name=entlzprefix::${{ github.event.client_payload.entlzprefix }}"
+              echo "::set-output name=environment::${{ github.event.client_payload.environment }}"
+              echo "::set-output name=location::${{ github.event.client_payload.location }}"
+            fi;
         - uses: actions/checkout@v2        
-        - name: Branch name
-          run: echo ref - entlzprefix - environment - location _ ${{ env.ref }} - ${{ env.entlzprefix }} - ${{ env.environment }} - ${{ env.location }}
+          with:
+            ref: ${{ steps.setvariables.outputs.ref }}        
         - name: Log in with Azure
           uses: azure/login@v1
           with:
             creds: ${{ secrets.AZGOV_CREDS }}
             environment: ${{ env.environment }}
             enable-AzPSSession: false
-
         - name: Deploy Management Groups
           uses: azure/CLI@v1
           with:
