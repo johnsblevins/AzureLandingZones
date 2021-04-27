@@ -45,18 +45,18 @@ jobs:
         - uses: actions/checkout@v2
         - name: workflow_dispatch_variables
           if: github.event_name == 'workflow_dispatch'
-            env:
-              ref: ${{ github.ref }}
-              entlzprefix: ${{ github.event.inputs.entlzprefix }}
-              environment: ${{ github.event.inputs.environment }}
-              location: ${{ github.event.inputs.location }}
+          env:
+            ref: ${{ github.ref }}
+            entlzprefix: ${{ github.event.inputs.entlzprefix }}
+            environment: ${{ github.event.inputs.environment }}
+            location: ${{ github.event.inputs.location }}
         - name: repository_dispatch_variables
           if: github.event_name == 'repository_dispatch'
-            env:
-              ref: ${{ github.event.client_payload.ref }}
-              entlzprefix: ${{ github.event.client_payload.entlzprefix }}
-              environment: ${{ github.event.client_payload.environment }}
-              location: ${{ github.event.client_payload.location }}
+          env:
+            ref: ${{ github.event.client_payload.ref }}
+            entlzprefix: ${{ github.event.client_payload.entlzprefix }}
+            environment: ${{ github.event.client_payload.environment }}
+            location: ${{ github.event.client_payload.location }}
         - name: Branch name
           run: echo ref - entlzprefix - environment - location _ ${{ env.ref }} - ${{ env.entlzprefix }} - ${{ env.environment }} - ${{ env.location }}
         - name: Log in with Azure
