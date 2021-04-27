@@ -63,7 +63,7 @@ jobs:
           uses: azure/login@v1
           with:
             creds: ${{ secrets.AZGOV_CREDS }}
-            environment: ${{ env.environment }}
+            environment: ${{ steps.setvariables.outputs.environment }}
             enable-AzPSSession: false
         - name: Deploy Management Groups
           uses: azure/CLI@v1
@@ -73,10 +73,10 @@ jobs:
                 # Deploy Management Groups using template
 
                 az deployment tenant create \
-                  --name "${{ env.entlzprefix }}-managementgroups-${{ env.location }}" \
-                  --location ${{ env.location }} \
+                  --name "${{ steps.setvariables.outputs.entlzprefix }}-managementgroups-${{ steps.setvariables.outputs.location }}" \
+                  --location ${{ steps.setvariables.outputs.location }} \
                   --template-file templates/entlz/platform-mgs.bicep \
-                  --parameters entlzprefix=${{ env.entlzprefix }}
+                  --parameters entlzprefix=${{ steps.setvariables.outputs.entlzprefix }}
         
         - name: Configure Management Group Hierarchy Settings
           uses: azure/CLI@v1
@@ -91,4 +91,4 @@ jobs:
                   --method put \
                   --headers "{\"Content-Type\":\"application/json\"}" \
                   --uri "${resourceManagerURI}providers/Microsoft.Management/managementGroups/$TenantRootMG/settings/default?api-version=2020-05-01" \
-                  --body "{\"properties\": {\"defaultManagementGroup\": \"/providers/Microsoft.Management/managementGroups/${{ env.entlzprefix }}-onboarding\",\"requireAuthorizationForGroupCreation\": \"true\"}}" 
+                  --body "{\"properties\": {\"defaultManagementGroup\": \"/providers/Microsoft.Management/managementGroups/${{ steps.setvariables.outputs.entlzprefix }}-onboarding\",\"requireAuthorizationForGroupCreation\": \"true\"}}" 
