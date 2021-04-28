@@ -146,6 +146,7 @@ jobs:
               then
                 az config set extension.use_dynamic_install=yes_without_prompt
                 subownergroupid=$(az ad group list --display-name ${{ steps.setvariables.outputs.subownergroup }}  --query [].objectId -o tsv)
+                echo subownergroupid: $subownergroupid
                 # Check if Sub already exists
                 if [[ -z `az account list --query "[?name=='${{ env.managementsubname }}'].name" --output tsv` ]];
                 then
