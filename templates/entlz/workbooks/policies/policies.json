@@ -1,0 +1,517 @@
+{
+    "version": "Notebook/1.0",
+    "items": [
+      {
+        "type": 11,
+        "content": {
+          "version": "LinkItem/1.0",
+          "style": "tabs",
+          "links": [
+            {
+              "id": "2cec7a4d-7d7a-4cba-9c1a-7b30b3a7943e",
+              "cellValue": "view",
+              "linkTarget": "parameter",
+              "linkLabel": "Policy Assignments",
+              "subTarget": "assignments",
+              "style": "link"
+            },
+            {
+              "id": "d2b4a119-d781-4d61-9572-98d2600ec54e",
+              "cellValue": "view",
+              "linkTarget": "parameter",
+              "linkLabel": "Policy Definitions",
+              "subTarget": "definitions",
+              "style": "link"
+            }
+          ]
+        },
+        "name": "links - 4"
+      },
+      {
+        "type": 12,
+        "content": {
+          "version": "NotebookGroup/1.0",
+          "groupType": "editable",
+          "loadType": "always",
+          "items": [
+            {
+              "type": 9,
+              "content": {
+                "version": "KqlParameterItem/1.0",
+                "parameters": [
+                  {
+                    "id": "b12d8a35-28aa-49bc-b145-5379c5aab6a8",
+                    "version": "KqlParameterItem/1.0",
+                    "name": "scope",
+                    "type": 2,
+                    "isRequired": true,
+                    "typeSettings": {
+                      "additionalResourceOptions": [],
+                      "showDefault": false
+                    },
+                    "jsonData": "[\r\n    { \"value\":\"atScope\", \"label\": \"Set at Scope and Inherited\", \"selected\":true},\r\n    { \"value\":\"atExactScope\", \"label\": \"Set at Scope Only\", \"selected\":false}\r\n]",
+                    "timeContext": {
+                      "durationMs": 86400000
+                    },
+                    "value": "atExactScope"
+                  }
+                ],
+                "style": "pills",
+                "queryType": 0,
+                "resourceType": "microsoft.operationalinsights/workspaces"
+              },
+              "customWidth": "25",
+              "name": "parameters - 5"
+            },
+            {
+              "type": 9,
+              "content": {
+                "version": "KqlParameterItem/1.0",
+                "parameters": [
+                  {
+                    "id": "06c09def-be48-41a1-9d1e-322b46ca8cf9",
+                    "version": "KqlParameterItem/1.0",
+                    "name": "tenantrootmg",
+                    "type": 1,
+                    "isRequired": true,
+                    "query": "{\"version\":\"ARMEndpoint/1.0\",\"data\":null,\"headers\":[],\"method\":\"GET\",\"path\":\"/providers/Microsoft.Management/managementGroups?api-version=2020-05-01\",\"urlParams\":[],\"batchDisabled\":false,\"transformers\":[{\"type\":\"jsonpath\",\"settings\":{\"tablePath\":\"value[0]\",\"columns\":[{\"path\":\"$.id\",\"columnid\":\"id\",\"columnType\":\"string\"}]}}]}",
+                    "isHiddenWhenLocked": true,
+                    "timeContext": {
+                      "durationMs": 86400000
+                    },
+                    "queryType": 12
+                  }
+                ],
+                "style": "pills",
+                "queryType": 12
+              },
+              "customWidth": "75",
+              "name": "parameters - 1"
+            }
+          ],
+          "exportParameters": true
+        },
+        "name": "group - 10"
+      },
+      {
+        "type": 12,
+        "content": {
+          "version": "NotebookGroup/1.0",
+          "groupType": "editable",
+          "items": [
+            {
+              "type": 12,
+              "content": {
+                "version": "NotebookGroup/1.0",
+                "groupType": "editable",
+                "title": "Assignment Search By Management Group",
+                "items": [
+                  {
+                    "type": 9,
+                    "content": {
+                      "version": "KqlParameterItem/1.0",
+                      "parameters": [
+                        {
+                          "id": "cc339c42-68e0-49be-abd3-3048a49d4886",
+                          "version": "KqlParameterItem/1.0",
+                          "name": "managementgroup",
+                          "type": 2,
+                          "isRequired": true,
+                          "query": "{\"version\":\"ARMEndpoint/1.0\",\"data\":null,\"headers\":[],\"method\":\"GET\",\"path\":\"/providers/Microsoft.Management/managementGroups?api-version=2020-05-01\",\"urlParams\":[],\"batchDisabled\":false,\"transformers\":[{\"type\":\"jsonpath\",\"settings\":{\"tablePath\":\"value[*].name\",\"columns\":[]}}]}",
+                          "value": "elz1",
+                          "typeSettings": {
+                            "additionalResourceOptions": [],
+                            "showDefault": false
+                          },
+                          "timeContext": {
+                            "durationMs": 86400000
+                          },
+                          "queryType": 12
+                        }
+                      ],
+                      "style": "pills",
+                      "queryType": 12
+                    },
+                    "name": "parameters - 0"
+                  },
+                  {
+                    "type": 3,
+                    "content": {
+                      "version": "KqlItem/1.0",
+                      "query": "{\"version\":\"ARMEndpoint/1.0\",\"data\":null,\"headers\":[],\"method\":\"GET\",\"path\":\"/providers/Microsoft.Management/managementGroups/{managementgroup}/providers/Microsoft.Authorization/policyAssignments?$filter={scope}()&api-version=2020-09-01\",\"urlParams\":[],\"batchDisabled\":false,\"transformers\":[{\"type\":\"jsonpath\",\"settings\":{\"tablePath\":\"value\",\"columns\":[{\"path\":\"$.properties.displayName\",\"columnid\":\"name\"}]}}]}",
+                      "size": 0,
+                      "queryType": 12
+                    },
+                    "name": "query - 6"
+                  }
+                ]
+              },
+              "customWidth": "25",
+              "name": "Assignment Search By Management Group",
+              "styleSettings": {
+                "showBorder": true
+              }
+            },
+            {
+              "type": 12,
+              "content": {
+                "version": "NotebookGroup/1.0",
+                "groupType": "editable",
+                "title": "Assignment Search By Subscription",
+                "items": [
+                  {
+                    "type": 9,
+                    "content": {
+                      "version": "KqlParameterItem/1.0",
+                      "crossComponentResources": [
+                        "value::all"
+                      ],
+                      "parameters": [
+                        {
+                          "id": "cc339c42-68e0-49be-abd3-3048a49d4886",
+                          "version": "KqlParameterItem/1.0",
+                          "name": "subscription",
+                          "type": 2,
+                          "isRequired": true,
+                          "query": "ResourceContainers | where type=='microsoft.resources/subscriptions' | project value = id, label = name",
+                          "crossComponentResources": [
+                            "value::all"
+                          ],
+                          "value": "/subscriptions/07526f72-6689-42be-945f-bb6ad0214b71",
+                          "typeSettings": {
+                            "additionalResourceOptions": [],
+                            "showDefault": false
+                          },
+                          "timeContext": {
+                            "durationMs": 86400000
+                          },
+                          "queryType": 1,
+                          "resourceType": "microsoft.resourcegraph/resources"
+                        }
+                      ],
+                      "style": "pills",
+                      "queryType": 1,
+                      "resourceType": "microsoft.resourcegraph/resources"
+                    },
+                    "name": "parameters - 0"
+                  },
+                  {
+                    "type": 3,
+                    "content": {
+                      "version": "KqlItem/1.0",
+                      "query": "{\"version\":\"ARMEndpoint/1.0\",\"data\":null,\"headers\":[],\"method\":\"GET\",\"path\":\"{subscription}/providers/Microsoft.Authorization/policyAssignments?$filter={scope}()&api-version=2020-09-01\",\"urlParams\":[],\"batchDisabled\":false,\"transformers\":[{\"type\":\"jsonpath\",\"settings\":{\"tablePath\":\"value\",\"columns\":[{\"path\":\"$.properties.displayName\",\"columnid\":\"name\"}]}}]}",
+                      "size": 0,
+                      "queryType": 12
+                    },
+                    "name": "query - 6"
+                  }
+                ]
+              },
+              "customWidth": "25",
+              "name": "Assignment Search By Subscription",
+              "styleSettings": {
+                "showBorder": true
+              }
+            },
+            {
+              "type": 12,
+              "content": {
+                "version": "NotebookGroup/1.0",
+                "groupType": "editable",
+                "title": "Assignment Search By Resource Group",
+                "items": [
+                  {
+                    "type": 9,
+                    "content": {
+                      "version": "KqlParameterItem/1.0",
+                      "crossComponentResources": [
+                        "value::all"
+                      ],
+                      "parameters": [
+                        {
+                          "id": "cc339c42-68e0-49be-abd3-3048a49d4886",
+                          "version": "KqlParameterItem/1.0",
+                          "name": "resourcegroup",
+                          "label": "Resource Group",
+                          "type": 2,
+                          "isRequired": true,
+                          "query": "ResourceContainers | where type=='microsoft.resources/subscriptions/resourcegroups' | project value = id, label = name",
+                          "crossComponentResources": [
+                            "value::all"
+                          ],
+                          "value": "/subscriptions/07526f72-6689-42be-945f-bb6ad0214b71/resourceGroups/elz1-management-connectivity-usgovvirginia",
+                          "typeSettings": {
+                            "additionalResourceOptions": [],
+                            "showDefault": false
+                          },
+                          "timeContext": {
+                            "durationMs": 86400000
+                          },
+                          "queryType": 1,
+                          "resourceType": "microsoft.resourcegraph/resources"
+                        }
+                      ],
+                      "style": "pills",
+                      "queryType": 1,
+                      "resourceType": "microsoft.resourcegraph/resources"
+                    },
+                    "name": "parameters - 0"
+                  },
+                  {
+                    "type": 3,
+                    "content": {
+                      "version": "KqlItem/1.0",
+                      "query": "{\"version\":\"ARMEndpoint/1.0\",\"data\":null,\"headers\":[],\"method\":\"GET\",\"path\":\"{resourcegroup}/providers/Microsoft.Authorization/policyAssignments?$filter={scope}()&api-version=2020-09-01\",\"urlParams\":[],\"batchDisabled\":false,\"transformers\":[{\"type\":\"jsonpath\",\"settings\":{\"tablePath\":\"value\",\"columns\":[{\"path\":\"$.properties.displayName\",\"columnid\":\"name\"}]}}]}",
+                      "size": 0,
+                      "queryType": 12
+                    },
+                    "name": "query - 6"
+                  }
+                ]
+              },
+              "customWidth": "25",
+              "name": "Assignment Search By Resource Group",
+              "styleSettings": {
+                "showBorder": true
+              }
+            }
+          ]
+        },
+        "conditionalVisibility": {
+          "parameterName": "view",
+          "comparison": "isEqualTo",
+          "value": "assignments"
+        },
+        "name": "group - 9"
+      },
+      {
+        "type": 1,
+        "content": {
+          "json": ""
+        },
+        "customWidth": "25",
+        "name": "text - 6"
+      },
+      {
+        "type": 12,
+        "content": {
+          "version": "NotebookGroup/1.0",
+          "groupType": "editable",
+          "title": "Enterprise Landing Zone Root",
+          "items": [
+            {
+              "type": 12,
+              "content": {
+                "version": "NotebookGroup/1.0",
+                "groupType": "editable",
+                "items": [
+                  {
+                    "type": 3,
+                    "content": {
+                      "version": "KqlItem/1.0",
+                      "query": "{\"version\":\"ARMEndpoint/1.0\",\"data\":null,\"headers\":[],\"method\":\"GET\",\"path\":\"{tenantrootmg}/providers/Microsoft.Authorization/policyAssignments?$filter={scope}()&api-version=2020-09-01\",\"urlParams\":[],\"batchDisabled\":false,\"transformers\":[{\"type\":\"jsonpath\",\"settings\":{\"tablePath\":\"value[0]\",\"columns\":[{\"path\":\"$.name\",\"columnid\":\"Name\",\"columnType\":\"string\"}]}}]}",
+                      "size": 0,
+                      "title": "Tenant Root Group (/)",
+                      "queryType": 12,
+                      "sortBy": []
+                    },
+                    "name": "query - 1"
+                  }
+                ]
+              },
+              "customWidth": "25",
+              "name": "group - 1",
+              "styleSettings": {
+                "showBorder": true
+              }
+            },
+            {
+              "type": 12,
+              "content": {
+                "version": "NotebookGroup/1.0",
+                "groupType": "editable",
+                "items": [
+                  {
+                    "type": 3,
+                    "content": {
+                      "version": "KqlItem/1.0",
+                      "query": "{\"version\":\"ARMEndpoint/1.0\",\"data\":null,\"headers\":[],\"method\":\"GET\",\"path\":\"/providers/Microsoft.Management/managementGroups/elz1/providers/Microsoft.Authorization/policyAssignments?$filter={scope}()&api-version=2020-09-01\",\"urlParams\":[],\"batchDisabled\":false,\"transformers\":[{\"type\":\"jsonpath\",\"settings\":{\"tablePath\":\"value\",\"columns\":[{\"path\":\"$.name\",\"columnid\":\"Name\",\"columnType\":\"string\"}]}}]}",
+                      "size": 0,
+                      "title": "Enterprise Landing Zone Root (/entlz)",
+                      "queryType": 12,
+                      "sortBy": []
+                    },
+                    "name": "query - 1"
+                  }
+                ]
+              },
+              "customWidth": "25",
+              "name": "group - 1",
+              "styleSettings": {
+                "showBorder": true
+              }
+            }
+          ]
+        },
+        "conditionalVisibility": {
+          "parameterName": "view",
+          "comparison": "isEqualTo",
+          "value": "assignments"
+        },
+        "name": "Enterprise Landing Zone Root",
+        "styleSettings": {
+          "showBorder": true
+        }
+      },
+      {
+        "type": 12,
+        "content": {
+          "version": "NotebookGroup/1.0",
+          "groupType": "editable",
+          "title": "Platform Management Groups",
+          "items": [
+            {
+              "type": 3,
+              "content": {
+                "version": "KqlItem/1.0",
+                "query": "{\"version\":\"ARMEndpoint/1.0\",\"data\":null,\"headers\":[],\"method\":\"GET\",\"path\":\"/providers/Microsoft.Management/managementGroups/elz1-platform/providers/Microsoft.Authorization/policyAssignments?$filter={scope}()&api-version=2020-09-01\",\"urlParams\":[],\"batchDisabled\":false,\"transformers\":[{\"type\":\"jsonpath\",\"settings\":{\"tablePath\":\"value\",\"columns\":[{\"path\":\"$.name\",\"columnid\":\"Name\",\"columnType\":\"string\"}]}}]}",
+                "size": 4,
+                "title": "elz1-platform",
+                "queryType": 12
+              },
+              "name": "elz1-platform",
+              "styleSettings": {
+                "showBorder": true
+              }
+            },
+            {
+              "type": 3,
+              "content": {
+                "version": "KqlItem/1.0",
+                "query": "{\"version\":\"ARMEndpoint/1.0\",\"data\":null,\"headers\":[],\"method\":\"GET\",\"path\":\"/providers/Microsoft.Management/managementGroups/elz1-management/providers/Microsoft.Authorization/policyAssignments?$filter={scope}()&api-version=2020-09-01\",\"urlParams\":[],\"batchDisabled\":false,\"transformers\":[{\"type\":\"jsonpath\",\"settings\":{\"tablePath\":\"value\",\"columns\":[{\"path\":\"$.name\",\"columnid\":\"Name\"}]}}]}",
+                "size": 0,
+                "title": "elz1-management",
+                "queryType": 12,
+                "gridSettings": {
+                  "sortBy": [
+                    {
+                      "itemKey": "Name",
+                      "sortOrder": 1
+                    }
+                  ]
+                },
+                "sortBy": [
+                  {
+                    "itemKey": "Name",
+                    "sortOrder": 1
+                  }
+                ]
+              },
+              "customWidth": "25",
+              "name": "query - 3"
+            },
+            {
+              "type": 3,
+              "content": {
+                "version": "KqlItem/1.0",
+                "query": "{\"version\":\"ARMEndpoint/1.0\",\"data\":null,\"headers\":[],\"method\":\"GET\",\"path\":\"/providers/Microsoft.Management/managementGroups/elz1-connectivity/providers/Microsoft.Authorization/policyAssignments?$filter={scope}()&api-version=2020-09-01\",\"urlParams\":[],\"batchDisabled\":false,\"transformers\":[{\"type\":\"jsonpath\",\"settings\":{\"tablePath\":\"value\",\"columns\":[{\"path\":\"$.name\",\"columnid\":\"Name\"}]}}]}",
+                "size": 0,
+                "title": "elz1-connectivity",
+                "queryType": 12
+              },
+              "customWidth": "25",
+              "name": "query - 3 - Copy - Copy"
+            },
+            {
+              "type": 3,
+              "content": {
+                "version": "KqlItem/1.0",
+                "query": "{\"version\":\"ARMEndpoint/1.0\",\"data\":null,\"headers\":[],\"method\":\"GET\",\"path\":\"/providers/Microsoft.Management/managementGroups/elz1-identity/providers/Microsoft.Authorization/policyAssignments?$filter={scope}()&api-version=2020-09-01\",\"urlParams\":[],\"batchDisabled\":false,\"transformers\":[{\"type\":\"jsonpath\",\"settings\":{\"tablePath\":\"value\",\"columns\":[{\"path\":\"$.name\",\"columnid\":\"Name\",\"columnType\":\"string\"}]}}]}",
+                "size": 0,
+                "title": "elz1-identity",
+                "queryType": 12
+              },
+              "customWidth": "25",
+              "name": "query - 2"
+            },
+            {
+              "type": 3,
+              "content": {
+                "version": "KqlItem/1.0",
+                "query": "{\"version\":\"ARMEndpoint/1.0\",\"data\":null,\"headers\":[],\"method\":\"GET\",\"path\":\"/providers/Microsoft.Management/managementGroups/elz1-security/providers/Microsoft.Authorization/policyAssignments?$filter={scope}()&api-version=2020-09-01\",\"urlParams\":[],\"batchDisabled\":false,\"transformers\":[{\"type\":\"jsonpath\",\"settings\":{\"tablePath\":\"value\",\"columns\":[{\"path\":\"$.name\",\"columnid\":\"Name\"}]}}]}",
+                "size": 0,
+                "title": "elz1-security",
+                "queryType": 12
+              },
+              "customWidth": "25",
+              "name": "query - 3 - Copy"
+            }
+          ]
+        },
+        "conditionalVisibility": {
+          "parameterName": "view",
+          "comparison": "isEqualTo",
+          "value": "assignments"
+        },
+        "name": "Platform Management Groups",
+        "styleSettings": {
+          "showBorder": true
+        }
+      },
+      {
+        "type": 12,
+        "content": {
+          "version": "NotebookGroup/1.0",
+          "groupType": "editable",
+          "title": "Landing Zones",
+          "items": [
+            {
+              "type": 3,
+              "content": {
+                "version": "KqlItem/1.0",
+                "query": "{\"version\":\"ARMEndpoint/1.0\",\"data\":null,\"headers\":[],\"method\":\"GET\",\"path\":\"/providers/Microsoft.Management/managementGroups/elz1-landingzones/providers/Microsoft.Authorization/policyAssignments?$filter=atScope()&api-version=2020-09-01\",\"urlParams\":[],\"batchDisabled\":false,\"transformers\":[{\"type\":\"jsonpath\",\"settings\":{\"tablePath\":\"value\",\"columns\":[{\"path\":\"$.name\",\"columnid\":\"Name\"}]}}]}",
+                "size": 0,
+                "title": "elz1-landingzones",
+                "queryType": 12
+              },
+              "name": "query - 3 - Copy - Copy - Copy"
+            },
+            {
+              "type": 3,
+              "content": {
+                "version": "KqlItem/1.0",
+                "query": "{\"version\":\"ARMEndpoint/1.0\",\"data\":null,\"headers\":[],\"method\":\"GET\",\"path\":\"/providers/Microsoft.Management/managementGroups/elz1-internal/providers/Microsoft.Authorization/policyAssignments?$filter={scope}()&api-version=2020-09-01\",\"urlParams\":[],\"batchDisabled\":false,\"transformers\":[{\"type\":\"jsonpath\",\"settings\":{\"tablePath\":\"value\",\"columns\":[{\"path\":\"$.name\",\"columnid\":\"Name\"}]}}]}",
+                "size": 0,
+                "title": "elz1-internal",
+                "queryType": 12
+              },
+              "customWidth": "50",
+              "name": "query - 3 - Copy - Copy - Copy - Copy"
+            },
+            {
+              "type": 3,
+              "content": {
+                "version": "KqlItem/1.0",
+                "query": "{\"version\":\"ARMEndpoint/1.0\",\"data\":null,\"headers\":[],\"method\":\"GET\",\"path\":\"/providers/Microsoft.Management/managementGroups/elz1-external/providers/Microsoft.Authorization/policyAssignments?$filter={scope}()&api-version=2020-09-01\",\"urlParams\":[],\"batchDisabled\":false,\"transformers\":[{\"type\":\"jsonpath\",\"settings\":{\"tablePath\":\"value\",\"columns\":[{\"path\":\"$.name\",\"columnid\":\"Name\"}]}}]}",
+                "size": 0,
+                "title": "elz1-external",
+                "queryType": 12
+              },
+              "customWidth": "50",
+              "name": "query - 3 - Copy - Copy - Copy - Copy - Copy"
+            }
+          ]
+        },
+        "conditionalVisibility": {
+          "parameterName": "view",
+          "comparison": "isEqualTo",
+          "value": "assignments"
+        },
+        "name": "Landing Zones"
+      }
+    ],
+    "fallbackResourceIds": [
+      "Azure Monitor"
+    ],
+    "$schema": "https://github.com/Microsoft/Application-Insights-Workbooks/blob/master/schema/workbook.json"
+  }
