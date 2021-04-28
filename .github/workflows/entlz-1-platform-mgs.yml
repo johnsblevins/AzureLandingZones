@@ -29,7 +29,7 @@ on:
 #    branches:
 #      - dev
 #    paths:
-#      - 'templates/entlz/platform-mgs.bicep'
+#      - 'templates/entlz/platform-mgs/main.bicep'
 #      - '.github/workflows/entlz-1-platform-mgs.yml'
 
 jobs:
@@ -84,7 +84,7 @@ jobs:
                 az deployment tenant create \
                   --name "${{ steps.setvariables.outputs.entlzprefix }}-managementgroups-${{ steps.setvariables.outputs.location }}" \
                   --location ${{ steps.setvariables.outputs.location }} \
-                  --template-file templates/entlz/platform-mgs.bicep \
+                  --template-file templates/entlz/platform-mgs/main.bicep \
                   --parameters entlzprefix=${{ steps.setvariables.outputs.entlzprefix }}
         
         - name: Configure Management Group Hierarchy Settings

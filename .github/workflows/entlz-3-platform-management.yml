@@ -37,7 +37,7 @@ on:
 #    branches:
 #      - dev
 #    paths:
-#      - 'templates/entlz/platform-management.bicep'
+#      - 'templates/entlz/platform-management/main.bicep'
 #      - 'templates/entlz/modules/**'
 #      - '.github/workflows/entlz-3-platform-management.yml'
 
@@ -104,5 +104,5 @@ jobs:
                   --name "${{ steps.setvariables.outputs.entlzprefix }}-management-${{ steps.setvariables.outputs.location }}" \
                   --subscription "${{ steps.setvariables.outputs.managementsubid }}" \
                   --location "${{ steps.setvariables.outputs.location }}" \
-                  --template-file "templates/entlz/platform-management.bicep" \
+                  --template-file "templates/entlz/platform-management/main.bicep" \
                   --parameters entlzprefix=${{ steps.setvariables.outputs.entlzprefix }} uniqueid=${{ steps.setvariables.outputs.uniqueid }}
