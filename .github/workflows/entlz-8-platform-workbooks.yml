@@ -103,7 +103,7 @@ jobs:
                       --name "${{ steps.setvariables.outputs.entlzprefix }}-workbooks-${{ steps.setvariables.outputs.location }}" \
                       --subscription "${{ steps.setvariables.outputs.managementsubid }}" \
                       --location ${{ steps.setvariables.outputs.location }} \
-                      --template-file "templates/entlz/workbook/main.bicep" \
+                      --template-file "templates/entlz/workbooks/main.bicep" \
                       --parameters  location=$location \
                                     workbookdisplayname=$workbookdisplayname \
                                     workname=$workbookdisplayname \
