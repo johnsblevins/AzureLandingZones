@@ -172,6 +172,8 @@ jobs:
                 --url "${managementuri}subscriptions/${{ steps.setvariables.outputs.managementsubid }}/providers/Microsoft.Subscription/rename?api-version=2019-10-01-preview" \
                 --headers "{\"content-type\":\"application/json\"}" \
                 --body "{   \"subscriptionName\": \"$managementsubname\"}"
+                echo "Management subscription renamed...tagging"
+                az tag create --resource-id /subscriptions/${{ steps.setvariables.outputs.managementsubid }} --tags programType="int" programEnv="prod" programName="${{ steps.setvariables.outputs.entlzprefix }}"
               fi;
 
         - name: Create Identity Sub
@@ -211,6 +213,8 @@ jobs:
                 --url "${managementuri}subscriptions/${{ steps.setvariables.outputs.identitysubid }}/providers/Microsoft.Subscription/rename?api-version=2019-10-01-preview" \
                 --headers "{\"content-type\":\"application/json\"}" \
                 --body "{   \"subscriptionName\": \"${{ env.identitysubname }}\"}"
+                echo "Identity subscription renamed...tagging"
+                az tag create --resource-id /subscriptions/${{ steps.setvariables.outputs.identitysubid }} --tags programType="int" programEnv="prod" programName="${{ steps.setvariables.outputs.entlzprefix }}"
               fi;
 
         - name: Create Connectivity Sub
@@ -242,7 +246,7 @@ jobs:
                   subId=$(az account subscription list --query "[?displayName=='${{ env.connectivitysubname }}'].subscriptionId" --output tsv)
                   az tag create --resource-id /subscriptions/$subId --tags createdOn="$NOW" programType="int" programEnv="prod" programName="${{ steps.setvariables.outputs.entlzprefix }}"
                 else
-                  echo "Connectivity subscription already exists...skipping"
+                  echo "Connectivity subscription already exists...skipping"                  
                 fi;
               else
                 echo "Conenctivity subscription specified as input...renaming"
@@ -250,6 +254,8 @@ jobs:
                 --url "${managementuri}subscriptions/${{ steps.setvariables.outputs.connectivitysubid }}/providers/Microsoft.Subscription/rename?api-version=2019-10-01-preview" \
                 --headers "{\"content-type\":\"application/json\"}" \
                 --body "{   \"subscriptionName\": \"${{ env.connectivitysubname }}\"}"
+                echo "Connectivity subscription renamed...tagging"
+                az tag create --resource-id /subscriptions/${{ steps.setvariables.outputs.connectivitysubid }} --tags programType="int" programEnv="prod" programName="${{ steps.setvariables.outputs.entlzprefix }}"
               fi;
 
         - name: Create Security Sub
@@ -282,8 +288,7 @@ jobs:
                   subId=$(az account subscription list --query "[?displayName=='${{ env.securitysubname }}'].subscriptionId" --output tsv)
                   az tag create --resource-id /subscriptions/$subId --tags createdOn="$NOW" programType="int" programEnv="prod" programName="${{ steps.setvariables.outputs.entlzprefix }}"
                 else
-                  echo "Security subscription already exists...tagging"
-                  az tag create --resource-id /subscriptions/$subId --tags createdOn="$NOW" programType="int" programEnv="prod" programName="${{ steps.setvariables.outputs.entlzprefix }}"
+                  echo "Security subscription already exists...skipping"                  
                 fi;
               else
                 echo "Security subscription specified as input...renaming"
