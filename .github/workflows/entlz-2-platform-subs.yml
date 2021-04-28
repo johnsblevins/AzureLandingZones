@@ -73,10 +73,10 @@ jobs:
               echo "::set-output name=enracctname::${{ github.event.inputs.enracctname }}"              
               if [ ${{ github.event.inputs.environment }} == 'azurecloud' ];
               then
-                "::set-output name=offertype::MS-AZR-0017P"
+                echo "::set-output name=offertype::MS-AZR-0017P"
               elif [ ${{ github.event.inputs.environment }} == 'azureusgovernment' ];
               then
-                "::set-output name=offertype::MS-AZR-USGOV-0017P"
+                echo "::set-output name=offertype::MS-AZR-USGOV-0017P"
               else
                 echo "No Offer Found for Environment ${{ github.event.inputs.environment }}"
               fi;
@@ -95,10 +95,10 @@ jobs:
               echo "::set-output name=enracctname::${{ github.event.client_payload.enracctname }}"
               if [ ${{ github.event.client_payload.environment }} == 'azurecloud' ];
                 then
-                  "::set-output name=offertype::MS-AZR-0017P"
+                  echo "::set-output name=offertype::MS-AZR-0017P"
               elif [ ${{ github.event.client_payload.environment }} == 'azureusgovernment' ];
               then
-                "::set-output name=offertype::MS-AZR-USGOV-0017P"
+                  echo "::set-output name=offertype::MS-AZR-USGOV-0017P"
               else
                 echo "No Offer Found for Environment ${{ github.event.client_payload.environment }}"
               fi;
