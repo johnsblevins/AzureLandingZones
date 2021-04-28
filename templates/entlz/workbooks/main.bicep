@@ -22,7 +22,6 @@ module workbook 'modules/workbook.bicep'= {
   ]
   params:{
     workbookdisplayname: workbookdisplayname
-    workbookname: workbookname
     workbookkind: workbookkind
     workbooksourceid: workbooksourceid
     workbooktype: workbooktype
