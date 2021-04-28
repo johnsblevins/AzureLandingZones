@@ -1,10 +1,7 @@
 param entlzprefix string // Enterprise Landing Zone Prefix - 5 Characters Maximum
-param basetime string = utcNow()
+param deploymentguid string = guid(utcNow())
 
 targetScope = 'tenant'
-
-/////////// Create Management Group Hierarchy
-var deploymentguid  = '${guid(basetime)}'
 
 // Root MG
 module entLZRootMG 'modules/rootedmg.bicep'={
@@ -27,12 +24,12 @@ module platformMG 'modules/parentedmg.bicep'={
 }
 
 module platformConnectivityMG 'modules/parentedmg.bicep'={
-  name: '${entlzprefix}-platform-mg-${deploymentguid}'
+  name: '${entlzprefix}-connectivity-mg-${deploymentguid}'
   dependsOn: [
     platformMG
   ]
   params:{
-    name: '${entlzprefix}-platform'
+    name: '${entlzprefix}-connectivity'
     parentId: platformMG.outputs.mgId
   }
 }
