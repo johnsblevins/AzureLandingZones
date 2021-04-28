@@ -108,18 +108,18 @@ jobs:
 
         - name: Echo Variables
           run: |
-            echo ${{ steps.setvariables.outputs.ref }}
-            echo ${{ steps.setvariables.outputs.entlzprefix }}
-            echo ${{ steps.setvariables.outputs.environment }}
-            echo ${{ steps.setvariables.outputs.location }}
-            echo ${{ steps.setvariables.outputs.managementsubid }}
-            echo ${{ steps.setvariables.outputs.identitysubid }}
-            echo ${{ steps.setvariables.outputs.connectivitysubid }}
-            echo ${{ steps.setvariables.outputs.securitysubid }}
-            echo ${{ steps.setvariables.outputs.subownergroup }}
-            echo ${{ steps.setvariables.outputs.enracctname }}
-            echo ${{ steps.setvariables.outputs.githubsecret }}
-            echo ${{ steps.setvariables.outputs.offertype }}
+            echo ref: ${{ steps.setvariables.outputs.ref }}
+            echo entlzprefix: ${{ steps.setvariables.outputs.entlzprefix }}
+            echo environment: ${{ steps.setvariables.outputs.environment }}
+            echo location: ${{ steps.setvariables.outputs.location }}
+            echo managementsubid: ${{ steps.setvariables.outputs.managementsubid }}
+            echo identitysubid: ${{ steps.setvariables.outputs.identitysubid }}
+            echo connectivitysubid: ${{ steps.setvariables.outputs.connectivitysubid }}
+            echo securitysubid: ${{ steps.setvariables.outputs.securitysubid }}
+            echo subownergroup: ${{ steps.setvariables.outputs.subownergroup }}
+            echo enracctname: ${{ steps.setvariables.outputs.enracctname }}
+            echo githubsecret: ${{ steps.setvariables.outputs.githubsecret }}
+            echo offertype: ${{ steps.setvariables.outputs.offertype }}
 
         - uses: actions/checkout@v2
           with:
@@ -139,7 +139,9 @@ jobs:
           with:
             azcliversion: 2.21.0
             inlineScript: |
+              echo managementsubname: ${{ env.managementsubname }}
               managementuri=$(az cloud show --query endpoints.resourceManager --output tsv)
+              echo managementuri: $managementuri
               if [[ -z "${{ steps.setvariables.outputs.managementsubid }}" ]];
               then
                 az config set extension.use_dynamic_install=yes_without_prompt
