@@ -59,7 +59,7 @@ jobs:
               echo "::set-output name=location::${{ github.event.inputs.location }}"
               echo "::set-output name=githubsecret::${{ github.event.inputs.githubsecret }}"
               echo "::set-output name=managementsubid::${{ github.event.inputs.managementsubid }}"
-              echo "::set-output name=uniqueid::${{ github.event.inputs.unique }}"
+              echo "::set-output name=uniqueid::${{ github.event.inputs.uniqueid }}"
             elif [ ${GITHUB_EVENT_NAME} == 'repository_dispatch' ];
             then
               echo "::set-output name=ref::${{ github.event.client_payload.ref }}"
