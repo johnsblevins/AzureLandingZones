@@ -104,8 +104,9 @@ jobs:
                       --subscription "${{ steps.setvariables.outputs.managementsubid }}" \
                       --location ${{ steps.setvariables.outputs.location }} \
                       --template-file "templates/entlz/workbooks/main.bicep" \
-                      --parameters  location=$location \
+                      --parameters  entlzprefix=${{ steps.setvariables.outputs.entlzprefix }} \
+                                    location=$location \
                                     workbookdisplayname=$workbookdisplayname \
-                                    workname=$workbookdisplayname \
+                                    workbookname=$workbookdisplayname \
                                     serializeddata=$serializedjson
               done
