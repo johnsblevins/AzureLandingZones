@@ -101,7 +101,7 @@ jobs:
                 # Deploy Management Groups using template
                 randomid=$RANDOM$RANDOM$RANDOM
                 az deployment tenant create \
-                  --name "${{ steps.setvariables.outputs.entlzprefix }}-managementgroups-${{ steps.setvariables.outputs.location }}-$deploymentguid" \
+                  --name "${{ steps.setvariables.outputs.entlzprefix }}-managementgroups-${{ steps.setvariables.outputs.location }}-${randomid}" \
                   --location ${{ steps.setvariables.outputs.location }} \
                   --template-file templates/entlz/platform-mgs/main.bicep \
                   --parameters entlzprefix=${{ steps.setvariables.outputs.entlzprefix }} randomid=$randomid
