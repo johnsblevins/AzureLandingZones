@@ -1,12 +1,14 @@
 param entlzprefix string // Enterprise Landing Zone Prefix - 5 Characters Maximum
+param basetime string = utcNow()
 
 targetScope = 'tenant'
 
 /////////// Create Management Group Hierarchy
+var deploymentguid  = '${guid(basetime)}'
 
 // Root MG
 module entLZRootMG 'modules/rootedmg.bicep'={
-  name: 'entLZRootMG'
+  name: '${entlzprefix}-root-mg-${deploymentguid}'
   params:{
     name: entlzprefix
   }
@@ -14,7 +16,7 @@ module entLZRootMG 'modules/rootedmg.bicep'={
 
 // Platform MGs
 module platformMG 'modules/parentedmg.bicep'={
-  name: 'platformMG'
+  name: '${entlzprefix}-platform-mg-${deploymentguid}'
   dependsOn: [
     entLZRootMG
   ]
@@ -25,18 +27,18 @@ module platformMG 'modules/parentedmg.bicep'={
 }
 
 module platformConnectivityMG 'modules/parentedmg.bicep'={
-  name: 'platformConnectivityMG'
+  name: '${entlzprefix}-platform-mg-${deploymentguid}'
   dependsOn: [
     platformMG
   ]
   params:{
-    name: '${entlzprefix}-connectivity'
+    name: '${entlzprefix}-platform'
     parentId: platformMG.outputs.mgId
   }
 }
 
 module platformIdentityMG 'modules/parentedmg.bicep'={
-  name: 'platformIdentityMG'
+  name: '${entlzprefix}-identity-mg-${deploymentguid}'
   dependsOn: [
     platformMG
   ]
@@ -47,7 +49,7 @@ module platformIdentityMG 'modules/parentedmg.bicep'={
 }
 
 module platformManagementMG 'modules/parentedmg.bicep'={
-  name: 'platformManagementMG'
+  name: '${entlzprefix}-management-mg-${deploymentguid}'
   dependsOn: [
     platformMG
   ]
@@ -58,7 +60,7 @@ module platformManagementMG 'modules/parentedmg.bicep'={
 }
 
 module platformSecurityMG 'modules/parentedmg.bicep'={
-  name: 'platformSecurityMG'
+  name: '${entlzprefix}-security-mg-${deploymentguid}'
   dependsOn: [
     platformMG
   ]
@@ -70,7 +72,7 @@ module platformSecurityMG 'modules/parentedmg.bicep'={
 
 // Landing Zone MGs
 module landingZonesMG 'modules/parentedmg.bicep'={
-  name: 'landingZonesMG'
+  name: '${entlzprefix}-landingzones-mg-${deploymentguid}'
   dependsOn: [
     entLZRootMG
   ]
@@ -81,7 +83,7 @@ module landingZonesMG 'modules/parentedmg.bicep'={
 }
 
 module internal 'modules/parentedmg.bicep'={
-  name: 'internal'
+  name: '${entlzprefix}-internal-mg-${deploymentguid}'
   dependsOn: [
     landingZonesMG
   ]
@@ -92,7 +94,7 @@ module internal 'modules/parentedmg.bicep'={
 }
 
 module internalProd 'modules/parentedmg.bicep'={
-  name: 'internalProd'
+  name: '${entlzprefix}-int-pr-mg-${deploymentguid}'
   dependsOn: [
     internal
   ]
@@ -103,7 +105,7 @@ module internalProd 'modules/parentedmg.bicep'={
 }
 
 module internalNonProd 'modules/parentedmg.bicep'={
-  name: 'internalNonProd'
+  name: '${entlzprefix}-int-np-mg-${deploymentguid}'
   dependsOn: [
     internal
   ]
@@ -114,7 +116,7 @@ module internalNonProd 'modules/parentedmg.bicep'={
 }
 
 module external 'modules/parentedmg.bicep'={
-  name: 'external'
+  name: '${entlzprefix}-external-mg-${deploymentguid}'
   dependsOn: [
     landingZonesMG
   ]
@@ -125,7 +127,7 @@ module external 'modules/parentedmg.bicep'={
 }
 
 module externalProd 'modules/parentedmg.bicep'={
-  name: 'externalProd'
+  name: '${entlzprefix}-ext-pr-mg-${deploymentguid}'
   dependsOn: [
     external
   ]
@@ -136,7 +138,7 @@ module externalProd 'modules/parentedmg.bicep'={
 }
 
 module externalNonProd 'modules/parentedmg.bicep'={
-  name: 'externalNonProd'
+  name: '${entlzprefix}-ext-np-mg-${deploymentguid}'
   dependsOn: [
     external
   ]
@@ -148,7 +150,7 @@ module externalNonProd 'modules/parentedmg.bicep'={
 
 // Onboarding MG
 module onboardingMG 'modules/parentedmg.bicep'={
-  name: 'onboardingMG'
+  name: '${entlzprefix}-onboarding-mg-${deploymentguid}'
   dependsOn: [
     entLZRootMG
   ]
@@ -160,7 +162,7 @@ module onboardingMG 'modules/parentedmg.bicep'={
 
 // Decommisioned MG
 module decommissionedMG 'modules/parentedmg.bicep'={
-  name: 'decommissionedMG'
+  name: '${entlzprefix}-decommissioned-mg-${deploymentguid}'
   dependsOn: [
     entLZRootMG
   ]
@@ -172,7 +174,7 @@ module decommissionedMG 'modules/parentedmg.bicep'={
 
 // Sandbox MGs
 module sandboxMG 'modules/parentedmg.bicep'={
-  name: 'sandboxMG'
+  name: '${entlzprefix}-sandboxes-mg-${deploymentguid}'
   dependsOn: [
     entLZRootMG
   ]
@@ -183,7 +185,7 @@ module sandboxMG 'modules/parentedmg.bicep'={
 }
 
 module sandboxManagementMG 'modules/parentedmg.bicep'={
-  name: 'sandboxManagementMG'
+  name: '${entlzprefix}-sandbox-management-mg-${deploymentguid}'
   dependsOn: [
     sandboxMG
   ]
@@ -194,7 +196,7 @@ module sandboxManagementMG 'modules/parentedmg.bicep'={
 }
 
 module sandboxLandingZonesMG 'modules/parentedmg.bicep'={
-  name: 'sandboxLandingZonesMG'
+  name: '${entlzprefix}-sandbox-landingzones-mg-${deploymentguid}'
   dependsOn: [
     sandboxMG
   ]
