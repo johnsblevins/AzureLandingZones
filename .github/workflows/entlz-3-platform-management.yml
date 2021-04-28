@@ -17,6 +17,10 @@ on:
         description: 'location'
         required: true
         default: 'usgovvirginia'
+      githubsecret:
+        description: 'Github Secret Name with Azure Credentials'
+        required: true
+        default: 'AZGOV_CREDS'
       managementsubid:
         description: ''
         required: true
@@ -25,7 +29,10 @@ on:
         description: ''
         required: false
         default: ''      
-      
+  
+  repository_dispatch:
+    types: [entlz-3-platform-management]    
+
 #  push:
 #    branches:
 #      - dev
@@ -34,26 +41,56 @@ on:
 #      - 'templates/entlz/modules/**'
 #      - '.github/workflows/entlz-3-platform-management.yml'
 
-env:
-  entlzprefix: ${{ github.event.inputs.entlzprefix }}
-  environment: ${{ github.event.inputs.environment }}
-  location: ${{ github.event.inputs.location }} 
-  managementsubid: ${{ github.event.inputs.managementsubid }} 
-  uniqueid: ${{ github.event.inputs.uniqueid }} 
-
 jobs:
     build-and-deploy:
         runs-on: ubuntu-latest
+        - name: Set Variables
+          id: setvariables         
+          run: |
+            shopt -s nocasematch
+            echo ${GITHUB_EVENT_NAME} 
+            if [ ${GITHUB_EVENT_NAME} == 'workflow_dispatch' ];
+            then
+              echo "::set-output name=ref::${GITHUB_REF##*/}"
+              echo "::set-output name=entlzprefix::${{ github.event.inputs.entlzprefix }}"
+              echo "::set-output name=environment::${{ github.event.inputs.environment }}"
+              echo "::set-output name=location::${{ github.event.inputs.location }}"
+              echo "::set-output name=githubsecret::${{ github.event.inputs.githubsecret }}"
+              echo "::set-output name=managementsubid::${{ github.event.inputs.managementsubid }}"
+              echo "::set-output name=uniqueid::${{ github.event.inputs.unique }}"
+            elif [ ${GITHUB_EVENT_NAME} == 'repository_dispatch' ];
+            then
+              echo "::set-output name=ref::${{ github.event.client_payload.ref }}"
+              echo "::set-output name=entlzprefix::${{ github.event.client_payload.entlzprefix }}"
+              echo "::set-output name=environment::${{ github.event.client_payload.environment }}"
+              echo "::set-output name=location::${{ github.event.client_payload.location }}"
+              echo "::set-output name=githubsecret::${{ github.event.client_payload.githubsecret }}"
+              echo "::set-output name=managementsubid::${{ github.event.client_payload.managementsubid }}"
+              echo "::set-output name=uniqueid::${{ github.event.client_payload.uniqueid }}"
+            else
+              echo "Invalid Event Trigger ${GITHUB_EVENT_NAME} unable to set variables."
+            fi;            
           
+        - name: Echo Variables
+          run: |
+            echo ref: ${{ steps.setvariables.outputs.ref }}
+            echo entlzprefix: ${{ steps.setvariables.outputs.entlzprefix }}
+            echo environment: ${{ steps.setvariables.outputs.environment }}
+            echo location: ${{ steps.setvariables.outputs.location }}
+            echo githubsecret: ${{ steps.setvariables.outputs.githubsecret }}
+            echo managementsubid: ${{ steps.setvariables.outputs.managementsubid }}
+            echo uniqueid: ${{ steps.setvariables.outputs.uniqueid }}
+
         steps:
         - uses: actions/checkout@v2
-        - name: Branch name
-          run: echo running on branch ${GITHUB_REF##*/}      
+          with:
+            ref: ${{ steps.setvariables.outputs.ref }}
+        
         - name: Log in with Azure
           uses: azure/login@v1
           with:
-            creds: ${{ secrets.AZGOV_CREDS }}
-            environment: ${{ env.environment }}
+            creds: ${{ secrets[steps.setvariables.outputs.githubsecret] }}
+            environment: ${{ steps.setvariables.outputs.environment }}
             enable-AzPSSession: false
         
         - name: Deploy Management Components
@@ -63,8 +100,8 @@ jobs:
             inlineScript: |
               # Deploy Management Components to Management Subscription
                 az deployment sub create \
-                  --name "${{ env.entlzprefix }}-management-${{ env.location }}" \
-                  --subscription "${{ env.managementsubid }}" \
-                  --location "${{ env.location }}" \
+                  --name "${{ steps.setvariables.outputs.entlzprefix }}-management-${{ steps.setvariables.outputs.location }}" \
+                  --subscription "${{ steps.setvariables.outputs.managementsubid }}" \
+                  --location "${{ steps.setvariables.outputs.location }}" \
                   --template-file "templates/entlz/platform-management.bicep" \
-                  --parameters entlzprefix=${{ env.entlzprefix }} uniqueid=${{ env.uniqueid }}
+                  --parameters entlzprefix=${{ steps.setvariables.outputs.entlzprefix }} uniqueid=${{ steps.setvariables.outputs.uniqueid }}
