@@ -80,7 +80,7 @@ jobs:
             azcliversion: 2.21.0
             inlineScript: |
                 # Deploy Management Groups using template
-                deploymentguid=uuidgen
+                deploymentguid=`uuidgen`
                 az deployment tenant create \
                   --name "${{ steps.setvariables.outputs.entlzprefix }}-managementgroups-${{ steps.setvariables.outputs.location }}-$deploymentguid" \
                   --location ${{ steps.setvariables.outputs.location }} \
