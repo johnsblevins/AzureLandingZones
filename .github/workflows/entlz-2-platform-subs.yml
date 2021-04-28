@@ -128,7 +128,7 @@ jobs:
         - name: Log in with Azure
           uses: azure/login@v1
           with:
-            creds: ${{ secrets.AZGOV_CREDS }}
+            creds: ${{ secrets[steps.setvariables.outputs.githubsecret] }}
             environment: ${{ steps.setvariables.outputs.environment }}
             enable-AzPSSession: false
         
