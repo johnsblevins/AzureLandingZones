@@ -44,6 +44,8 @@ on:
 jobs:
     build-and-deploy:
         runs-on: ubuntu-latest
+        
+        steps:
         - name: Set Variables
           id: setvariables         
           run: |
@@ -81,7 +83,6 @@ jobs:
             echo managementsubid: ${{ steps.setvariables.outputs.managementsubid }}
             echo uniqueid: ${{ steps.setvariables.outputs.uniqueid }}
 
-        steps:
         - uses: actions/checkout@v2
           with:
             ref: ${{ steps.setvariables.outputs.ref }}
