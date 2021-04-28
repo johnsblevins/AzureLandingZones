@@ -282,7 +282,8 @@ jobs:
                   subId=$(az account subscription list --query "[?displayName=='${{ env.securitysubname }}'].subscriptionId" --output tsv)
                   az tag create --resource-id /subscriptions/$subId --tags createdOn="$NOW" programType="int" programEnv="prod" programName="${{ steps.setvariables.outputs.entlzprefix }}"
                 else
-                  echo "Security subscription already exists...skipping"
+                  echo "Security subscription already exists...tagging"
+                  az tag create --resource-id /subscriptions/$subId --tags createdOn="$NOW" programType="int" programEnv="prod" programName="${{ steps.setvariables.outputs.entlzprefix }}"
                 fi;
               else
                 echo "Security subscription specified as input...renaming"
@@ -290,6 +291,8 @@ jobs:
                 --url "${managementuri}subscriptions/${{ steps.setvariables.outputs.securitysubid }}/providers/Microsoft.Subscription/rename?api-version=2019-10-01-preview" \
                 --headers "{\"content-type\":\"application/json\"}" \
                 --body "{   \"subscriptionName\": \"${{ env.securitysubname }}\"}"
+                echo "Security subscription renamed...tagging"
+                az tag create --resource-id /subscriptions/${{ steps.setvariables.outputs.securitysubid }} --tags programType="int" programEnv="prod" programName="${{ steps.setvariables.outputs.entlzprefix }}"
               fi;
 
         - name: Log in to Azure Again
