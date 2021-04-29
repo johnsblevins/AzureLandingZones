@@ -1,35 +1,34 @@
+param bastionname string
+param bastionsubnetname string
+param bastionsubnetprefix string
+param environment string
+param ergwname string
+param fwip string
+param fwmanagementrtname string
+param fwmanagementsubnetname string
+param fwmanagementsubnetprefix string
+param fwname string
+param fwpolicyname string
+param fwrtname string
+param fwsubnetname string
+param fwsubnetprefix string
+param fwtype string
+param gwrtname string
+param gwsubnetname string
+param gwsubnetprefix string
+param gwtier string
+param gwtype string
+param hubmanagementrtname string
+param hubmanagementsubnetname string
+param hubmanagementsubnetprefix string
 param hubvnetname string
 param hubvnetprefix string
 param identityvnetprefix string
-param securityvnetprefix string
-param managementvnetprefix string
-param gwtype string
-param vpngwname string
-param ergwname string
-param gwsubnetprefix string
-param fwsubnetprefix string
-param fwmanagementsubnetprefix string
-param hubmanagementsubnetprefix string
-param bastionsubnetprefix string
-param fwname string
-param fwtype string
-param environment string
 param location string
-param gwsubnetname string
-param fwsubnetname string
-param bastionsubnetname string
-param fwmanagementsubnetname string
-param hubmanagementsubnetname string
-param gwtier string
-param fwrtname string
-param fwmanagementrtname string
-param hubmanagementrtname string
-param gwrtname string
-param fwip string
-param fwpolicyname string
 param logaworkspaceid string
-
-
+param managementvnetprefix string
+param securityvnetprefix string
+param vpngwname string
 
 resource fwmanagementrt 'Microsoft.Network/routeTables@2020-11-01' = {
   location: location
@@ -341,6 +340,22 @@ resource ergwpip 'Microsoft.Network/publicIPAddresses@2020-11-01'=  if( !(empty(
   }
 }
 
+resource bastionpip 'Microsoft.Network/publicIPAddresses@2020-11-01'= if( !(empty(bastionsubnetprefix))){
+  name: '${bastionname}-pip'
+  sku:{
+    name:'Standard'
+  }
+  zones:[
+    '1'
+    '2'
+    '3'
+  ]
+  properties:{
+    publicIPAllocationMethod: 'Static'
+    publicIPAddressVersion: 'IPv4'
+  }  
+}
+
 resource vpngw 'Microsoft.Network/virtualNetworkGateways@2020-11-01' = if( !(empty(gwsubnetprefix)) &&  (gwtype=='Vpn') ) {
   location: location
   name: vpngwname
@@ -411,5 +426,23 @@ resource ergw 'Microsoft.Network/virtualNetworkGateways@2020-11-01' = if( !(empt
       }
     ]
     vpnType: 'RouteBased'    
+  }
+}
+
+resource bastion 'Microsoft.Network/bastionHosts@2020-11-01'= {
+  name: bastionname
+  location: location
+  properties:{
+    ipConfigurations: [
+      {
+        name: '${bastionname}-ipconfig1'
+        properties:{
+          publicIPAddress: bastionpip
+          subnet:{
+            id: '${hubvnet.id}/subnets/${bastionsubnetname}'
+          }
+        }
+      }
+    ]
   }
 }

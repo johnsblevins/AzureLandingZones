@@ -13,13 +13,13 @@ param identitysubid string
 param identitysubnetprefix string
 param identityvnetprefix string
 param location string
+param logaworkspaceid string
 param managementsubid string
 param managementsubnetprefix string
 param managementvnetprefix string
 param securitysubid string
 param securitysubnetprefix string
 param securityvnetprefix string
-param logaworkspaceid string
 
 targetScope='managementGroup'
 
@@ -67,39 +67,39 @@ module connectivitysub 'modules/connectivity-sub.bicep' ={
   scope: subscription(connectivitysubid)
   params:{
     bastionname: bastioname
+    bastionsubnetname: bastionsubnetname
     bastionsubnetprefix: bastionsubnetprefix
     entlzprefix: entlzprefix
+    environment: environment
+    ergwname: ergwname
+    fwip: fwip
+    fwmanagementrtname: fwmanagementrtname
+    fwmanagementsubnetname: fwmanagementsubnetname
+    fwmanagementsubnetprefix: fwmanagementsubnetprefix
     fwname: fwname
+    fwpolicyname: fwpolicyname
+    fwrtname: fwrtname
+    fwsubnetname: fwsubnetname
     fwsubnetprefix: fwsubnetprefix
     fwtype: fwtype
-    vpngwname: vpngwname
-    ergwname: ergwname
+    gwrtname: gwrtname
+    gwsubnetname: gwsubnetname
     gwsubnetprefix: gwsubnetprefix
+    gwtier: gwtier
     gwtype: gwtype
+    hubconnectivityrgname: hubconnectivityrgname
+    hubmanagementrtname: hubmanagementrtname
+    hubmanagementsubnetname: hubmanagementsubnetname
+    hubmanagementsubnetprefix: hubmanagementsubnetprefix
     hubvnetname: hubvnetname
     hubvnetprefix: hubvnetprefix
-    environment: environment
-    fwmanagementsubnetprefix: fwmanagementsubnetprefix
-    hubmanagementsubnetprefix: hubmanagementsubnetprefix
     identityvnetprefix: identityvnetprefix
+    location: location
+    logaworkspaceid: logaworkspaceid
     managementsubnetprefix: managementsubnetprefix
     managementvnetprefix: managementvnetprefix
     securityvnetprefix: securityvnetprefix
-    location: location
-    gwsubnetname: gwsubnetname
-    fwsubnetname: fwsubnetname
-    bastionsubnetname: bastionsubnetname
-    fwmanagementsubnetname: fwmanagementsubnetname
-    hubmanagementsubnetname: hubmanagementsubnetname
-    gwtier: gwtier
-    fwrtname: fwrtname
-    fwmanagementrtname: fwmanagementrtname
-    hubmanagementrtname: hubmanagementrtname
-    gwrtname: gwrtname
-    fwip: fwip
-    hubconnectivityrgname: hubconnectivityrgname
-    fwpolicyname: fwpolicyname
-    logaworkspaceid: logaworkspaceid
+    vpngwname: vpngwname
   }
 }
 

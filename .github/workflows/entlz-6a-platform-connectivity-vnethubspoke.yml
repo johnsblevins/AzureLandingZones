@@ -17,88 +17,35 @@ on:
       location: 
         description: 'location'
         required: true
-        default: 'usgovvirginia'
-      bastionsubnetprefix:
-        description: ''
+        default: 'usgovvirginia'             
+      subscriptions: 
+        description: '{"identitysubid":"<subid>","connectivitysubid":"<subid>","securitysubid":"<subid>","managementsubid":"<subid>"}'
         required: true
-        default: ''
-      connectivitysubid:
-        description: ''
+        default: '{"identitysubid":"787e871a-84ba-43be-86bf-86bd1e408a4a","connectivitysubid":"b30166b8-dd1b-4fa2-9ad7-057614257b06","securitysubid":"ac95a806-c9d3-49e7-83ee-7f82e88c2bd3","managementsubid":"07526f72-6689-42be-945f-bb6ad0214b71"}'
+      hubvnet:
+        description: '{"hubvnetprefix":"x.x.x.x/x","bastionsubnetprefix":"x.x.x.x/x","fwsubnetprefix":"x.x.x.x/x","fwmanagementsubnetprefix":"x.x.x.x/x","gwsubnetprefix":"x.x.x.x/x","hubmanagementsubnetprefix":"x.x.x.x/x"}'
         required: true
-        default: ''
-      fwmanagementsubnetprefix:
-        description: ''
+        default: '{"hubvnetprefix":"10.0.0.0/23","bastionsubnetprefix":"10.0.0.160/27","fwsubnetprefix":"10.0.0.0/26","fwmanagementsubnetprefix":"10.0.0.64/26","gwsubnetprefix":"10.0.0.128/27","hubmanagementsubnetprefix":"10.0.1.0/26"}'
+      managementvnet: 
+        description: '{"managementvnetprefix":"x.x.x.x/x","managementsubnetprefix":"x.x.x.x/x"}'
         required: true
-        default: ''
-      fwsubnetprefix:
-        description: ''
+        default:  '{"managementvnetprefix":"10.0.2.0/23","managementsubnetprefix":"10.0.2.0/26"}'
+      identityvnet: 
+        description: '{"identityvnetprefix":"x.x.x.x/x","identitysubnetprefix","x.x.x.x/x"}'
         required: true
-        default: ''
-      fwtype: 
-        description: ''
+        default: '{"identityvnetprefix":"10.0.4.0/23","identitysubnetprefix","10.0.4.0/26"}'
+      securityvnet: 
+        description: '{"securityvnetprefix":"x.x.x.x/x","securitysubnetprefix","x.x.x.x/x"}'
+        require: true
+        default: '{"securityvnetprefix":"10.0.6.0/23","securitysubnetprefix","10.0.6.0/26"}'
+      other:
+        description: '{"githubsecret":"<githubsecretname>","fwtype":"<Standard|Premium>","gwtype":"<Basic|ErGw1AZ|ErGw2AZ|ErGw3AZ|HighPerformance|Standard|UltraPerformance|VpnGw1|VpnGw1|VpnGw2|VpnGw2AZ|VpnGw3|VpnGw3AZ|VpnGw4|VpnGw4AZ|VpnGw5|VpnGw5AZ","logaworkspaceid":"/subscriptions/<subid>/resourcegroups/<resourcegroupname>/providers/microsoft.operationalinsights/workspaces/<logaworkspacename>"}'
         required: true
-        default: 'Standard'
-      gwsubnetprefix:
-        description: ''
-        required: true
-        default: ''
-      gwtype:
-        description: ''
-        required: true
-        default: ''
-      hubmanagementsubnetprefix:
-        description: ''
-        required: true
-        default: ''
-      hubvnetprefix:
-        description: ''
-        required: true
-        default: ''
-      managementsubid:
-        description: ''
-        required: true
-        default: ''
-      managementsubnetprefix:
-        description: ''
-        required: true
-        default: ''
-      managementvnetprefix:
-        description: ''
-        required: true
-        default: ''
-      identitysubid:
-        description: ''
-        required: true
-        default: ''
-      identitysubnetprefix:
-        description: ''
-        required: true
-        default: ''
-      identityvnetprefix: 
-        description: ''
-        required: true
-        default: ''
-      logaworkspaceid:
-        description: ''
-        required: true
-        default: ''
-      connectivitysubid:
-        description: ''
-        required: true
-        default: ''
-      securitysubid:
-        description: ''
-        required: true
-        default: ''
-      securitysubnetprefix:
-        description: ''
-        required: true
-        default: ''
-      securityvnetprefix:
-        description: ''
-        required: true
-        default: ''
-     
+        default: '{"githubsecret":"AZGOV_CREDS","fwtype":"Standard","gwtype":"ErGw1AZ","logaworkspaceid":"/subscriptions/07526f72-6689-42be-945f-bb6ad0214b71/resourcegroups/elz1-management-usgovvirginia/providers/microsoft.operationalinsights/workspaces/elz1-loga-usgovvirginia2"}'  
+
+  repository_dispatch:
+    types: [entlz-6a-platform-connectivity-vnethubspoke]
+
 #  push:
 #    branches:
 #      - dev
@@ -106,42 +53,104 @@ on:
 #      - 'templates/entlz/platform-connectivity-vnethubspoke**'
 #      - '.github/workflows/entlz-6a-platform-connectivity-vnethubspoke.yml'
 
-env:
-  entlzprefix: ${{ github.event.inputs.entlzprefix }}
-  environment: ${{ github.event.inputs.environment }}
-  location: ${{ github.event.inputs.location }}
-  bastionsubnetprefix: ${{ github.event.inputs.bastionsubnetprefix }}
-  connectivitysubid:  ${{ github.event.inputs.connectivitysubid }}
-  fwmanagementsubnetprefix: ${{ github.event.inputs.fwmanagementsubnetprefix }}
-  fwsubnetprefix: ${{ github.event.inputs.fwsubnetprefix }}
-  fwtype: ${{ github.event.inputs.fwtype }}
-  gwsubnetprefix: ${{ github.event.inputs.gwsubnetprefix }}
-  gwtype: ${{ github.event.inputs.gwtype }}
-  hubmanagementsubnetprefix: ${{ github.event.inputs.hubmanagementsubnetprefix }}
-  hubvnetprefix: ${{ github.event.inputs.hubvnetprefix }}
-  identitysubid: ${{ github.event.inputs.identitysubid }}
-  identitysubnetprefix: ${{ github.event.inputs.identitysubnetprefix }}
-  identityvnetprefix:   ${{ github.event.inputs.identityvnetprefix }}
-  logaworkspaceid: ${{ github.event.inputs.logaworkspaceid }}
-  managementsubid: ${{ github.event.inputs.managementsubid }}
-  managementsubnetprefix: ${{ github.event.inputs.managementsubnetprefix }}
-  managementvnetprefix: ${{ github.event.inputs.managementvnetprefix }}
-  securitysubid: ${{ github.event.inputs.securitysubid }}
-  securitysubnetprefix: ${{ github.event.inputs.securitysubnetprefix }}
-  securityvnetprefix: ${{ github.event.inputs.securityvnetprefix }}
-
 jobs:
     build-and-deploy:
         runs-on: ubuntu-latest
           
         steps:
+        - name: Set Variables
+          id: setvariables         
+          run: |
+            shopt -s nocasematch
+            echo ${GITHUB_EVENT_NAME} 
+            if [ ${GITHUB_EVENT_NAME} == 'workflow_dispatch' ];
+            then
+              echo "::set-output name=ref::${GITHUB_REF##*/}"
+              echo "::set-output name=entlzprefix::${{ github.event.inputs.entlzprefix }}"
+              echo "::set-output name=environment::${{ github.event.inputs.environment }}"
+              echo "::set-output name=location::${{ github.event.inputs.location }}"
+              echo "::set-output name=githubsecret::$(echo ${{ github.event.inputs.other }} | jq -r '.githubsecret')"  
+              echo "::set-output name=bastionsubnetprefix::$(echo ${{ github.event.inputs.hubvnet }} | jq -r '.bastionsubnetprefix')"
+              echo "::set-output name=connectivitysubid::$(echo ${{ github.event.inputs.subscriptions }} | jq -r '.connectivitysubid')"
+              echo "::set-output name=fwmanagementsubnetprefix::$(echo ${{ github.event.inputs.hubvnet }} | jq -r '.fwmanagementsubnetprefix')"
+              echo "::set-output name=fwsubnetprefix::$(echo ${{ github.event.inputs.hubvnet }} | jq -r '.fwsubnetprefix')"
+              echo "::set-output name=fwtype::$(echo ${{ github.event.inputs.other }} | jq -r '.fwtype')"
+              echo "::set-output name=gwsubnetprefix::$(echo ${{ github.event.inputs.hubvnet }} | jq -r '.gwsubnetprefix')"
+              echo "::set-output name=gwtype::$(echo ${{ github.event.inputs.other }} | jq -r '.gwtype')"
+              echo "::set-output name=hubmanagementsubnetprefix::$(echo ${{ github.event.inputs.hubvnet }} | jq -r '.hubmanagementsubnetprefix')"
+              echo "::set-output name=hubvnetprefix::$(echo ${{ github.event.inputs.hubvnet }} | jq -r '.hubvnetprefix')"
+              echo "::set-output name=identitysubid::$(echo ${{ github.event.inputs.subscriptions }} | jq -r '.identitysubid')"
+              echo "::set-output name=identitysubnetprefix::$(echo ${{ github.event.inputs.identityvnet }} | jq -r '.identitysubnetprefix')"
+              echo "::set-output name=identityvnetprefix::$(echo ${{ github.event.inputs.identityvnet }} | jq -r '.identityvnetprefix')"
+              echo "::set-output name=logaworkspaceid::$(echo ${{ github.event.inputs.other }} | jq -r '.logaworkspaceid')"
+              echo "::set-output name=managementsubid::$(echo ${{ github.event.inputs.subscriptions }} | jq -r '.managementsubid')"
+              echo "::set-output name=managementsubnetprefix::$(echo ${{ github.event.inputs.managementvnet }} | jq -r '.managementsubnetprefix')"
+              echo "::set-output name=managementvnetprefix::$(echo ${{ github.event.inputs.managementvnet }} | jq -r '.managementvnetprefix')"
+              echo "::set-output name=securitysubid::$(echo ${{ github.event.inputs.subscriptions }} | jq -r '.securitysubid')"
+              echo "::set-output name=securitysubnetprefix::$(echo ${{ github.event.inputs.securityvnet }} | jq -r '.securitysubnetprefix')"
+              echo "::set-output name=securityvnetprefix::$(echo ${{ github.event.inputs.securityvnet }} | jq -r '.securityvnetprefix')"
+            elif [ ${GITHUB_EVENT_NAME} == 'repository_dispatch' ];
+            then
+              echo "::set-output name=ref::${{ github.event.client_payload.ref }}"
+              echo "::set-output name=entlzprefix::${{ github.event.client_payload.entlzprefix }}"
+              echo "::set-output name=environment::${{ github.event.client_payload.environment }}"
+              echo "::set-output name=location::${{ github.event.client_payload.location }}"
+              echo "::set-output name=githubsecret::$(echo ${{ github.event.client_payload.other }} | jq -r '.githubsecret')"  
+              echo "::set-output name=bastionsubnetprefix::$(echo ${{ github.event.client_payload.hubvnet }} | jq -r '.bastionsubnetprefix')"
+              echo "::set-output name=connectivitysubid::$(echo ${{ github.event.client_payload.subscriptions }} | jq -r '.connectivitysubid')"
+              echo "::set-output name=fwmanagementsubnetprefix::$(echo ${{ github.event.client_payload.hubvnet }} | jq -r '.fwmanagementsubnetprefix')"
+              echo "::set-output name=fwsubnetprefix::$(echo ${{ github.event.client_payload.hubvnet }} | jq -r '.fwsubnetprefix')"
+              echo "::set-output name=fwtype::$(echo ${{ github.event.client_payload.other }} | jq -r '.fwtype')"
+              echo "::set-output name=gwsubnetprefix::$(echo ${{ github.event.client_payload.hubvnet }} | jq -r '.gwsubnetprefix')"
+              echo "::set-output name=gwtype::$(echo ${{ github.event.client_payload.other }} | jq -r '.gwtype')"
+              echo "::set-output name=hubmanagementsubnetprefix::$(echo ${{ github.event.client_payload.hubvnet }} | jq -r '.hubmanagementsubnetprefix')"
+              echo "::set-output name=hubvnetprefix::$(echo ${{ github.event.client_payload.hubvnet }} | jq -r '.hubvnetprefix')"
+              echo "::set-output name=identitysubid::$(echo ${{ github.event.client_payload.subscriptions }} | jq -r '.identitysubid')"
+              echo "::set-output name=identitysubnetprefix::$(echo ${{ github.event.client_payload.identityvnet }} | jq -r '.identitysubnetprefix')"
+              echo "::set-output name=identityvnetprefix::$(echo ${{ github.event.client_payload.identityvnet }} | jq -r '.identityvnetprefix')"
+              echo "::set-output name=logaworkspaceid::$(echo ${{ github.event.client_payload.other }} | jq -r '.logaworkspaceid')"
+              echo "::set-output name=managementsubid::$(echo ${{ github.event.client_payload.subscriptions }} | jq -r '.managementsubid')"
+              echo "::set-output name=managementsubnetprefix::$(echo ${{ github.event.client_payload.managementvnet }} | jq -r '.managementsubnetprefix')"
+              echo "::set-output name=managementvnetprefix::$(echo ${{ github.event.client_payload.managementvnet }} | jq -r '.managementvnetprefix')"
+              echo "::set-output name=securitysubid::$(echo ${{ github.event.client_payload.subscriptions }} | jq -r '.securitysubid')"
+              echo "::set-output name=securitysubnetprefix::$(echo ${{ github.event.client_payload.securityvnet }} | jq -r '.securitysubnetprefix')"
+              echo "::set-output name=securityvnetprefix::$(echo ${{ github.event.client_payload.securityvnet }} | jq -r '.securityvnetprefix')"
+            else
+              echo "Invalid Event Trigger ${GITHUB_EVENT_NAME} unable to set variables."
+            fi;
+        - name: Echo Variables
+          run: |
+            echo ${{ steps.setvariables.outputs.ref }}
+            echo ${{ steps.setvariables.outputs.entlzprefix }}
+            echo ${{ steps.setvariables.outputs.environment }}
+            echo ${{ steps.setvariables.outputs.location }}
+            echo ${{ steps.setvariables.outputs.githubsecret }}
+            echo ${{ steps.setvariables.outputs.bastionsubnetprefix }}
+            echo ${{ steps.setvariables.outputs.connectivitysubid }}
+            echo ${{ steps.setvariables.outputs.fwmanagementsubnetprefix }}
+            echo ${{ steps.setvariables.outputs.fwsubnetprefix }}
+            echo ${{ steps.setvariables.outputs.fwtype }}
+            echo ${{ steps.setvariables.outputs.gwsubnetprefix }}
+            echo ${{ steps.setvariables.outputs.gwtype }}
+            echo ${{ steps.setvariables.outputs.hubmanagementsubnetprefix }}
+            echo ${{ steps.setvariables.outputs.hubvnetprefix }}
+            echo ${{ steps.setvariables.outputs.identitysubid }}
+            echo ${{ steps.setvariables.outputs.identitysubnetprefix }}
+            echo ${{ steps.setvariables.outputs.identityvnetprefix }}
+            echo ${{ steps.setvariables.outputs.logaworkspaceid }}
+            echo ${{ steps.setvariables.outputs.managementsubid }}
+            echo ${{ steps.setvariables.outputs.managementsubnetprefix }}
+            echo ${{ steps.setvariables.outputs.managementvnetprefix }}
+            echo ${{ steps.setvariables.outputs.securitysubid }}
+            echo ${{ steps.setvariables.outputs.securitysubnetprefix }}
+            echo ${{ steps.setvariables.outputs.securityvnetprefix }}            
         - uses: actions/checkout@v2
-        - name: Branch name
-          run: echo running on branch ${GITHUB_REF##*/}       
+          with:
+            ref: ${{ steps.setvariables.outputs.ref }}
         - name: Log in with Azure
           uses: azure/login@v1
           with:
-            creds: ${{ secrets.AZGOV_CREDS }}
+            creds: ${{ secrets[steps.setvariables.outputs.githubsecret] }}
             environment: ${{ env.environment }}
             enable-AzPSSession: false
         
@@ -150,28 +159,28 @@ jobs:
           with:
             azcliversion: 2.21.0
             inlineScript: |
-              bastionsubnetprefix="${{ env.bastionsubnetprefix }}"
-              connectivitysubid="${{ env.connectivitysubid }}"
-              entlzprefix="${{ env.entlzprefix }}"
-              environment="${{ env.environment }}"
-              fwmanagementsubnetprefix="${{ env.fwmanagementsubnetprefix }}"
-              fwsubnetprefix="${{ env.fwsubnetprefix }}"
-              fwtype="${{ env.fwtype }}"
-              gwsubnetprefix="${{ env.gwsubnetprefix }}"
-              gwtype="${{ env.gwtype }}"
-              hubmanagementsubnetprefix="${{ env.hubmanagementsubnetprefix}}"
-              hubvnetprefix="${{ env.hubvnetprefix }}"
-              identitysubid="${{ env.identitysubid }}"
-              identitysubnetprefix="${{ env.identitysubnetprefix }}"
-              identityvnetprefix="${{ env.identityvnetprefix }}"
-              location="${{ env.location }}"
-              managementsubid="${{ env.managementsubid }}"
-              managementsubnetprefix="${{ env.managementsubnetprefix }}"
-              managementvnetprefix="${{ env.managementvnetprefix }}"
-              securitysubid="${{ env.securitysubid }}"
-              securitysubnetprefix="${{ env.securitysubnetprefix }}"
-              securityvnetprefix="${{ env.securityvnetprefix }}"
-              logaworkspaceid="${{ env.logaworkspaceid }}"
+              bastionsubnetprefix="${{ steps.setvariables.outputs.bastionsubnetprefix }}"
+              connectivitysubid="${{ steps.setvariables.outputs.connectivitysubid }}"
+              entlzprefix="${{ steps.setvariables.outputs.entlzprefix }}"
+              environment="${{ steps.setvariables.outputs.environment }}"
+              fwmanagementsubnetprefix="${{ steps.setvariables.outputs.fwmanagementsubnetprefix }}"
+              fwsubnetprefix="${{ steps.setvariables.outputs.fwsubnetprefix }}"
+              fwtype="${{ steps.setvariables.outputs.fwtype }}"
+              gwsubnetprefix="${{ steps.setvariables.outputs.gwsubnetprefix }}"
+              gwtype="${{ steps.setvariables.outputs.gwtype }}"
+              hubmanagementsubnetprefix="${{ steps.setvariables.outputs.hubmanagementsubnetprefix}}"
+              hubvnetprefix="${{ steps.setvariables.outputs.hubvnetprefix }}"
+              identitysubid="${{ steps.setvariables.outputs.identitysubid }}"
+              identitysubnetprefix="${{ steps.setvariables.outputs.identitysubnetprefix }}"
+              identityvnetprefix="${{ steps.setvariables.outputs.identityvnetprefix }}"
+              location="${{ steps.setvariables.outputs.location }}"
+              managementsubid="${{ steps.setvariables.outputs.managementsubid }}"
+              managementsubnetprefix="${{ steps.setvariables.outputs.managementsubnetprefix }}"
+              managementvnetprefix="${{ steps.setvariables.outputs.managementvnetprefix }}"
+              securitysubid="${{ steps.setvariables.outputs.securitysubid }}"
+              securitysubnetprefix="${{ steps.setvariables.outputs.securitysubnetprefix }}"
+              securityvnetprefix="${{ steps.setvariables.outputs.securityvnetprefix }}"
+              logaworkspaceid="${{ steps.setvariables.outputs.logaworkspaceid }}"
 
               az deployment mg create \
                   --name "${entlzprefix}-connectivity-${location}" \
