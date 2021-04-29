@@ -99,12 +99,12 @@ jobs:
             azcliversion: 2.21.0
             inlineScript: |
                 # Deploy Management Groups using template
-                deploymentguid=$(cat /proc/sys/kernel/random/uuid)
+                randomid=$RANDOM$RANDOM$RANDOM
                 az deployment tenant create \
-                  --name "${{ steps.setvariables.outputs.entlzprefix }}-managementgroups-${{ steps.setvariables.outputs.location }}-$deploymentguid" \
+                  --name "${{ steps.setvariables.outputs.entlzprefix }}-managementgroups-${{ steps.setvariables.outputs.location }}-${randomid}" \
                   --location ${{ steps.setvariables.outputs.location }} \
                   --template-file templates/entlz/platform-mgs/main.bicep \
-                  --parameters entlzprefix=${{ steps.setvariables.outputs.entlzprefix }} deploymentguid=$deploymentguid
+                  --parameters entlzprefix=${{ steps.setvariables.outputs.entlzprefix }} randomid=$randomid
         
         - name: Configure Management Group Hierarchy Settings
           uses: azure/CLI@v1

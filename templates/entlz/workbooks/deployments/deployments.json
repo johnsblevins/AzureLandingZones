@@ -1,0 +1,233 @@
+{
+    "version": "Notebook/1.0",
+    "items": [
+      {
+        "type": 3,
+        "content": {
+          "version": "KqlItem/1.0",
+          "query": "{\"version\":\"ARMEndpoint/1.0\",\"data\":null,\"headers\":[],\"method\":\"GET\",\"path\":\"/providers/Microsoft.Resources/deployments/?api-version=2020-10-01\",\"urlParams\":[],\"batchDisabled\":false,\"transformers\":[{\"type\":\"jsonpath\",\"settings\":{\"tablePath\":\"value\",\"columns\":[{\"path\":\"$.name\",\"columnid\":\"name\"},{\"path\":\"$.id\",\"columnid\":\"id\"},{\"path\":\"$.location\",\"columnid\":\"location\"},{\"path\":\"$.properties.mode\",\"columnid\":\"mode\"},{\"path\":\"$.properties.timestamp\",\"columnid\":\"timestamp\"}]}}]}",
+          "size": 0,
+          "title": "Deployments at Tenant Scope",
+          "queryType": 12
+        },
+        "name": "query - 0"
+      },
+      {
+        "type": 12,
+        "content": {
+          "version": "NotebookGroup/1.0",
+          "groupType": "editable",
+          "title": "Search Deployments at Management Group Scope",
+          "items": [
+            {
+              "type": 9,
+              "content": {
+                "version": "KqlParameterItem/1.0",
+                "parameters": [
+                  {
+                    "id": "cd2f7991-daee-471b-9dfc-f56adaedf157",
+                    "version": "KqlParameterItem/1.0",
+                    "name": "managementgroup",
+                    "type": 2,
+                    "isRequired": true,
+                    "query": "{\"version\":\"ARMEndpoint/1.0\",\"data\":null,\"headers\":[],\"method\":\"GET\",\"path\":\"/providers/Microsoft.Management/managementGroups?api-version=2020-05-01\",\"urlParams\":[],\"batchDisabled\":false,\"transformers\":[{\"type\":\"jsonpath\",\"settings\":{\"tablePath\":\"value\",\"columns\":[{\"path\":\"$.name\",\"columnid\":\"name\"}]}}]}",
+                    "value": "elz1",
+                    "typeSettings": {
+                      "additionalResourceOptions": [],
+                      "showDefault": false
+                    },
+                    "timeContext": {
+                      "durationMs": 86400000
+                    },
+                    "defaultValue": "value::all",
+                    "queryType": 12
+                  }
+                ],
+                "style": "pills",
+                "queryType": 12
+              },
+              "customWidth": "25",
+              "name": "parameters - 12"
+            },
+            {
+              "type": 3,
+              "content": {
+                "version": "KqlItem/1.0",
+                "query": "{\"version\":\"ARMEndpoint/1.0\",\"data\":null,\"headers\":[],\"method\":\"GET\",\"path\":\"/providers/Microsoft.Management/managementGroups/{managementgroup}/providers/Microsoft.Resources/deployments/?api-version=2020-10-01\",\"urlParams\":[],\"batchDisabled\":false,\"transformers\":[{\"type\":\"jsonpath\",\"settings\":{\"tablePath\":\"value\",\"columns\":[{\"path\":\"$.name\",\"columnid\":\"name\"},{\"path\":\"$.id\",\"columnid\":\"id\"},{\"path\":\"$.location\",\"columnid\":\"location\"},{\"path\":\"$.properties.mode\",\"columnid\":\"mode\"},{\"path\":\"$.properties.timestamp\",\"columnid\":\"timestamp\"}]}}]}",
+                "size": 0,
+                "queryType": 12
+              },
+              "customWidth": "75",
+              "name": "query - 13"
+            }
+          ]
+        },
+        "name": "Search Deployments at Management Group Scope"
+      },
+      {
+        "type": 12,
+        "content": {
+          "version": "NotebookGroup/1.0",
+          "groupType": "editable",
+          "title": "Search Deployments at Subscription Scope",
+          "items": [
+            {
+              "type": 9,
+              "content": {
+                "version": "KqlParameterItem/1.0",
+                "parameters": [
+                  {
+                    "id": "cd2f7991-daee-471b-9dfc-f56adaedf157",
+                    "version": "KqlParameterItem/1.0",
+                    "name": "subscriptionid",
+                    "label": "subscription",
+                    "type": 2,
+                    "query": "{\"version\":\"ARMEndpoint/1.0\",\"data\":null,\"headers\":[],\"method\":\"GET\",\"path\":\"/subscriptions?api-version=2020-01-01\",\"urlParams\":[],\"batchDisabled\":false,\"transformers\":[{\"type\":\"jsonpath\",\"settings\":{\"tablePath\":\"value\",\"columns\":[{\"path\":\"$.subscriptionId\",\"columnid\":\"subscriptionid\"},{\"path\":\"$.displayName\",\"columnid\":\"displayname\"}]}}]}",
+                    "value": "787e871a-84ba-43be-86bf-86bd1e408a4a",
+                    "typeSettings": {
+                      "additionalResourceOptions": [],
+                      "showDefault": false
+                    },
+                    "timeContext": {
+                      "durationMs": 86400000
+                    },
+                    "queryType": 12
+                  }
+                ],
+                "style": "pills",
+                "queryType": 12
+              },
+              "customWidth": "25",
+              "name": "parameters - 12"
+            },
+            {
+              "type": 3,
+              "content": {
+                "version": "KqlItem/1.0",
+                "query": "{\"version\":\"ARMEndpoint/1.0\",\"data\":null,\"headers\":[],\"method\":\"GET\",\"path\":\"/subscriptions/{subscriptionid}/providers/Microsoft.Resources/deployments/?api-version=2020-10-01\",\"urlParams\":[],\"batchDisabled\":false,\"transformers\":[{\"type\":\"jsonpath\",\"settings\":{\"tablePath\":\"value\",\"columns\":[{\"path\":\"$.name\",\"columnid\":\"name\"},{\"path\":\"$.id\",\"columnid\":\"id\"},{\"path\":\"$.location\",\"columnid\":\"location\"},{\"path\":\"$.properties.mode\",\"columnid\":\"mode\"},{\"path\":\"$.properties.timestamp\",\"columnid\":\"timestamp\"}]}}]}",
+                "size": 0,
+                "queryType": 12
+              },
+              "customWidth": "75",
+              "name": "query - 13"
+            }
+          ]
+        },
+        "name": "Search Deployments at Subscription Scope"
+      },
+      {
+        "type": 3,
+        "content": {
+          "version": "KqlItem/1.0",
+          "query": "{\"version\":\"ARMEndpoint/1.0\",\"data\":null,\"headers\":[],\"method\":\"GET\",\"path\":\"/providers/Microsoft.Management/managementGroups/elz1/providers/Microsoft.Resources/deployments/?api-version=2020-10-01\",\"urlParams\":[],\"batchDisabled\":false,\"transformers\":[{\"type\":\"jsonpath\",\"settings\":{\"tablePath\":\"value\",\"columns\":[{\"path\":\"$.name\",\"columnid\":\"name\"},{\"path\":\"$.id\",\"columnid\":\"id\"},{\"path\":\"$.location\",\"columnid\":\"location\"},{\"path\":\"$.properties.mode\",\"columnid\":\"mode\"},{\"path\":\"$.properties.timestamp\",\"columnid\":\"timestamp\"}]}}]}",
+          "size": 0,
+          "title": "Deployments at entlz root mg scope",
+          "queryType": 12
+        },
+        "name": "query - 0 - Copy"
+      },
+      {
+        "type": 3,
+        "content": {
+          "version": "KqlItem/1.0",
+          "query": "{\"version\":\"ARMEndpoint/1.0\",\"data\":null,\"headers\":[],\"method\":\"GET\",\"path\":\"/providers/Microsoft.Management/managementGroups/elz1-platform/providers/Microsoft.Resources/deployments/?api-version=2020-10-01\",\"urlParams\":[],\"batchDisabled\":false,\"transformers\":[{\"type\":\"jsonpath\",\"settings\":{\"tablePath\":\"value\",\"columns\":[{\"path\":\"$.name\",\"columnid\":\"name\"},{\"path\":\"$.id\",\"columnid\":\"id\"},{\"path\":\"$.location\",\"columnid\":\"location\"},{\"path\":\"$.properties.mode\",\"columnid\":\"mode\"},{\"path\":\"$.properties.timestamp\",\"columnid\":\"timestamp\"}]}}]}",
+          "size": 0,
+          "title": "Deployments at entlz platform mg scope",
+          "queryType": 12
+        },
+        "name": "query - 0 - Copy - Copy"
+      },
+      {
+        "type": 3,
+        "content": {
+          "version": "KqlItem/1.0",
+          "query": "{\"version\":\"ARMEndpoint/1.0\",\"data\":null,\"headers\":[],\"method\":\"GET\",\"path\":\"/providers/Microsoft.Management/managementGroups/elz1-identity/providers/Microsoft.Resources/deployments/?api-version=2020-10-01\",\"urlParams\":[],\"batchDisabled\":false,\"transformers\":[{\"type\":\"jsonpath\",\"settings\":{\"tablePath\":\"value\",\"columns\":[{\"path\":\"$.name\",\"columnid\":\"name\"},{\"path\":\"$.id\",\"columnid\":\"id\"},{\"path\":\"$.location\",\"columnid\":\"location\"},{\"path\":\"$.properties.mode\",\"columnid\":\"mode\"},{\"path\":\"$.properties.timestamp\",\"columnid\":\"timestamp\"}]}}]}",
+          "size": 0,
+          "title": "Deployments at entlz identity mg scope",
+          "queryType": 12
+        },
+        "name": "query - 0 - Copy - Copy - Copy"
+      },
+      {
+        "type": 3,
+        "content": {
+          "version": "KqlItem/1.0",
+          "query": "{\"version\":\"ARMEndpoint/1.0\",\"data\":null,\"headers\":[],\"method\":\"GET\",\"path\":\"/providers/Microsoft.Management/managementGroups/elz1-management/providers/Microsoft.Resources/deployments/?api-version=2020-10-01\",\"urlParams\":[],\"batchDisabled\":false,\"transformers\":[{\"type\":\"jsonpath\",\"settings\":{\"tablePath\":\"value\",\"columns\":[{\"path\":\"$.name\",\"columnid\":\"name\"},{\"path\":\"$.id\",\"columnid\":\"id\"},{\"path\":\"$.location\",\"columnid\":\"location\"},{\"path\":\"$.properties.mode\",\"columnid\":\"mode\"},{\"path\":\"$.properties.timestamp\",\"columnid\":\"timestamp\"}]}}]}",
+          "size": 0,
+          "title": "Deployments at entlz management mg scope",
+          "queryType": 12
+        },
+        "name": "query - 0 - Copy - Copy - Copy - Copy"
+      },
+      {
+        "type": 3,
+        "content": {
+          "version": "KqlItem/1.0",
+          "query": "{\"version\":\"ARMEndpoint/1.0\",\"data\":null,\"headers\":[],\"method\":\"GET\",\"path\":\"/providers/Microsoft.Management/managementGroups/elz1-connectivity/providers/Microsoft.Resources/deployments/?api-version=2020-10-01\",\"urlParams\":[],\"batchDisabled\":false,\"transformers\":[{\"type\":\"jsonpath\",\"settings\":{\"tablePath\":\"value\",\"columns\":[{\"path\":\"$.name\",\"columnid\":\"name\"},{\"path\":\"$.id\",\"columnid\":\"id\"},{\"path\":\"$.location\",\"columnid\":\"location\"},{\"path\":\"$.properties.mode\",\"columnid\":\"mode\"},{\"path\":\"$.properties.timestamp\",\"columnid\":\"timestamp\"}]}}]}",
+          "size": 0,
+          "title": "Deployments at entlz connectivity mg scope",
+          "queryType": 12
+        },
+        "name": "query - 0 - Copy - Copy - Copy - Copy - Copy"
+      },
+      {
+        "type": 3,
+        "content": {
+          "version": "KqlItem/1.0",
+          "query": "{\"version\":\"ARMEndpoint/1.0\",\"data\":null,\"headers\":[],\"method\":\"GET\",\"path\":\"/providers/Microsoft.Management/managementGroups/elz1-security/providers/Microsoft.Resources/deployments/?api-version=2020-10-01\",\"urlParams\":[],\"batchDisabled\":false,\"transformers\":[{\"type\":\"jsonpath\",\"settings\":{\"tablePath\":\"value\",\"columns\":[{\"path\":\"$.name\",\"columnid\":\"name\"},{\"path\":\"$.id\",\"columnid\":\"id\"},{\"path\":\"$.location\",\"columnid\":\"location\"},{\"path\":\"$.properties.mode\",\"columnid\":\"mode\"},{\"path\":\"$.properties.timestamp\",\"columnid\":\"timestamp\"}]}}]}",
+          "size": 0,
+          "title": "Deployments at entlz security mg scope",
+          "queryType": 12
+        },
+        "name": "Deployments at entlz security mg scope"
+      },
+      {
+        "type": 3,
+        "content": {
+          "version": "KqlItem/1.0",
+          "query": "{\"version\":\"ARMEndpoint/1.0\",\"data\":null,\"headers\":[],\"method\":\"GET\",\"path\":\"/subscriptions/b30166b8-dd1b-4fa2-9ad7-057614257b06/providers/Microsoft.Resources/deployments/?api-version=2020-10-01\",\"urlParams\":[],\"batchDisabled\":false,\"transformers\":[{\"type\":\"jsonpath\",\"settings\":{\"tablePath\":\"value\",\"columns\":[{\"path\":\"$.name\",\"columnid\":\"name\"},{\"path\":\"$.id\",\"columnid\":\"id\"},{\"path\":\"$.location\",\"columnid\":\"location\"},{\"path\":\"$.properties.mode\",\"columnid\":\"mode\"},{\"path\":\"$.properties.timestamp\",\"columnid\":\"timestamp\"}]}}]}",
+          "size": 0,
+          "title": "Deployments at entlz connectivity sub scope",
+          "queryType": 12
+        },
+        "name": "Deployments at entlz connectivity sub scope"
+      },
+      {
+        "type": 3,
+        "content": {
+          "version": "KqlItem/1.0",
+          "query": "{\"version\":\"ARMEndpoint/1.0\",\"data\":null,\"headers\":[],\"method\":\"GET\",\"path\":\"/subscriptions/787e871a-84ba-43be-86bf-86bd1e408a4a/providers/Microsoft.Resources/deployments/?api-version=2020-10-01\",\"urlParams\":[],\"batchDisabled\":false,\"transformers\":[{\"type\":\"jsonpath\",\"settings\":{\"tablePath\":\"value\",\"columns\":[{\"path\":\"$.name\",\"columnid\":\"name\"},{\"path\":\"$.id\",\"columnid\":\"id\"},{\"path\":\"$.location\",\"columnid\":\"location\"},{\"path\":\"$.properties.mode\",\"columnid\":\"mode\"},{\"path\":\"$.properties.timestamp\",\"columnid\":\"timestamp\"}]}}]}",
+          "size": 0,
+          "title": "Deployments at entlz identity sub scope",
+          "queryType": 12
+        },
+        "name": "Deployments at entlz identity sub scope"
+      },
+      {
+        "type": 3,
+        "content": {
+          "version": "KqlItem/1.0",
+          "query": "{\"version\":\"ARMEndpoint/1.0\",\"data\":null,\"headers\":[],\"method\":\"GET\",\"path\":\"/subscriptions/07526f72-6689-42be-945f-bb6ad0214b71/providers/Microsoft.Resources/deployments/?api-version=2020-10-01\",\"urlParams\":[],\"batchDisabled\":false,\"transformers\":[{\"type\":\"jsonpath\",\"settings\":{\"tablePath\":\"value\",\"columns\":[{\"path\":\"$.name\",\"columnid\":\"name\"},{\"path\":\"$.id\",\"columnid\":\"id\"},{\"path\":\"$.location\",\"columnid\":\"location\"},{\"path\":\"$.properties.mode\",\"columnid\":\"mode\"},{\"path\":\"$.properties.timestamp\",\"columnid\":\"timestamp\"}]}}]}",
+          "size": 0,
+          "title": "Deployments at entlz management sub scope",
+          "queryType": 12
+        },
+        "name": "Deployments at entlz management sub scope"
+      },
+      {
+        "type": 3,
+        "content": {
+          "version": "KqlItem/1.0",
+          "query": "{\"version\":\"ARMEndpoint/1.0\",\"data\":null,\"headers\":[],\"method\":\"GET\",\"path\":\"/subscriptions/ac95a806-c9d3-49e7-83ee-7f82e88c2bd3/providers/Microsoft.Resources/deployments/?api-version=2020-10-01\",\"urlParams\":[],\"batchDisabled\":false,\"transformers\":[{\"type\":\"jsonpath\",\"settings\":{\"tablePath\":\"value\",\"columns\":[{\"path\":\"$.name\",\"columnid\":\"name\"},{\"path\":\"$.id\",\"columnid\":\"id\"},{\"path\":\"$.location\",\"columnid\":\"location\"},{\"path\":\"$.properties.mode\",\"columnid\":\"mode\"},{\"path\":\"$.properties.timestamp\",\"columnid\":\"timestamp\"}]}}]}",
+          "size": 0,
+          "title": "Deployments at entlz security sub scope",
+          "queryType": 12
+        },
+        "name": "Deployments at entlz security sub scope"
+      }
+    ],
+    "fallbackResourceIds": [
+      "Azure Monitor"
+    ],
+    "$schema": "https://github.com/Microsoft/Application-Insights-Workbooks/blob/master/schema/workbook.json"
+  }

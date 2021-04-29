@@ -1,11 +1,11 @@
 param entlzprefix string // Enterprise Landing Zone Prefix - 5 Characters Maximum
-param deploymentguid string = guid(utcNow())
+param randomid string = uniqueString(utcNow())
 
 targetScope = 'tenant'
 
 // Root MG
 module entLZRootMG 'modules/rootedmg.bicep'={
-  name: '${entlzprefix}-root-mg-${deploymentguid}'
+  name: '${entlzprefix}-root-mg-${randomid}'
   params:{
     name: entlzprefix
   }
@@ -13,7 +13,7 @@ module entLZRootMG 'modules/rootedmg.bicep'={
 
 // Platform MGs
 module platformMG 'modules/parentedmg.bicep'={
-  name: '${entlzprefix}-platform-mg-${deploymentguid}'
+  name: '${entlzprefix}-platform-mg-${randomid}'
   dependsOn: [
     entLZRootMG
   ]
@@ -24,7 +24,7 @@ module platformMG 'modules/parentedmg.bicep'={
 }
 
 module platformConnectivityMG 'modules/parentedmg.bicep'={
-  name: '${entlzprefix}-connectivity-mg-${deploymentguid}'
+  name: '${entlzprefix}-connectivity-mg-${randomid}'
   dependsOn: [
     platformMG
   ]
@@ -35,7 +35,7 @@ module platformConnectivityMG 'modules/parentedmg.bicep'={
 }
 
 module platformIdentityMG 'modules/parentedmg.bicep'={
-  name: '${entlzprefix}-identity-mg-${deploymentguid}'
+  name: '${entlzprefix}-identity-mg-${randomid}'
   dependsOn: [
     platformMG
   ]
@@ -46,7 +46,7 @@ module platformIdentityMG 'modules/parentedmg.bicep'={
 }
 
 module platformManagementMG 'modules/parentedmg.bicep'={
-  name: '${entlzprefix}-management-mg-${deploymentguid}'
+  name: '${entlzprefix}-management-mg-${randomid}'
   dependsOn: [
     platformMG
   ]
@@ -57,7 +57,7 @@ module platformManagementMG 'modules/parentedmg.bicep'={
 }
 
 module platformSecurityMG 'modules/parentedmg.bicep'={
-  name: '${entlzprefix}-security-mg-${deploymentguid}'
+  name: '${entlzprefix}-security-mg-${randomid}'
   dependsOn: [
     platformMG
   ]
@@ -69,7 +69,7 @@ module platformSecurityMG 'modules/parentedmg.bicep'={
 
 // Landing Zone MGs
 module landingZonesMG 'modules/parentedmg.bicep'={
-  name: '${entlzprefix}-landingzones-mg-${deploymentguid}'
+  name: '${entlzprefix}-landingzones-mg-${randomid}'
   dependsOn: [
     entLZRootMG
   ]
@@ -80,7 +80,7 @@ module landingZonesMG 'modules/parentedmg.bicep'={
 }
 
 module internal 'modules/parentedmg.bicep'={
-  name: '${entlzprefix}-internal-mg-${deploymentguid}'
+  name: '${entlzprefix}-internal-mg-${randomid}'
   dependsOn: [
     landingZonesMG
   ]
@@ -91,7 +91,7 @@ module internal 'modules/parentedmg.bicep'={
 }
 
 module internalProd 'modules/parentedmg.bicep'={
-  name: '${entlzprefix}-int-pr-mg-${deploymentguid}'
+  name: '${entlzprefix}-int-pr-mg-${randomid}'
   dependsOn: [
     internal
   ]
@@ -102,7 +102,7 @@ module internalProd 'modules/parentedmg.bicep'={
 }
 
 module internalNonProd 'modules/parentedmg.bicep'={
-  name: '${entlzprefix}-int-np-mg-${deploymentguid}'
+  name: '${entlzprefix}-int-np-mg-${randomid}'
   dependsOn: [
     internal
   ]
@@ -113,7 +113,7 @@ module internalNonProd 'modules/parentedmg.bicep'={
 }
 
 module external 'modules/parentedmg.bicep'={
-  name: '${entlzprefix}-external-mg-${deploymentguid}'
+  name: '${entlzprefix}-external-mg-${randomid}'
   dependsOn: [
     landingZonesMG
   ]
@@ -124,7 +124,7 @@ module external 'modules/parentedmg.bicep'={
 }
 
 module externalProd 'modules/parentedmg.bicep'={
-  name: '${entlzprefix}-ext-pr-mg-${deploymentguid}'
+  name: '${entlzprefix}-ext-pr-mg-${randomid}'
   dependsOn: [
     external
   ]
@@ -135,7 +135,7 @@ module externalProd 'modules/parentedmg.bicep'={
 }
 
 module externalNonProd 'modules/parentedmg.bicep'={
-  name: '${entlzprefix}-ext-np-mg-${deploymentguid}'
+  name: '${entlzprefix}-ext-np-mg-${randomid}'
   dependsOn: [
     external
   ]
@@ -147,7 +147,7 @@ module externalNonProd 'modules/parentedmg.bicep'={
 
 // Onboarding MG
 module onboardingMG 'modules/parentedmg.bicep'={
-  name: '${entlzprefix}-onboarding-mg-${deploymentguid}'
+  name: '${entlzprefix}-onboarding-mg-${randomid}'
   dependsOn: [
     entLZRootMG
   ]
@@ -159,7 +159,7 @@ module onboardingMG 'modules/parentedmg.bicep'={
 
 // Decommisioned MG
 module decommissionedMG 'modules/parentedmg.bicep'={
-  name: '${entlzprefix}-decommissioned-mg-${deploymentguid}'
+  name: '${entlzprefix}-decommissioned-mg-${randomid}'
   dependsOn: [
     entLZRootMG
   ]
@@ -171,7 +171,7 @@ module decommissionedMG 'modules/parentedmg.bicep'={
 
 // Sandbox MGs
 module sandboxMG 'modules/parentedmg.bicep'={
-  name: '${entlzprefix}-sandboxes-mg-${deploymentguid}'
+  name: '${entlzprefix}-sandboxes-mg-${randomid}'
   dependsOn: [
     entLZRootMG
   ]
@@ -182,7 +182,7 @@ module sandboxMG 'modules/parentedmg.bicep'={
 }
 
 module sandboxManagementMG 'modules/parentedmg.bicep'={
-  name: '${entlzprefix}-sandbox-management-mg-${deploymentguid}'
+  name: '${entlzprefix}-sandbox-management-mg-${randomid}'
   dependsOn: [
     sandboxMG
   ]
@@ -193,7 +193,7 @@ module sandboxManagementMG 'modules/parentedmg.bicep'={
 }
 
 module sandboxLandingZonesMG 'modules/parentedmg.bicep'={
-  name: '${entlzprefix}-sandbox-landingzones-mg-${deploymentguid}'
+  name: '${entlzprefix}-sandbox-landingzones-mg-${randomid}'
   dependsOn: [
     sandboxMG
   ]

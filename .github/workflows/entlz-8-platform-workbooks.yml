@@ -1,0 +1,111 @@
+name: entlz-8-platform-workbooks
+
+# Controls when the action will run. 
+on:
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+    inputs:
+      entlzprefix: 
+        description: 'entlzprefix'
+        required: true
+        default: ''
+      environment: 
+        description: 'environment'
+        required: true
+        default: 'azureusgovernment'
+      location: 
+        description: 'location'
+        required: true
+        default: 'usgovvirginia'
+      githubsecret:
+        description: 'Github Secret Name with Azure Credentials'
+        required: true
+        default: 'AZGOV_CREDS'
+      managementsubid:
+        description: ''
+        required: true
+        default: ''
+  
+  repository_dispatch:
+    types: [entlz-8-platform-workbooks]    
+
+#  push:
+#    branches:
+#      - dev
+#    paths:
+#      - 'templates/entlz/workbooks/**'
+#      - '.github/workflows/entlz-8-platform-workbooks.yml'
+
+jobs:
+    build-and-deploy:
+        runs-on: ubuntu-latest        
+        steps:
+        - name: Set Variables
+          id: setvariables         
+          run: |
+            shopt -s nocasematch
+            echo ${GITHUB_EVENT_NAME} 
+            if [ ${GITHUB_EVENT_NAME} == 'workflow_dispatch' ];
+            then
+              echo "::set-output name=ref::${GITHUB_REF##*/}"
+              echo "::set-output name=entlzprefix::${{ github.event.inputs.entlzprefix }}"
+              echo "::set-output name=environment::${{ github.event.inputs.environment }}"
+              echo "::set-output name=location::${{ github.event.inputs.location }}"
+              echo "::set-output name=githubsecret::${{ github.event.inputs.githubsecret }}"
+              echo "::set-output name=managementsubid::${{ github.event.inputs.managementsubid }}"
+            elif [ ${GITHUB_EVENT_NAME} == 'repository_dispatch' ];
+            then
+              echo "::set-output name=ref::${{ github.event.client_payload.ref }}"
+              echo "::set-output name=entlzprefix::${{ github.event.client_payload.entlzprefix }}"
+              echo "::set-output name=environment::${{ github.event.client_payload.environment }}"
+              echo "::set-output name=location::${{ github.event.client_payload.location }}"
+              echo "::set-output name=githubsecret::${{ github.event.client_payload.githubsecret }}"
+              echo "::set-output name=managementsubid::${{ github.event.client_payload.managementsubid }}"
+            else
+              echo "Invalid Event Trigger ${GITHUB_EVENT_NAME} unable to set variables."
+            fi;            
+          
+        - name: Echo Variables
+          run: |
+            echo ref: ${{ steps.setvariables.outputs.ref }}
+            echo entlzprefix: ${{ steps.setvariables.outputs.entlzprefix }}
+            echo environment: ${{ steps.setvariables.outputs.environment }}
+            echo location: ${{ steps.setvariables.outputs.location }}
+            echo githubsecret: ${{ steps.setvariables.outputs.githubsecret }}
+            echo managementsubid: ${{ steps.setvariables.outputs.managementsubid }}
+
+        - uses: actions/checkout@v2
+          with:
+            ref: ${{ steps.setvariables.outputs.ref }}
+        
+        - name: Log in with Azure
+          uses: azure/login@v1
+          with:
+            creds: ${{ secrets[steps.setvariables.outputs.githubsecret] }}
+            environment: ${{ steps.setvariables.outputs.environment }}
+            enable-AzPSSession: false
+        
+        - name: Deploy Workbooks
+          uses: azure/CLI@v1
+          with:
+            azcliversion: 2.21.0
+            inlineScript: |
+              for f in $(find templates/entlz/workbooks -name *.json);
+              do \
+                  # Serialize JSON
+                  serializedjson=$(tr '\n' '\' < $f)
+                  
+                  name="${f##*/}"
+                  workbookdisplayname="${{ steps.setvariables.outputs.entlzprefix }}-${name%.*}"
+             
+                  # Deploy Management Components to Management Subscription
+                    az deployment sub create \
+                      --name "${{ steps.setvariables.outputs.entlzprefix }}-workbooks-${{ steps.setvariables.outputs.location }}" \
+                      --subscription "${{ steps.setvariables.outputs.managementsubid }}" \
+                      --location ${{ steps.setvariables.outputs.location }} \
+                      --template-file "templates/entlz/workbook/main.bicep" \
+                      --parameters  location=$location \
+                                    workbookdisplayname=$workbookdisplayname \
+                                    workname=$workbookdisplayname \
+                                    serializeddata=$serializedjson
+              done
