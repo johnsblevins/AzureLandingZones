@@ -19,29 +19,29 @@ on:
         required: true
         default: 'usgovvirginia'             
       subscriptions: 
-        description: '[{"identitysubid":"<subid>","connectivitysubid":"<subid>","securitysubid":"<subid>","managementsubid":"<subid>"}]'
+        description: '{"identitysubid":"<subid>","connectivitysubid":"<subid>","securitysubid":"<subid>","managementsubid":"<subid>"}'
         required: true
-        default: '[{"identitysubid":"787e871a-84ba-43be-86bf-86bd1e408a4a","connectivitysubid":"b30166b8-dd1b-4fa2-9ad7-057614257b06","securitysubid":"ac95a806-c9d3-49e7-83ee-7f82e88c2bd3","managementsubid":"07526f72-6689-42be-945f-bb6ad0214b71"}]'
+        default: '{"identitysubid":"787e871a-84ba-43be-86bf-86bd1e408a4a","connectivitysubid":"b30166b8-dd1b-4fa2-9ad7-057614257b06","securitysubid":"ac95a806-c9d3-49e7-83ee-7f82e88c2bd3","managementsubid":"07526f72-6689-42be-945f-bb6ad0214b71"}'
       hubvnet:
-        description: '[{"hubvnetprefix":"x.x.x.x/x","bastionsubnetprefix":"x.x.x.x/x","fwsubnetprefix":"x.x.x.x/x","fwmanagementsubnetprefix":"x.x.x.x/x","gwsubnetprefix":"x.x.x.x/x","hubmanagementsubnetprefix":"x.x.x.x/x"}]'
+        description: '{"hubvnetprefix":"x.x.x.x/x","bastionsubnetprefix":"x.x.x.x/x","fwsubnetprefix":"x.x.x.x/x","fwmanagementsubnetprefix":"x.x.x.x/x","gwsubnetprefix":"x.x.x.x/x","hubmanagementsubnetprefix":"x.x.x.x/x"}'
         required: true
-        default: '[{"hubvnetprefix":"10.0.0.0/23","bastionsubnetprefix":"10.0.0.160/27","fwsubnetprefix":"10.0.0.0/26","fwmanagementsubnetprefix":"10.0.0.64/26","gwsubnetprefix":"10.0.0.128/27","hubmanagementsubnetprefix":"10.0.1.0/26"}]'
+        default: '{"hubvnetprefix":"10.0.0.0/23","bastionsubnetprefix":"10.0.0.160/27","fwsubnetprefix":"10.0.0.0/26","fwmanagementsubnetprefix":"10.0.0.64/26","gwsubnetprefix":"10.0.0.128/27","hubmanagementsubnetprefix":"10.0.1.0/26"}'
       managementvnet: 
-        description: '[{"managementvnetprefix":"x.x.x.x/x","managementsubnetprefix":"x.x.x.x/x"}]'
+        description: '{"managementvnetprefix":"x.x.x.x/x","managementsubnetprefix":"x.x.x.x/x"}'
         required: true
-        default:  '[{"managementvnetprefix":"10.0.2.0/23","managementsubnetprefix":"10.0.2.0/26"}]'
+        default:  '{"managementvnetprefix":"10.0.2.0/23","managementsubnetprefix":"10.0.2.0/26"}'
       identityvnet: 
-        description: '[{"identityvnetprefix":"x.x.x.x/x","identitysubnetprefix","x.x.x.x/x"}]'
+        description: '{"identityvnetprefix":"x.x.x.x/x","identitysubnetprefix","x.x.x.x/x"}'
         required: true
-        default: '[{"identityvnetprefix":"10.0.4.0/23","identitysubnetprefix","10.0.4.0/26"}]'
+        default: '{"identityvnetprefix":"10.0.4.0/23","identitysubnetprefix","10.0.4.0/26"}'
       securityvnet: 
-        description: '[{"securityvnetprefix":"x.x.x.x/x","securitysubnetprefix","x.x.x.x/x"}]'
+        description: '{"securityvnetprefix":"x.x.x.x/x","securitysubnetprefix","x.x.x.x/x"}'
         require: true
-        default: '[{"securityvnetprefix":"10.0.6.0/23","securitysubnetprefix","10.0.6.0/26"}]'
+        default: '{"securityvnetprefix":"10.0.6.0/23","securitysubnetprefix","10.0.6.0/26"}'
       other:
-        description: '[{"githubsecret":"<githubsecretname>","fwtype":"<Standard|Premium>","gwtype":"<Basic|ErGw1AZ|ErGw2AZ|ErGw3AZ|HighPerformance|Standard|UltraPerformance|VpnGw1|VpnGw1|VpnGw2|VpnGw2AZ|VpnGw3|VpnGw3AZ|VpnGw4|VpnGw4AZ|VpnGw5|VpnGw5AZ","logaworkspaceid":"/subscriptions/<subid>/resourcegroups/<resourcegroupname>/providers/microsoft.operationalinsights/workspaces/<logaworkspacename>"}]'
+        description: '{"githubsecret":"<githubsecretname>","fwtype":"<Standard|Premium>","gwtype":"<Basic|ErGw1AZ|ErGw2AZ|ErGw3AZ|HighPerformance|Standard|UltraPerformance|VpnGw1|VpnGw1|VpnGw2|VpnGw2AZ|VpnGw3|VpnGw3AZ|VpnGw4|VpnGw4AZ|VpnGw5|VpnGw5AZ","logaworkspaceid":"/subscriptions/<subid>/resourcegroups/<resourcegroupname>/providers/microsoft.operationalinsights/workspaces/<logaworkspacename>"}'
         required: true
-        default: '[{"githubsecret":"AZGOV_CREDS","fwtype":"Standard","gwtype":"ErGw1AZ","logaworkspaceid":"/subscriptions/07526f72-6689-42be-945f-bb6ad0214b71/resourcegroups/elz1-management-usgovvirginia/providers/microsoft.operationalinsights/workspaces/elz1-loga-usgovvirginia2"}]'  
+        default: '{"githubsecret":"AZGOV_CREDS","fwtype":"Standard","gwtype":"ErGw1AZ","logaworkspaceid":"/subscriptions/07526f72-6689-42be-945f-bb6ad0214b71/resourcegroups/elz1-management-usgovvirginia/providers/microsoft.operationalinsights/workspaces/elz1-loga-usgovvirginia2"}'  
 
   repository_dispatch:
     types: [entlz-6a-platform-connectivity-vnethubspoke]
@@ -69,52 +69,52 @@ jobs:
               echo "::set-output name=entlzprefix::${{ github.event.inputs.entlzprefix }}"
               echo "::set-output name=environment::${{ github.event.inputs.environment }}"
               echo "::set-output name=location::${{ github.event.inputs.location }}"
-              echo "::set-output name=githubsecret::$(echo ${{ github.event.inputs.other }} | jq -r '.[].githubsecret')"  
-              echo "::set-output name=bastionsubnetprefix::$(echo ${{ github.event.inputs.hubvnet }} | jq -r '.[].bastionsubnetprefix')"
-              echo "::set-output name=connectivitysubid::$(echo ${{ github.event.inputs.subscriptions }} | jq -r '.[].connectivitysubid')"
-              echo "::set-output name=fwmanagementsubnetprefix::$(echo ${{ github.event.inputs.hubvnet }} | jq -r '.[].fwmanagementsubnetprefix')"
-              echo "::set-output name=fwsubnetprefix::$(echo ${{ github.event.inputs.hubvnet }} | jq -r '.[].fwsubnetprefix')"
-              echo "::set-output name=fwtype::$(echo ${{ github.event.inputs.other }} | jq -r '.[].fwtype')"
-              echo "::set-output name=gwsubnetprefix::$(echo ${{ github.event.inputs.hubvnet }} | jq -r '.[].gwsubnetprefix')"
-              echo "::set-output name=gwtype::$(echo ${{ github.event.inputs.other }} | jq -r '.[].gwtype')"
-              echo "::set-output name=hubmanagementsubnetprefix::$(echo ${{ github.event.inputs.hubvnet }} | jq -r '.[].hubmanagementsubnetprefix')"
-              echo "::set-output name=hubvnetprefix::$(echo ${{ github.event.inputs.hubvnet }} | jq -r '.[].hubvnetprefix')"
-              echo "::set-output name=identitysubid::$(echo ${{ github.event.inputs.subscriptions }} | jq -r '.[].identitysubid')"
-              echo "::set-output name=identitysubnetprefix::$(echo ${{ github.event.inputs.identityvnet }} | jq -r '.[].identitysubnetprefix')"
-              echo "::set-output name=identityvnetprefix::$(echo ${{ github.event.inputs.identityvnet }} | jq -r '.[].identityvnetprefix')"
-              echo "::set-output name=logaworkspaceid::$(echo ${{ github.event.inputs.other }} | jq -r '.[].logaworkspaceid')"
-              echo "::set-output name=managementsubid::$(echo ${{ github.event.inputs.subscriptions }} | jq -r '.[].managementsubid')"
-              echo "::set-output name=managementsubnetprefix::$(echo ${{ github.event.inputs.managementvnet }} | jq -r '.[].managementsubnetprefix')"
-              echo "::set-output name=managementvnetprefix::$(echo ${{ github.event.inputs.managementvnet }} | jq -r '.[].managementvnetprefix')"
-              echo "::set-output name=securitysubid::$(echo ${{ github.event.inputs.subscriptions }} | jq -r '.[].securitysubid')"
-              echo "::set-output name=securitysubnetprefix::$(echo ${{ github.event.inputs.securityvnet }} | jq -r '.[].securitysubnetprefix')"
-              echo "::set-output name=securityvnetprefix::$(echo ${{ github.event.inputs.securityvnet }} | jq -r '.[].securityvnetprefix')"
+              echo "::set-output name=githubsecret::$(echo { ${{ github.event.inputs.other }} } | jq -r '.[].githubsecret')"  
+              echo "::set-output name=bastionsubnetprefix::$(echo { ${{ github.event.inputs.hubvnet }} } | jq -r '.[].bastionsubnetprefix')"
+              echo "::set-output name=connectivitysubid::$(echo { ${{ github.event.inputs.subscriptions }} } | jq -r '.[].connectivitysubid')"
+              echo "::set-output name=fwmanagementsubnetprefix::$(echo { ${{ github.event.inputs.hubvnet }} } | jq -r '.[].fwmanagementsubnetprefix')"
+              echo "::set-output name=fwsubnetprefix::$(echo { ${{ github.event.inputs.hubvnet }} } | jq -r '.[].fwsubnetprefix')"
+              echo "::set-output name=fwtype::$(echo { ${{ github.event.inputs.other }} } | jq -r '.[].fwtype')"
+              echo "::set-output name=gwsubnetprefix::$(echo { ${{ github.event.inputs.hubvnet }} } | jq -r '.[].gwsubnetprefix')"
+              echo "::set-output name=gwtype::$(echo { ${{ github.event.inputs.other }} } | jq -r '.[].gwtype')"
+              echo "::set-output name=hubmanagementsubnetprefix::$(echo { ${{ github.event.inputs.hubvnet }} } | jq -r '.[].hubmanagementsubnetprefix')"
+              echo "::set-output name=hubvnetprefix::$(echo { ${{ github.event.inputs.hubvnet }} } | jq -r '.[].hubvnetprefix')"
+              echo "::set-output name=identitysubid::$(echo { ${{ github.event.inputs.subscriptions }} } | jq -r '.[].identitysubid')"
+              echo "::set-output name=identitysubnetprefix::$(echo { ${{ github.event.inputs.identityvnet }} } | jq -r '.[].identitysubnetprefix')"
+              echo "::set-output name=identityvnetprefix::$(echo { ${{ github.event.inputs.identityvnet }} } | jq -r '.[].identityvnetprefix')"
+              echo "::set-output name=logaworkspaceid::$(echo { ${{ github.event.inputs.other }} } | jq -r '.[].logaworkspaceid')"
+              echo "::set-output name=managementsubid::$(echo { ${{ github.event.inputs.subscriptions }} } | jq -r '.[].managementsubid')"
+              echo "::set-output name=managementsubnetprefix::$(echo { ${{ github.event.inputs.managementvnet }} } | jq -r '.[].managementsubnetprefix')"
+              echo "::set-output name=managementvnetprefix::$(echo { ${{ github.event.inputs.managementvnet }} } | jq -r '.[].managementvnetprefix')"
+              echo "::set-output name=securitysubid::$(echo { ${{ github.event.inputs.subscriptions }} } | jq -r '.[].securitysubid')"
+              echo "::set-output name=securitysubnetprefix::$(echo { ${{ github.event.inputs.securityvnet }} } | jq -r '.[].securitysubnetprefix')"
+              echo "::set-output name=securityvnetprefix::$(echo { ${{ github.event.inputs.securityvnet }} } | jq -r '.[].securityvnetprefix')"
             elif [ ${GITHUB_EVENT_NAME} == 'repository_dispatch' ];
             then
               echo "::set-output name=ref::${{ github.event.client_payload.ref }}"
               echo "::set-output name=entlzprefix::${{ github.event.client_payload.entlzprefix }}"
               echo "::set-output name=environment::${{ github.event.client_payload.environment }}"
               echo "::set-output name=location::${{ github.event.client_payload.location }}"
-              echo "::set-output name=githubsecret::$(echo ${{ github.event.client_payload.other }} | jq -r '.[].githubsecret')"  
-              echo "::set-output name=bastionsubnetprefix::$(echo ${{ github.event.client_payload.hubvnet }} | jq -r '.[].bastionsubnetprefix')"
-              echo "::set-output name=connectivitysubid::$(echo ${{ github.event.client_payload.subscriptions }} | jq -r '.[].connectivitysubid')"
-              echo "::set-output name=fwmanagementsubnetprefix::$(echo ${{ github.event.client_payload.hubvnet }} | jq -r '.[].fwmanagementsubnetprefix')"
-              echo "::set-output name=fwsubnetprefix::$(echo ${{ github.event.client_payload.hubvnet }} | jq -r '.[].fwsubnetprefix')"
-              echo "::set-output name=fwtype::$(echo ${{ github.event.client_payload.other }} | jq -r '.[].fwtype')"
-              echo "::set-output name=gwsubnetprefix::$(echo ${{ github.event.client_payload.hubvnet }} | jq -r '.[].gwsubnetprefix')"
-              echo "::set-output name=gwtype::$(echo ${{ github.event.client_payload.other }} | jq -r '.[].gwtype')"
-              echo "::set-output name=hubmanagementsubnetprefix::$(echo ${{ github.event.client_payload.hubvnet }} | jq -r '.[].hubmanagementsubnetprefix')"
-              echo "::set-output name=hubvnetprefix::$(echo ${{ github.event.client_payload.hubvnet }} | jq -r '.[].hubvnetprefix')"
-              echo "::set-output name=identitysubid::$(echo ${{ github.event.client_payload.subscriptions }} | jq -r '.[].identitysubid')"
-              echo "::set-output name=identitysubnetprefix::$(echo ${{ github.event.client_payload.identityvnet }} | jq -r '.[].identitysubnetprefix')"
-              echo "::set-output name=identityvnetprefix::$(echo ${{ github.event.client_payload.identityvnet }} | jq -r '.[].identityvnetprefix')"
-              echo "::set-output name=logaworkspaceid::$(echo ${{ github.event.client_payload.other }} | jq -r '.[].logaworkspaceid')"
-              echo "::set-output name=managementsubid::$(echo ${{ github.event.client_payload.subscriptions }} | jq -r '.[].managementsubid')"
-              echo "::set-output name=managementsubnetprefix::$(echo ${{ github.event.client_payload.managementvnet }} | jq -r '.[].managementsubnetprefix')"
-              echo "::set-output name=managementvnetprefix::$(echo ${{ github.event.client_payload.managementvnet }} | jq -r '.[].managementvnetprefix')"
-              echo "::set-output name=securitysubid::$(echo ${{ github.event.client_payload.subscriptions }} | jq -r '.[].securitysubid')"
-              echo "::set-output name=securitysubnetprefix::$(echo ${{ github.event.client_payload.securityvnet }} | jq -r '.[].securitysubnetprefix')"
-              echo "::set-output name=securityvnetprefix::$(echo ${{ github.event.client_payload.securityvnet }} | jq -r '.[].securityvnetprefix')"
+              echo "::set-output name=githubsecret::$(echo { ${{ github.event.client_payload.other }} } | jq -r '.[].githubsecret')"  
+              echo "::set-output name=bastionsubnetprefix::$(echo { ${{ github.event.client_payload.hubvnet }} } | jq -r '.[].bastionsubnetprefix')"
+              echo "::set-output name=connectivitysubid::$(echo { ${{ github.event.client_payload.subscriptions }} } | jq -r '.[].connectivitysubid')"
+              echo "::set-output name=fwmanagementsubnetprefix::$(echo { ${{ github.event.client_payload.hubvnet }} } | jq -r '.[].fwmanagementsubnetprefix')"
+              echo "::set-output name=fwsubnetprefix::$(echo { ${{ github.event.client_payload.hubvnet }} } | jq -r '.[].fwsubnetprefix')"
+              echo "::set-output name=fwtype::$(echo { ${{ github.event.client_payload.other }} } | jq -r '.[].fwtype')"
+              echo "::set-output name=gwsubnetprefix::$(echo { ${{ github.event.client_payload.hubvnet }} } | jq -r '.[].gwsubnetprefix')"
+              echo "::set-output name=gwtype::$(echo { ${{ github.event.client_payload.other }} } | jq -r '.[].gwtype')"
+              echo "::set-output name=hubmanagementsubnetprefix::$(echo { ${{ github.event.client_payload.hubvnet }} } | jq -r '.[].hubmanagementsubnetprefix')"
+              echo "::set-output name=hubvnetprefix::$(echo { ${{ github.event.client_payload.hubvnet }} } | jq -r '.[].hubvnetprefix')"
+              echo "::set-output name=identitysubid::$(echo { ${{ github.event.client_payload.subscriptions }} } | jq -r '.[].identitysubid')"
+              echo "::set-output name=identitysubnetprefix::$(echo { ${{ github.event.client_payload.identityvnet }} } | jq -r '.[].identitysubnetprefix')"
+              echo "::set-output name=identityvnetprefix::$(echo { ${{ github.event.client_payload.identityvnet }} } | jq -r '.[].identityvnetprefix')"
+              echo "::set-output name=logaworkspaceid::$(echo { ${{ github.event.client_payload.other }} } | jq -r '.[].logaworkspaceid')"
+              echo "::set-output name=managementsubid::$(echo { ${{ github.event.client_payload.subscriptions }} } | jq -r '.[].managementsubid')"
+              echo "::set-output name=managementsubnetprefix::$(echo { ${{ github.event.client_payload.managementvnet }} } | jq -r '.[].managementsubnetprefix')"
+              echo "::set-output name=managementvnetprefix::$(echo { ${{ github.event.client_payload.managementvnet }} } | jq -r '.[].managementvnetprefix')"
+              echo "::set-output name=securitysubid::$(echo { ${{ github.event.client_payload.subscriptions }} } | jq -r '.[].securitysubid')"
+              echo "::set-output name=securitysubnetprefix::$(echo { ${{ github.event.client_payload.securityvnet }} } | jq -r '.[].securitysubnetprefix')"
+              echo "::set-output name=securityvnetprefix::$(echo { ${{ github.event.client_payload.securityvnet }} } | jq -r '.[].securityvnetprefix')"
             else
               echo "Invalid Event Trigger ${GITHUB_EVENT_NAME} unable to set variables."
             fi;
