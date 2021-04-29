@@ -56,7 +56,7 @@ variable "linvm1ip" {
 }
 variable "linvm2name" {
   type = string
-  default = "aadcvm2"
+  default = "linvm2"
 }
 variable "linvm2ip" {
   type = string
