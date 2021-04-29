@@ -4,7 +4,7 @@ variable "addsvm1name" {
 }
 variable "addsvm1ip" {
   type = string
-  default = "10.254.4.4"
+  default = "10.0.4.4"
 }
 variable "addsvm2name" {
   type = string
@@ -12,7 +12,7 @@ variable "addsvm2name" {
 }
 variable "addsvm2ip" {
   type = string
-  default = "10.254.4.5"
+  default = "10.0.4.5"
 }
 variable "adfsvm1name" {
   type = string
@@ -20,7 +20,7 @@ variable "adfsvm1name" {
 }
 variable "adfsvm1ip" {
   type = string
-  default = "10.254.4.6"
+  default = "10.0.4.6"
 }
 variable "adfsvm2name" {
   type = string
@@ -28,7 +28,7 @@ variable "adfsvm2name" {
 }
 variable "adfsvm2ip" {
   type = string
-  default = "10.254.4.7"
+  default = "10.0.4.7"
 }
 variable "aadcvm1name" {
   type = string
@@ -36,7 +36,7 @@ variable "aadcvm1name" {
 }
 variable "aadcvm1ip" {
   type = string
-  default = "10.254.4.8"
+  default = "10.0.4.8"
 }
 variable "aadcvm2name" {
   type = string
@@ -44,7 +44,23 @@ variable "aadcvm2name" {
 }
 variable "aadcvm2ip" {
   type = string
-  default = "10.254.4.9"
+  default = "10.0.4.9"
+}
+variable "linvm1name" {
+  type = string
+  default = "linvm1"
+}
+variable "linvm1ip" {
+  type = string
+  default = "10.0.4.10"
+}
+variable "linvm2name" {
+  type = string
+  default = "aadcvm2"
+}
+variable "linvm2ip" {
+  type = string
+  default = "10.0.4.11"
 }
 variable "location" {
   type = string
@@ -58,31 +74,34 @@ variable "subscriptionId" {
   type = string
   default = "787e871a-84ba-43be-86bf-86bd1e408a4a"
 }
-variable "vmSize" {
+variable "vmsize" {
   type = string
   default = "Standard_B2s"
 }
-variable "adminUsername"{
+variable "adminusername"{
   type = string
   default = "azuradmin"
 }
-variable "adminPassword"{
+variable "windowsadminpassword"{
   type = string
   default = "password123!!"
 }
-variable "subnetName"{
+variable "linuxpublickey"{
   type = string
-  default = "identity"
+  default = "ssh-rsa AAAAB3NzaC1yc2EAAAABJQAAAQEAlVE3LvMk1uRzf1rI9BNIb90aQ4xF6yfin52FsJ6Ezhomi0VZkQo5tx7LT8o7xdInCJ+0aErK4niPFCRVMIO8grQbnB30TGPQf/Cz7CbzQkE5STZ7b/gE4YE9Rl7gwjb+/DqYKD/2jg3jJM6cBcw80bN06O9JxTqM1GLbqxmF4XVOh9Y/2zJ6yskHy60lYDgsAvydUARsQf9KmTE04jO8sQqya+oPU6basKqOjzATIYaHJnaxoMER6oN3CrYJo2h1UxNSUR7alMKHqqFeYbmYZ/7AQzPrsnqfrOoWcJum6EuhCrluiET4HfaHCbXd8eekX2PDmpRAFPnJtLAgGjAA0Q== rsa-key-20210429"
 }
-variable "vnetName"{
+variable "subnetname"{
   type = string
-  default = "TSDLZ-identity-USGovVirginia"
+  default = "management"
+}
+variable "vnetname"{
+  type = string
+  default = "elz1-identity-vnet-usgovvirginia"
 } 
-variable "vnetRG" {
+variable "vnetrg" {
   type = string
-  default = "TSDLZ-identity-connectivity"
+  default = "elz1-identity-connectivity-usgovvirginia"
 }
-
 
 terraform {
   required_providers {
@@ -103,131 +122,226 @@ provider "azurerm" {
 data "azurerm_client_config" "current" {}
 
 locals {
-  tenantId = "${data.azurerm_client_config.current.tenant_id}"
+  tenantid = data.azurerm_client_config.current.tenant_id
 }
 
-resource "azurerm_resource_group" diskEncryptionRG {
-  name = "identity-diskEncryption-${var.location}"
+resource "azurerm_resource_group" "diskencryptionrg" {
+  name = "identity-diskencryption-${var.location}"
   location = var.location
 }
 
-resource "azurerm_resource_group" addsRG {
-  name= "identity-adds-${var.location}"
-  location= var.location
+resource "azurerm_resource_group" "addsrg" {
+  name = "identity-adds-${var.location}"
+  location = var.location
 }
 
-resource "azurerm_resource_group" adfsRG {
+resource "azurerm_resource_group" "adfsrg" {
   name= "identity-adfs-${var.location}"
   location= var.location
 }
 
-resource "azurerm_resource_group" aadcRG {
+resource "azurerm_resource_group" "aadcrg" {
   name= "identity-aadc-${var.location}"
   location= var.location
 }
 
-module "diskEncryption" {
-  source = "./modules/diskEncryption" 
-  kvName = "identity-KV-${substr(var.location,0,8)}"
-  kvKeyName = "identity-DESKey-${var.location}"
-  tenantId = "${var.tenantId}"
-  diskESName = "identity-DES-${var.location}"
+resource "azurerm_resource_group" "linrg" {
+  name= "lin-${var.location}"
+  location= var.location
+}
+
+module "diskencryption" {
+  source = "./modules/diskencryption" 
+  kvname = "identitykv${substr(var.location,0,8)}"
+  kvkeyname = "identity-deskey-${var.location}"
+  tenantid = local.tenantid
+  desname = "identity-des-${var.location}"
   location = var.location
+  resource_group_name = azurerm_resource_group.diskencryptionrg.name
 }
 
 module "addsvm1" {
-  source = "./modules/vm" 
-  vmName= var.addsvm1name
-  adminUsername= var.adminUsername
-  adminPassword= var.adminPassword
-  desName= diskEncryption.outputs.desName
-  desRG= diskEncryptionRG.name
-  privateIP= var.addsvm1ip
-  subnetName= var.subnetName
-  vnetName= var.vnetName
-  vmSize= var.vmSize
-  vnetRG= var.vnetRG
+  source = "./modules/winservervm" 
+  vmname= var.addsvm1name
+  adminusername= var.adminusername
+  adminpassword= var.windowsadminpassword
+  desname= module.diskencryption.desname
+  desrg= azurerm_resource_group.diskencryptionrg.name
+  privateip= var.addsvm1ip
+  subnetname= var.subnetname
+  vnetname= var.vnetname
+  vmsize= var.vmsize
+  vnetrg= var.vnetrg
   zone= "1"
   location = var.location
+  resource_group_name = azurerm_resource_group.addsrg.name
+  storagetype = "Premium_LRS"
+  datadisksizegb = 32
+  ospublisher = "MicrosoftWindowsServer"
+  osoffer = "WindowsServer"  
+  ossku = "2016-Datacenter"
+  osversion = "latest"   
 }
 
 module "addsvm2" {
-  source = "./modules/vm" 
-  vmName= var.addsvm2name
-  adminUsername= var.adminUsername
-  adminPassword= var.adminPassword
-  desName= diskEncryption.outputs.desName
-  desRG= diskEncryptionRG.name
-  privateIP= var.addsvm2ip
-  subnetName= var.subnetName
-  vnetName= var.vnetName
-  vmSize= var.vmSize
-  vnetRG= var.vnetRG
+  source = "./modules/winservervm" 
+  vmname= var.addsvm2name
+  adminusername= var.adminusername
+  adminpassword= var.windowsadminpassword
+  desname= module.diskencryption.desname
+  desrg= azurerm_resource_group.diskencryptionrg.name
+  privateip= var.addsvm2ip
+  subnetname= var.subnetname
+  vnetname= var.vnetname
+  vmsize= var.vmsize
+  vnetrg= var.vnetrg
   zone= "2"
   location = var.location
+  resource_group_name = azurerm_resource_group.addsrg.name
+  storagetype = "Premium_LRS"
+  datadisksizegb = 32
+  ospublisher = "MicrosoftWindowsServer"
+  osoffer = "WindowsServer"  
+  ossku = "2016-Datacenter"
+  osversion = "latest"  
 }
 
 
 module "adfsvm1" {
-  source = "./modules/vm"
-  vmName= var.adfsvm1name
-  adminUsername= var.adminUsername
-  adminPassword= var.adminPassword
-  desName= diskEncryption.outputs.desName
-  desRG= diskEncryptionRG.name
-  subnetName= var.subnetName
-  privateIP= var.adfsvm1ip
-  vnetName= var.vnetName
-  vmSize= var.vmSize
-  vnetRG= var.vnetRG
+  source = "./modules/winservervm"
+  vmname= var.adfsvm1name
+  adminusername= var.adminusername
+  adminpassword= var.windowsadminpassword
+  desname= module.diskencryption.desname
+  desrg= azurerm_resource_group.diskencryptionrg.name
+  subnetname= var.subnetname
+  privateip= var.adfsvm1ip
+  vnetname= var.vnetname
+  vmsize= var.vmsize
+  vnetrg= var.vnetrg
   zone= "1"
   location = var.location
+  resource_group_name = azurerm_resource_group.adfsrg.name
+  storagetype = "Premium_LRS"
+  datadisksizegb = 32
+  ospublisher = "MicrosoftWindowsServer"
+  osoffer = "WindowsServer"  
+  ossku = "2016-Datacenter"
+  osversion = "latest"   
 }
 
 module "adfsvm2" {
-  source = "./modules/vm"
-  vmName= var.adfsvm2name
-  adminUsername= var.adminUsername
-  adminPassword= var.adminPassword
-  desName= diskEncryption.outputs.desName
-  desRG= diskEncryptionRG.name
-  subnetName= var.subnetName
-  privateIP= var.adfsvm2ip
-  vnetName= var.vnetName
-  vmSize= var.vmSize
-  vnetRG= var.vnetRG
+  source = "./modules/winservervm"
+  vmname= var.adfsvm2name
+  adminusername= var.adminusername
+  adminpassword= var.windowsadminpassword
+  desname= module.diskencryption.desname
+  desrg= azurerm_resource_group.diskencryptionrg.name
+  subnetname= var.subnetname
+  privateip= var.adfsvm2ip
+  vnetname= var.vnetname
+  vmsize= var.vmsize
+  vnetrg= var.vnetrg
   zone= "2"
   location = var.location
+  resource_group_name = azurerm_resource_group.adfsrg.name
+  storagetype = "Premium_LRS"
+  datadisksizegb = 32
+  ospublisher = "MicrosoftWindowsServer"
+  osoffer = "WindowsServer"  
+  ossku = "2016-Datacenter"
+  osversion = "latest"  
 }
 
 module "aadcvm1" {
-  source = "./modules/vm"
-  vmName= var.aadcvm1name
-  adminUsername= var.adminUsername
-  adminPassword= var.adminPassword
-  desName= diskEncryption.outputs.desName
-  desRG= diskEncryptionRG.name
-  subnetName= var.subnetName
-  privateIP= var.aadcvm1ip
-  vnetName= var.vnetName
-  vmSize= var.vmSize
-  vnetRG= var.vnetRG
+  source = "./modules/winservervm"
+  vmname= var.aadcvm1name
+  adminusername= var.adminusername
+  adminpassword= var.windowsadminpassword
+  desname= module.diskencryption.desname
+  desrg= azurerm_resource_group.diskencryptionrg.name
+  subnetname= var.subnetname
+  privateip= var.aadcvm1ip
+  vnetname= var.vnetname
+  vmsize= var.vmsize
+  vnetrg= var.vnetrg
   zone= "1"
   location = var.location
+  resource_group_name = azurerm_resource_group.aadcrg.name
+  storagetype = "Premium_LRS"
+  datadisksizegb = 32
+  ospublisher = "MicrosoftWindowsServer"
+  osoffer = "WindowsServer"  
+  ossku = "2016-Datacenter"
+  osversion = "latest"   
 }
 
 module "aadcvm2" {
-  source = "./modules/vm"
-  vmName= var.aadcvm2name
-  adminUsername= var.adminUsername
-  adminPassword= var.adminPassword
-  desName= diskEncryption.outputs.desName
-  desRG= diskEncryptionRG.name
-  subnetName= var.subnetName
-  privateIP= var.aadcvm2ip
-  vnetName= var.vnetName
-  vmSize= var.vmSize
-  vnetRG= var.vnetRG
+  source = "./modules/winservervm"
+  vmname= var.aadcvm2name
+  adminusername= var.adminusername
+  adminpassword= var.windowsadminpassword
+  desname= module.diskencryption.desname
+  desrg= azurerm_resource_group.diskencryptionrg.name
+  subnetname= var.subnetname
+  privateip= var.aadcvm2ip
+  vnetname= var.vnetname
+  vmsize= var.vmsize
+  vnetrg= var.vnetrg
   zone= "2"
   location = var.location
+  resource_group_name = azurerm_resource_group.aadcrg.name
+  storagetype = "Premium_LRS"
+  datadisksizegb = 32
+  ospublisher = "MicrosoftWindowsServer"
+  osoffer = "WindowsServer"  
+  ossku = "2016-Datacenter"
+  osversion = "latest"  
 }
+
+module "linvm1" {
+  source = "./modules/linservervm"
+  vmname= var.linvm1name
+  adminusername= var.adminusername
+  publickey= var.linuxpublickey
+  desname= module.diskencryption.desname
+  desrg= azurerm_resource_group.diskencryptionrg.name
+  subnetname= var.subnetname
+  privateip= var.linvm1ip
+  vnetname= var.vnetname
+  vmsize= var.vmsize
+  vnetrg= var.vnetrg
+  zone= "1"
+  location = var.location
+  resource_group_name = azurerm_resource_group.linrg.name
+  storagetype = "Premium_LRS"
+  datadisksizegb = 32
+  ospublisher = "Canonical"
+  osoffer = "UbuntuServer"  
+  ossku = "16.04-LTS"
+  osversion = "latest"  
+}
+
+module "linvm2" {
+  source = "./modules/linservervm"
+  vmname= var.linvm2name
+  adminusername= var.adminusername
+  publickey= var.linuxpublickey
+  desname= module.diskencryption.desname
+  desrg= azurerm_resource_group.diskencryptionrg.name
+  subnetname= var.subnetname
+  privateip= var.linvm2ip
+  vnetname= var.vnetname
+  vmsize= var.vmsize
+  vnetrg= var.vnetrg
+  zone= "2"
+  location = var.location
+  resource_group_name = azurerm_resource_group.linrg.name
+  storagetype = "Premium_LRS"
+  datadisksizegb = 32
+  ospublisher = "Canonical"
+  osoffer = "UbuntuServer"  
+  ossku = "16.04-LTS"
+  osversion = "latest"  
+}
+
