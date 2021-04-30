@@ -182,9 +182,11 @@ jobs:
               securitysubnetprefix="${{ steps.setvariables.outputs.securitysubnetprefix }}"
               securityvnetprefix="${{ steps.setvariables.outputs.securityvnetprefix }}"
               logaworkspaceid="${{ steps.setvariables.outputs.logaworkspaceid }}"
+              
+              randomid=$RANDOM$RANDOM$RANDOM
 
               az deployment mg create \
-                  --name "${entlzprefix}-connectivity-${location}" \
+                  --name "${entlzprefix}-connectivity-${location}-${randomid}" \
                   --management-group-id $entlzprefix \
                   --location $location \
                   --template-file "templates/entlz/platform-connectivity-vnethubspoke/platform-connectivity-vnethubspoke.bicep" \

@@ -342,6 +342,7 @@ resource ergwpip 'Microsoft.Network/publicIPAddresses@2020-11-01'=  if( !(empty(
 
 resource bastionpip 'Microsoft.Network/publicIPAddresses@2020-11-01'= if( !(empty(bastionsubnetprefix))){
   name: '${bastionname}-pip'
+  location: location
   sku:{
     name:'Standard'
   }
