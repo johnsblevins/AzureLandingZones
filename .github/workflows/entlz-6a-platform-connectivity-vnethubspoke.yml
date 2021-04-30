@@ -212,4 +212,5 @@ jobs:
                     securitysubid="${securitysubid}" \
                     securitysubnetprefix="${securitysubnetprefix}" \
                     securityvnetprefix="${securityvnetprefix}" \
-                    logaworkspaceid="${logaworkspaceid}"
+                    logaworkspaceid="${logaworkspaceid}" \
+                    randomid="${randomid}"

@@ -20,6 +20,7 @@ param managementvnetprefix string
 param securitysubid string
 param securitysubnetprefix string
 param securityvnetprefix string
+param randomid string = uniqueString(utcNow())
 
 targetScope='managementGroup'
 
@@ -63,7 +64,7 @@ var securityvnetnsgname = '${entlzprefix}-security-nsg-${location}'
 var vpngwname = '${entlzprefix}-hub-vpngw-${location}'
 
 module connectivitysub 'modules/connectivity-sub.bicep' ={
-  name: 'connectivitysub'
+  name: 'connectivitysub-${randomid}'
   scope: subscription(connectivitysubid)
   params:{
     bastionname: bastioname
@@ -104,7 +105,7 @@ module connectivitysub 'modules/connectivity-sub.bicep' ={
 }
 
 module managementsub 'modules/management-sub.bicep' ={
-  name: 'managementsub'
+  name: 'managementsub-${randomid}'
   scope: subscription(managementsubid)
   dependsOn:[
     connectivitysub
@@ -128,7 +129,7 @@ module managementsub 'modules/management-sub.bicep' ={
 }
 
 module identitysub 'modules/identity-sub.bicep' ={
-  name: 'identitysub'
+  name: 'identitysub-${randomid}'
   scope: subscription(identitysubid)
   dependsOn:[
     managementsub
@@ -153,7 +154,7 @@ module identitysub 'modules/identity-sub.bicep' ={
 
 
 module securitysub 'modules/security-sub.bicep' ={
-  name: 'securitysub'
+  name: 'securitysub-${randomid}'
   scope: subscription(securitysubid)
   dependsOn: [
     identitysub

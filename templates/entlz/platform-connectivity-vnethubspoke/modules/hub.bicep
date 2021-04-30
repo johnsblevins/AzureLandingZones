@@ -438,7 +438,9 @@ resource bastion 'Microsoft.Network/bastionHosts@2020-11-01'= {
       {
         name: '${bastionname}-ipconfig1'
         properties:{
-          publicIPAddress: bastionpip
+          publicIPAddress: {
+            id: bastionpip.id
+          }
           subnet:{
             id: '${hubvnet.id}/subnets/${bastionsubnetname}'
           }
