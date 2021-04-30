@@ -41,7 +41,7 @@ on:
       other:
         description: '{"githubsecret":"<githubsecretname>","fwtype":"<Standard|Premium>","gwtype":"<Basic|ErGw1AZ|ErGw2AZ|ErGw3AZ|HighPerformance|Standard|UltraPerformance|VpnGw1|VpnGw1|VpnGw2|VpnGw2AZ|VpnGw3|VpnGw3AZ|VpnGw4|VpnGw4AZ|VpnGw5|VpnGw5AZ","logaworkspaceid":"/subscriptions/<subid>/resourcegroups/<resourcegroupname>/providers/microsoft.operationalinsights/workspaces/<logaworkspacename>"}'
         required: true
-        default: '{"githubsecret":"AZGOV_CREDS","fwtype":"Standard","gwtype":"ErGw1AZ","logaworkspaceid":"/subscriptions/07526f72-6689-42be-945f-bb6ad0214b71/resourcegroups/elz1-management-usgovvirginia/providers/microsoft.operationalinsights/workspaces/elz1-loga-usgovvirginia2"}'  
+        default: "{\"githubsecret\":\"AZGOV_CREDS\",\"fwtype\":\"Standard\",\"gwtype\":\"ErGw1AZ\",\"logaworkspaceid\":\"/subscriptions/07526f72-6689-42be-945f-bb6ad0214b71/resourcegroups/elz1-management-usgovvirginia/providers/microsoft.operationalinsights/workspaces/elz1-loga-usgovvirginia2\"}"  
 
   repository_dispatch:
     types: [entlz-6a-platform-connectivity-vnethubspoke]
