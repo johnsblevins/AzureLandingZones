@@ -80,15 +80,15 @@ jobs:
               echo "::set-output name=hubmanagementsubnetprefix::$(echo '${{ github.event.inputs.hubvnet }}' | jq -r '.hubmanagementsubnetprefix')"
               echo "::set-output name=hubvnetprefix::$(echo '${{ github.event.inputs.hubvnet }}' | jq -r '.hubvnetprefix')"
               echo "::set-output name=identitysubid::$(echo '${{ github.event.inputs.subscriptions }}' | jq -r '.identitysubid')"
-              echo "::set-output name=identitysubnetprefix::$(echo '${{ github.event.inputs.identityvnet }}' | jq -r '.identitysubnetprefix')"
-              echo "::set-output name=identityvnetprefix::$(echo '${{ github.event.inputs.identityvnet }}' | jq -r '.identityvnetprefix')"
+              echo "::set-output name=identitysubnetprefix::$(echo '${{ github.event.inputs.identitysubnetprefix }}' | jq -r '.identitysubnetprefix')"
+              echo "::set-output name=identityvnetprefix::$(echo '${{ github.event.inputs.identityvnetprefix }}' | jq -r '.identityvnetprefix')"
               echo "::set-output name=logaworkspaceid::$(echo '${{ github.event.inputs.other }}' | jq -r '.logaworkspaceid')"
               echo "::set-output name=managementsubid::$(echo '${{ github.event.inputs.subscriptions }}' | jq -r '.managementsubid')"
               echo "::set-output name=managementsubnetprefix::$(echo '${{ github.event.inputs.managementvnet }}' | jq -r '.managementsubnetprefix')"
               echo "::set-output name=managementvnetprefix::$(echo '${{ github.event.inputs.managementvnet }}' | jq -r '.managementvnetprefix')"
               echo "::set-output name=securitysubid::$(echo '${{ github.event.inputs.subscriptions }}' | jq -r '.securitysubid')"
-              echo "::set-output name=securitysubnetprefix::$(echo '${{ github.event.inputs.securityvnet }}' | jq -r '.securitysubnetprefix')"
-              echo "::set-output name=securityvnetprefix::$(echo '${{ github.event.inputs.securityvnet }}' | jq -r '.securityvnetprefix')"
+              echo "::set-output name=securitysubnetprefix::$(echo '${{ github.event.inputs.securitysubnetprefix }}' | jq -r '.securitysubnetprefix')"
+              echo "::set-output name=securityvnetprefix::$(echo '${{ github.event.inputs.securityvnetprefix }}' | jq -r '.securityvnetprefix')"
             elif [ ${GITHUB_EVENT_NAME} == 'repository_dispatch' ];
             then
               echo "::set-output name=ref::${{ github.event.client_payload.ref }}"
@@ -121,30 +121,30 @@ jobs:
             fi;
         - name: Echo Variables
           run: |
-            echo ${{ steps.setvariables.outputs.ref }}
-            echo ${{ steps.setvariables.outputs.entlzprefix }}
-            echo ${{ steps.setvariables.outputs.environment }}
-            echo ${{ steps.setvariables.outputs.location }}
-            echo ${{ steps.setvariables.outputs.githubsecret }}
-            echo ${{ steps.setvariables.outputs.bastionsubnetprefix }}
-            echo ${{ steps.setvariables.outputs.connectivitysubid }}
-            echo ${{ steps.setvariables.outputs.fwmanagementsubnetprefix }}
-            echo ${{ steps.setvariables.outputs.fwsubnetprefix }}
-            echo ${{ steps.setvariables.outputs.fwtype }}
-            echo ${{ steps.setvariables.outputs.gwsubnetprefix }}
-            echo ${{ steps.setvariables.outputs.gwtype }}
-            echo ${{ steps.setvariables.outputs.hubmanagementsubnetprefix }}
-            echo ${{ steps.setvariables.outputs.hubvnetprefix }}
-            echo ${{ steps.setvariables.outputs.identitysubid }}
-            echo ${{ steps.setvariables.outputs.identitysubnetprefix }}
-            echo ${{ steps.setvariables.outputs.identityvnetprefix }}
-            echo ${{ steps.setvariables.outputs.logaworkspaceid }}
-            echo ${{ steps.setvariables.outputs.managementsubid }}
-            echo ${{ steps.setvariables.outputs.managementsubnetprefix }}
-            echo ${{ steps.setvariables.outputs.managementvnetprefix }}
-            echo ${{ steps.setvariables.outputs.securitysubid }}
-            echo ${{ steps.setvariables.outputs.securitysubnetprefix }}
-            echo ${{ steps.setvariables.outputs.securityvnetprefix }}            
+            echo ref: ${{ steps.setvariables.outputs.ref }}
+            echo entlzprefix: ${{ steps.setvariables.outputs.entlzprefix }}
+            echo environment: ${{ steps.setvariables.outputs.environment }}
+            echo location: ${{ steps.setvariables.outputs.location }}
+            echo githubsecret: ${{ steps.setvariables.outputs.githubsecret }}
+            echo bastionsubnetprefix: ${{ steps.setvariables.outputs.bastionsubnetprefix }}
+            echo connectivitysubid: ${{ steps.setvariables.outputs.connectivitysubid }}
+            echo fwmanagementsubnetprefix: ${{ steps.setvariables.outputs.fwmanagementsubnetprefix }}
+            echo fwsubnetprefix: ${{ steps.setvariables.outputs.fwsubnetprefix }}
+            echo fwtype: ${{ steps.setvariables.outputs.fwtype }}
+            echo gwsubnetprefix: ${{ steps.setvariables.outputs.gwsubnetprefix }}
+            echo gwtype: ${{ steps.setvariables.outputs.gwtype }}
+            echo hubmanagementsubnetprefix: ${{ steps.setvariables.outputs.hubmanagementsubnetprefix }}
+            echo hubvnetprefix: ${{ steps.setvariables.outputs.hubvnetprefix }}
+            echo identitysubid: ${{ steps.setvariables.outputs.identitysubid }}
+            echo identitysubnetprefix: ${{ steps.setvariables.outputs.identitysubnetprefix }}
+            echo identityvnetprefix: ${{ steps.setvariables.outputs.identityvnetprefix }}
+            echo logaworkspaceid: ${{ steps.setvariables.outputs.logaworkspaceid }}
+            echo managementsubid: ${{ steps.setvariables.outputs.managementsubid }}
+            echo managementsubnetprefix: ${{ steps.setvariables.outputs.managementsubnetprefix }}
+            echo managementvnetprefix: ${{ steps.setvariables.outputs.managementvnetprefix }}
+            echo securitysubid: ${{ steps.setvariables.outputs.securitysubid }}
+            echo securitysubnetprefix: ${{ steps.setvariables.outputs.securitysubnetprefix }}
+            echo securityvnetprefix: ${{ steps.setvariables.outputs.securityvnetprefix }}            
         - uses: actions/checkout@v2
           with:
             ref: ${{ steps.setvariables.outputs.ref }}
@@ -152,7 +152,7 @@ jobs:
           uses: azure/login@v1
           with:
             creds: ${{ secrets[steps.setvariables.outputs.githubsecret] }}
-            environment: ${{ env.environment }}
+            environment: ${{ steps.setvariables.outputs.environment }}
             enable-AzPSSession: false
         
         - name: Deploy Connectivity Components
