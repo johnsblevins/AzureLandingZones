@@ -152,7 +152,7 @@ resource "azurerm_resource_group" "linrg" {
 
 module "diskencryption" {
   source = "./modules/diskencryption" 
-  kvname = "identitykv${substr(var.location,0,8)}"
+  kvname = "identitykvtsd${substr(var.location,0,8)}"
   kvkeyname = "identity-deskey-${var.location}"
   tenantid = local.tenantid
   desname = "identity-des-${var.location}"
@@ -162,6 +162,10 @@ module "diskencryption" {
 
 module "addsvm1" {
   source = "./modules/winservervm" 
+  depends_on = [
+    azurerm_resource_group.addsrg,
+    module.diskencryption
+  ]
   vmname= var.addsvm1name
   adminusername= var.adminusername
   adminpassword= var.windowsadminpassword
@@ -185,6 +189,10 @@ module "addsvm1" {
 
 module "addsvm2" {
   source = "./modules/winservervm" 
+  depends_on = [
+    azurerm_resource_group.addsrg,
+    module.diskencryption
+  ]
   vmname= var.addsvm2name
   adminusername= var.adminusername
   adminpassword= var.windowsadminpassword
@@ -209,6 +217,10 @@ module "addsvm2" {
 
 module "adfsvm1" {
   source = "./modules/winservervm"
+  depends_on = [
+    azurerm_resource_group.adfsrg,
+    module.diskencryption
+  ]
   vmname= var.adfsvm1name
   adminusername= var.adminusername
   adminpassword= var.windowsadminpassword
@@ -232,6 +244,10 @@ module "adfsvm1" {
 
 module "adfsvm2" {
   source = "./modules/winservervm"
+  depends_on = [
+    azurerm_resource_group.adfsrg,
+    module.diskencryption
+  ]
   vmname= var.adfsvm2name
   adminusername= var.adminusername
   adminpassword= var.windowsadminpassword
@@ -255,6 +271,10 @@ module "adfsvm2" {
 
 module "aadcvm1" {
   source = "./modules/winservervm"
+  depends_on = [
+    azurerm_resource_group.aadcrg,
+    module.diskencryption
+  ]
   vmname= var.aadcvm1name
   adminusername= var.adminusername
   adminpassword= var.windowsadminpassword
@@ -278,6 +298,10 @@ module "aadcvm1" {
 
 module "aadcvm2" {
   source = "./modules/winservervm"
+  depends_on = [
+    azurerm_resource_group.aadcrg,
+    module.diskencryption
+  ]
   vmname= var.aadcvm2name
   adminusername= var.adminusername
   adminpassword= var.windowsadminpassword
@@ -301,6 +325,10 @@ module "aadcvm2" {
 
 module "linvm1" {
   source = "./modules/linservervm"
+  depends_on = [
+    azurerm_resource_group.linrg,
+    module.diskencryption
+  ]
   vmname= var.linvm1name
   adminusername= var.adminusername
   publickey= var.linuxpublickey
@@ -324,6 +352,10 @@ module "linvm1" {
 
 module "linvm2" {
   source = "./modules/linservervm"
+  depends_on = [
+    azurerm_resource_group.linrg,
+    module.diskencryption
+  ]
   vmname= var.linvm2name
   adminusername= var.adminusername
   publickey= var.linuxpublickey
