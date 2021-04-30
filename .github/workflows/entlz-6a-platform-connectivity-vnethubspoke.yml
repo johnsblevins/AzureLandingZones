@@ -66,9 +66,10 @@ jobs:
             if [ ${GITHUB_EVENT_NAME} == 'workflow_dispatch' ];
             then
               echo '${{ github.event.inputs.other }}'
-              echo ${{ github.event.inputs.other }}
-              echo ${{ github.event.inputs.other }} | jq -r '.githubsecret'
-              
+              echo '${{ github.event.inputs.other }}' | jq -r '.githubsecret'
+              githubsecret=$(echo '${{ github.event.inputs.other }}' | jq -r '.[].githubsecret')
+              echo $githubsecret
+              echo "::set-output name=githubsecret::$githubsecret"   
             elif [ ${GITHUB_EVENT_NAME} == 'repository_dispatch' ];
             then
               echo "::set-output name=ref::${{ github.event.client_payload.ref }}"
