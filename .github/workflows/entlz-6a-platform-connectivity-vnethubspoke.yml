@@ -69,7 +69,8 @@ jobs:
               entlzprefix=${{ github.event.inputs.entlzprefix }}
               environment=${{ github.event.inputs.environment }}
               location=${{ github.event.inputs.location }}
-              githubsecret=$(echo ${{ github.event.inputs.other }} | jq -r '.[].githubsecret')                
+              githubsecret=$(echo ${{ github.event.inputs.other }} | jq -r '.[].githubsecret')      
+              <<comment          
               bastionsubnetprefix=$(echo ${{ github.event.inputs.hubvnet }} | jq -r '.[].bastionsubnetprefix')
               connectivitysubid=$(echo ${{ github.event.inputs.subscriptions }} | jq -r '.[].connectivitysubid')
               fwmanagementsubnetprefix=$(echo ${{ github.event.inputs.hubvnet }} | jq -r '.[].fwmanagementsubnetprefix')
@@ -88,12 +89,14 @@ jobs:
               managementvnetprefix=$(echo ${{ github.event.inputs.managementvnet }} | jq -r '.[].managementvnetprefix')
               securitysubid=$(echo ${{ github.event.inputs.subscriptions }} | jq -r '.[].securitysubid')
               securitysubnetprefix=$(echo ${{ github.event.inputs.securityvnet }} | jq -r '.[].securitysubnetprefix')
-              securityvnetprefix=$(echo ${{ github.event.inputs.securityvnet }} | jq -r '.[].securityvnetprefix')
+              securityvnetprefix=$(echo ${{ github.event.inputs.securityvnet }} | jq -r '.[].securityvnetprefix')    
+              comment          
               echo "::set-output name=ref::$ref"
               echo "::set-output name=entlzprefix::$entlzprefix"
               echo "::set-output name=environment::$environment"
               echo "::set-output name=location::$location"
               echo "::set-output name=githubsecret::$githubsecret"                
+              <<comment
               echo "::set-output name=bastionsubnetprefix::$bastionsubnetprefix"
               echo "::set-output name=connectivitysubid::$connectivitysubid"
               echo "::set-output name=fwmanagementsubnetprefix::$fwmanagementsubnetprefix"
@@ -113,6 +116,7 @@ jobs:
               echo "::set-output name=securitysubid::$securitysubid"
               echo "::set-output name=securitysubnetprefix::$securitysubnetprefix"
               echo "::set-output name=securityvnetprefix::$securityvnetprefix"
+              comment
             elif [ ${GITHUB_EVENT_NAME} == 'repository_dispatch' ];
             then
               echo "::set-output name=ref::${{ github.event.client_payload.ref }}"
