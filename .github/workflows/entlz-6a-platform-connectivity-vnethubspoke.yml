@@ -69,8 +69,7 @@ jobs:
               entlzprefix=${{ github.event.inputs.entlzprefix }}
               environment=${{ github.event.inputs.environment }}
               location=${{ github.event.inputs.location }}
-              githubsecret=$(echo ${{ github.event.inputs.other }} | jq -r '.[].githubsecret')      
-              <<comment          
+              githubsecret=$(echo ${{ github.event.inputs.other }} | jq -r '.[].githubsecret')                             
               bastionsubnetprefix=$(echo ${{ github.event.inputs.hubvnet }} | jq -r '.[].bastionsubnetprefix')
               connectivitysubid=$(echo ${{ github.event.inputs.subscriptions }} | jq -r '.[].connectivitysubid')
               fwmanagementsubnetprefix=$(echo ${{ github.event.inputs.hubvnet }} | jq -r '.[].fwmanagementsubnetprefix')
@@ -90,7 +89,7 @@ jobs:
               securitysubid=$(echo ${{ github.event.inputs.subscriptions }} | jq -r '.[].securitysubid')
               securitysubnetprefix=$(echo ${{ github.event.inputs.securityvnet }} | jq -r '.[].securitysubnetprefix')
               securityvnetprefix=$(echo ${{ github.event.inputs.securityvnet }} | jq -r '.[].securityvnetprefix')    
-              comment          
+              <<comment
               echo "::set-output name=ref::$ref"
               echo "::set-output name=entlzprefix::$entlzprefix"
               echo "::set-output name=environment::$environment"
