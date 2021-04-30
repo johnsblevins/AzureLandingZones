@@ -65,6 +65,8 @@ jobs:
             echo ${GITHUB_EVENT_NAME} 
             if [ ${GITHUB_EVENT_NAME} == 'workflow_dispatch' ];
             then
+              echo '{"color":"green","age","41"}'
+              echo {"color":"green","age","41"}
               echo ${{ github.event.inputs.other }}
               echo ${{ github.event.inputs.other }} | jq -r '.[].githubsecret'
               githubsecret=$(echo ${{ github.event.inputs.other }} | jq -r '.[].githubsecret')
