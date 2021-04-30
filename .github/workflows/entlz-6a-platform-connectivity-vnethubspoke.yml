@@ -21,7 +21,7 @@ on:
       subscriptions: 
         description: '{"identitysubid":"<subid>","connectivitysubid":"<subid>","securitysubid":"<subid>","managementsubid":"<subid>"}'
         required: true
-        default: ' '{ "identitysubid":"787e871a-84ba-43be-86bf-86bd1e408a4a","connectivitysubid":"b30166b8-dd1b-4fa2-9ad7-057614257b06","securitysubid":"ac95a806-c9d3-49e7-83ee-7f82e88c2bd3","managementsubid":"07526f72-6689-42be-945f-bb6ad0214b71" '} '
+        default: ' { "identitysubid":"787e871a-84ba-43be-86bf-86bd1e408a4a","connectivitysubid":"b30166b8-dd1b-4fa2-9ad7-057614257b06","securitysubid":"ac95a806-c9d3-49e7-83ee-7f82e88c2bd3","managementsubid":"07526f72-6689-42be-945f-bb6ad0214b71" } '
       hubvnet:
         description: '{"hubvnetprefix":"x.x.x.x/x","bastionsubnetprefix":"x.x.x.x/x","fwsubnetprefix":"x.x.x.x/x","fwmanagementsubnetprefix":"x.x.x.x/x","gwsubnetprefix":"x.x.x.x/x","hubmanagementsubnetprefix":"x.x.x.x/x"}'
         required: true
@@ -69,7 +69,8 @@ jobs:
               echo "::set-output name=entlzprefix::${{ github.event.inputs.entlzprefix }}"
               echo "::set-output name=environment::${{ github.event.inputs.environment }}"
               echo "::set-output name=location::${{ github.event.inputs.location }}"
-              echo "::set-output name=githubsecret::$(echo ${{ github.event.inputs.other }} | jq -r '.[].githubsecret')"  
+              #echo "::set-output name=githubsecret::$(echo ${{ github.event.inputs.other }} | jq -r '.[].githubsecret')"  
+              echo "::set-output name=githubsecret::{hello}"  
               echo "::set-output name=bastionsubnetprefix::$(echo ${{ github.event.inputs.hubvnet }} | jq -r '.[].bastionsubnetprefix')"
               echo "::set-output name=connectivitysubid::$(echo ${{ github.event.inputs.subscriptions }} | jq -r '.[].connectivitysubid')"
               echo "::set-output name=fwmanagementsubnetprefix::$(echo ${{ github.event.inputs.hubvnet }} | jq -r '.[].fwmanagementsubnetprefix')"
