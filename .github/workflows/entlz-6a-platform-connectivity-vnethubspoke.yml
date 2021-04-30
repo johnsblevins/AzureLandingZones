@@ -65,55 +65,11 @@ jobs:
             echo ${GITHUB_EVENT_NAME} 
             if [ ${GITHUB_EVENT_NAME} == 'workflow_dispatch' ];
             then
-#              ref=${GITHUB_REF##*/}
-#              entlzprefix=$'{'${{ github.event.inputs.entlzprefix }}
-#              environment=${{ github.event.inputs.environment }}
-#              location=${{ github.event.inputs.location }}
-              githubsecret=$'{'$(echo ${{ github.event.inputs.other }} | jq -r '.[].githubsecret')$'}'                             
+              echo ${{ github.event.inputs.other }}
+              echo ${{ github.event.inputs.other }} | jq -r '.[].githubsecret'
+              githubsecret=$(echo ${{ github.event.inputs.other }} | jq -r '.[].githubsecret')
               echo $githubsecret
-#              bastionsubnetprefix=$(echo ${{ github.event.inputs.hubvnet }} | jq -r '.[].bastionsubnetprefix')
-#              connectivitysubid=$(echo ${{ github.event.inputs.subscriptions }} | jq -r '.[].connectivitysubid')
-#              fwmanagementsubnetprefix=$(echo ${{ github.event.inputs.hubvnet }} | jq -r '.[].fwmanagementsubnetprefix')
-#              fwsubnetprefix=$(echo ${{ github.event.inputs.hubvnet }} | jq -r '.[].fwsubnetprefix')
-#              fwtype=$(echo ${{ github.event.inputs.other }} | jq -r '.[].fwtype')
-#              gwsubnetprefix=$(echo ${{ github.event.inputs.hubvnet }} | jq -r '.[].gwsubnetprefix')
-#              gwtype=$(echo ${{ github.event.inputs.other }} | jq -r '.[].gwtype')
-#              hubmanagementsubnetprefix=$(echo ${{ github.event.inputs.hubvnet }} | jq -r '.[].hubmanagementsubnetprefix')
-#              hubvnetprefix=$(echo ${{ github.event.inputs.hubvnet }} | jq -r '.[].hubvnetprefix')
-#              identitysubid=$(echo ${{ github.event.inputs.subscriptions }} | jq -r '.[].identitysubid')
-#              identitysubnetprefix=$(echo ${{ github.event.inputs.identityvnet }} | jq -r '.[].identitysubnetprefix')
-#              identityvnetprefix=$(echo ${{ github.event.inputs.identityvnet }} | jq -r '.[].identityvnetprefix')
-#              logaworkspaceid=$(echo ${{ github.event.inputs.other }} | jq -r '.[].logaworkspaceid')
-#              managementsubid=$(echo ${{ github.event.inputs.subscriptions }} | jq -r '.[].managementsubid')
-#              managementsubnetprefix=$(echo ${{ github.event.inputs.managementvnet }} | jq -r '.[].managementsubnetprefix')
-#              managementvnetprefix=$(echo ${{ github.event.inputs.managementvnet }} | jq -r '.[].managementvnetprefix')
-#              securitysubid=$(echo ${{ github.event.inputs.subscriptions }} | jq -r '.[].securitysubid')
-#              securitysubnetprefix=$(echo ${{ github.event.inputs.securityvnet }} | jq -r '.[].securitysubnetprefix')
-#              securityvnetprefix=$(echo ${{ github.event.inputs.securityvnet }} | jq -r '.[].securityvnetprefix')    
-#              echo "::set-output name=ref::$ref"
-#              echo "::set-output name=entlzprefix::$entlzprefix"
-#              echo "::set-output name=environment::$environment"
-#              echo "::set-output name=location::$location"
-#              echo "::set-output name=githubsecret::$githubsecret"                
-#              echo "::set-output name=bastionsubnetprefix::$bastionsubnetprefix"
-#              echo "::set-output name=connectivitysubid::$connectivitysubid"
-#              echo "::set-output name=fwmanagementsubnetprefix::$fwmanagementsubnetprefix"
-#              echo "::set-output name=fwsubnetprefix::$fwsubnetprefix"
-#              echo "::set-output name=fwtype::$fwtype"
-#              echo "::set-output name=gwsubnetprefix::$gwsubnetprefix"
-#              echo "::set-output name=gwtype::$gwtype"
-#              echo "::set-output name=hubmanagementsubnetprefix::$hubmanagementsubnetprefix"
-#              echo "::set-output name=hubvnetprefix::$hubvnetprefix"
-#              echo "::set-output name=identitysubid::$identitysubid"
-#              echo "::set-output name=identitysubnetprefix::$identitysubnetprefix"
-#              echo "::set-output name=identityvnetprefix::$identityvnetprefix"
-#              echo "::set-output name=logaworkspaceid::$logaworkspaceid"
-#              echo "::set-output name=managementsubid::$managementsubid"
-#              echo "::set-output name=managementsubnetprefix::$managementsubnetprefix"
-#              echo "::set-output name=managementvnetprefix::$managementvnetprefix"
-#              echo "::set-output name=securitysubid::$securitysubid"
-#              echo "::set-output name=securitysubnetprefix::$securitysubnetprefix"
-#              echo "::set-output name=securityvnetprefix::$securityvnetprefix"
+              echo "::set-output name=githubsecret::$githubsecret"   
             elif [ ${GITHUB_EVENT_NAME} == 'repository_dispatch' ];
             then
               echo "::set-output name=ref::${{ github.event.client_payload.ref }}"
