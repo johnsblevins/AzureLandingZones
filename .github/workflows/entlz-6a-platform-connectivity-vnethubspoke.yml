@@ -90,9 +90,9 @@ jobs:
               securitysubnetprefix=$(echo ${{ github.event.inputs.securityvnet }} | jq -r '.[].securitysubnetprefix')
               securityvnetprefix=$(echo ${{ github.event.inputs.securityvnet }} | jq -r '.[].securityvnetprefix')
               echo "::set-output name=ref::$ref"
-              echo "::set-output name=entlzprefix::$entlzprefix
-              echo "::set-output name=environment::$environment
-              echo "::set-output name=location::$location
+              echo "::set-output name=entlzprefix::$entlzprefix"
+              echo "::set-output name=environment::$environment"
+              echo "::set-output name=location::$location"
               echo "::set-output name=githubsecret::$githubsecret"                
               echo "::set-output name=bastionsubnetprefix::$bastionsubnetprefix"
               echo "::set-output name=connectivitysubid::$connectivitysubid"
