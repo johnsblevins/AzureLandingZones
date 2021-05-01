@@ -97,15 +97,17 @@ jobs:
                   
                   name="${f##*/}"
                   workbookdisplayname="${{ steps.setvariables.outputs.entlzprefix }}-${name%.*}"
-             
+                  echo workbookdisplayname: $workbookdisplayname
+                  
                   # Deploy Management Components to Management Subscription
                     az deployment sub create \
                       --name "${{ steps.setvariables.outputs.entlzprefix }}-workbooks-${{ steps.setvariables.outputs.location }}" \
                       --subscription "${{ steps.setvariables.outputs.managementsubid }}" \
                       --location ${{ steps.setvariables.outputs.location }} \
-                      --template-file "templates/entlz/workbook/main.bicep" \
-                      --parameters  location=$location \
+                      --template-file "templates/entlz/workbooks/main.bicep" \
+                      --parameters  entlzprefix=${{ steps.setvariables.outputs.entlzprefix }} \
+                                    location=${{ steps.setvariables.outputs.location }} \
                                     workbookdisplayname=$workbookdisplayname \
-                                    workname=$workbookdisplayname \
-                                    serializeddata=$serializedjson
+                                    workbookname=$workbookdisplayname \
+                                    serializeddata="${serializedjson}"
               done

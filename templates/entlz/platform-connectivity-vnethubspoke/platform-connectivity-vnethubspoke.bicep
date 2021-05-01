@@ -13,13 +13,14 @@ param identitysubid string
 param identitysubnetprefix string
 param identityvnetprefix string
 param location string
+param logaworkspaceid string
 param managementsubid string
 param managementsubnetprefix string
 param managementvnetprefix string
 param securitysubid string
 param securitysubnetprefix string
 param securityvnetprefix string
-param logaworkspaceid string
+param randomid string = uniqueString(utcNow())
 
 targetScope='managementGroup'
 
@@ -63,48 +64,48 @@ var securityvnetnsgname = '${entlzprefix}-security-nsg-${location}'
 var vpngwname = '${entlzprefix}-hub-vpngw-${location}'
 
 module connectivitysub 'modules/connectivity-sub.bicep' ={
-  name: 'connectivitysub'
+  name: 'connectivitysub-${randomid}'
   scope: subscription(connectivitysubid)
   params:{
     bastionname: bastioname
+    bastionsubnetname: bastionsubnetname
     bastionsubnetprefix: bastionsubnetprefix
     entlzprefix: entlzprefix
+    environment: environment
+    ergwname: ergwname
+    fwip: fwip
+    fwmanagementrtname: fwmanagementrtname
+    fwmanagementsubnetname: fwmanagementsubnetname
+    fwmanagementsubnetprefix: fwmanagementsubnetprefix
     fwname: fwname
+    fwpolicyname: fwpolicyname
+    fwrtname: fwrtname
+    fwsubnetname: fwsubnetname
     fwsubnetprefix: fwsubnetprefix
     fwtype: fwtype
-    vpngwname: vpngwname
-    ergwname: ergwname
+    gwrtname: gwrtname
+    gwsubnetname: gwsubnetname
     gwsubnetprefix: gwsubnetprefix
+    gwtier: gwtier
     gwtype: gwtype
+    hubconnectivityrgname: hubconnectivityrgname
+    hubmanagementrtname: hubmanagementrtname
+    hubmanagementsubnetname: hubmanagementsubnetname
+    hubmanagementsubnetprefix: hubmanagementsubnetprefix
     hubvnetname: hubvnetname
     hubvnetprefix: hubvnetprefix
-    environment: environment
-    fwmanagementsubnetprefix: fwmanagementsubnetprefix
-    hubmanagementsubnetprefix: hubmanagementsubnetprefix
     identityvnetprefix: identityvnetprefix
+    location: location
+    logaworkspaceid: logaworkspaceid
     managementsubnetprefix: managementsubnetprefix
     managementvnetprefix: managementvnetprefix
     securityvnetprefix: securityvnetprefix
-    location: location
-    gwsubnetname: gwsubnetname
-    fwsubnetname: fwsubnetname
-    bastionsubnetname: bastionsubnetname
-    fwmanagementsubnetname: fwmanagementsubnetname
-    hubmanagementsubnetname: hubmanagementsubnetname
-    gwtier: gwtier
-    fwrtname: fwrtname
-    fwmanagementrtname: fwmanagementrtname
-    hubmanagementrtname: hubmanagementrtname
-    gwrtname: gwrtname
-    fwip: fwip
-    hubconnectivityrgname: hubconnectivityrgname
-    fwpolicyname: fwpolicyname
-    logaworkspaceid: logaworkspaceid
+    vpngwname: vpngwname
   }
 }
 
 module managementsub 'modules/management-sub.bicep' ={
-  name: 'managementsub'
+  name: 'managementsub-${randomid}'
   scope: subscription(managementsubid)
   dependsOn:[
     connectivitysub
@@ -128,7 +129,7 @@ module managementsub 'modules/management-sub.bicep' ={
 }
 
 module identitysub 'modules/identity-sub.bicep' ={
-  name: 'identitysub'
+  name: 'identitysub-${randomid}'
   scope: subscription(identitysubid)
   dependsOn:[
     managementsub
@@ -153,7 +154,7 @@ module identitysub 'modules/identity-sub.bicep' ={
 
 
 module securitysub 'modules/security-sub.bicep' ={
-  name: 'securitysub'
+  name: 'securitysub-${randomid}'
   scope: subscription(securitysubid)
   dependsOn: [
     identitysub

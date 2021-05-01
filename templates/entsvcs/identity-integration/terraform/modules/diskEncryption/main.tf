@@ -1,96 +1,88 @@
-variable kvName {
+variable kvname {
   type = string
 }
-variable kvKeyName {
+variable kvkeyname {
   type = string
 }
-variable tenantId {
+variable tenantid {
   type = string 
 }
-variable diskESName {
+variable desname {
   type = string
 }
 variable location {
   type = string
 }
-
-resource azurerm_key_vault kv {
-  name = "${var.kvName}"
-  location = "${var.location}"
-  properties ={    
-    createMode = "default"
-    tenantId = "${var.tenantId}"
-    sku = {
-      name = "premium"
-      family = "A"
-    }
-    networkAcls = {
-      defaultAction = "Deny"
-      ipRules = []
-    }        
-    enablePurgeProtection = true
-    accessPolicies = []
-  }
+variable resource_group_name {
+  type = string
+}
+variable sku_name{
+  type = string
+  default = "premium"
 }
 
-resource azurerm_key_vault_key kvKey {
-  name = "${var.kvKeyName}"
-  dependsOn =[
-    kv
-  ]
-  parent = kv
-  properties ={
-    keySize = 4096
-    kty = "RSA-HSM"
-  }
+data "azurerm_client_config" "current" {}
+
+resource "azurerm_key_vault" "kv" {
+  name = var.kvname
+  location = var.location
+  resource_group_name = var.resource_group_name
+  tenant_id = var.tenantid
+  sku_name = var.sku_name      
+  enabled_for_disk_encryption = true
+  purge_protection_enabled = true
 }
 
-resource azurerm_disk_encryption_set diskES {
-  name = "${var.diskESName}"
-  dependsOn =[
-    kvKey
+resource "azurerm_key_vault_key" "kvkey" {
+  name = var.kvkeyname
+  key_vault_id = azurerm_key_vault.kv.id
+  key_size = 4096
+  key_type = "RSA-HSM"  
+  depends_on = [
+    azurerm_key_vault_access_policy.loggedinuser
   ]
-  location = "${var.location}"
-  identity ={
+
+  key_opts = [
+    "decrypt",
+    "encrypt",
+    "sign",
+    "unwrapKey",
+    "verify",
+    "wrapKey",
+  ]
+}
+
+resource "azurerm_disk_encryption_set" "des" {
+  name = var.desname
+  resource_group_name = var.resource_group_name
+  location = var.location
+  key_vault_key_id = azurerm_key_vault_key.kvkey.id 
+
+  identity {
     type = "SystemAssigned"
   }
-  properties ={    
-    activeKey = {
-      keyUrl = kvKey.properties.keyUriWithVersion
-      sourceVault = {
-        id = kv.id
-      }
-    }
-    encryptionType = "EncryptionAtRestWithCustomerKey"
-  }
 }
 
-resource  azurerm_key_vault_access_policy kvAccess {
-  name = "add"
-  dependsOn =[
-    diskES
+resource  "azurerm_key_vault_access_policy" "kvAccess" {
+  key_vault_id = azurerm_key_vault.kv.id
+  tenant_id = azurerm_disk_encryption_set.des.identity.0.tenant_id
+  object_id = azurerm_disk_encryption_set.des.identity.0.principal_id
+  key_permissions = [ "list","get","wrapKey","unwrapKey" ]  
+}
+
+resource "azurerm_key_vault_access_policy" "loggedinuser" {
+  key_vault_id = azurerm_key_vault.kv.id
+
+  tenant_id = data.azurerm_client_config.current.tenant_id
+  object_id = data.azurerm_client_config.current.object_id
+
+  key_permissions = [
+    "get",
+    "create",
+    "delete"
   ]
-  parent = kv
-  properties ={    
-    accessPolicies =[
-      {
-        objectId = diskES.identity.principalId        
-        tenantId = tenantId
-        permissions ={
-          keys =[
-            "list",
-            "get",
-            "wrapKey",
-            "unwrapKey"
-          ]
-        }
-      }
-    ]
-  }
 }
 
-output "desName"{
-  value = diskES.name
+output "desname" {
+  value = azurerm_disk_encryption_set.des.name
 }
-
-

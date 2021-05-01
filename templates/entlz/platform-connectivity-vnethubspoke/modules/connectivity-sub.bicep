@@ -1,43 +1,43 @@
+param bastionname string
+param bastionsubnetname string
+param bastionsubnetprefix string
 param entlzprefix string
 param environment string
+param ergwname string
+param fwip string
+param fwmanagementrtname string
+param fwmanagementsubnetname string
+param fwmanagementsubnetprefix string
+param fwname string
+param fwpolicyname string
+param fwrtname string
+param fwsubnetname string
+param fwsubnetprefix string
+param fwtype string
+param gwrtname string
+param gwsubnetname string
+param gwsubnetprefix string
+param gwtier string
+param gwtype string
+param hubconnectivityrgname string
+param hubmanagementrtname string
+param hubmanagementsubnetname string
+param hubmanagementsubnetprefix string
 param hubvnetname string
 param hubvnetprefix string
-param vpngwname string
-param ergwname string
-param gwtype string
-param gwsubnetprefix string
-param fwname string
-param fwtype string
-param fwsubnetprefix string
-param fwmanagementsubnetprefix string
-param bastionname string
-param bastionsubnetprefix string
 param identityvnetprefix string
+param location string
+param logaworkspaceid string
 param managementsubnetprefix string
 param managementvnetprefix string
 param securityvnetprefix string
-param hubmanagementsubnetprefix string
-param location string
-param gwsubnetname string
-param fwsubnetname string
-param bastionsubnetname string
-param fwmanagementsubnetname string
-param hubmanagementsubnetname string
-param gwtier string
-param fwrtname string
-param fwmanagementrtname string
-param hubmanagementrtname string
-param gwrtname string
-param fwip string
-param hubconnectivityrgname string
-param fwpolicyname string
-param logaworkspaceid string
+param vpngwname string
 
 targetScope='subscription'
 
 resource hubconnectivityrg 'Microsoft.Resources/resourceGroups@2020-10-01'={
   name: hubconnectivityrgname
-  location: 'usgovvirginia'  
+  location: location  
 }
 
 module hubvnet 'hub.bicep' = {
@@ -47,35 +47,36 @@ module hubvnet 'hub.bicep' = {
   ]
   name: hubvnetname
   params:{
-    hubvnetname: hubvnetname
-    hubvnetprefix: hubvnetprefix    
-    gwsubnetprefix: gwsubnetprefix
-    fwsubnetprefix: fwsubnetprefix
+    bastionname: bastionname
+    bastionsubnetname: bastionsubnetname
     bastionsubnetprefix: bastionsubnetprefix
-    fwname: fwname
-    fwtype: fwtype
     environment: environment
-    fwmanagementsubnetprefix: fwmanagementsubnetprefix
-    gwtype: gwtype
-    vpngwname: vpngwname
     ergwname: ergwname
+    fwip: fwip
+    fwmanagementrtname: fwmanagementrtname
+    fwmanagementsubnetname: fwmanagementsubnetname
+    fwmanagementsubnetprefix: fwmanagementsubnetprefix
+    fwname: fwname
+    fwpolicyname: fwpolicyname
+    fwrtname: fwrtname
+    fwsubnetname: fwsubnetname
+    fwsubnetprefix: fwsubnetprefix
+    fwtype: fwtype
+    gwrtname: gwrtname
+    gwsubnetname: gwsubnetname
+    gwsubnetprefix: gwsubnetprefix
+    gwtier: gwtier
+    gwtype: gwtype
+    hubmanagementrtname: hubmanagementrtname
+    hubmanagementsubnetname: hubmanagementsubnetname
+    hubmanagementsubnetprefix: hubmanagementsubnetprefix
+    hubvnetname: hubvnetname
+    hubvnetprefix: hubvnetprefix
     identityvnetprefix: identityvnetprefix
+    location: location
+    logaworkspaceid: logaworkspaceid
     managementvnetprefix: managementvnetprefix
     securityvnetprefix: securityvnetprefix
-    hubmanagementsubnetprefix: hubmanagementsubnetprefix
-    gwsubnetname: gwsubnetname
-    fwsubnetname: fwsubnetname
-    bastionsubnetname: bastionsubnetname
-    fwmanagementsubnetname: fwmanagementsubnetname
-    hubmanagementsubnetname: hubmanagementsubnetname
-    gwtier: gwtier
-    fwrtname: fwrtname
-    fwmanagementrtname: fwmanagementrtname
-    hubmanagementrtname: hubmanagementrtname
-    gwrtname: gwrtname
-    fwip: fwip
-    location: location
-    fwpolicyname: fwpolicyname
-    logaworkspaceid: logaworkspaceid
+    vpngwname: vpngwname
   }
 }
