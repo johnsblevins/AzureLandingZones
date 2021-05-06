@@ -18,6 +18,10 @@ on:
         description: 'location'
         required: true
         default: 'usgovvirginia'
+      githubsecret:
+        description: 'Github Secret Name with Azure Credentials'
+        required: true
+        default: 'AZGOV_CREDS'
       managementsubid:
         description: ''
         required: true
