@@ -1,5 +1,5 @@
 param entlzprefix string // Enterprise Landing Zone Prefix - 5 Characters Maximum
-param randomid string = uniqueString(utcNow())
+param randomid string = uniqueString(utcNow()) // Used to create unique deployment name
 
 targetScope = 'tenant'
 
@@ -157,7 +157,7 @@ module onboardingMG 'modules/parentedmg.bicep'={
   }
 }
 
-// Decommisioned MG
+// Decommisioning MG
 module decommissionedMG 'modules/parentedmg.bicep'={
   name: '${entlzprefix}-decommissioned-mg-${randomid}'
   dependsOn: [

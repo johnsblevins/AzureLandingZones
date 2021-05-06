@@ -26,6 +26,25 @@ on:
         required: true
         default: ''
   
+  # Allows you to run this workflow with web call to GitHub Repository Dispatch Event
+  # Note: This event will only trigger a workflow run if the workflow file is on the default branch.
+  # Sample webhook call:
+  #curl \
+  #  -X POST \
+  #  -H "Accept: application/vnd.github.v3+json" \
+  #  -H "Authorization: token replacewithgithubpattoken" \
+  #  https://api.github.com/repos/johnsblevins/AzureLandingZones/dispatches \
+  #  -d '{ 
+  #        "event_type":"entlz-8-platform-workbooks", 
+  #        "client_payload":{
+  #          "ref":"dev",
+  #          "entlzprefix":"elz1",
+  #          "environment":"azureusgovernment",
+  #          "location":"usgovvirginia",
+  #          "githubsecret":"AZGOV_CREDS"
+  #        }        
+  #      }'
+  
   repository_dispatch:
     types: [entlz-8-platform-workbooks]    
 

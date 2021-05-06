@@ -45,7 +45,35 @@ on:
         description: ''
         required: false
         default: ''
+      other:
+        description: '{"subownergroup":"<groupdisplayname>","enracctname":"<enrollmentaccountguid>","offertype":"<offertype>"}'
+        required: true
+        default: '{"subownergroup":"azure-platform-owners","enracctname":"", "offertype":"MS-AZR-USGOV-0017P"}'
 
+
+  # Allows you to run this workflow with web call to GitHub Repository Dispatch Event
+  # Note: This event will only trigger a workflow run if the workflow file is on the default branch.
+  # Sample webhook call:
+  #curl \
+  #  -X POST \
+  #  -H "Accept: application/vnd.github.v3+json" \
+  #  -H "Authorization: token replacewithgithubpattoken" \
+  #  https://api.github.com/repos/johnsblevins/AzureLandingZones/dispatches \
+  #  -d '{ 
+  #        "event_type":"entlz-2-platform-subs", 
+  #        "client_payload":{
+  #          "ref":"dev",
+  #          "entlzprefix":"elz2",
+  #          "environment":"azureusgovernment",
+  #          "location":"usgovvirginia",
+  #          "githubsecret":"AZGOV_CREDS",
+  #          "managementsubid":"07526f72-6689-42be-945f-bb6ad0214b71",
+  #          "identitysubid":"787e871a-84ba-43be-86bf-86bd1e408a4a",
+  #          "connectivitysubid":"b30166b8-dd1b-4fa2-9ad7-057614257b06",
+  #          "securitysubid":"ac95a806-c9d3-49e7-83ee-7f82e88c2bd3",
+  #          "other:"{"subownergroup":"","enracctname":"","offertype":"MS-AZR-USGOV-0017P"}"
+  #        }        
+  #      }'
   repository_dispatch:
     types: [entlz-2-platform-subs]
 
@@ -69,17 +97,9 @@ jobs:
               echo "::set-output name=identitysubid::${{ github.event.inputs.identitysubid }}"
               echo "::set-output name=connectivitysubid::${{ github.event.inputs.connectivitysubid }}"
               echo "::set-output name=securitysubid::${{ github.event.inputs.securitysubid }}"
-              echo "::set-output name=subownergroup::${{ github.event.inputs.subownergroup }}"
-              echo "::set-output name=enracctname::${{ github.event.inputs.enracctname }}"              
-              if [ ${{ github.event.inputs.environment }} == 'azurecloud' ];
-              then
-                echo "::set-output name=offertype::MS-AZR-0017P"
-              elif [ ${{ github.event.inputs.environment }} == 'azureusgovernment' ];
-              then
-                echo "::set-output name=offertype::MS-AZR-USGOV-0017P"
-              else
-                echo "No Offer Found for Environment ${{ github.event.inputs.environment }}"
-              fi;
+              echo "::set-output name=subownergroup::$(echo '${{ github.event.inputs.other }}' | jq -r '.subownergroup')"
+              echo "::set-output name=enracctname::$(echo '${{ github.event.inputs.other }}' | jq -r '.enracctname')"              
+              echo "::set-output name=offertype::$(echo '${{ github.event.inputs.other }}' | jq -r '.offertype')"              
             elif [ ${GITHUB_EVENT_NAME} == 'repository_dispatch' ];
             then
               echo "::set-output name=ref::${{ github.event.client_payload.ref }}"
@@ -91,17 +111,9 @@ jobs:
               echo "::set-output name=identitysubid::${{ github.event.client_payload.identitysubid }}"
               echo "::set-output name=connectivitysubid::${{ github.event.client_payload.connectivitysubid }}"
               echo "::set-output name=securitysubid::${{ github.event.client_payload.securitysubid }}"
-              echo "::set-output name=subownergroup::${{ github.event.client_payload.subownergroup }}"
-              echo "::set-output name=enracctname::${{ github.event.client_payload.enracctname }}"
-              if [ ${{ github.event.client_payload.environment }} == 'azurecloud' ];
-                then
-                  echo "::set-output name=offertype::MS-AZR-0017P"
-              elif [ ${{ github.event.client_payload.environment }} == 'azureusgovernment' ];
-              then
-                  echo "::set-output name=offertype::MS-AZR-USGOV-0017P"
-              else
-                echo "No Offer Found for Environment ${{ github.event.client_payload.environment }}"
-              fi;
+              echo "::set-output name=subownergroup::$(echo '${{ github.event.client_payload.other }}' | jq -r '.subownergroup')"
+              echo "::set-output name=enracctname::$(echo '${{ github.event.client_payload.other }}' | jq -r '.enracctname')"              
+              echo "::set-output name=offertype::$(echo '${{ github.event.client_payload.other }}' | jq -r '.offertype')"  
             else
               echo "Invalid Event Trigger ${GITHUB_EVENT_NAME} unable to set variables."
             fi;            
