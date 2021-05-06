@@ -166,7 +166,7 @@ jobs:
                   # Assign Default Tags to Subscription
                   NOW=$(date +"%m/%d/%Y_%I:%M:%S_%p")
                   subId=$(az account subscription list --query "[?displayName=='${{ env.managementsubname }}'].subscriptionId" --output tsv)
-                  az tag create --resource-id /subscriptions/$subId --tags createdOn="$NOW" programType="int" programEnv="prod" programName="${{ steps.setvariables.outputs.entlzprefix }}"
+                  az tag create --resource-id /subscriptions/$subId --tags createdOn="$NOW" hosting="int" devenvironment="pr" program="${{ steps.setvariables.outputs.entlzprefix }}"
                 else
                   echo "Management subscription already exists...skipping"
                 fi;
@@ -177,7 +177,7 @@ jobs:
                 --headers "{\"content-type\":\"application/json\"}" \
                 --body "{   \"subscriptionName\": \"$managementsubname\"}"
                 echo "Management subscription renamed...tagging"
-                az tag create --resource-id /subscriptions/${{ steps.setvariables.outputs.managementsubid }} --tags programType="int" programEnv="prod" programName="${{ steps.setvariables.outputs.entlzprefix }}"
+                az tag create --resource-id /subscriptions/${{ steps.setvariables.outputs.managementsubid }} --tags hosting="int" devenvironment="pr" program="${{ steps.setvariables.outputs.entlzprefix }}"
               fi;
 
         - name: Create Identity Sub
@@ -207,7 +207,7 @@ jobs:
                   # Assign Default Tags to Subscription
                   NOW=$(date +"%m/%d/%Y_%I:%M:%S_%p")
                   subId=$(az account subscription list --query "[?displayName=='${{ env.identitysubname }}'].subscriptionId" --output tsv)
-                  az tag create --resource-id /subscriptions/$subId --tags createdOn="$NOW" programType="int" programEnv="prod" programName="${{ steps.setvariables.outputs.entlzprefix }}"
+                  az tag create --resource-id /subscriptions/$subId --tags createdOn="$NOW" hosting="int" devenvironment="pr" program="${{ steps.setvariables.outputs.entlzprefix }}"
                 else
                   echo "Identity subscription already exists...skipping"
                 fi;
@@ -218,7 +218,7 @@ jobs:
                 --headers "{\"content-type\":\"application/json\"}" \
                 --body "{   \"subscriptionName\": \"${{ env.identitysubname }}\"}"
                 echo "Identity subscription renamed...tagging"
-                az tag create --resource-id /subscriptions/${{ steps.setvariables.outputs.identitysubid }} --tags programType="int" programEnv="prod" programName="${{ steps.setvariables.outputs.entlzprefix }}"
+                az tag create --resource-id /subscriptions/${{ steps.setvariables.outputs.identitysubid }} --tags hosting="int" devenvironment="pr" program="${{ steps.setvariables.outputs.entlzprefix }}"
               fi;
 
         - name: Create Connectivity Sub
@@ -248,7 +248,7 @@ jobs:
                   # Assign Default Tags to Subscription
                   NOW=$(date +"%m/%d/%Y_%I:%M:%S_%p")
                   subId=$(az account subscription list --query "[?displayName=='${{ env.connectivitysubname }}'].subscriptionId" --output tsv)
-                  az tag create --resource-id /subscriptions/$subId --tags createdOn="$NOW" programType="int" programEnv="prod" programName="${{ steps.setvariables.outputs.entlzprefix }}"
+                  az tag create --resource-id /subscriptions/$subId --tags createdOn="$NOW" hosting="int" devenvironment="pr" program="${{ steps.setvariables.outputs.entlzprefix }}"
                 else
                   echo "Connectivity subscription already exists...skipping"                  
                 fi;
@@ -259,7 +259,7 @@ jobs:
                 --headers "{\"content-type\":\"application/json\"}" \
                 --body "{   \"subscriptionName\": \"${{ env.connectivitysubname }}\"}"
                 echo "Connectivity subscription renamed...tagging"
-                az tag create --resource-id /subscriptions/${{ steps.setvariables.outputs.connectivitysubid }} --tags programType="int" programEnv="prod" programName="${{ steps.setvariables.outputs.entlzprefix }}"
+                az tag create --resource-id /subscriptions/${{ steps.setvariables.outputs.connectivitysubid }} --tags hosting="int" devenvironment="pr" program="${{ steps.setvariables.outputs.entlzprefix }}"
               fi;
 
         - name: Create Security Sub
@@ -290,7 +290,7 @@ jobs:
                   # Assign Default Tags to Subscription
                   NOW=$(date +"%m/%d/%Y_%I:%M:%S_%p")
                   subId=$(az account subscription list --query "[?displayName=='${{ env.securitysubname }}'].subscriptionId" --output tsv)
-                  az tag create --resource-id /subscriptions/$subId --tags createdOn="$NOW" programType="int" programEnv="prod" programName="${{ steps.setvariables.outputs.entlzprefix }}"
+                  az tag create --resource-id /subscriptions/$subId --tags createdOn="$NOW" hosting="int" devenvironment="pr" program="${{ steps.setvariables.outputs.entlzprefix }}"
                 else
                   echo "Security subscription already exists...skipping"                  
                 fi;
@@ -301,7 +301,7 @@ jobs:
                 --headers "{\"content-type\":\"application/json\"}" \
                 --body "{   \"subscriptionName\": \"${{ env.securitysubname }}\"}"
                 echo "Security subscription renamed...tagging"
-                az tag create --resource-id /subscriptions/${{ steps.setvariables.outputs.securitysubid }} --tags programType="int" programEnv="prod" programName="${{ steps.setvariables.outputs.entlzprefix }}"
+                az tag create --resource-id /subscriptions/${{ steps.setvariables.outputs.securitysubid }} --tags hosting="int" devenvironment="pr" program="${{ steps.setvariables.outputs.entlzprefix }}"
               fi;
 
         - name: Log in to Azure Again
