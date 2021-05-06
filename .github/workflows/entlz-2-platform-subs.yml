@@ -37,14 +37,6 @@ on:
         description: ''
         required: false
         default: ''
-      subownergroup: 
-        description: ''
-        required: true
-        default: 'azure-platform-owners'
-      enracctname: 
-        description: ''
-        required: false
-        default: ''
       other:
         description: '{"subownergroup":"<groupdisplayname>","enracctname":"<enrollmentaccountguid>","offertype":"<offertype>"}'
         required: true
