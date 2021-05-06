@@ -27,6 +27,29 @@ on:
         required: false
         default: ''      
   
+   # Allows you to run this workflow with web call to GitHub Repository Dispatch Event
+  # Note: This event will only trigger a workflow run if the workflow file is on the default branch.
+  # Sample webhook call:
+  #curl \
+  #  -X POST \
+  #  -H "Accept: application/vnd.github.v3+json" \
+  #  -H "Authorization: token replacewithgithubpattoken" \
+  #  https://api.github.com/repos/johnsblevins/AzureLandingZones/dispatches \
+  #  -d '{ 
+  #        "event_type":"entlz-4-platform-policies", 
+  #        "client_payload":{
+  #          "ref":"dev",
+  #          "entlzprefix":"elz2",
+  #          "environment":"azureusgovernment",
+  #          "location":"usgovvirginia",
+  #          "githubsecret":"AZGOV_CREDS",
+  #          "managementsubid":"07526f72-6689-42be-945f-bb6ad0214b71",
+  #          "uniqueid":"1"
+  #        }        
+  #      }'
+  repository_dispatch:
+    types: [entlz-4-platform-policies]    
+
 #  push:
 #    branches:
 #      - dev
@@ -34,27 +57,56 @@ on:
 #      - 'templates/entlz/policies/**'
 #      - '.github/workflows/entlz-4-platform-policies.yml'
 
-env:
-  entlzprefix: ${{ github.event.inputs.entlzprefix }}
-  environment: ${{ github.event.inputs.environment }}
-  location: ${{ github.event.inputs.location }} 
-  managementsubid: ${{ github.event.inputs.managementsubid }} 
-  uniqueid: ${{ github.event.inputs.uniqueid }} 
-
-
 jobs:
     build-and-deploy:
         runs-on: ubuntu-latest        
           
         steps:
+        - name: Set Variables
+          id: setvariables         
+          run: |
+            shopt -s nocasematch
+            echo ${GITHUB_EVENT_NAME} 
+            if [ ${GITHUB_EVENT_NAME} == 'workflow_dispatch' ];
+            then
+              echo "::set-output name=ref::${GITHUB_REF##*/}"
+              echo "::set-output name=entlzprefix::${{ github.event.inputs.entlzprefix }}"
+              echo "::set-output name=environment::${{ github.event.inputs.environment }}"
+              echo "::set-output name=location::${{ github.event.inputs.location }}"
+              echo "::set-output name=githubsecret::${{ github.event.inputs.githubsecret }}"
+              echo "::set-output name=managementsubid::${{ github.event.inputs.managementsubid }}"
+              echo "::set-output name=uniqueid::${{ github.event.inputs.uniqueid }}"
+            elif [ ${GITHUB_EVENT_NAME} == 'repository_dispatch' ];
+            then
+              echo "::set-output name=ref::${{ github.event.client_payload.ref }}"
+              echo "::set-output name=entlzprefix::${{ github.event.client_payload.entlzprefix }}"
+              echo "::set-output name=environment::${{ github.event.client_payload.environment }}"
+              echo "::set-output name=location::${{ github.event.client_payload.location }}"
+              echo "::set-output name=githubsecret::${{ github.event.client_payload.githubsecret }}"
+              echo "::set-output name=managementsubid::${{ github.event.client_payload.managementsubid }}"
+              echo "::set-output name=uniqueid::${{ github.event.client_payload.uniqueid }}"
+            else
+              echo "Invalid Event Trigger ${GITHUB_EVENT_NAME} unable to set variables."
+            fi;            
+          
+        - name: Echo Variables
+          run: |
+            echo ref: ${{ steps.setvariables.outputs.ref }}
+            echo entlzprefix: ${{ steps.setvariables.outputs.entlzprefix }}
+            echo environment: ${{ steps.setvariables.outputs.environment }}
+            echo location: ${{ steps.setvariables.outputs.location }}
+            echo githubsecret: ${{ steps.setvariables.outputs.githubsecret }}
+            echo managementsubid: ${{ steps.setvariables.outputs.managementsubid }}
+            echo uniqueid: ${{ steps.setvariables.outputs.uniqueid }}
+
         - uses: actions/checkout@v2
-        - name: Branch name
-          run: echo running on branch ${GITHUB_REF##*/}
+          with:
+            ref: ${{ steps.setvariables.outputs.ref }}
         - name: Log in with Azure
           uses: azure/login@v1
           with:
-            creds: ${{ secrets.AZGOV_CREDS }}
-            environment: ${{ env.environment }}
+            creds: ${{ secrets[steps.setvariables.outputs.githubsecret] }}
+            environment: ${{ steps.setvariables.outputs.environment }}
             enable-AzPSSession: false
         
         - name: Deploy Policy Definitions
@@ -70,7 +122,7 @@ jobs:
                       --display-name "`jq -r .properties.displayName $f`" \
                       --rules "`jq -r .properties.policyRule $f`" \
                       --params "`jq -r .properties.parameters $f`" \
-                      --management-group ${{ env.entlzprefix }} \
+                      --management-group ${{ steps.setvariables.outputs.entlzprefix }} \
                       --mode "`jq -r .properties.mode $f`"
               done
               sleep 60
@@ -86,9 +138,9 @@ jobs:
                       --name "`jq -r .name $f`" \
                       --description "`jq -r .properties.description $f`" \
                       --display-name "`jq -r .properties.displayName $f`" \
-                      --definitions "`jq -r .properties.policyDefinitions $f | sed -e 's/%%entlzprefix%%/${{ env.entlzprefix }}/g'`" \
+                      --definitions "`jq -r .properties.policyDefinitions $f | sed -e 's/%%entlzprefix%%/${{ steps.setvariables.outputs.entlzprefix }}/g'`" \
                       --params "`jq -r .properties.parameters $f`" \
-                      --management-group ${{ env.entlzprefix }}
+                      --management-group ${{ steps.setvariables.outputs.entlzprefix }}
               done
               sleep 60
 
@@ -100,14 +152,14 @@ jobs:
               # Deploy Policy Assignments
               for f in $(find templates/entlz/policies/policies -name assign.*.json);
                 do policy=`jq -r .properties.policyDefinitionId $f | \
-                    sed -e 's/%%entlzprefix%%/${{ env.entlzprefix }}/g'`
+                    sed -e 's/%%entlzprefix%%/${{ steps.setvariables.outputs.entlzprefix }}/g'`
                   params=`jq -r .properties.parameters $f | \
-                    sed -e 's/%%entlzprefix%%/${{ env.entlzprefix }}/g' | \
-                    sed -e 's/%%location%%/${{ env.location }}/g' | \
-                    sed -e 's/%%managementsubid%%/${{ env.managementsubid }}/g' | \
-                    sed -e 's/%%uniqueid%%/${{ env.uniqueid }}/g'`
+                    sed -e 's/%%entlzprefix%%/${{ steps.setvariables.outputs.entlzprefix }}/g' | \
+                    sed -e 's/%%location%%/${{ steps.setvariables.outputs.location }}/g' | \
+                    sed -e 's/%%managementsubid%%/${{ steps.setvariables.outputs.managementsubid }}/g' | \
+                    sed -e 's/%%uniqueid%%/${{ steps.setvariables.outputs.uniqueid }}/g'`
                   scope=`jq -r .properties.scope $f | \
-                    sed -e 's/%%entlzprefix%%/${{ env.entlzprefix }}/g' `
+                    sed -e 's/%%entlzprefix%%/${{ steps.setvariables.outputs.entlzprefix }}/g' `
                   identity=`jq -r .identity $f`
                   role=`jq -r .identity.role $f`
                   [[ -z $role ]] && role="Contributor"
@@ -117,7 +169,7 @@ jobs:
                     az policy assignment create \
                       --name "`jq -r .name $f`" \
                       --display-name "`jq -r .properties.displayName $f`" \
-                      --location "${{ env.location }}" \
+                      --location "${{ steps.setvariables.outputs.location }}" \
                       --policy "$policy" \
                       --params "$params" \
                       --scope "$scope"  \
@@ -126,7 +178,7 @@ jobs:
                     az policy assignment create \
                       --name "`jq -r .name $f`" \
                       --display-name "`jq -r .properties.displayName $f`" \
-                      --location "${{ env.location }}" \
+                      --location "${{ steps.setvariables.outputs.location }}" \
                       --policy "$policy" \
                       --params "$params"  \
                       --scope "$scope"  \
@@ -146,14 +198,14 @@ jobs:
               # Deploy Initiative Assignments
               for f in $(find templates/entlz/policies/initiatives -name assign.*.json);
                 do policySetDefinition=`jq -r .properties.policyDefinitionId $f | \
-                    sed -e 's/%%entlzprefix%%/${{ env.entlzprefix }}/g'`
+                    sed -e 's/%%entlzprefix%%/${{ steps.setvariables.outputs.entlzprefix }}/g'`
                   params=`jq -r .properties.parameters $f | \
-                    sed -e 's/%%entlzprefix%%/${{ env.entlzprefix }}/g' | \
-                    sed -e 's/%%location%%/${{ env.location }}/g' | \
-                    sed -e 's/%%managementsubid%%/${{ env.managementsubid }}/g' | \
-                    sed -e 's/%%uniqueid%%/${{ env.uniqueid }}/g'`
+                    sed -e 's/%%entlzprefix%%/${{ steps.setvariables.outputs.entlzprefix }}/g' | \
+                    sed -e 's/%%location%%/${{ steps.setvariables.outputs.location }}/g' | \
+                    sed -e 's/%%managementsubid%%/${{ steps.setvariables.outputs.managementsubid }}/g' | \
+                    sed -e 's/%%uniqueid%%/${{ steps.setvariables.outputs.uniqueid }}/g'`
                   scope=`jq -r .properties.scope $f | \
-                    sed -e 's/%%entlzprefix%%/${{ env.entlzprefix }}/g'`
+                    sed -e 's/%%entlzprefix%%/${{ steps.setvariables.outputs.entlzprefix }}/g'`
                   identity=`jq -r .identity $f`
                   role=`jq -r .identity.role $f`
                   [[ -z $role ]] && role="Contributor"
@@ -163,7 +215,7 @@ jobs:
                     az policy assignment create \
                       --name "`jq -r .name $f`" \
                       --display-name "`jq -r .properties.displayName $f`" \
-                      --location "${{ env.location }}" \
+                      --location "${{ steps.setvariables.outputs.location }}" \
                       --policy-set-definition "$policySetDefinition" \
                       --params "$params" \
                       --scope "$scope" \
@@ -172,7 +224,7 @@ jobs:
                     az policy assignment create \
                       --name "`jq -r .name $f`" \
                       --display-name "`jq -r .properties.displayName $f`" \
-                      --location "${{ env.location }}" \
+                      --location "${{ steps.setvariables.outputs.location }}" \
                       --policy-set-definition "$policySetDefinition" \
                       --params "$params" \
                       --scope "$scope" \
