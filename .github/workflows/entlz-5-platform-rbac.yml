@@ -138,7 +138,7 @@ jobs:
                     assignmentid=$(az role assignment list --scope $scope --query "[?principalId=='$groupobjid']" --output tsv)
                     if [[ -z $assignmentid ]];
                       then
-                        sleep 3 # Give some time for Group Creation to Complete before Assignment
+                        sleep 5 # Give some time for Group Creation to Complete before Assignment
                         echo "The assignment of '${role}' role to '${displayname}' group at '${scope}' scope doesn't exist...creating assignment."
                         az role assignment create \
                         --assignee $groupobjid \
