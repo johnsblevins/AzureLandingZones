@@ -4,7 +4,7 @@
   "tier": "Free"
  },
  "properties": {
-  "displayName": "Enforce-Subnet-RT-Entlz.identity",
+  "displayName": "Enforce-Subnet-RT-Entlz.management",
   "policyDefinitionId": "/providers/Microsoft.Management/managementGroups/%%entlzprefix%%/providers/Microsoft.Authorization/policyDefinitions/Enforce-Subnet-RT-Entlz",
   "scope": "/providers/Microsoft.Management/managementGroups/%%entlzprefix%%-management",
   "notScopes": [],

@@ -26,7 +26,7 @@
        {
         "not": {
          "field": "Microsoft.Network/virtualNetworks/subnets[*].routeTable.id",
-         "equals": "[concat('/subscriptions/',subscription().subscriptionId,'/resourceGroups/', subscription().displayName, '-connectivity-', resourceGroup().location , '/providers/Microsoft.Network/routeTables/', subscription().displayName, '-rt-', resourceGroup().location)]"
+         "equals": "[concat('/subscriptions/',subscription().subscriptionId,'/resourceGroups/', subscription().displayName, '-connectivity-', replace(resourceGroup().location,' ','') , '/providers/Microsoft.Network/routeTables/', subscription().displayName, '-rt-', replace(resourceGroup().location,' ',''))]"
         }
        }
       ]
@@ -40,7 +40,7 @@
        {
         "not": {
          "field": "Microsoft.Network/virtualNetworks/subnets/routeTable.id",
-         "equals": "[concat('/subscriptions/',subscription().subscriptionId,'/resourceGroups/', subscription().displayName, '-connectivity-', resourceGroup().location ,  '/providers/Microsoft.Network/routeTables/', subscription().displayName, '-rt-', resourceGroup().location)]"
+         "equals": "[concat('/subscriptions/',subscription().subscriptionId,'/resourceGroups/', subscription().displayName, '-connectivity-', replace(resourceGroup().location,' ','') ,  '/providers/Microsoft.Network/routeTables/', subscription().displayName, '-rt-', replace(resourceGroup().location,' ',''))]"
         }
        }
       ]

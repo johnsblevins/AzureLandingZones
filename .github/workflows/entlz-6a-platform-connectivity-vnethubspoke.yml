@@ -33,7 +33,7 @@ on:
       identityvnet: 
         description: '{"identityvnetprefix":"x.x.x.x/x","identitysubnetprefix":"x.x.x.x/x"}'
         required: true
-        default: '{"identityvnetprefix":"10.0.4.0/23","identitysubnetprefix":"10.0.4.0/26"}'
+        default: '{"securityvnetprefix":"10.0.6.0/23","securitysubnetprefix":"10.0.6.0/26"}'
       securityvnet: 
         description: '{"securityvnetprefix":"x.x.x.x/x","securitysubnetprefix":"x.x.x.x/x"}'
         require: true
@@ -43,6 +43,29 @@ on:
         required: true
         default: '{"githubsecret":"AZGOV_CREDS","fwtype":"Standard","gwtype":"ErGw1AZ","logaworkspaceid":"/subscriptions/07526f72-6689-42be-945f-bb6ad0214b71/resourcegroups/elz1-management-usgovvirginia/providers/microsoft.operationalinsights/workspaces/elz1-loga-usgovvirginia2"}'
 
+  # Allows you to run this workflow with web call to GitHub Repository Dispatch Event
+  # Note: This event will only trigger a workflow run if the workflow file is on the default branch.
+  # Sample webhook call:
+  #curl \
+  #  -X POST \
+  #  -H "Accept: application/vnd.github.v3+json" \
+  #  -H "Authorization: token replacewithgithubpattoken" \
+  #  https://api.github.com/repos/johnsblevins/AzureLandingZones/dispatches \
+  #  -d '{ 
+  #        "event_type":"entlz-6a-platform-connectivity-vnethubspoke", 
+  #        "client_payload":{
+  #          "ref":"dev",
+  #          "entlzprefix":"elz2",
+  #          "environment":"azureusgovernment",
+  #          "location":"usgovvirginia",
+  #          "subscriptions":"{\"identitysubid\":\"787e871a-84ba-43be-86bf-86bd1e408a4a\",\"connectivitysubid\":\"b30166b8-dd1b-4fa2-9ad7-057614257b06\",\"securitysubid\":\"ac95a806-c9d3-49e7-83ee-7f82e88c2bd3\",\"managementsubid\":\"07526f72-6689-42be-945f-bb6ad0214b71\"}",
+  #          "hubvnet": "{\"hubvnetprefix\":\"10.0.0.0/23\",\"bastionsubnetprefix\":\"10.0.0.160/27\",\"fwsubnetprefix\":\"10.0.0.0/26\",\"fwmanagementsubnetprefix\":\"10.0.0.64/26\",\"gwsubnetprefix\":\"10.0.0.128/27\",\"hubmanagementsubnetprefix\":\"10.0.1.0/26\"}",
+  #          "managementvnet":"{\"managementvnetprefix\":\"10.0.2.0/23\",\"managementsubnetprefix\":\"10.0.2.0/26\"}",
+  #          "identityvnet":"{\"identityvnetprefix\":\"10.0.4.0/23\",\"identitysubnetprefix\":\"10.0.4.0/26\"}",
+  #          "securityvnet": "{\"securityvnetprefix\":\"10.0.6.0/23\",\"securitysubnetprefix\":\"10.0.6.0/26\"}",
+  #          "other":"{\"githubsecret\":\"AZGOV_CREDS\",\"fwtype\":\"Standard\",\"gwtype\":\"ErGw1AZ\",\"logaworkspaceid\":\"/subscriptions/07526f72-6689-42be-945f-bb6ad0214b71/resourcegroups/elz1-management-usgovvirginia/providers/microsoft.operationalinsights/workspaces/elz1-loga-usgovvirginia2\"}"
+  #        }        
+  #      }'
   repository_dispatch:
     types: [entlz-6a-platform-connectivity-vnethubspoke]
 

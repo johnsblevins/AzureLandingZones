@@ -20,7 +20,7 @@ on:
 
 
   
-   # Allows you to run this workflow with web call to GitHub Repository Dispatch Event
+  # Allows you to run this workflow with web call to GitHub Repository Dispatch Event
   # Note: This event will only trigger a workflow run if the workflow file is on the default branch.
   # Sample webhook call:
   #curl \
