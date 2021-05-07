@@ -1,7 +1,5 @@
 name: entlz-5-platform-rbac
 
-
-
 # Controls when the action will run. 
 on:
   # Allows you to run this workflow manually from the Actions tab
@@ -31,7 +29,7 @@ on:
   #  -H "Authorization: token replacewithgithubpattoken" \
   #  https://api.github.com/repos/johnsblevins/AzureLandingZones/dispatches \
   #  -d '{ 
-  #        "event_type":"entlz-4-platform-policies", 
+  #        "event_type":"entlz-5-platform-rbac", 
   #        "client_payload":{
   #          "ref":"dev",
   #          "entlzprefix":"elz2",
@@ -91,204 +89,6 @@ jobs:
             environment: ${{ steps.setvariables.outputs.environment }}
             enable-AzPSSession: false
         
-        - name: Create and Assign RBAC Groups in Hierarchy
-          uses: azure/CLI@v1
-          with:
-            azcliversion: 2.21.0
-            inlineScript: |        
-
-              # azure-platform-readers
-              # role: reader
-              # scope: Root Management Group
-              group=$(az ad group list --query "[?displayName=='azure-platform-readers'].objectId" --output tsv)
-              if [[ -z $group ]] ;
-              then
-                  graphURI=$(az cloud show --query endpoints.microsoftGraphResourceId --output tsv)
-                  group=$(az rest --method post \
-                      --url "${graphURI}beta/groups" \
-                      --headers "{\"content-type\":\"application/json\"}" \
-                      --body "{   \"description\": \"Members have global reader rights to Azure\", 
-                                  \"displayName\": \"azure-platform-readers\", 
-                                  \"isAssignableToRole\": \"false\", 
-                                  \"mailNickname\": \"azure-platform-readers\",
-                                  \"mailEnabled\": \"false\",
-                                  \"securityEnabled\": \"true\",
-                                  \"visibility\": \"Private\"
-                              }" \
-                      --query id \
-                      --output tsv)
-              else
-                  echo "azure-platform-readers group already exists"
-              fi;
-              sleep 15
-
-              az role assignment create --assignee $group --scope / --role Reader
-              
-              # {entlzprefix}-platform-admins
-              # role: owner
-              # scope: {entlzprefix} management group
-              group=$(az ad group list --query "[?displayName=='${{ steps.setvariables.outputs.entlzprefix }}-platform-admins'].objectId" --output tsv)
-              if [[ -z $group ]] ;
-              then
-                  graphURI=$(az cloud show --query endpoints.microsoftGraphResourceId --output tsv)
-                  group=$(az rest --method post \
-                      --url "${graphURI}beta/groups" \
-                      --headers "{\"content-type\":\"application/json\"}" \
-                      --body "{   \"description\": \"Members have owner rights at enterprise landing zone root\", 
-                                  \"displayName\": \"${{ steps.setvariables.outputs.entlzprefix }}-platform-admins\", 
-                                  \"isAssignableToRole\": \"false\", 
-                                  \"mailNickname\": \"${{ steps.setvariables.outputs.entlzprefix }}-platform-admins\",
-                                  \"mailEnabled\": \"false\",
-                                  \"securityEnabled\": \"true\",
-                                  \"visibility\": \"Private\"
-                              }" \
-                      --query id \
-                      --output tsv)
-              else
-                  echo "${{ steps.setvariables.outputs.entlzprefix }}-platform-admins group already exists"
-              fi;
-              sleep 15
-
-              az role assignment create --assignee $group --scope /providers/Microsoft.Management/managementGroups/${{ steps.setvariables.outputs.entlzprefix }} --role Owner
-
-              # {entlzprefix}-security-admins
-              # role: security admin
-              # scope: {entlzprefix} management group
-              group=$(az ad group list --query "[?displayName=='${{ steps.setvariables.outputs.entlzprefix }}-security-admins'].objectId" --output tsv)
-              if [[ -z $group ]] ;
-              then
-                  graphURI=$(az cloud show --query endpoints.microsoftGraphResourceId --output tsv)
-                  group=$(az rest --method post \
-                      --url "${graphURI}beta/groups" \
-                      --headers "{\"content-type\":\"application/json\"}" \
-                      --body "{   \"description\": \"Members have Security Admin rights at enterprise landing zone root and Virtual Machine Contributor rights on security MG\", 
-                                  \"displayName\": \"${{ steps.setvariables.outputs.entlzprefix }}-security-admins\", 
-                                  \"isAssignableToRole\": \"false\", 
-                                  \"mailNickname\": \"${{ steps.setvariables.outputs.entlzprefix }}-security-admins\",
-                                  \"mailEnabled\": \"false\",
-                                  \"securityEnabled\": \"true\",
-                                  \"visibility\": \"Private\"
-                              }" \
-                      --query id \
-                      --output tsv)
-              else
-                  echo "${{ steps.setvariables.outputs.entlzprefix }}-security-admins group already exists"
-              fi;
-              sleep 15
-
-              az role assignment create --assignee $group --scope /providers/Microsoft.Management/managementGroups/${{ steps.setvariables.outputs.entlzprefix }} --role "Security Admin"
-              az role assignment create --assignee $group --scope /providers/Microsoft.Management/managementGroups/${{ steps.setvariables.outputs.entlzprefix }}-security --role "Virtual Machine Contributor"
-
-              # {entlzprefix}-network-admins
-              # role: Network Contributor
-              # scope: {entlzprefix} management group
-              group=$(az ad group list --query "[?displayName=='${{ steps.setvariables.outputs.entlzprefix }}-network-admins'].objectId" --output tsv)
-              if [[ -z $group ]] ;
-              then
-                  graphURI=$(az cloud show --query endpoints.microsoftGraphResourceId --output tsv)
-                  group=$(az rest --method post \
-                      --url "${graphURI}beta/groups" \
-                      --headers "{\"content-type\":\"application/json\"}" \
-                      --body "{   \"description\": \"Members have Network Contributor rights at enterprise landing zone root and Virtual Machine Contributor rights on connectivity MG\", 
-                                  \"displayName\": \"${{ steps.setvariables.outputs.entlzprefix }}-network-admins\", 
-                                  \"isAssignableToRole\": \"false\", 
-                                  \"mailNickname\": \"${{ steps.setvariables.outputs.entlzprefix }}-network-admins\",
-                                  \"mailEnabled\": \"false\",
-                                  \"securityEnabled\": \"true\",
-                                  \"visibility\": \"Private\"
-                              }" \
-                      --query id \
-                      --output tsv)
-              else
-                  echo "${{ steps.setvariables.outputs.entlzprefix }}-network-admins group already exists"
-              fi;
-              sleep 15
-
-              az role assignment create --assignee $group --scope /providers/Microsoft.Management/managementGroups/${{ steps.setvariables.outputs.entlzprefix }} --role "Network Contributor"
-              az role assignment create --assignee $group --scope /providers/Microsoft.Management/managementGroups/${{ steps.setvariables.outputs.entlzprefix }}-connectivity --role "Virtual Machine Contributor"
-
-              # {entlzprefix}-cost-admins
-              # role: Cost Managment Contributor
-              # scope: {entlzprefix} management group
-              group=$(az ad group list --query "[?displayName=='${{ steps.setvariables.outputs.entlzprefix }}-cost-admins'].objectId" --output tsv)
-              if [[ -z $group ]] ;
-              then
-                  graphURI=$(az cloud show --query endpoints.microsoftGraphResourceId --output tsv)
-                  group=$(az rest --method post \
-                      --url "${graphURI}beta/groups" \
-                      --headers "{\"content-type\":\"application/json\"}" \
-                      --body "{   \"description\": \"Members have Cost Management Contributor rights at enterprise landing zone root\", 
-                                  \"displayName\": \"${{ steps.setvariables.outputs.entlzprefix }}-cost-admins\", 
-                                  \"isAssignableToRole\": \"false\", 
-                                  \"mailNickname\": \"${{ steps.setvariables.outputs.entlzprefix }}-cost-admins\",
-                                  \"mailEnabled\": \"false\",
-                                  \"securityEnabled\": \"true\",
-                                  \"visibility\": \"Private\"
-                              }" \
-                      --query id \
-                      --output tsv)
-              else
-                  echo "${{ steps.setvariables.outputs.entlzprefix }}-cost-admins group already exists"
-              fi;
-              sleep 15
-
-              az role assignment create --assignee $group --scope /providers/Microsoft.Management/managementGroups/${{ steps.setvariables.outputs.entlzprefix }} --role "Cost Management Contributor"
-
-              # {entlzprefix}-identity-admins
-              # role: Virtual Machine Contributor
-              # scope: {entlzprefix}-Identity management group
-              group=$(az ad group list --query "[?displayName=='${{ steps.setvariables.outputs.entlzprefix }}-identity-admins'].objectId" --output tsv)              
-              if [[ -z $group ]] ;
-              then
-                  graphURI=$(az cloud show --query endpoints.microsoftGraphResourceId --output tsv)
-                  group=$(az rest --method post \
-                      --url "${graphURI}beta/groups" \
-                      --headers "{\"content-type\":\"application/json\"}" \
-                      --body "{   \"description\": \"Members have Virtual Machine Contributor rights at identity MG\", 
-                                  \"displayName\": \"${{ steps.setvariables.outputs.entlzprefix }}-identity-admins\", 
-                                  \"isAssignableToRole\": \"false\", 
-                                  \"mailNickname\": \"${{ steps.setvariables.outputs.entlzprefix }}-identity-admins\",
-                                  \"mailEnabled\": \"false\",
-                                  \"securityEnabled\": \"true\",
-                                  \"visibility\": \"Private\"
-                              }" \
-                      --query id \
-                      --output tsv)
-              else
-                  echo "${{ steps.setvariables.outputs.entlzprefix }}-identity-admins group already exists"
-              fi;
-              sleep 15
-
-              az role assignment create --assignee $group --scope /providers/Microsoft.Management/managementGroups/${{ steps.setvariables.outputs.entlzprefix }}-identity --role "Virtual Machine Contributor"
-
-
-              # {entlzprefix}-sandbox-owners
-              # role: owner
-              # scope: {entlzprefix}-Sandboxes management group
-              group=$(az ad group list --query "[?displayName=='${{ steps.setvariables.outputs.entlzprefix }}-sandbox-owners'].objectId" --output tsv)
-              if [[ -z $group ]] ;
-              then
-                  graphURI=$(az cloud show --query endpoints.microsoftGraphResourceId --output tsv)
-                  group=$(az rest --method post \
-                      --url "${graphURI}beta/groups" \
-                      --headers "{\"content-type\":\"application/json\"}" \
-                      --body "{   \"description\": \"Members have Owner rights at sandbox MG\", 
-                                  \"displayName\": \"${{ steps.setvariables.outputs.entlzprefix }}-sandbox-owners\", 
-                                  \"isAssignableToRole\": \"false\", 
-                                  \"mailNickname\": \"${{ steps.setvariables.outputs.entlzprefix }}-sandbox-owners\",
-                                  \"mailEnabled\": \"false\",
-                                  \"securityEnabled\": \"true\",
-                                  \"visibility\": \"Private\"
-                              }" \
-                      --query id \
-                      --output tsv)
-              else
-                  echo "${{ steps.setvariables.outputs.entlzprefix }}-sandbox-owners group already exists"
-              fi;
-              sleep 15
-
-              az role assignment create --assignee $group --scope /providers/Microsoft.Management/managementGroups/${{ steps.setvariables.outputs.entlzprefix }}-sandboxes --role "Owner"
-
         - name: Deploy Custom RBAC Definitions
           uses: azure/CLI@v1
           with:
@@ -303,10 +103,11 @@ jobs:
                     roleexists=$(az role definition list --query "[?roleName=='$rolename']" --output tsv) 
                     if [[ -z $roleexists ]];
                     then
-                      roledefinition=$(jq -r . $f | sed -e "s/%%rbacdefinitionmg%%/$entlzprefix/g")
+                      echo "The '${rolename}' role doesn't exist...creating it."
+                      roledefinition=$(jq -r . $f | sed -e "s/%%entlzprefix%%/$entlzprefix/g")
                       az role definition create --role-definition "$roledefinition"                    
                     else
-                      echo "Role definition $rolename already exists...skipping."
+                      echo "The '${rolename}' role already exists...skipping role creation."
                     fi;
               done
               sleep 60
@@ -316,27 +117,37 @@ jobs:
           with:
             azcliversion: 2.21.0
             inlineScript: |
+              entlzprefix=${{ steps.setvariables.outputs.entlzprefix }}
+
               # Deploy RBAC Assignments
               for f in $(find templates/entlz/rbac/roles -name assign.*.json);
-                do assignee=`jq -r .ObjectId $f`                    
-                  role=`jq -r .RoleDefinitionName $f`
-                  scope=`jq -r .Scope $f`
-                  
-                  isGroup=$(az ad group list --query "[?objectId=='$assignee']")
-                  isUser=$(az ad user list --query "[?objectId=='$assignee']")
-                  isApp=$(az ad app list --query "[?objectId=='$assignee']")
+                do \
+                    displayname=$(jq -r .DisplayName $f | sed -e "s/%%entlzprefix%%/$entlzprefix/g")
+                    role=$(jq -r .RoleDefinitionName $f)
+                    scope=$(jq -r .Scope $f | sed -e "s/%%entlzprefix%%/$entlzprefix/g")
+                    
+                    groupobjid=$(az ad group list --query "[?objectId=='$displayname']" --output tsv)
+                    
+                    if [[ -z $groupobjid ]]; 
+                      then 
+                        echo "The ${displayname} Group does not exist...creating."; 
+                        groupobjid=$(az ad group create --display-name $displayname --mail-nickname $displayname --query objectId --output tsv )
+                      else echo "The ${displayname} Group already exists...skipping creation."
+                    fi
 
-                  if [[ -z $isGroup &&  -z $isUser &&  -z $isApp ]]; 
-                    then echo "Object ID $assignee not found in tenant."; 
-                    else 
+                    assignmentid=$(az role assignment list --scope $scope --query "[?principalId=='$groupobjid']" --output tsv)
+                    if [[ -z $assignmentid ]];
+                      then
+                        sleep 3 # Give some time for Group Creation to Complete before Assignment
+                        echo "The assignment of '${role}' role to '${displayname}' group at '${scope}' scope doesn't exist...creating assignment."
                         az role assignment create \
-                        --assignee "$assignee" \
+                        --assignee $groupobjid \
                         --role "$role" \
-                        --scope "$scope"
-                  fi
-                                   
+                        --scope $scope
+                      else echo "The assignment of '${role}' role to '${displayname}' group at '${scope}' scope already exists...skipping creation."
+                    fi                                   
                 done
-                sleep 120
+                sleep 30
 
 
         

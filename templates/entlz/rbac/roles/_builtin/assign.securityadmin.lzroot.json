@@ -1,0 +1,5 @@
+{
+    "Scope":"/providers/Microsoft.Management/managementGroups/%%entlzprefix%%",
+    "RoleDefinitionName":"Security Admin",    
+    "DisplayName": "%%entlzprefix%%-security-admins"
+}

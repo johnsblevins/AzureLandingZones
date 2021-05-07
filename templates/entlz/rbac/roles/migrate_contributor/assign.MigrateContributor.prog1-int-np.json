@@ -1,6 +1,0 @@
-{
-    "Scope":"/providers/Microsoft.Management/managementGroups/prog1-int-np",
-    "RoleDefinitionName":"Migrate Contributor",    
-    "DisplayName": "prog1-int-np-contributors",
-    "ObjectId":"9c829c67-b3b1-4d76-804e-4dc17f9af2d0"
-}

@@ -1,0 +1,5 @@
+{
+    "Scope":"/providers/Microsoft.Management/managementGroups/<management-group-or-other-scope>",
+    "RoleDefinitionName":"<Role Definition Display Name>",    
+    "DisplayName": "<group-display-name-like-this>"
+}

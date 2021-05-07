@@ -2,7 +2,7 @@
     "Name": "Migrate Contributor",                            
     "description": "",
     "assignableScopes": [
-        "/providers/Microsoft.Management/managementGroups/%%rbacdefinitionmg%%"
+        "/providers/Microsoft.Management/managementGroups/%%entlzprefix%%"
     ],
     "actions": [
         "Microsoft.Migrate/assessmentprojects/assessmentOptions/read",

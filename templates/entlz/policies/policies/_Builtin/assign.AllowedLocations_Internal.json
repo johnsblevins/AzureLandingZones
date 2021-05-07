@@ -4,16 +4,15 @@
   "tier": "Free"
  },
  "properties": {
-  "displayName": "Allowed-Locations-EntLZ",
+  "displayName": "Allowed-Locations-%%entlzprefix%%",
   "policyDefinitionId": "e56962a6-4747-49cd-b67b-bf8b01975c4c",
   "scope": "/providers/Microsoft.Management/managementGroups/%%entlzprefix%%",
   "notScopes": [],
   "parameters": {
       "listOfAllowedLocations": {
         "value": [
-          "USGov Arizona",
-          "USGov Texas",
-          "USGov Virginia"
+          "USGov Virginia",
+          "usgovvirginia"
         ]
       }
   },

@@ -1,0 +1,5 @@
+{
+    "Scope":"/providers/Microsoft.Management/managementGroups/%%entlzprefix%%",
+    "RoleDefinitionName":"Owner",    
+    "DisplayName": "%%entlzprefix%%-platform-admins"
+}
