@@ -144,18 +144,5 @@ module hubtospokepeer 'peering.bicep'={
   }
 }
 
-resource spokertlock 'Microsoft.Authorization/locks@2016-09-01'={
-  name: 'routetablelock'
-  dependsOn:[
-    spoketohubpeer
-    hubtospokepeer
-  ]
-  properties: {
-    level: 'ReadOnly'    
-  }
-  scope: spokert
-}
-
-
 output spokevnetid string = spokevnet.id
 output hubvnetid string = hubvnet.id
