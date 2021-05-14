@@ -107,11 +107,12 @@ module connectivitysub 'modules/connectivity-sub.bicep' ={
     managementvnetprefix: managementvnetprefix
     securityvnetprefix: securityvnetprefix
     vpngwname: vpngwname
-    param fwcount string
-param offer string
-param publisher string
-param sku string
-param version string
+    fwcount: fwcount
+    offer: offer
+    publisher: publisher
+    sku: sku
+    version: version
+    vmsize: vmsize
   }
 }
 
