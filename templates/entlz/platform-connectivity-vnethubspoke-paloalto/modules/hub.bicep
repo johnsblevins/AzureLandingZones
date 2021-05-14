@@ -3,7 +3,6 @@ param bastionsubnetname string
 param bastionsubnetprefix string
 param environment string
 param ergwname string
-param fwcount int
 param fwip string
 param fwmanagementrtname string
 param fwmanagementsubnetname string
@@ -30,6 +29,7 @@ param logaworkspaceid string
 param managementvnetprefix string
 param securityvnetprefix string
 param vpngwname string
+param fwcount int
 param publisher string
 param offer string
 param sku string

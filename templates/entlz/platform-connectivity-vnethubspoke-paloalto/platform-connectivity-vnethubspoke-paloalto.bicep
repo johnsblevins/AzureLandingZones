@@ -72,7 +72,7 @@ var vmsize = 'Standard_DS3_v2' // Options:  Standard_D3,Standard_D4,Standard_D3_
 module connectivitysub 'modules/connectivity-sub.bicep' ={
   name: 'connectivitysub-${randomid}'
   scope: subscription(connectivitysubid)
-  params:{
+  params:{    
     bastionname: bastioname
     bastionsubnetname: bastionsubnetname
     bastionsubnetprefix: bastionsubnetprefix
@@ -107,12 +107,12 @@ module connectivitysub 'modules/connectivity-sub.bicep' ={
     managementvnetprefix: managementvnetprefix
     securityvnetprefix: securityvnetprefix
     vpngwname: vpngwname
-    fwcount: fwcount
     offer: offer
     publisher: publisher
     sku: sku
     version: version
     vmsize: vmsize
+    fwcount: fwcount
   }
 }
 
