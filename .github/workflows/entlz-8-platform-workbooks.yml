@@ -113,6 +113,7 @@ jobs:
               do \
                   # Serialize JSON
                   serializedjson=$(tr '\n' '\' < $f)
+                  #serializedjson= printf '%s\n' "${serializedjson//\" \"/\"$'\n'\"}"
                   
                   name="${f##*/}"
                   workbookdisplayname="${{ steps.setvariables.outputs.entlzprefix }}-${name%.*}"

@@ -63,7 +63,7 @@ on:
   #          "identitysubid":"787e871a-84ba-43be-86bf-86bd1e408a4a",
   #          "connectivitysubid":"b30166b8-dd1b-4fa2-9ad7-057614257b06",
   #          "securitysubid":"ac95a806-c9d3-49e7-83ee-7f82e88c2bd3",
-  #          "other:"{"subownergroup":"","enracctname":"","offertype":"MS-AZR-USGOV-0017P"}"
+  #          "other:"{\"subownergroup\":\"\",\"enracctname\":\"\",\"offertype\":\"MS-AZR-USGOV-0017P\"}"
   #        }        
   #      }'
   repository_dispatch:

@@ -1,4 +1,4 @@
-name: entlz-6a-platform-connectivity-vnethubspoke
+name: entlz-6c-platform-connectivity-vnethubspoke-paloalto
  
 
 # Controls when the action will run. 
@@ -52,7 +52,7 @@ on:
   #  -H "Authorization: token replacewithgithubpattoken" \
   #  https://api.github.com/repos/johnsblevins/AzureLandingZones/dispatches \
   #  -d '{ 
-  #        "event_type":"entlz-6a-platform-connectivity-vnethubspoke", 
+  #        "event_type":"entlz-6c-platform-connectivity-vnethubspoke-paloalto", 
   #        "client_payload":{
   #          "ref":"dev",
   #          "entlzprefix":"elz2",
@@ -67,7 +67,7 @@ on:
   #        }        
   #      }'
   repository_dispatch:
-    types: [entlz-6a-platform-connectivity-vnethubspoke]
+    types: [entlz-6c-platform-connectivity-vnethubspoke-paloalto]
 
 #  push:
 #    branches:
@@ -212,7 +212,7 @@ jobs:
                   --name "${entlzprefix}-connectivity-${location}-${randomid}" \
                   --management-group-id $entlzprefix \
                   --location $location \
-                  --template-file "templates/entlz/platform-connectivity-vnethubspoke/platform-connectivity-vnethubspoke.bicep" \
+                  --template-file "templates/entlz/platform-connectivity-vnethubspoke-paloalto/platform-connectivity-vnethubspoke-paloalto.bicep" \
                   --parameters \
                     bastionsubnetprefix="${bastionsubnetprefix}" \
                     connectivitysubid="${connectivitysubid}" \

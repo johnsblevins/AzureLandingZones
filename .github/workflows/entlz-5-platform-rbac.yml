@@ -20,7 +20,7 @@ on:
 
 
   
-   # Allows you to run this workflow with web call to GitHub Repository Dispatch Event
+  # Allows you to run this workflow with web call to GitHub Repository Dispatch Event
   # Note: This event will only trigger a workflow run if the workflow file is on the default branch.
   # Sample webhook call:
   #curl \
@@ -134,7 +134,7 @@ jobs:
                       else echo "The ${displayname} Group already exists...skipping creation."
                     fi
 
-                    assignmentid=$(az role assignment list --scope $scope --query "[?principalId=='$groupobjid'].id" --output tsv)
+                    assignmentid=$(az role assignment list --scope $scope --query "[?principalId=='$groupobjid'&&roleDefinitionName=='$role'].id" --output tsv)
                     if [[ -z $assignmentid ]];
                       then
                         sleep 5 # Give some time for Group Creation to Complete before Assignment
