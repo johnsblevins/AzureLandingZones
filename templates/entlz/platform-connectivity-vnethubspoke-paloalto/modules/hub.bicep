@@ -36,10 +36,14 @@ param sku string
 param version string
 param vmsize string
 
+var fwmgmtsubnetmask=split(fwmanagementsubnetprefix,'/')[1]
 var fwmgmtsubnetoctets=split(split(fwmanagementsubnetprefix,'/')[0],'.')
 var fwmgmtsubnetwithoutlastoctet=concat(fwmgmtsubnetoctets[0],'.',fwmgmtsubnetoctets[1],'.',fwmgmtsubnetoctets[2],'.')
-var fwsubnetoctets=split(split(fwmanagementsubnetprefix,'/')[0],'.')
+var fwsubnetmask=split(fwsubnetprefix,'/')[1]
+var fwsubnetoctets=split(split(fwsubnetprefix,'/')[0],'.')
 var fwsubnetwithoutlastoctet=concat(fwsubnetoctets[0],'.',fwsubnetoctets[1],'.',fwsubnetoctets[2],'.')
+var fwstartinglastoctet=fwsubnetoctets[3]
+//var fwlbip=concat(fwsubnetwithoutlastoctet,2^(32-int(fwsubnetmask)-2))
 
 resource fwmanagementrt 'Microsoft.Network/routeTables@2020-11-01' = {
   location: location
@@ -197,7 +201,7 @@ resource hubvnet 'Microsoft.Network/virtualNetworks@2020-08-01'= {
   }
 }
 
-resource paloaltomgmtnics 'Microsoft.Network/networkInterfaces@2020-11-01' = [for i in range(1,fwcount): {
+resource paloaltomgmtnics 'Microsoft.Network/networkInterfaces@2020-11-01' = [for i in range(0,fwcount-1): {
   name: '${fwname}${i}-management-nic'
   location: location
   dependsOn: [
@@ -219,7 +223,7 @@ resource paloaltomgmtnics 'Microsoft.Network/networkInterfaces@2020-11-01' = [fo
   }
 }]
 
-resource paloaltotrustednic1s 'Microsoft.Network/networkInterfaces@2020-11-01' = [for i in range(1,fwcount): {
+resource paloaltotrustednic1s 'Microsoft.Network/networkInterfaces@2020-11-01' = [for i in range(0,fwcount-1): {
   name: '${fwname}${i}-trusted-nic-1'
   location: location
   dependsOn: [
@@ -242,7 +246,7 @@ resource paloaltotrustednic1s 'Microsoft.Network/networkInterfaces@2020-11-01' =
   }
 }]
 
-resource paloaltos 'Microsoft.Compute/virtualMachines@2020-12-01' = [for i in range(1,fwcount): {
+resource paloaltos 'Microsoft.Compute/virtualMachines@2020-12-01' = [for i in range(0,fwcount-1): {
   name: '${fwname}${i}'
   location: location
   dependsOn: [
