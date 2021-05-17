@@ -222,7 +222,7 @@ resource paloaltomgmtnics 'Microsoft.Network/networkInterfaces@2020-11-01' = [fo
     ]
   }
 }]
-
+/*
 resource paloaltotrustednic1s 'Microsoft.Network/networkInterfaces@2020-11-01' = [for i in range(0,fwcount-1): {
   name: '${fwname}${i}-trusted-nic-1'
   location: location
@@ -236,7 +236,7 @@ resource paloaltotrustednic1s 'Microsoft.Network/networkInterfaces@2020-11-01' =
         name: 'ipconfig-trusted'        
         properties:{          
           privateIPAllocationMethod: 'Static'
-          privateIPAddress: '${fwsubnetwithoutlastoctet}${i+3}'
+          privateIPAddress: '${fwsubnetwithoutlastoctet}${i+4}'
           subnet: {
             id: '${hubvnet.id}/subnets/${fwsubnetname}'
           }
@@ -300,7 +300,7 @@ resource paloaltos 'Microsoft.Compute/virtualMachines@2020-12-01' = [for i in ra
     }
   }
 }]
-
+*/
 
 resource vpngwpip1 'Microsoft.Network/publicIPAddresses@2020-11-01'=  if( !(empty(gwsubnetprefix)) && (gwtype=='Vpn') ){
   location: location
