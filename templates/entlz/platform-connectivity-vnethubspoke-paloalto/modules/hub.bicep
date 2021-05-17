@@ -201,7 +201,7 @@ resource hubvnet 'Microsoft.Network/virtualNetworks@2020-08-01'= {
   }
 }
 
-resource paloaltomgmtnics 'Microsoft.Network/networkInterfaces@2020-11-01' = [for i in range(0,fwcount-1): {
+resource paloaltomgmtnics 'Microsoft.Network/networkInterfaces@2020-11-01' = [for i in range(0,0): {
   name: '${fwname}${i}-management-nic'
   location: location
   dependsOn: [
