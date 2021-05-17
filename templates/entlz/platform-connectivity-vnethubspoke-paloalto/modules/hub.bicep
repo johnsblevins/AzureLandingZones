@@ -213,7 +213,7 @@ resource paloaltomgmtnics 'Microsoft.Network/networkInterfaces@2020-11-01' = [fo
         name: 'ipconfig-management'
         properties:{
           privateIPAllocationMethod: 'Static'
-          privateIPAddress: '${fwmgmtsubnetwithoutlastoctet}${i+3}'
+          privateIPAddress: '${fwmgmtsubnetwithoutlastoctet}4'
           subnet: {
             id: '${hubvnet.id}/subnets/${fwmanagementsubnetname}'
           }
