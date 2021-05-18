@@ -36,14 +36,28 @@ param sku string
 param version string
 param vmsize string
 
-var fwmgmtsubnetmask=split(fwmanagementsubnetprefix,'/')[1]
-var fwmgmtsubnetoctets=split(split(fwmanagementsubnetprefix,'/')[0],'.')
-var fwmgmtsubnetwithoutlastoctet=concat(fwmgmtsubnetoctets[0],'.',fwmgmtsubnetoctets[1],'.',fwmgmtsubnetoctets[2],'.')
-var fwsubnetmask=split(fwsubnetprefix,'/')[1]
-var fwsubnetoctets=split(split(fwsubnetprefix,'/')[0],'.')
-var fwsubnetwithoutlastoctet=concat(fwsubnetoctets[0],'.',fwsubnetoctets[1],'.',fwsubnetoctets[2],'.')
-var fwstartinglastoctet=fwsubnetoctets[3]
-//var fwlbip=concat(fwsubnetwithoutlastoctet,2^(32-int(fwsubnetmask)-2))
+var subnetsizes= { 
+  '22': 1024
+  '23': 512
+  '24': 256
+  '25': 128 
+  '26': 64
+  '27': 32
+  '28': 16
+  '29': 8 
+}
+
+var fwmgmtsubnetmask=split(fwmanagementsubnetprefix,'/')[1] // Get fw mgmt subnet mask ex. 24 for /24, 29 for /29
+var fwmgmtsubnetoctets=split(split(fwmanagementsubnetprefix,'/')[0],'.') // Split fw mgmt subnet into octet array
+var fwmgmtsubnetwithoutlastoctet=concat(fwmgmtsubnetoctets[0],'.',fwmgmtsubnetoctets[1],'.',fwmgmtsubnetoctets[2],'.') // Compose fwmgmt subnet prefix without last octet
+var fwmgmtstartinglastoctet=fwmgmtsubnetoctets[3] // Get starting last octet for fw mgmt subnet
+var fwsubnetmask=split(fwsubnetprefix,'/')[1] // Get fw subnet mask ex. 24 for /24, 29 for /29
+var fwsubnetoctets=split(split(fwsubnetprefix,'/')[0],'.') // Split fw subnet into octet array
+var fwsubnetwithoutlastoctet=concat(fwsubnetoctets[0],'.',fwsubnetoctets[1],'.',fwsubnetoctets[2],'.') // Compose fw subnet prefix without last octet
+var fwstartinglastoctet=fwsubnetoctets[3] // Get starting last octet for fw subnet ex. 0 for 10.1.4.0/26
+var fwendinglastoctet=fwsubnetoctets[3]+subnetsizes[fwsubnetmask]-1 // Get ending last octet for fw subnet ex. 63 for 10.1.4.0/26
+var fwlbip=concat(fwsubnetwithoutlastoctet,fwendinglastoctet-1)
+
 
 resource fwmanagementrt 'Microsoft.Network/routeTables@2020-11-01' = {
   location: location
@@ -213,7 +227,7 @@ resource paloaltomgmtnics 'Microsoft.Network/networkInterfaces@2020-11-01' = [fo
         name: 'ipconfig-management'
         properties:{
           privateIPAllocationMethod: 'Static'
-          privateIPAddress: '${fwmgmtsubnetwithoutlastoctet}${i+3}'
+          privateIPAddress: '${fwmgmtsubnetwithoutlastoctet}${fwmgmtstartinglastoctet+3+i}' // first ips are reserved so add 3 plus index i to start a first usable
           subnet: {
             id: '${hubvnet.id}/subnets/${fwmanagementsubnetname}'
           }
@@ -236,7 +250,7 @@ resource paloaltotrustednic1s 'Microsoft.Network/networkInterfaces@2020-11-01' =
         name: 'ipconfig-trusted'        
         properties:{          
           privateIPAllocationMethod: 'Static'
-          privateIPAddress: '${fwsubnetwithoutlastoctet}${i+3}'
+          privateIPAddress: '${fwsubnetwithoutlastoctet}${fwstartinglastoctet+3+i}'  // first ips are reserved so add 3 plus index i to start a first usable
           subnet: {
             id: '${hubvnet.id}/subnets/${fwsubnetname}'
           }
