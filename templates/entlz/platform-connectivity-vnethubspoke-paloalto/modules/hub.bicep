@@ -47,15 +47,15 @@ var subnetsizes= {
   '29': 8 
 }
 
-var fwmgmtsubnetmask=split(fwmanagementsubnetprefix,'/')[1] // Get fw mgmt subnet mask ex. 24 for /24, 29 for /29
-var fwmgmtsubnetoctets=split(split(fwmanagementsubnetprefix,'/')[0],'.') // Split fw mgmt subnet into octet array
-var fwmgmtsubnetwithoutlastoctet=concat(fwmgmtsubnetoctets[0],'.',fwmgmtsubnetoctets[1],'.',fwmgmtsubnetoctets[2],'.') // Compose fwmgmt subnet prefix without last octet
-var fwmgmtstartinglastoctet=fwmgmtsubnetoctets[3] // Get starting last octet for fw mgmt subnet
-var fwsubnetmask=split(fwsubnetprefix,'/')[1] // Get fw subnet mask ex. 24 for /24, 29 for /29
-var fwsubnetoctets=split(split(fwsubnetprefix,'/')[0],'.') // Split fw subnet into octet array
-var fwsubnetwithoutlastoctet=concat(fwsubnetoctets[0],'.',fwsubnetoctets[1],'.',fwsubnetoctets[2],'.') // Compose fw subnet prefix without last octet
-var fwstartinglastoctet=fwsubnetoctets[3] // Get starting last octet for fw subnet ex. 0 for 10.1.4.0/26
-var fwendinglastoctet=fwsubnetoctets[3]+subnetsizes[fwsubnetmask]-1 // Get ending last octet for fw subnet ex. 63 for 10.1.4.0/26
+var fwmgmtsubnetmask=split(fwmanagementsubnetprefix,'/')[1] // Get fw mgmt subnet mask ex. 24 for 10.1.4.0/24, 29 for 10.1.4.0/29
+var fwmgmtsubnetoctets=split(split(fwmanagementsubnetprefix,'/')[0],'.') // Split fw mgmt subnet into octet array ex. [10,1,4,0] for 10.1.4.0/24
+var fwmgmtsubnetwithoutlastoctet=concat(fwmgmtsubnetoctets[0],'.',fwmgmtsubnetoctets[1],'.',fwmgmtsubnetoctets[2],'.') // Compose fwmgmt subnet prefix without last octet ex. 10.1.4. for 10.2.4.0/24
+var fwmgmtstartinglastoctet=int(fwmgmtsubnetoctets[3]) // Get starting last octet for fw mgmt subnet ex. 0 for 10.1.4.0/26, 64 for 10.1.4.64/27
+var fwsubnetmask=split(fwsubnetprefix,'/')[1] // Get fw subnet mask ex. 24 for 10.1.4.0/24, 29 for 10.1.4.0/29
+var fwsubnetoctets=split(split(fwsubnetprefix,'/')[0],'.') // Split fw subnet into octet array ex. [10,1,4,0] for 10.1.4.0/24
+var fwsubnetwithoutlastoctet=concat(fwsubnetoctets[0],'.',fwsubnetoctets[1],'.',fwsubnetoctets[2],'.') // Compose fw subnet prefix without last octet ex. 10.1.4. for 10.2.4.0/24
+var fwstartinglastoctet=int(fwsubnetoctets[3]) // Get starting last octet for fw subnet ex. 0 for 10.1.4.0/26, 64 for 10.1.4.64/27
+var fwendinglastoctet=int(fwsubnetoctets[3])+subnetsizes[fwsubnetmask]-1 // Get ending last octet for fw subnet ex. 63 for 10.1.4.0/26
 var fwlbip=concat(fwsubnetwithoutlastoctet,fwendinglastoctet-1)
 
 
