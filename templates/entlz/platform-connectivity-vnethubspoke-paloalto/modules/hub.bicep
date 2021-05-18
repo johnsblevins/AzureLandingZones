@@ -201,7 +201,7 @@ resource hubvnet 'Microsoft.Network/virtualNetworks@2020-08-01'= {
   }
 }
 
-resource paloaltomgmtnics 'Microsoft.Network/networkInterfaces@2020-11-01' = [for i in range(1,1): {
+resource paloaltomgmtnics 'Microsoft.Network/networkInterfaces@2020-11-01' = [for i in range(1,fwcount): {
   name: '${fwname}${i}-management-nic'
   location: location
   dependsOn: [
@@ -213,7 +213,7 @@ resource paloaltomgmtnics 'Microsoft.Network/networkInterfaces@2020-11-01' = [fo
         name: 'ipconfig-management'
         properties:{
           privateIPAllocationMethod: 'Static'
-          privateIPAddress: '${fwmgmtsubnetwithoutlastoctet}4'
+          privateIPAddress: '${fwmgmtsubnetwithoutlastoctet}${i+3}'
           subnet: {
             id: '${hubvnet.id}/subnets/${fwmanagementsubnetname}'
           }
@@ -222,8 +222,8 @@ resource paloaltomgmtnics 'Microsoft.Network/networkInterfaces@2020-11-01' = [fo
     ]
   }
 }]
-/*
-resource paloaltotrustednic1s 'Microsoft.Network/networkInterfaces@2020-11-01' = [for i in range(0,fwcount-1): {
+
+resource paloaltotrustednic1s 'Microsoft.Network/networkInterfaces@2020-11-01' = [for i in range(1,fwcount): {
   name: '${fwname}${i}-trusted-nic-1'
   location: location
   dependsOn: [
@@ -236,7 +236,7 @@ resource paloaltotrustednic1s 'Microsoft.Network/networkInterfaces@2020-11-01' =
         name: 'ipconfig-trusted'        
         properties:{          
           privateIPAllocationMethod: 'Static'
-          privateIPAddress: '${fwsubnetwithoutlastoctet}${i+4}'
+          privateIPAddress: '${fwsubnetwithoutlastoctet}${i+3}'
           subnet: {
             id: '${hubvnet.id}/subnets/${fwsubnetname}'
           }
@@ -245,8 +245,8 @@ resource paloaltotrustednic1s 'Microsoft.Network/networkInterfaces@2020-11-01' =
     ]
   }
 }]
-
-resource paloaltos 'Microsoft.Compute/virtualMachines@2020-12-01' = [for i in range(0,fwcount-1): {
+/*
+resource paloaltos 'Microsoft.Compute/virtualMachines@2020-12-01' = [for i in range(1,fwcount): {
   name: '${fwname}${i}'
   location: location
   dependsOn: [
