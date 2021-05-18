@@ -31,11 +31,11 @@ var fw_subnetoctets=split(split(fwsubnetprefix,'/')[0],'.')
 var fw_lastoctet=string(int(fw_subnetoctets[3])+4)
 var fwip=concat(fw_subnetoctets[0],'.',fw_subnetoctets[1],'.',fw_subnetoctets[2],'.',fw_lastoctet)
 var fwmanagementrtname = '${hubvnetname}-fwmanagement-rt-${location}'
-var fwmanagementsubnetname = 'AzureFirewallManagementSubnet'
+var fwmanagementsubnetname = 'FirewallManagementSubnet'
 var fwname = '${entlzprefix}hubfw${substring(deployment().location,5,3)}'
 var fwpolicyname = '${fwname}-policy'
 var fwrtname = '${hubvnetname}-fw-rt-${location}'
-var fwsubnetname = 'AzureFirewallSubnet'
+var fwsubnetname = 'FirewallSubnet'
 var gwrtname = '${hubvnetname}-gw-rt-${location}'
 var gwsubnetname = 'GatewaySubnet'
 var gwtier = ( gwtype=='ExpressRoute'?'ErGw1AZ':'VpnGw2AZ' )
