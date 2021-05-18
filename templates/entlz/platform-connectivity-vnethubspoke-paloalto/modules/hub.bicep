@@ -272,7 +272,7 @@ resource paloaltos 'Microsoft.Compute/virtualMachines@2020-12-01' = [for i in ra
     publisher: publisher
   }
   zones: [
-    '1'
+    string((i % 3) + 1)
   ]
   properties:{
     hardwareProfile:{
@@ -281,7 +281,7 @@ resource paloaltos 'Microsoft.Compute/virtualMachines@2020-12-01' = [for i in ra
     osProfile:{
       adminUsername: 'azureadmin'
       adminPassword: 'password123!!'
-      computerName: fwname
+      computerName:  '${fwname}${i}'
     }
     storageProfile:{
       imageReference:{
@@ -299,13 +299,13 @@ resource paloaltos 'Microsoft.Compute/virtualMachines@2020-12-01' = [for i in ra
     networkProfile:{
       networkInterfaces:[
         {
-          id: '${paloaltomgmtnics[i]}'
+          id: '/subscriptions/b30166b8-dd1b-4fa2-9ad7-057614257b06/resourceGroups/elz2-hub-connectivity-usgovvirginia/providers/Microsoft.Network/networkInterfaces/elz2hubfwvir1-management-nic'
           properties:{
             primary:true         
           }
         }
         {
-          id: '${paloaltotrustednic1s[i]}'
+          id: '/subscriptions/b30166b8-dd1b-4fa2-9ad7-057614257b06/resourceGroups/elz2-hub-connectivity-usgovvirginia/providers/Microsoft.Network/networkInterfaces/elz2hubfwvir1-trusted-nic-1'
           properties:{
             primary:false
           }
