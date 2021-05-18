@@ -259,7 +259,7 @@ resource paloaltotrustednic1s 'Microsoft.Network/networkInterfaces@2020-11-01' =
     ]
   }
 }]
-/*
+
 resource paloaltos 'Microsoft.Compute/virtualMachines@2020-12-01' = [for i in range(1,fwcount): {
   name: '${fwname}${i}'
   location: location
@@ -314,7 +314,7 @@ resource paloaltos 'Microsoft.Compute/virtualMachines@2020-12-01' = [for i in ra
     }
   }
 }]
-*/
+
 
 resource vpngwpip1 'Microsoft.Network/publicIPAddresses@2020-11-01'=  if( !(empty(gwsubnetprefix)) && (gwtype=='Vpn') ){
   location: location
