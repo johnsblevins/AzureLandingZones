@@ -272,7 +272,7 @@ resource paloaltos 'Microsoft.Compute/virtualMachines@2020-12-01' = [for i in ra
     publisher: publisher
   }
   zones: [
-    string((i % 3) + 1)
+    '1'
   ]
   properties:{
     hardwareProfile:{
