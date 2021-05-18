@@ -264,7 +264,9 @@ resource paloaltos 'Microsoft.Compute/virtualMachines@2020-12-01' = [for i in ra
   name: '${fwname}${i}'
   location: location
   dependsOn: [
-    hubvnet    
+    hubvnet
+    paloaltomgmtnics
+    paloaltotrustednic1s
   ]
   plan:{
     name: sku
