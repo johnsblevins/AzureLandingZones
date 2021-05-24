@@ -1,0 +1,311 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/0.1.2-preview/CreateUIDefinition.MultiVm.json#",
+    "handler": "Microsoft.Azure.CreateUIDef",
+    "version": "0.1.2-preview",
+    "parameters": {
+      "basics": [
+        {}
+      ],
+      "steps": [
+        {
+          "name": "userLandingZoneConfig",
+          "label": "User Landing Zone Settings",
+          "subLabel": {
+            "preValidation": "Configure the infrastructure settings",
+            "postValidation": "Done"
+          },
+          "bladeTitle": "User Landing Zone settings",
+          "elements": [
+            {
+              "name": "vnet_address_space",
+              "type": "Microsoft.Common.TextBox",
+              "label": "vnet_address_space",
+              "defaultValue": "10.128.0.0/23",
+              "toolTip": "Must use CIDR Notation - xxx.xxx.xxx.xxx/xx",
+              "placeholder": "",
+              "multiLine": false,
+              "constraints": {
+                "required": true,
+                "validations": [
+                  {
+                    "regex": "^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])(\\/(\\d|[1-2]\\d|3[0-2]))$",
+                    "message": "Must use CIDR Notation - xxx.xxx.xxx.xxx/xx"
+                  }
+                ]
+              },
+              "visible": true
+            },
+            {
+              "name": "mgt_address_prefix",
+              "type": "Microsoft.Common.TextBox",
+              "label": "mgt_address_prefix",
+              "defaultValue": "10.128.0.0/26",
+              "toolTip": "Must use CIDR Notation - xxx.xxx.xxx.xxx/xx",
+              "placeholder": "",
+              "multiLine": false,
+              "constraints": {
+                "required": true,
+                "validations": [
+                  {
+                    "regex": "^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])(\\/(\\d|[1-2]\\d|3[0-2]))$",
+                    "message": "Must use CIDR Notation - xxx.xxx.xxx.xxx/xx"
+                  }
+                ]
+              },
+              "visible": true
+            },
+            {
+              "name": "web_address_prefix",
+              "type": "Microsoft.Common.TextBox",
+              "label": "web_address_prefix",
+              "defaultValue": "10.128.0.64/26",
+              "toolTip": "Must use CIDR Notation - xxx.xxx.xxx.xxx/xx",
+              "placeholder": "",
+              "multiLine": false,
+              "constraints": {
+                "required": true,
+                "validations": [
+                  {
+                    "regex": "^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])(\\/(\\d|[1-2]\\d|3[0-2]))$",
+                    "message": "Must use CIDR Notation - xxx.xxx.xxx.xxx/xx"
+                  }
+                ]
+              },
+              "visible": true
+            },
+            {
+              "name": "app_address_prefix",
+              "type": "Microsoft.Common.TextBox",
+              "label": "app_address_prefix",
+              "defaultValue": "10.128.0.128/26",
+              "toolTip": "Must use CIDR Notation - xxx.xxx.xxx.xxx/xx",
+              "placeholder": "",
+              "multiLine": false,
+              "constraints": {
+                "required": true,
+                "validations": [
+                  {
+                    "regex": "^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])(\\/(\\d|[1-2]\\d|3[0-2]))$",
+                    "message": "Must use CIDR Notation - xxx.xxx.xxx.xxx/xx"
+                  }
+                ]
+              },
+              "visible": true
+            },
+            {
+              "name": "data_address_prefix",
+              "type": "Microsoft.Common.TextBox",
+              "label": "data_address_prefix",
+              "defaultValue": "10.128.0.192/26",
+              "toolTip": "Must use CIDR Notation - xxx.xxx.xxx.xxx/xx",
+              "placeholder": "",
+              "multiLine": false,
+              "constraints": {
+                "required": true,
+                "validations": [
+                  {
+                    "regex": "^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])(\\/(\\d|[1-2]\\d|3[0-2]))$",
+                    "message": "Must use CIDR Notation - xxx.xxx.xxx.xxx/xx"
+                  }
+                ]
+              },
+              "visible": true
+            },
+            {
+              "name": "master_address_prefix",
+              "type": "Microsoft.Common.TextBox",
+              "label": "master_address_prefix",
+              "defaultValue": "10.128.1.0/26",
+              "toolTip": "Must use CIDR Notation - xxx.xxx.xxx.xxx/xx",
+              "placeholder": "",
+              "multiLine": false,
+              "constraints": {
+                "required": true,
+                "validations": [
+                  {
+                    "regex": "^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])(\\/(\\d|[1-2]\\d|3[0-2]))$",
+                    "message": "Must use CIDR Notation - xxx.xxx.xxx.xxx/xx"
+                  }
+                ]
+              },
+              "visible": true
+            },
+            {
+              "name": "worker_address_prefix",
+              "type": "Microsoft.Common.TextBox",
+              "label": "worker_address_prefix",
+              "defaultValue": "10.128.1.64/26",
+              "toolTip": "Must use CIDR Notation - xxx.xxx.xxx.xxx/xx",
+              "placeholder": "",
+              "multiLine": false,
+              "constraints": {
+                "required": true,
+                "validations": [
+                  {
+                    "regex": "^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])(\\/(\\d|[1-2]\\d|3[0-2]))$",
+                    "message": "Must use CIDR Notation - xxx.xxx.xxx.xxx/xx"
+                  }
+                ]
+              },
+              "visible": true
+            },
+            {
+              "name": "azure_firewall_ip",
+              "type": "Microsoft.Common.TextBox",
+              "label": "azure_firewall_ip",
+              "defaultValue": "10.0.0.4",
+              "toolTip": "Must use IP Notation - xxx.xxx.xxx.xxx",
+              "placeholder": "",
+              "multiLine": false,
+              "constraints": {
+                "required": true,
+                "validations": [
+                  {
+                    "regex": "^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$",
+                    "message": "Must use IP Notation - xxx.xxx.xxx.xxx"
+                  }
+                ]
+              },
+              "visible": true
+            },
+            {
+              "name": "hubSubscriptionId",
+              "type": "Microsoft.Common.TextBox",
+              "label": "hubSubscriptionId",
+              "defaultValue": "b30166b8-dd1b-4fa2-9ad7-057614257b06",
+              "toolTip": "Must use GUID Notation - ex. 123e4567-e89b-12d3-a456-9AC7CBDCEE52",
+              "placeholder": "",
+              "multiLine": false,
+              "constraints": {
+                "required": true,
+                "validations": [
+                  {
+                    "regex": "^[{]?[0-9a-fA-F]{8}-([0-9a-fA-F]{4}-){3}[0-9a-fA-F]{12}[}]?$",
+                    "message": "Must use GUID Notation - ex. 123e4567-e89b-12d3-a456-9AC7CBDCEE52"
+                  }
+                ]
+              },
+              "visible": true
+            },
+            {
+              "name": "hubResourceGroupName",
+              "type": "Microsoft.Common.TextBox",
+              "label": "hubResourceGroupName",
+              "defaultValue": "elz2-hub-connectivity-usgovvirginia",
+              "toolTip": "90 character max with letters, numbers, dashes, parentheses and underscores",
+              "placeholder": "",
+              "multiLine": false,
+              "constraints": {
+                "required": true,
+                "validations": [
+                  {
+                    "regex": "^[A-Za-z0-9_-]{1,90}$",
+                    "message": "90 character max with letters, numbers, dashes, parentheses and underscores"
+                  }
+                ]
+              },
+              "visible": true
+            },
+            {
+              "name": "hubVnetName",
+              "type": "Microsoft.Common.TextBox",
+              "label": "hubVnetName",
+              "defaultValue": "elz2-hub-vnet-usgovvirginia",
+              "toolTip": "90 character max with letters, numbers, dashes, parentheses and underscores",
+              "placeholder": "",
+              "multiLine": false,
+              "constraints": {
+                "required": true,
+                "validations": [                  
+                ]
+              },
+              "visible": true
+            },
+            {
+              "name": "serverName",
+              "type": "Microsoft.Common.TextBox",
+              "label": "serverName",
+              "defaultValue": "userlzjmpbox",
+              "toolTip": "",
+              "placeholder": "",
+              "multiLine": false,
+              "constraints": {
+                "required": true,
+                "validations": [                  
+                ]
+              },
+              "visible": true
+            },
+            {
+              "name": "adminUsername",
+              "type": "Microsoft.Common.TextBox",
+              "label": "adminUsername",
+              "defaultValue": "userlzjmpbox",
+              "toolTip": "",
+              "placeholder": "",
+              "multiLine": false,
+              "constraints": {
+                "required": true,
+                "validations": [                  
+                ]
+              },
+              "visible": true
+            },
+            {
+              "name": "adminUsername",
+              "type": "Microsoft.Common.TextBox",
+              "label": "adminUsername",
+              "defaultValue": "userlzjmpbox",
+              "toolTip": "",
+              "placeholder": "",
+              "multiLine": false,
+              "constraints": {
+                "required": true,
+                "validations": [                  
+                ]
+              },
+              "visible": true
+            },
+            {
+              "name": "adminPassword",
+              "type": "Microsoft.Common.PasswordBox",
+              "label": {
+                "password": "Password",
+                "confirmPassword": "Confirm password"
+              },
+              "toolTip": "",
+              "constraints": {
+                "required": true,
+                "regex": "^[a-zA-Z0-9]{8,}$",
+                "validationMessage": "Password must be at least 8 characters long, contain only numbers and letters"
+              },
+              "options": {
+                "hideConfirmation": false
+              },
+              "visible": true
+            }
+          ]
+        }          
+      ],
+      "outputs": {       
+        "location": "[location()]",
+        "SandboxName": "testuserlz",
+        "vnet_address_space": "10.128.0.0/23",
+        "mgt_address_prefix": "10.128.0.0/26",
+        "web_address_prefix": "10.128.0.64/26",
+        "app_address_prefix": "10.128.0.128/26",
+        "data_address_prefix": "10.128.0.192/26",
+        "master_address_prefix": "10.128.1.0/26",
+        "worker_address_prefix": "10.128.1.64/26",
+        "azure_firewall_ip": "10.0.0.4",
+        "hubSubscriptionId": "b30166b8-dd1b-4fa2-9ad7-057614257b06",
+        "hubResourceGroupName": "elz2-hub-connectivity-usgovvirginia",
+        "hubVnetName": "elz2-hub-vnet-usgovvirginia",
+        "serverName": "userlzjmpbox",
+        "adminUsername": "azureadmin",
+        "adminPassword": "password123!!",
+        "OSVersion": "2019-Datacenter",
+        "vmSize": "D2s_v3"
+      }
+    }
+  }

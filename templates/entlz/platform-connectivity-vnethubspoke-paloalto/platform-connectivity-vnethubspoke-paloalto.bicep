@@ -31,11 +31,11 @@ var fw_subnetoctets=split(split(fwsubnetprefix,'/')[0],'.')
 var fw_lastoctet=string(int(fw_subnetoctets[3])+4)
 var fwip=concat(fw_subnetoctets[0],'.',fw_subnetoctets[1],'.',fw_subnetoctets[2],'.',fw_lastoctet)
 var fwmanagementrtname = '${hubvnetname}-fwmanagement-rt-${location}'
-var fwmanagementsubnetname = 'AzureFirewallManagementSubnet'
-var fwname = '${entlzprefix}-hub-fw-${location}'
+var fwmanagementsubnetname = 'FirewallManagementSubnet'
+var fwname = '${entlzprefix}hubfw${substring(deployment().location,5,3)}'
 var fwpolicyname = '${fwname}-policy'
 var fwrtname = '${hubvnetname}-fw-rt-${location}'
-var fwsubnetname = 'AzureFirewallSubnet'
+var fwsubnetname = 'FirewallSubnet'
 var gwrtname = '${hubvnetname}-gw-rt-${location}'
 var gwsubnetname = 'GatewaySubnet'
 var gwtier = ( gwtype=='ExpressRoute'?'ErGw1AZ':'VpnGw2AZ' )
@@ -65,14 +65,14 @@ var vpngwname = '${entlzprefix}-hub-vpngw-${location}'
 var fwcount = 1
 var offer = 'vmseries-flex'
 var publisher = 'paloaltonetworks'
-var sku = 'bundle2' // Options: byol, bundle1, bundle2
-var version = '10.0.0' // Options: 9.1.3, 10.0.0, latest
+var sku = 'byol' // Options: byol, bundle1, bundle2
+var version = 'latest' // Options: 9.1.3, 10.0.0, latest
 var vmsize = 'Standard_DS3_v2' // Options:  Standard_D3,Standard_D4,Standard_D3_v2,Standard_D4_v2,Standard_A4,Standard_DS3_v2,Standard_DS4_v2
 
 module connectivitysub 'modules/connectivity-sub.bicep' ={
   name: 'connectivitysub-${randomid}'
   scope: subscription(connectivitysubid)
-  params:{
+  params:{    
     bastionname: bastioname
     bastionsubnetname: bastionsubnetname
     bastionsubnetprefix: bastionsubnetprefix
@@ -107,11 +107,12 @@ module connectivitysub 'modules/connectivity-sub.bicep' ={
     managementvnetprefix: managementvnetprefix
     securityvnetprefix: securityvnetprefix
     vpngwname: vpngwname
-    param fwcount string
-param offer string
-param publisher string
-param sku string
-param version string
+    offer: offer
+    publisher: publisher
+    sku: sku
+    version: version
+    vmsize: vmsize
+    fwcount: fwcount
   }
 }
 
