@@ -191,10 +191,15 @@ jobs:
         enable-AzPSSession: false
     - name: Deploy Mission Landing Zone
       if: ${{ steps.setvariables.outputs.destroy == 'false' }}
-      uses: hashicorp/setup-terraform@v1
+      uses: azure/CLI@v1
       with:
         azcliversion: 2.21.0
-        inlineScript: |
+        inlineScript: |        
+          apt-get update && apt-get install -y gnupg software-properties-common curl
+          curl -fsSL https://apt.releases.hashicorp.com/gpg | apt-key add -
+          apt-add-repository "deb [arch=amd64] https://apt.releases.hashicorp.com $(lsb_release -cs) main"
+          apt-get update && apt-get install terraform
+
           templates/entlz/platform-connectivity-vnethubspoke-missionlz/src/scripts/deploy.sh \
             -e usgovernment \
             -s ${{ steps.setvariables.outputs.connectivitysubid }} \
