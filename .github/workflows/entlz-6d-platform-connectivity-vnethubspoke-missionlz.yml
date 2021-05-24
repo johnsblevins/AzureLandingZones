@@ -189,7 +189,8 @@ jobs:
         creds: ${{ secrets[steps.setvariables.outputs.githubsecret] }}
         environment: ${{ steps.setvariables.outputs.environment }}
         enable-AzPSSession: false
-
+    - name: Load Terraform
+      uses: hashicorp/setup-terraform@v1
     - name: Deploy Mission Landing Zone
       if: ${{ steps.setvariables.outputs.destroy == 'false' }}
       uses: azure/CLI@v1
