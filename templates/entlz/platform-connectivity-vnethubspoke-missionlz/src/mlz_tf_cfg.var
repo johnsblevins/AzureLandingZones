@@ -1,0 +1,14 @@
+tf_environment=usgovernment
+mlz_env_name=mlz1620260136
+mlz_config_location=usgovvirginia
+mlz_config_subid=07526f72-6689-42be-945f-bb6ad0214b71
+mlz_tenantid=6775f0cc-3aaf-4563-8857-e54a12ebb874
+mlz_saca_subid=07526f72-6689-42be-945f-bb6ad0214b71
+mlz_tier0_subid=07526f72-6689-42be-945f-bb6ad0214b71
+mlz_tier1_subid=07526f72-6689-42be-945f-bb6ad0214b71
+mlz_tier2_subid=07526f72-6689-42be-945f-bb6ad0214b71
+mlz_metadatahost=https://management.usgovcloudapi.net/
+mlz_acrLoginServerEndpoint=.azurecr.us
+mlz_keyvaultDns=.vault.usgovcloudapi.net
+mlz_cloudname=AzureUSGovernment
+mlz_activeDirectory=https://login.microsoftonline.us

@@ -1,0 +1,215 @@
+name: entlz-6d-platform-connectivity-vnethubspoke-missionlz
+ 
+
+# Controls when the action will run. 
+on:
+    # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+    inputs:
+      mlz_env_name: 
+        description: 'mlz_env_name'
+        required: true
+        default: ''
+      environment: 
+        description: 'environment'
+        required: true
+        default: 'azureusgovernment'
+      location: 
+        description: 'location'
+        required: true
+        default: 'usgovvirginia'             
+      subscriptions: 
+        description: '{"identitysubid":"<subid>","connectivitysubid":"<subid>","securitysubid":"<subid>","managementsubid":"<subid>"}'
+        required: true
+        default: '{"identitysubid":"787e871a-84ba-43be-86bf-86bd1e408a4a","connectivitysubid":"b30166b8-dd1b-4fa2-9ad7-057614257b06","securitysubid":"ac95a806-c9d3-49e7-83ee-7f82e88c2bd3","managementsubid":"07526f72-6689-42be-945f-bb6ad0214b71"}'
+      hubvnet:
+        description: '{"hubvnetprefix":"x.x.x.x/x","bastionsubnetprefix":"x.x.x.x/x","fwsubnetprefix":"x.x.x.x/x","fwmanagementsubnetprefix":"x.x.x.x/x","gwsubnetprefix":"x.x.x.x/x","hubmanagementsubnetprefix":"x.x.x.x/x"}'
+        required: true
+        default: '{"hubvnetprefix":"10.0.0.0/23","bastionsubnetprefix":"10.0.0.160/27","fwsubnetprefix":"10.0.0.0/26","fwmanagementsubnetprefix":"10.0.0.64/26","gwsubnetprefix":"10.0.0.128/27","hubmanagementsubnetprefix":"10.0.1.0/26"}'
+      managementvnet: 
+        description: '{"managementvnetprefix":"x.x.x.x/x","managementsubnetprefix":"x.x.x.x/x"}'
+        required: true
+        default:  '{"managementvnetprefix":"10.0.2.0/23","managementsubnetprefix":"10.0.2.0/26"}'
+      identityvnet: 
+        description: '{"identityvnetprefix":"x.x.x.x/x","identitysubnetprefix":"x.x.x.x/x"}'
+        required: true
+        default: '{"identityvnetprefix":"10.0.4.0/23","identitysubnetprefix":"10.0.4.0/26"}'
+      securityvnet: 
+        description: '{"securityvnetprefix":"x.x.x.x/x","securitysubnetprefix":"x.x.x.x/x"}'
+        require: true
+        default: '{"securityvnetprefix":"10.0.6.0/23","securitysubnetprefix":"10.0.6.0/26"}'
+      other:
+        description: '{"githubsecret":"<githubsecretname>","fwtype":"<Standard|Premium>","gwtype":"<Basic|ErGw1AZ|ErGw2AZ|ErGw3AZ|HighPerformance|Standard|UltraPerformance|VpnGw1|VpnGw1|VpnGw2|VpnGw2AZ|VpnGw3|VpnGw3AZ|VpnGw4|VpnGw4AZ|VpnGw5|VpnGw5AZ","logaworkspaceid":"/subscriptions/<subid>/resourcegroups/<resourcegroupname>/providers/microsoft.operationalinsights/workspaces/<logaworkspacename>","destroy":"true|false"}'
+        required: true
+        default: '{"githubsecret":"AZGOV_CREDS","fwtype":"Standard","gwtype":"Vpn","logaworkspaceid":"/subscriptions/07526f72-6689-42be-945f-bb6ad0214b71/resourcegroups/elz1-management-usgovvirginia/providers/microsoft.operationalinsights/workspaces/elz1-loga-usgovvirginia2","destroy":"false"}'
+
+  # Allows you to run this workflow with web call to GitHub Repository Dispatch Event
+  # Note: This event will only trigger a workflow run if the workflow file is on the default branch.
+  # Sample webhook call:
+  #curl \
+  #  -X POST \
+  #  -H "Accept: application/vnd.github.v3+json" \
+  #  -H "Authorization: token replacewithgithubpattoken" \
+  #  https://api.github.com/repos/johnsblevins/AzureLandingZones/dispatches \
+  #  -d '{ 
+  #        "event_type":"entlz-6c-platform-connectivity-vnethubspoke-paloalto", 
+  #        "client_payload":{
+  #          "ref":"dev",
+  #          "mlz_env_name":"elz2",
+  #          "environment":"azureusgovernment",
+  #          "location":"usgovvirginia",
+  #          "subscriptions":"{\"identitysubid\":\"787e871a-84ba-43be-86bf-86bd1e408a4a\",\"connectivitysubid\":\"b30166b8-dd1b-4fa2-9ad7-057614257b06\",\"securitysubid\":\"ac95a806-c9d3-49e7-83ee-7f82e88c2bd3\",\"managementsubid\":\"07526f72-6689-42be-945f-bb6ad0214b71\"}",
+  #          "hubvnet": "{\"hubvnetprefix\":\"10.0.0.0/23\",\"bastionsubnetprefix\":\"10.0.0.160/27\",\"fwsubnetprefix\":\"10.0.0.0/26\",\"fwmanagementsubnetprefix\":\"10.0.0.64/26\",\"gwsubnetprefix\":\"10.0.0.128/27\",\"hubmanagementsubnetprefix\":\"10.0.1.0/26\"}",
+  #          "managementvnet":"{\"managementvnetprefix\":\"10.0.2.0/23\",\"managementsubnetprefix\":\"10.0.2.0/26\"}",
+  #          "identityvnet":"{\"identityvnetprefix\":\"10.0.4.0/23\",\"identitysubnetprefix\":\"10.0.4.0/26\"}",
+  #          "securityvnet": "{\"securityvnetprefix\":\"10.0.6.0/23\",\"securitysubnetprefix\":\"10.0.6.0/26\"}",
+  #          "other":"{\"githubsecret\":\"AZGOV_CREDS\",\"fwtype\":\"Standard\",\"gwtype\":\"ErGw1AZ\",\"logaworkspaceid\":\"/subscriptions/07526f72-6689-42be-945f-bb6ad0214b71/resourcegroups/elz1-management-usgovvirginia/providers/microsoft.operationalinsights/workspaces/elz1-loga-usgovvirginia2\"}"
+  #        }        
+  #      }'
+  repository_dispatch:
+    types: [entlz-6c-platform-connectivity-vnethubspoke-missionlz]
+
+#  push:
+#    branches:
+#      - dev
+#    paths:
+#      - 'templates/entlz/platform-connectivity-vnethubspoke**'
+#      - '.github/workflows/entlz-6a-platform-connectivity-vnethubspoke.yml'
+
+# Copyright (c) Microsoft Corporation.
+# Licensed under the MIT License.
+
+jobs:
+  apply-and-destroy-terraform:
+    runs-on: ubuntu-latest
+
+#    container:
+#      image: acrmlzcicd.azurecr.io/missionlzdev
+#      credentials:
+#        username: ${{ secrets.acr_username }}
+#        password: ${{ secrets.acr_password }}
+
+    steps:
+    - name: Set Variables
+      id: setvariables         
+      run: |
+        shopt -s nocasematch
+        echo ${GITHUB_EVENT_NAME} 
+        if [ ${GITHUB_EVENT_NAME} == 'workflow_dispatch' ];
+        then
+          echo "::set-output name=ref::${GITHUB_REF##*/}"
+          echo "::set-output name=mlz_env_name::${{ github.event.inputs.mlz_env_name }}"
+          echo "::set-output name=environment::${{ github.event.inputs.environment }}"
+          echo "::set-output name=location::${{ github.event.inputs.location }}"
+          echo "::set-output name=githubsecret::$(echo '${{ github.event.inputs.other }}' | jq -r '.githubsecret')"
+          echo "::set-output name=destroy::$(echo '${{ github.event.inputs.other }}' | jq -r '.destroy')"
+          echo "::set-output name=bastionsubnetprefix::$(echo '${{ github.event.inputs.hubvnet }}' | jq -r '.bastionsubnetprefix')"
+          echo "::set-output name=connectivitysubid::$(echo '${{ github.event.inputs.subscriptions }}' | jq -r '.connectivitysubid')"
+          echo "::set-output name=fwmanagementsubnetprefix::$(echo '${{ github.event.inputs.hubvnet }}' | jq -r '.fwmanagementsubnetprefix')"
+          echo "::set-output name=fwsubnetprefix::$(echo '${{ github.event.inputs.hubvnet }}' | jq -r '.fwsubnetprefix')"
+          echo "::set-output name=fwtype::$(echo '${{ github.event.inputs.other }}' | jq -r '.fwtype')"
+          echo "::set-output name=gwsubnetprefix::$(echo '${{ github.event.inputs.hubvnet }}' | jq -r '.gwsubnetprefix')"
+          echo "::set-output name=gwtype::$(echo '${{ github.event.inputs.other }}' | jq -r '.gwtype')"
+          echo "::set-output name=hubmanagementsubnetprefix::$(echo '${{ github.event.inputs.hubvnet }}' | jq -r '.hubmanagementsubnetprefix')"
+          echo "::set-output name=hubvnetprefix::$(echo '${{ github.event.inputs.hubvnet }}' | jq -r '.hubvnetprefix')"
+          echo "::set-output name=identitysubid::$(echo '${{ github.event.inputs.subscriptions }}' | jq -r '.identitysubid')"
+          echo "::set-output name=identitysubnetprefix::$(echo '${{ github.event.inputs.identityvnet }}' | jq -r '.identitysubnetprefix')"
+          echo "::set-output name=identityvnetprefix::$(echo '${{ github.event.inputs.identityvnet }}' | jq -r '.identityvnetprefix')"
+          echo "::set-output name=logaworkspaceid::$(echo '${{ github.event.inputs.other }}' | jq -r '.logaworkspaceid')"
+          echo "::set-output name=managementsubid::$(echo '${{ github.event.inputs.subscriptions }}' | jq -r '.managementsubid')"
+          echo "::set-output name=managementsubnetprefix::$(echo '${{ github.event.inputs.managementvnet }}' | jq -r '.managementsubnetprefix')"
+          echo "::set-output name=managementvnetprefix::$(echo '${{ github.event.inputs.managementvnet }}' | jq -r '.managementvnetprefix')"
+          echo "::set-output name=securitysubid::$(echo '${{ github.event.inputs.subscriptions }}' | jq -r '.securitysubid')"
+          echo "::set-output name=securitysubnetprefix::$(echo '${{ github.event.inputs.securityvnet }}' | jq -r '.securitysubnetprefix')"
+          echo "::set-output name=securityvnetprefix::$(echo '${{ github.event.inputs.securityvnet }}' | jq -r '.securityvnetprefix')"
+        elif [ ${GITHUB_EVENT_NAME} == 'repository_dispatch' ];
+        then
+          echo "::set-output name=ref::${{ github.event.client_payload.ref }}"
+          echo "::set-output name=mlz_env_name::${{ github.event.client_payload.mlz_env_name }}"
+          echo "::set-output name=environment::${{ github.event.client_payload.environment }}"
+          echo "::set-output name=location::${{ github.event.client_payload.location }}"
+          echo "::set-output name=githubsecret::$(echo '${{ github.event.client_payload.other }}' | jq -r '.githubsecret')"  
+          echo "::set-output name=destroy::$(echo '${{ github.event.client_payload.other }}' | jq -r '.destroy')"  
+          echo "::set-output name=bastionsubnetprefix::$(echo '${{ github.event.client_payload.hubvnet }}' | jq -r '.bastionsubnetprefix')"
+          echo "::set-output name=connectivitysubid::$(echo '${{ github.event.client_payload.subscriptions }}' | jq -r '.connectivitysubid')"
+          echo "::set-output name=fwmanagementsubnetprefix::$(echo '${{ github.event.client_payload.hubvnet }}' | jq -r '.fwmanagementsubnetprefix')"
+          echo "::set-output name=fwsubnetprefix::$(echo '${{ github.event.client_payload.hubvnet }}' | jq -r '.fwsubnetprefix')"
+          echo "::set-output name=fwtype::$(echo '${{ github.event.client_payload.other }}' | jq -r '.fwtype')"
+          echo "::set-output name=gwsubnetprefix::$(echo '${{ github.event.client_payload.hubvnet }}' | jq -r '.gwsubnetprefix')"
+          echo "::set-output name=gwtype::$(echo '${{ github.event.client_payload.other }}' | jq -r '.gwtype')"
+          echo "::set-output name=hubmanagementsubnetprefix::$(echo '${{ github.event.client_payload.hubvnet }}' | jq -r '.hubmanagementsubnetprefix')"
+          echo "::set-output name=hubvnetprefix::$(echo '${{ github.event.client_payload.hubvnet }}' | jq -r '.hubvnetprefix')"
+          echo "::set-output name=identitysubid::$(echo '${{ github.event.client_payload.subscriptions }}' | jq -r '.identitysubid')"
+          echo "::set-output name=identitysubnetprefix::$(echo '${{ github.event.client_payload.identityvnet }}' | jq -r '.identitysubnetprefix')"
+          echo "::set-output name=identityvnetprefix::$(echo '${{ github.event.client_payload.identityvnet }}' | jq -r '.identityvnetprefix')"
+          echo "::set-output name=logaworkspaceid::$(echo '${{ github.event.client_payload.other }}' | jq -r '.logaworkspaceid')"
+          echo "::set-output name=managementsubid::$(echo '${{ github.event.client_payload.subscriptions }}' | jq -r '.managementsubid')"
+          echo "::set-output name=managementsubnetprefix::$(echo '${{ github.event.client_payload.managementvnet }}' | jq -r '.managementsubnetprefix')"
+          echo "::set-output name=managementvnetprefix::$(echo '${{ github.event.client_payload.managementvnet }}' | jq -r '.managementvnetprefix')"
+          echo "::set-output name=securitysubid::$(echo '${{ github.event.client_payload.subscriptions }}' | jq -r '.securitysubid')"
+          echo "::set-output name=securitysubnetprefix::$(echo '${{ github.event.client_payload.securityvnet }}' | jq -r '.securitysubnetprefix')"
+          echo "::set-output name=securityvnetprefix::$(echo '${{ github.event.client_payload.securityvnet }}' | jq -r '.securityvnetprefix')"
+        else
+          echo "Invalid Event Trigger ${GITHUB_EVENT_NAME} unable to set variables."
+          set -eo pipefail
+        fi;
+    - name: Echo Variables
+      run: |
+        echo ref: ${{ steps.setvariables.outputs.ref }}
+        echo mlz_env_name: ${{ steps.setvariables.outputs.mlz_env_name }}
+        echo environment: ${{ steps.setvariables.outputs.environment }}
+        echo location: ${{ steps.setvariables.outputs.location }}
+        echo githubsecret: ${{ steps.setvariables.outputs.githubsecret }}
+        echo destroy: ${{ steps.setvariables.outputs.destroy }}
+        echo bastionsubnetprefix: ${{ steps.setvariables.outputs.bastionsubnetprefix }}
+        echo connectivitysubid: ${{ steps.setvariables.outputs.connectivitysubid }}
+        echo fwmanagementsubnetprefix: ${{ steps.setvariables.outputs.fwmanagementsubnetprefix }}
+        echo fwsubnetprefix: ${{ steps.setvariables.outputs.fwsubnetprefix }}
+        echo fwtype: ${{ steps.setvariables.outputs.fwtype }}
+        echo gwsubnetprefix: ${{ steps.setvariables.outputs.gwsubnetprefix }}
+        echo gwtype: ${{ steps.setvariables.outputs.gwtype }}
+        echo hubmanagementsubnetprefix: ${{ steps.setvariables.outputs.hubmanagementsubnetprefix }}
+        echo hubvnetprefix: ${{ steps.setvariables.outputs.hubvnetprefix }}
+        echo identitysubid: ${{ steps.setvariables.outputs.identitysubid }}
+        echo identitysubnetprefix: ${{ steps.setvariables.outputs.identitysubnetprefix }}
+        echo identityvnetprefix: ${{ steps.setvariables.outputs.identityvnetprefix }}
+        echo logaworkspaceid: ${{ steps.setvariables.outputs.logaworkspaceid }}
+        echo managementsubid: ${{ steps.setvariables.outputs.managementsubid }}
+        echo managementsubnetprefix: ${{ steps.setvariables.outputs.managementsubnetprefix }}
+        echo managementvnetprefix: ${{ steps.setvariables.outputs.managementvnetprefix }}
+        echo securitysubid: ${{ steps.setvariables.outputs.securitysubid }}
+        echo securitysubnetprefix: ${{ steps.setvariables.outputs.securitysubnetprefix }}
+        echo securityvnetprefix: ${{ steps.setvariables.outputs.securityvnetprefix }}            
+    - uses: actions/checkout@v2
+      with:
+        ref: ${{ steps.setvariables.outputs.ref }}
+    - name: Log in with Azure
+      uses: azure/login@v1
+      with:
+        creds: ${{ secrets[steps.setvariables.outputs.githubsecret] }}
+        environment: ${{ steps.setvariables.outputs.environment }}
+        enable-AzPSSession: false
+
+    - name: Deploy Mission Landing Zone
+          if: ${{ steps.setvariables.outputs.destroy == 'false' }}
+          uses: azure/CLI@v1
+          with:
+            azcliversion: 2.21.0
+            inlineScript: |
+              templates/entlz/platform-connectivity-vnethubspoke-missionlz/src/scripts/deploy.sh \
+                -s ${{ steps.setvariables.outputs.connectivitysubid }} \
+                -l ${{ steps.setvariables.outputs.location }} \
+                -u ${{ steps.setvariables.outputs.connectivitysubid }} \
+                -0 ${{ steps.setvariables.outputs.identitysubid }} \
+                -1 ${{ steps.setvariables.outputs.managementsubid }} \
+                -2 ${{ steps.setvariables.outputs.securitysubid }} \
+                -z ${{ steps.setvariables.outputs.mlz_env_name }}
+
+    - name: Destroy Mission Landing Zone
+      if: ${{ steps.setvariables.outputs.destroy == 'true' }}
+      uses: azure/CLI@v1
+      with:
+        azcliversion: 2.21.0
+        inlineScript: |
+          templates/entlz/platform-connectivity-vnethubspoke-missionlz/src/scripts/clean.sh \
+            -z ${{ steps.setvariables.outputs.mlz_env_name }}
