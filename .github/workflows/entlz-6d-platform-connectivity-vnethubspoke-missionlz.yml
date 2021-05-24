@@ -191,19 +191,19 @@ jobs:
         enable-AzPSSession: false
 
     - name: Deploy Mission Landing Zone
-          if: ${{ steps.setvariables.outputs.destroy == 'false' }}
-          uses: azure/CLI@v1
-          with:
-            azcliversion: 2.21.0
-            inlineScript: |
-              templates/entlz/platform-connectivity-vnethubspoke-missionlz/src/scripts/deploy.sh \
-                -s ${{ steps.setvariables.outputs.connectivitysubid }} \
-                -l ${{ steps.setvariables.outputs.location }} \
-                -u ${{ steps.setvariables.outputs.connectivitysubid }} \
-                -0 ${{ steps.setvariables.outputs.identitysubid }} \
-                -1 ${{ steps.setvariables.outputs.managementsubid }} \
-                -2 ${{ steps.setvariables.outputs.securitysubid }} \
-                -z ${{ steps.setvariables.outputs.mlz_env_name }}
+      if: ${{ steps.setvariables.outputs.destroy == 'false' }}
+      uses: azure/CLI@v1
+      with:
+        azcliversion: 2.21.0
+        inlineScript: |
+          templates/entlz/platform-connectivity-vnethubspoke-missionlz/src/scripts/deploy.sh \
+            -s ${{ steps.setvariables.outputs.connectivitysubid }} \
+            -l ${{ steps.setvariables.outputs.location }} \
+            -u ${{ steps.setvariables.outputs.connectivitysubid }} \
+            -0 ${{ steps.setvariables.outputs.identitysubid }} \
+            -1 ${{ steps.setvariables.outputs.managementsubid }} \
+            -2 ${{ steps.setvariables.outputs.securitysubid }} \
+            -z ${{ steps.setvariables.outputs.mlz_env_name }}
 
     - name: Destroy Mission Landing Zone
       if: ${{ steps.setvariables.outputs.destroy == 'true' }}
