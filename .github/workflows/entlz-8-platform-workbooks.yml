@@ -112,7 +112,7 @@ jobs:
               for f in $(find templates/entlz/workbooks -name *.json);
               do \
                   # Serialize JSON
-                  serializedjson=$(tr '\n' '\' < $f)
+                  serializedjson=$((tr '\n' '\' < $f) | sed -e 's/ \+//g')
                   #serializedjson= printf '%s\n' "${serializedjson//\" \"/\"$'\n'\"}"
                   
                   name="${f##*/}"
