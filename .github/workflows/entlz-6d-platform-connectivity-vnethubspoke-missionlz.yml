@@ -189,17 +189,16 @@ jobs:
         creds: ${{ secrets[steps.setvariables.outputs.githubsecret] }}
         environment: ${{ steps.setvariables.outputs.environment }}
         enable-AzPSSession: false
+    - name: Install Terraform
+      uses: little-core-labs/install-terraform@v2.0.0
+      with:
+          version: 0.13.4          
     - name: Deploy Mission Landing Zone
       if: ${{ steps.setvariables.outputs.destroy == 'false' }}
       uses: azure/CLI@v1
       with:
         azcliversion: 2.21.0
-        inlineScript: |        
-          apt-get update && apt-get install -y gnupg software-properties-common curl
-          curl -fsSL https://apt.releases.hashicorp.com/gpg | apt-key add -
-          apt-add-repository "deb [arch=amd64] https://apt.releases.hashicorp.com $(lsb_release -cs) main"
-          apt-get update && apt-get install terraform
-
+        inlineScript: |
           templates/entlz/platform-connectivity-vnethubspoke-missionlz/src/scripts/deploy.sh \
             -e usgovernment \
             -s ${{ steps.setvariables.outputs.connectivitysubid }} \
