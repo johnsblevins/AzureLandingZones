@@ -188,32 +188,23 @@ jobs:
       with:
         creds: ${{ secrets[steps.setvariables.outputs.githubsecret] }}
         environment: ${{ steps.setvariables.outputs.environment }}
-        enable-AzPSSession: false
-    - name: Install Terraform
-      uses: little-core-labs/install-terraform@v2.0.0
-      with:
-          version: 0.13.4          
+        enable-AzPSSession: false     
+            
     - name: Deploy Mission Landing Zone
       if: ${{ steps.setvariables.outputs.destroy == 'false' }}
-      uses: azure/CLI@v1
-      with:
-        azcliversion: 2.21.0
-        inlineScript: |
-          templates/entlz/platform-connectivity-vnethubspoke-missionlz/src/scripts/deploy.sh \
-            -e usgovernment \
-            -s ${{ steps.setvariables.outputs.connectivitysubid }} \
-            -l ${{ steps.setvariables.outputs.location }} \
-            -u ${{ steps.setvariables.outputs.connectivitysubid }} \
-            -0 ${{ steps.setvariables.outputs.identitysubid }} \
-            -1 ${{ steps.setvariables.outputs.managementsubid }} \
-            -2 ${{ steps.setvariables.outputs.securitysubid }} \
-            -z ${{ steps.setvariables.outputs.mlz_env_name }}
+      run: |
+        templates/entlz/platform-connectivity-vnethubspoke-missionlz/src/scripts/deploy.sh \
+          -e usgovernment \
+          -s ${{ steps.setvariables.outputs.connectivitysubid }} \
+          -l ${{ steps.setvariables.outputs.location }} \
+          -u ${{ steps.setvariables.outputs.connectivitysubid }} \
+          -0 ${{ steps.setvariables.outputs.identitysubid }} \
+          -1 ${{ steps.setvariables.outputs.managementsubid }} \
+          -2 ${{ steps.setvariables.outputs.securitysubid }} \
+          -z ${{ steps.setvariables.outputs.mlz_env_name }}
 
     - name: Destroy Mission Landing Zone
       if: ${{ steps.setvariables.outputs.destroy == 'true' }}
-      uses: hashicorp/setup-terraform@v1
-      with:
-        azcliversion: 2.21.0
-        inlineScript: |
-          templates/entlz/platform-connectivity-vnethubspoke-missionlz/src/scripts/clean.sh \
-            -z ${{ steps.setvariables.outputs.mlz_env_name }}
+      run: |
+        templates/entlz/platform-connectivity-vnethubspoke-missionlz/src/scripts/clean.sh \
+          -z ${{ steps.setvariables.outputs.mlz_env_name }}
