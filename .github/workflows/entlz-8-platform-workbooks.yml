@@ -114,10 +114,13 @@ jobs:
                   # Serialize JSON - Condense to one line, remove extra spaces, escape all double quotes and special characters
                   serializedjson=\"$(cat $f | sed -z 's/\n/ /g' | sed -e 's/\n/ /g' |  sed -E 's/ {2,}//g' | sed -e 's/\\"/\\\\\\"/g' | sed -E 's/\\([A-Za-z])/\\\\\1/g' | sed -E 's/\\\\([!@#$%^&*()_+;:|,.<>?])/\\\\\\\\\1/g' | sed -E 's/([^\]|^)"/\1\\"/g' | sed -E 's/\"\"/\"\\\"/g')\"
                   
+
                   name="${f##*/}"
                   workbookdisplayname="${{ steps.setvariables.outputs.entlzprefix }}-${name%.*}"
                   echo workbookdisplayname: $workbookdisplayname
                   
+                  echo "$serializedjson"
+
                   # Deploy Management Components to Management Subscription
                     az deployment sub create \
                       --name "${{ steps.setvariables.outputs.entlzprefix }}-workbooks-${{ steps.setvariables.outputs.location }}" \
@@ -128,5 +131,5 @@ jobs:
                                     location=${{ steps.setvariables.outputs.location }} \
                                     workbookdisplayname=$workbookdisplayname \
                                     workbookname=$workbookdisplayname \
-                                    serializeddata="$serializedjson"
+                                    serializeddata=$serializedjson
               done

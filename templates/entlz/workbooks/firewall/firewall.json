@@ -130,7 +130,7 @@
             "name": "ipaddress",
             "label": "IP Address",
             "type": 1,
-            "value": "192",
+            "value": "",
             "timeContext": {
               "durationMs": 43200000
             },
