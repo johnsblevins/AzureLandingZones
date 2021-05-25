@@ -194,6 +194,7 @@ jobs:
       if: ${{ steps.setvariables.outputs.destroy == 'false' }}
       run: |
         az provider register --namespace Microsoft.KeyVault
+        echo $(az version)
         templates/entlz/platform-connectivity-vnethubspoke-missionlz/src/scripts/deploy.sh \
           -e usgovernment \
           -s ${{ steps.setvariables.outputs.connectivitysubid }} \
