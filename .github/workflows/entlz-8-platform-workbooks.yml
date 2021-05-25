@@ -128,5 +128,5 @@ jobs:
                                     location=${{ steps.setvariables.outputs.location }} \
                                     workbookdisplayname=$workbookdisplayname \
                                     workbookname=$workbookdisplayname \
-                                    serializeddata="${serializedjson}"
+                                    serializeddata="$serializedjson"
               done
