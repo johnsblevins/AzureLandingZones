@@ -112,7 +112,7 @@ jobs:
               for f in $(find templates/entlz/workbooks -name *.json);
               do \
                   # Serialize JSON - Condense to one line, remove extra spaces, escape all double quotes
-                  serializedjson=$((tr '\n' ' ' < $f) |  sed -e 's/ \+//g' | sed -E 's/([^\]|^)"/\1\\"/g') 
+                  serializedjson=\"$((tr '\n' ' ' < $f) |  sed -e 's/ \+//g' | sed -e 's/\\/\\\\\\/g' | sed -E 's/([^\]|^)"/\1\\"/g')\"
                   
                   name="${f##*/}"
                   workbookdisplayname="${{ steps.setvariables.outputs.entlzprefix }}-${name%.*}"
