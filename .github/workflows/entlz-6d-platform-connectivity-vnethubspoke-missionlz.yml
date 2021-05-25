@@ -193,8 +193,9 @@ jobs:
     - name: Deploy Mission Landing Zone
       if: ${{ steps.setvariables.outputs.destroy == 'false' }}
       run: |
-        az provider register --namespace Microsoft.KeyVault
+        az provider register --namespace Microsoft.KeyVault        
         echo $(az version)
+        echo $(az provider list --query "[?namespace=='Microsoft.KeyVault']")
         templates/entlz/platform-connectivity-vnethubspoke-missionlz/src/scripts/deploy.sh \
           -e usgovernment \
           -s ${{ steps.setvariables.outputs.connectivitysubid }} \
