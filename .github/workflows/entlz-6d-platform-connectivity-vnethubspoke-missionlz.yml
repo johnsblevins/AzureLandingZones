@@ -189,10 +189,11 @@ jobs:
         creds: ${{ secrets[steps.setvariables.outputs.githubsecret] }}
         environment: ${{ steps.setvariables.outputs.environment }}
         enable-AzPSSession: false     
-            
+
     - name: Deploy Mission Landing Zone
       if: ${{ steps.setvariables.outputs.destroy == 'false' }}
       run: |
+        az provider register --namespace Microsoft.KeyVault
         templates/entlz/platform-connectivity-vnethubspoke-missionlz/src/scripts/deploy.sh \
           -e usgovernment \
           -s ${{ steps.setvariables.outputs.connectivitysubid }} \
