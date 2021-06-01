@@ -212,7 +212,7 @@
               "queryType": 0,
               "resourceType": "microsoft.operationalinsights/workspaces",
               "crossComponentResources": [
-                "/subscriptions/07526f72-6689-42be-945f-bb6ad0214b71/resourceGroups/%%entlzprefix%-management-usgovvirginia/providers/Microsoft.OperationalInsights/workspaces/%%entlzprefix%-loga-usgovvirginia1"
+                "/subscriptions/07526f72-6689-42be-945f-bb6ad0214b71/resourceGroups/%%entlzprefix%-management-usgovvirginia/providers/Microsoft.OperationalInsights/workspaces/%%entlzprefix%-loga-usgovvirginia%%uniqueid%%"
               ]
             },
             "name": "query - 1"
@@ -238,7 +238,7 @@
               "queryType": 0,
               "resourceType": "microsoft.operationalinsights/workspaces",
               "crossComponentResources": [
-                "/subscriptions/07526f72-6689-42be-945f-bb6ad0214b71/resourceGroups/%%entlzprefix%-management-usgovvirginia/providers/Microsoft.OperationalInsights/workspaces/%%entlzprefix%-loga-usgovvirginia1"
+                "/subscriptions/07526f72-6689-42be-945f-bb6ad0214b71/resourceGroups/%%entlzprefix%-management-usgovvirginia/providers/Microsoft.OperationalInsights/workspaces/%%entlzprefix%-loga-usgovvirginia%%uniqueid%%"
               ]
             },
             "name": "query - 1 - Copy"
@@ -279,7 +279,7 @@
               "queryType": 0,
               "resourceType": "microsoft.operationalinsights/workspaces",
               "crossComponentResources": [
-                "/subscriptions/07526f72-6689-42be-945f-bb6ad0214b71/resourceGroups/%%entlzprefix%-management-usgovvirginia/providers/Microsoft.OperationalInsights/workspaces/%%entlzprefix%-loga-usgovvirginia1"
+                "/subscriptions/07526f72-6689-42be-945f-bb6ad0214b71/resourceGroups/%%entlzprefix%-management-usgovvirginia/providers/Microsoft.OperationalInsights/workspaces/%%entlzprefix%-loga-usgovvirginia%%uniqueid%%"
               ],
               "gridSettings": {
                 "rowLimit": 500
@@ -315,7 +315,7 @@
               "queryType": 0,
               "resourceType": "microsoft.operationalinsights/workspaces",
               "crossComponentResources": [
-                "/subscriptions/07526f72-6689-42be-945f-bb6ad0214b71/resourceGroups/%%entlzprefix%-management-usgovvirginia/providers/Microsoft.OperationalInsights/workspaces/%%entlzprefix%-loga-usgovvirginia1"
+                "/subscriptions/07526f72-6689-42be-945f-bb6ad0214b71/resourceGroups/%%entlzprefix%-management-usgovvirginia/providers/Microsoft.OperationalInsights/workspaces/%%entlzprefix%-loga-usgovvirginia%%uniqueid%%"
               ]
             },
             "name": "query - 0"
