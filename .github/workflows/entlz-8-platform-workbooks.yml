@@ -25,7 +25,10 @@ on:
         description: ''
         required: true
         default: ''
-  
+      uniqueid:
+        description: ''
+        required: true
+        default: '1'  
   # Allows you to run this workflow with web call to GitHub Repository Dispatch Event
   # Note: This event will only trigger a workflow run if the workflow file is on the default branch.
   # Sample webhook call:
@@ -41,7 +44,8 @@ on:
   #          "entlzprefix":"elz1",
   #          "environment":"azureusgovernment",
   #          "location":"usgovvirginia",
-  #          "githubsecret":"AZGOV_CREDS"
+  #          "githubsecret":"AZGOV_CREDS",
+  #           "uniqueid":"1"
   #        }        
   #      }'
   
@@ -72,6 +76,7 @@ jobs:
               echo "::set-output name=location::${{ github.event.inputs.location }}"
               echo "::set-output name=githubsecret::${{ github.event.inputs.githubsecret }}"
               echo "::set-output name=managementsubid::${{ github.event.inputs.managementsubid }}"
+              echo "::set-output name=uniqueid::${{ github.event.inputs.uniqueid }}"
             elif [ ${GITHUB_EVENT_NAME} == 'repository_dispatch' ];
             then
               echo "::set-output name=ref::${{ github.event.client_payload.ref }}"
@@ -80,6 +85,7 @@ jobs:
               echo "::set-output name=location::${{ github.event.client_payload.location }}"
               echo "::set-output name=githubsecret::${{ github.event.client_payload.githubsecret }}"
               echo "::set-output name=managementsubid::${{ github.event.client_payload.managementsubid }}"
+              echo "::set-output name=uniqueid::${{ github.event.client_payload.uniqueid }}"
             else
               echo "Invalid Event Trigger ${GITHUB_EVENT_NAME} unable to set variables."
             fi;            
@@ -92,6 +98,7 @@ jobs:
             echo location: ${{ steps.setvariables.outputs.location }}
             echo githubsecret: ${{ steps.setvariables.outputs.githubsecret }}
             echo managementsubid: ${{ steps.setvariables.outputs.managementsubid }}
+            echo managementsubid: ${{ steps.setvariables.outputs.uniqueid }}
 
         - uses: actions/checkout@v2
           with:
@@ -109,16 +116,18 @@ jobs:
           with:
             azcliversion: 2.21.0
             inlineScript: |
-              for f in $(find templates/entlz/workbooks -name *.json);
+              for f in $(find templates/entlz/workbooks/definitions -name *.json);
               do \
-                  # Serialize JSON
-                  serializedjson=$(tr '\n' '\' < $f)
-                  #serializedjson= printf '%s\n' "${serializedjson//\" \"/\"$'\n'\"}"
-                  
+                  # Serialize JSON - Condense to one line, remove extra spaces, escape all double quotes and special characters, replace %%entlzprefix%% and %%uniqueid%% placeholders
+                  serializedjson=\"$(cat $f | sed -E ':a;N;$!ba;s/\n/ /g' | sed -e 's/\n/ /g' |  sed -E 's/ {2,}//g' | sed -e 's/\\"/\\\\\\"/g' | sed -E 's/\\([A-Za-z])/\\\\\1/g' | sed -E 's/\\\\([!@#$%^&*()_+;:|,.<>?])/\\\\\\\\\1/g' | sed -E 's/([^\]|^)"/\1\\"/g' | sed -E 's/\"\"/\"\\\"/g')\" | sed -e 's/%%entlzprefix%%/${{ steps.setvariables.outputs.entlzprefix }}/g' | sed -e 's/%%uniqueid%%/${{ steps.setvariables.outputs.uniqueid }}/g'
+
+                  # Take Workbook Name from Definition File Name trimming .json from end
                   name="${f##*/}"
                   workbookdisplayname="${{ steps.setvariables.outputs.entlzprefix }}-${name%.*}"
                   echo workbookdisplayname: $workbookdisplayname
                   
+                  echo "$serializedjson"
+
                   # Deploy Management Components to Management Subscription
                     az deployment sub create \
                       --name "${{ steps.setvariables.outputs.entlzprefix }}-workbooks-${{ steps.setvariables.outputs.location }}" \
@@ -129,5 +138,5 @@ jobs:
                                     location=${{ steps.setvariables.outputs.location }} \
                                     workbookdisplayname=$workbookdisplayname \
                                     workbookname=$workbookdisplayname \
-                                    serializeddata="${serializedjson}"
+                                    serializeddata="$serializedjson"
               done

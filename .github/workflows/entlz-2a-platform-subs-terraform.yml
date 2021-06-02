@@ -1,0 +1,383 @@
+name: entlz-2a-platform-subs-terraform
+
+# Controls when the action will run. 
+on:
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+    inputs:
+      entlzprefix: 
+        description: 'entlzprefix'
+        required: true
+        default: ''
+      environment: 
+        description: 'environment'
+        required: true
+        default: 'azureusgovernment'
+      location: 
+        description: 'location'
+        required: true
+        default: 'usgovvirginia'
+      githubsecret:
+        description: 'Github Secret Name with Azure Credentials'
+        required: true
+        default: 'AZGOV_CREDS'
+      managementsubid:
+        description: ''
+        required: false
+        default: ''
+      identitysubid:
+        description: ''
+        required: false
+        default: ''
+      connectivitysubid:
+        description: ''
+        required: false
+        default: ''
+      securitysubid:
+        description: ''
+        required: false
+        default: ''
+      other:
+        description: '{"subownergroup":"<groupdisplayname>","enracctname":"<enrollmentaccountguid>","offertype":"<offertype>"}'
+        required: true
+        default: '{"subownergroup":"azure-platform-owners","enracctname":"", "offertype":"MS-AZR-USGOV-0017P"}'
+
+
+  # Allows you to run this workflow with web call to GitHub Repository Dispatch Event
+  # Note: This event will only trigger a workflow run if the workflow file is on the default branch.
+  # Sample webhook call:
+  #curl \
+  #  -X POST \
+  #  -H "Accept: application/vnd.github.v3+json" \
+  #  -H "Authorization: token replacewithgithubpattoken" \
+  #  https://api.github.com/repos/johnsblevins/AzureLandingZones/dispatches \
+  #  -d '{ 
+  #        "event_type":"entlz-2-platform-subs", 
+  #        "client_payload":{
+  #          "ref":"dev",
+  #          "entlzprefix":"elz2",
+  #          "environment":"azureusgovernment",
+  #          "location":"usgovvirginia",
+  #          "githubsecret":"AZGOV_CREDS",
+  #          "managementsubid":"07526f72-6689-42be-945f-bb6ad0214b71",
+  #          "identitysubid":"787e871a-84ba-43be-86bf-86bd1e408a4a",
+  #          "connectivitysubid":"b30166b8-dd1b-4fa2-9ad7-057614257b06",
+  #          "securitysubid":"ac95a806-c9d3-49e7-83ee-7f82e88c2bd3",
+  #          "other:"{\"subownergroup\":\"\",\"enracctname\":\"\",\"offertype\":\"MS-AZR-USGOV-0017P\"}"
+  #        }        
+  #      }'
+  repository_dispatch:
+    types: [entlz-2a-platform-subs-terraform]
+
+jobs:
+    build-and-deploy:
+        runs-on: ubuntu-latest
+        steps:        
+        - name: Set Variables
+          id: setvariables         
+          run: |
+            shopt -s nocasematch
+            echo ${GITHUB_EVENT_NAME} 
+            if [ ${GITHUB_EVENT_NAME} == 'workflow_dispatch' ];
+            then
+              echo "::set-output name=ref::${GITHUB_REF##*/}"
+              echo "::set-output name=entlzprefix::${{ github.event.inputs.entlzprefix }}"
+              echo "::set-output name=environment::${{ github.event.inputs.environment }}"
+              echo "::set-output name=location::${{ github.event.inputs.location }}"
+              echo "::set-output name=githubsecret::${{ github.event.inputs.githubsecret }}"
+              echo "::set-output name=managementsubid::${{ github.event.inputs.managementsubid }}"
+              echo "::set-output name=identitysubid::${{ github.event.inputs.identitysubid }}"
+              echo "::set-output name=connectivitysubid::${{ github.event.inputs.connectivitysubid }}"
+              echo "::set-output name=securitysubid::${{ github.event.inputs.securitysubid }}"
+              echo "::set-output name=subownergroup::$(echo '${{ github.event.inputs.other }}' | jq -r '.subownergroup')"
+              echo "::set-output name=enracctname::$(echo '${{ github.event.inputs.other }}' | jq -r '.enracctname')"              
+              echo "::set-output name=offertype::$(echo '${{ github.event.inputs.other }}' | jq -r '.offertype')"              
+            elif [ ${GITHUB_EVENT_NAME} == 'repository_dispatch' ];
+            then
+              echo "::set-output name=ref::${{ github.event.client_payload.ref }}"
+              echo "::set-output name=entlzprefix::${{ github.event.client_payload.entlzprefix }}"
+              echo "::set-output name=environment::${{ github.event.client_payload.environment }}"
+              echo "::set-output name=location::${{ github.event.client_payload.location }}"
+              echo "::set-output name=githubsecret::${{ github.event.client_payload.githubsecret }}"
+              echo "::set-output name=managementsubid::${{ github.event.client_payload.managementsubid }}"
+              echo "::set-output name=identitysubid::${{ github.event.client_payload.identitysubid }}"
+              echo "::set-output name=connectivitysubid::${{ github.event.client_payload.connectivitysubid }}"
+              echo "::set-output name=securitysubid::${{ github.event.client_payload.securitysubid }}"
+              echo "::set-output name=subownergroup::$(echo '${{ github.event.client_payload.other }}' | jq -r '.subownergroup')"
+              echo "::set-output name=enracctname::$(echo '${{ github.event.client_payload.other }}' | jq -r '.enracctname')"              
+              echo "::set-output name=offertype::$(echo '${{ github.event.client_payload.other }}' | jq -r '.offertype')"  
+            else
+              echo "Invalid Event Trigger ${GITHUB_EVENT_NAME} unable to set variables."
+            fi;            
+
+        - name: Echo Variables
+          run: |
+            echo ref: ${{ steps.setvariables.outputs.ref }}
+            echo entlzprefix: ${{ steps.setvariables.outputs.entlzprefix }}
+            echo environment: ${{ steps.setvariables.outputs.environment }}
+            echo location: ${{ steps.setvariables.outputs.location }}
+            echo managementsubid: ${{ steps.setvariables.outputs.managementsubid }}
+            echo identitysubid: ${{ steps.setvariables.outputs.identitysubid }}
+            echo connectivitysubid: ${{ steps.setvariables.outputs.connectivitysubid }}
+            echo securitysubid: ${{ steps.setvariables.outputs.securitysubid }}
+            echo subownergroup: ${{ steps.setvariables.outputs.subownergroup }}
+            echo enracctname: ${{ steps.setvariables.outputs.enracctname }}
+            echo githubsecret: ${{ steps.setvariables.outputs.githubsecret }}
+            echo offertype: ${{ steps.setvariables.outputs.offertype }}
+
+        - uses: actions/checkout@v2
+          with:
+            ref: ${{ steps.setvariables.outputs.ref }}
+        
+        - name: Log in with Azure
+          uses: azure/login@v1
+          with:
+            creds: ${{ secrets[steps.setvariables.outputs.githubsecret] }}
+            environment: ${{ steps.setvariables.outputs.environment }}
+            enable-AzPSSession: false
+        
+        - name: Create Management Sub
+          uses: azure/CLI@v1
+          env:
+            managementsubname: "${{ steps.setvariables.outputs.entlzprefix }}-management"
+          with:
+            azcliversion: 2.21.0
+            inlineScript: |
+              echo managementsubname: ${{ env.managementsubname }}
+              managementuri=$(az cloud show --query endpoints.resourceManager --output tsv)
+              echo managementuri: $managementuri
+              if [[ -z "${{ steps.setvariables.outputs.managementsubid }}" ]];
+              then
+                az config set extension.use_dynamic_install=yes_without_prompt
+                subownergroupid=$(az ad group list --display-name ${{ steps.setvariables.outputs.subownergroup }}  --query [].objectId -o tsv)
+                echo subownergroupid: $subownergroupid
+                # Check if Sub already exists
+                if [[ -z `az account list --query "[?name=='${{ env.managementsubname }}'].name" --output tsv` ]];
+                then
+                  echo "Creating Management Subscription..."
+                  # REST Call to Create Subscription
+                  az rest --method post \
+                  --url "${managementuri}providers/Microsoft.Billing/enrollmentAccounts/${{ steps.setvariables.outputs.enracctname }}/providers/Microsoft.Subscription/createSubscription?api-version=2019-10-01-preview" \
+                  --headers "{\"content-type\":\"application/json\"}" \
+                  --body "{\"displayName\": \"${{ env.managementsubname }}\", \"offerType\": \"${{ steps.setvariables.outputs.offertype }}\", \"owners\": [{\"objectId\": \"${subownergroupid}\"}]}"
+                  sleep 60
+
+                  echo "Assigning default tags..."
+                  # Assign Default Tags to Subscription
+                  NOW=$(date +"%m/%d/%Y_%I:%M:%S_%p")
+                  subId=$(az account subscription list --query "[?displayName=='${{ env.managementsubname }}'].subscriptionId" --output tsv)
+                  az tag create --resource-id /subscriptions/$subId --tags createdOn="$NOW" hosting="int" devenvironment="pr" program="${{ steps.setvariables.outputs.entlzprefix }}"
+                else
+                  echo "Management subscription already exists...skipping"
+                fi;
+              else                
+                echo "Management subscription specified as input...renaming"
+                az rest --method post \
+                --url "${managementuri}subscriptions/${{ steps.setvariables.outputs.managementsubid }}/providers/Microsoft.Subscription/rename?api-version=2019-10-01-preview" \
+                --headers "{\"content-type\":\"application/json\"}" \
+                --body "{   \"subscriptionName\": \"$managementsubname\"}"
+                echo "Management subscription renamed...tagging"
+                az tag create --resource-id /subscriptions/${{ steps.setvariables.outputs.managementsubid }} --tags hosting="int" devenvironment="pr" program="${{ steps.setvariables.outputs.entlzprefix }}"
+              fi;
+
+        - name: Create Identity Sub
+          uses: azure/CLI@v1
+          env:
+            identitysubname: "${{ steps.setvariables.outputs.entlzprefix }}-identity"
+          with:
+            azcliversion: 2.21.0
+            inlineScript: |
+              managementuri=$(az cloud show --query endpoints.resourceManager --output tsv)
+              if [[ -z "${{ steps.setvariables.outputs.identitysubid }}" ]];
+              then
+                az config set extension.use_dynamic_install=yes_without_prompt
+
+                subownergroupid=$(az ad group list --display-name ${{ steps.setvariables.outputs.subownergroup }}  --query [].objectId -o tsv)
+
+                # Check if Sub already exists
+                if [[ -z `az account list --query "[?name=='${{ env.identitysubname }}'].name" --output tsv` ]];
+                then
+                  # REST Call to Create Subscription
+                  az rest --method post \
+                  --url "${managementuri}providers/Microsoft.Billing/enrollmentAccounts/${{ steps.setvariables.outputs.enracctname }}/providers/Microsoft.Subscription/createSubscription?api-version=2019-10-01-preview" \
+                  --headers "{\"content-type\":\"application/json\"}" \
+                  --body "{\"displayName\": \"${{ env.identitysubname }}\", \"offerType\": \"${{ steps.setvariables.outputs.offertype }}\", \"owners\": [{\"objectId\": \"${subownergroupid}\"}]}"
+                  sleep 60
+
+                  # Assign Default Tags to Subscription
+                  NOW=$(date +"%m/%d/%Y_%I:%M:%S_%p")
+                  subId=$(az account subscription list --query "[?displayName=='${{ env.identitysubname }}'].subscriptionId" --output tsv)
+                  az tag create --resource-id /subscriptions/$subId --tags createdOn="$NOW" hosting="int" devenvironment="pr" program="${{ steps.setvariables.outputs.entlzprefix }}"
+                else
+                  echo "Identity subscription already exists...skipping"
+                fi;
+              else
+                echo "Identity subscription specified as input...renaming"
+                az rest --method post \
+                --url "${managementuri}subscriptions/${{ steps.setvariables.outputs.identitysubid }}/providers/Microsoft.Subscription/rename?api-version=2019-10-01-preview" \
+                --headers "{\"content-type\":\"application/json\"}" \
+                --body "{   \"subscriptionName\": \"${{ env.identitysubname }}\"}"
+                echo "Identity subscription renamed...tagging"
+                az tag create --resource-id /subscriptions/${{ steps.setvariables.outputs.identitysubid }} --tags hosting="int" devenvironment="pr" program="${{ steps.setvariables.outputs.entlzprefix }}"
+              fi;
+
+        - name: Create Connectivity Sub
+          uses: azure/CLI@v1
+          env:
+            connectivitysubname: "${{ steps.setvariables.outputs.entlzprefix }}-connectivity"
+          with:
+            azcliversion: 2.21.0
+            inlineScript: |
+              managementuri=$(az cloud show --query endpoints.resourceManager --output tsv)
+              if [[ -z "${{ steps.setvariables.outputs.connectivitysubid }}" ]];
+              then
+                az config set extension.use_dynamic_install=yes_without_prompt
+
+                subownergroupid=$(az ad group list --display-name ${{ steps.setvariables.outputs.subownergroup }}  --query [].objectId -o tsv)
+
+                # Check if Sub already exists
+                if [[ -z `az account list --query "[?name=='${{ env.connectivitysubname }}'].name" --output tsv` ]];
+                then
+                  # REST Call to Create Subscription
+                  az rest --method post \
+                  --url "${managementuri}providers/Microsoft.Billing/enrollmentAccounts/${{ steps.setvariables.outputs.enracctname }}/providers/Microsoft.Subscription/createSubscription?api-version=2019-10-01-preview" \
+                  --headers "{\"content-type\":\"application/json\"}" \
+                  --body "{\"displayName\": \"${{ env.connectivitysubname }}\", \"offerType\": \"${{ steps.setvariables.outputs.offertype }}\", \"owners\": [{\"objectId\": \"${subownergroupid}\"}]}"
+                  sleep 60
+
+                  # Assign Default Tags to Subscription
+                  NOW=$(date +"%m/%d/%Y_%I:%M:%S_%p")
+                  subId=$(az account subscription list --query "[?displayName=='${{ env.connectivitysubname }}'].subscriptionId" --output tsv)
+                  az tag create --resource-id /subscriptions/$subId --tags createdOn="$NOW" hosting="int" devenvironment="pr" program="${{ steps.setvariables.outputs.entlzprefix }}"
+                else
+                  echo "Connectivity subscription already exists...skipping"                  
+                fi;
+              else
+                echo "Conenctivity subscription specified as input...renaming"
+                az rest --method post \
+                --url "${managementuri}subscriptions/${{ steps.setvariables.outputs.connectivitysubid }}/providers/Microsoft.Subscription/rename?api-version=2019-10-01-preview" \
+                --headers "{\"content-type\":\"application/json\"}" \
+                --body "{   \"subscriptionName\": \"${{ env.connectivitysubname }}\"}"
+                echo "Connectivity subscription renamed...tagging"
+                az tag create --resource-id /subscriptions/${{ steps.setvariables.outputs.connectivitysubid }} --tags hosting="int" devenvironment="pr" program="${{ steps.setvariables.outputs.entlzprefix }}"
+              fi;
+
+        - name: Create Security Sub
+          uses: azure/CLI@v1
+          env:
+            securitysubname: "${{ steps.setvariables.outputs.entlzprefix }}-security"
+          with:
+            azcliversion: 2.21.0
+            inlineScript: |
+              managementuri=$(az cloud show --query endpoints.resourceManager --output tsv)
+              if [[ -z "${{ steps.setvariables.outputs.securitysubid }}" ]];
+              then
+                
+                # Check if Sub already exists
+                if [[ -z `az account list --query "[?name=='${{ env.securitysubname }}'].name" --output tsv` ]];
+                then
+                  az config set extension.use_dynamic_install=yes_without_prompt
+
+                  subownergroupid=$(az ad group list --display-name ${{ steps.setvariables.outputs.subownergroup }}  --query [].objectId -o tsv)
+
+                  # REST Call to Create Subscription
+                  az rest --method post \
+                  --url "${managementuri}providers/Microsoft.Billing/enrollmentAccounts/${{ steps.setvariables.outputs.enracctname }}/providers/Microsoft.Subscription/createSubscription?api-version=2019-10-01-preview" \
+                  --headers "{\"content-type\":\"application/json\"}" \
+                  --body "{\"displayName\": \"${{ env.securitysubname }}\", \"offerType\": \"${{ steps.setvariables.outputs.offertype }}\", \"owners\": [{\"objectId\": \"${subownergroupid}\"}]}"
+                  sleep 60
+
+                  # Assign Default Tags to Subscription
+                  NOW=$(date +"%m/%d/%Y_%I:%M:%S_%p")
+                  subId=$(az account subscription list --query "[?displayName=='${{ env.securitysubname }}'].subscriptionId" --output tsv)
+                  az tag create --resource-id /subscriptions/$subId --tags createdOn="$NOW" hosting="int" devenvironment="pr" program="${{ steps.setvariables.outputs.entlzprefix }}"
+                else
+                  echo "Security subscription already exists...skipping"                  
+                fi;
+              else
+                echo "Security subscription specified as input...renaming"
+                az rest --method post \
+                --url "${managementuri}subscriptions/${{ steps.setvariables.outputs.securitysubid }}/providers/Microsoft.Subscription/rename?api-version=2019-10-01-preview" \
+                --headers "{\"content-type\":\"application/json\"}" \
+                --body "{   \"subscriptionName\": \"${{ env.securitysubname }}\"}"
+                echo "Security subscription renamed...tagging"
+                az tag create --resource-id /subscriptions/${{ steps.setvariables.outputs.securitysubid }} --tags hosting="int" devenvironment="pr" program="${{ steps.setvariables.outputs.entlzprefix }}"
+              fi;
+
+        - name: Log in to Azure Again
+          uses: azure/login@v1
+          with:
+            creds: ${{ secrets[steps.setvariables.outputs.githubsecret] }}
+            environment: ${{ steps.setvariables.outputs.environment }}
+            enable-AzPSSession: false
+
+        - name: Move Management Subscription to Management Group
+          uses: azure/CLI@v1
+          env:
+            managementmg: "${{ steps.setvariables.outputs.entlzprefix }}-management"
+            managementsubname: "${{ steps.setvariables.outputs.entlzprefix }}-management"
+          with:
+            azcliversion: 2.21.0
+            inlineScript: |
+              if [[ -z "${{ steps.setvariables.outputs.managementsubid }}" ]];
+              then
+                subId=$(az account subscription list --query "[?displayName=='${{ env.managementsubname }}'].subscriptionId" --output tsv)
+                az account management-group subscription add --name "${{ env.managementmg }}" --subscription $subId
+              else
+                az account management-group subscription add --name "${{ env.managementmg }}" \
+                  --subscription ${{ steps.setvariables.outputs.managementsubid }}
+              fi;
+        
+        - name: Move Identity Subscription to Management Group
+          uses: azure/CLI@v1
+          env:
+            identitymg: "${{ steps.setvariables.outputs.entlzprefix }}-identity"
+            identitysubname: "${{ steps.setvariables.outputs.entlzprefix }}-identity"
+          with:
+            azcliversion: 2.21.0
+            inlineScript: |
+              if [[ -z "${{ steps.setvariables.outputs.identitysubid }}" ]];
+              then
+                subId=$(az account subscription list --query "[?displayName=='${{ env.identitysubname }}'].subscriptionId" --output tsv)
+                az account management-group subscription add --name "${{ env.identitymg }}" \
+                  --subscription $subId
+              else
+                az account management-group subscription add --name "${{ env.identitymg }}" \
+                  --subscription ${{ steps.setvariables.outputs.identitysubid }}
+              fi;
+
+        - name: Move connectivity Subscription to Management Group
+          uses: azure/CLI@v1
+          env:
+            connectivitymg: "${{ steps.setvariables.outputs.entlzprefix }}-connectivity"
+            connectivitysubname: "${{ steps.setvariables.outputs.entlzprefix }}-connectivity"
+          with:
+            azcliversion: 2.21.0
+            inlineScript: |
+              if [[ -z "${{ steps.setvariables.outputs.connectivitysubid }}" ]];
+              then
+                subId=$(az account subscription list --query "[?displayName=='${{ env.connectivitysubname }}'].subscriptionId" --output tsv)
+                az account management-group subscription add --name "${{ env.connectivitymg }}" \
+                  --subscription $subId
+              else
+                az account management-group subscription add --name "${{ env.connectivitymg }}" \
+                  --subscription ${{ steps.setvariables.outputs.connectivitysubid }}
+              fi;
+
+        - name: Move security Subscription to Management Group
+          uses: azure/CLI@v1
+          env:
+            securitymg: "${{ steps.setvariables.outputs.entlzprefix }}-security"
+            securitysubname: "${{ steps.setvariables.outputs.entlzprefix }}-security"
+          with:
+            azcliversion: 2.21.0
+            inlineScript: |
+              if [[ -z "${{ steps.setvariables.outputs.securitysubid }}" ]];
+              then
+                subId=$(az account subscription list --query "[?displayName=='${{ env.securitysubname }}'].subscriptionId" --output tsv)
+                az account management-group subscription add --name "${{ env.securitymg }}" \
+                  --subscription $subId
+              else
+                az account management-group subscription add --name "${{ env.securitymg }}" \
+                  --subscription ${{ steps.setvariables.outputs.securitysubid }}
+              fi;
