@@ -1,0 +1,80 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/0.1.2-preview/CreateUIDefinition.MultiVm.json#",
+    "handler": "Microsoft.Azure.CreateUIDef",
+    "version": "0.1.2-preview",
+    "parameters": {
+      "basics": [
+        {}
+      ],
+      "steps": [
+        {
+          "name": "vnetConfig",
+          "label": "VNET settings",
+          "subLabel": {
+            "preValidation": "Configure the infrastructure settings",
+            "postValidation": "Done"
+          },
+          "bladeTitle": "VNET settings",
+          "elements": [            
+            {
+                "name": "vnetName",
+                "type": "Microsoft.Common.TextBox",
+                "label": "Virtual Network Name",
+                "defaultValue": "myvnet",
+                "toolTip": "Enter a valid Virtual Network name.",
+                "visible": true
+            },
+            {
+                "name": "vnetAddressPrefix",
+                "type": "Microsoft.Common.TextBox",
+                "label": "Virtual Network Address Prefix",
+                "defaultValue": "10.0.0.0/16",
+                "toolTip": "Enter a valid Virtual Network Address Prefix (x.x.x.x/x).",
+                "visible": true
+            },
+            {
+                "name": "subnet1Prefix",
+                "type": "Microsoft.Common.TextBox",
+                "label": "Subnet 1 Prefix",
+                "defaultValue": "10.0.0.0/24",
+                "toolTip": "Enter a valid Subnet Prefix (x.x.x.x/x).",
+                "visible": true
+            },
+            {
+                "name": "subnet1Name",
+                "type": "Microsoft.Common.TextBox",
+                "label": "Subnet 1 Name",
+                "defaultValue": "Subnet1",
+                "toolTip": "Enter a valid Subnet name.",
+                "visible": true
+            },
+            {
+                "name": "subnet2Prefix",
+                "type": "Microsoft.Common.TextBox",
+                "label": "Subnet 2 Prefix",
+                "defaultValue": "10.0.1.0/24",
+                "toolTip": "Enter a valid Subnet Prefix (x.x.x.x/x).",
+                "visible": true
+            },
+            {
+                "name": "subnet2Name",
+                "type": "Microsoft.Common.TextBox",
+                "label": "Subnet 2 Name",
+                "defaultValue": "Subnet2",
+                "toolTip": "Enter a valid Subnet name.",
+                "visible": true
+            }
+          ]
+        }
+      ],
+      "outputs": {
+        "vnetName": "[steps('vnetConfig').vnetName]",
+        "vnetAddressPrefix": "[steps('storageConfig').vnetAddressPrefix]",
+        "subnet1Prefix": "[steps('storageConfig').subnet1Prefix]",
+        "subnet1Name": "[steps('storageConfig').subnet1Name]",
+        "subnet2Prefix": "[steps('storageConfig').subnet2Prefix]",
+        "subnet2Name": "[steps('storageConfig').subnet2Name]",
+        "location": "[location()]"
+      }
+    }
+  }
