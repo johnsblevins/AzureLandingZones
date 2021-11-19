@@ -1,0 +1,39 @@
+# Sample GitLab Pipeline to deploy Enterprise Scale Landing Zone
+
+stages:
+  - build
+  - test
+  - deploy
+
+build:
+  stage: build
+  script:
+    - echo "This is a build test"
+
+deploy:
+  stage: deploy
+  image:  mcr.microsoft.com/azure-cli:latest
+  when: manual
+  script: |
+    echo $(ARM_CLIENT_ID)
+    az --version
+    az cloud set --name AzureUSGovernment
+    az login --service-principal -u ${ARM_CLIENT_ID} --password ${ARM_CLIENT_SECRET} --tenant ${ARM_TENANT_ID}
+    az account list
+
+    # Deploy Management Groups using template
+    randomid=$RANDOM$RANDOM$RANDOM
+    az deployment tenant create \
+      --name "${entlzprefix}-managementgroups-${location}-${randomid}" \
+      --location ${location} \
+      --template-file templates/entlz/platform-mgs/main.bicep \
+      --parameters entlzprefix=${entlzprefix} randomid=$randomid
+
+    # Configure Management Group Hierarchy Settings
+    TenantRootMG=$(az account management-group list --query "[0].name" --output tsv)
+    resourceManagerURI=$(az cloud show --query 'endpoints.resourceManager' -o tsv)                
+    az rest \
+      --method put \
+      --headers "{\"Content-Type\":\"application/json\"}" \
+      --uri "${resourceManagerURI}providers/Microsoft.Management/managementGroups/$TenantRootMG/settings/default?api-version=2020-05-01" \
+      --body "{\"properties\": {\"defaultManagementGroup\": \"/providers/Microsoft.Management/managementGroups/${entlzprefix}-onboarding\",\"requireAuthorizationForGroupCreation\": \"true\"}}" 
