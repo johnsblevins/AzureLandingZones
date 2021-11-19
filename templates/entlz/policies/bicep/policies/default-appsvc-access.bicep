@@ -7,37 +7,33 @@ resource def 'Microsoft.Authorization/policyDefinitions@2021-06-01'={
     description: 'Restricts Access to App Services'
     policyRule: {
       if: {
-        field: 'kind'
-        equals: 'Microsoft.Web/sites/config'
+        field: 'type'
+        equals: 'Microsoft.Web/sites'
       }
       then: {
         effect: 'append'
         details: [
           {
-            field: 'Microsoft.Web/sites/config/ipSecurityRestrictions'
-            value: [
-              {
-                ipAddress: '0.0.0.0/0'
-                action: 'Deny'
-                tag: 'Default'
-                priority: 599999999
-                name: 'Deny All'
-                description: 'Deny All'
-              }
-            ] 
+            field: 'Microsoft.Web/sites/config/web.ipSecurityRestrictions[*]'                    
+            value: {
+              ipAddress: '0.0.0.0/0'
+              action: 'Deny'
+              tag: 'Default'
+              priority: 599999999
+              name: 'Deny All'
+              description: 'Deny All'
+            }            
           }
           {
-            field: 'Microsoft.Web/sites/config/scmIpSecurityRestrictions'
-            value: [
-              {
-                ipAddress: '0.0.0.0/0'
-                action: 'Deny'
-                tag: 'Default'
-                priority: 599999999
-                name: 'Deny All'
-                description: 'Deny All'
-              }
-            ] 
+            field: 'Microsoft.Web/sites/config/web.scmIpSecurityRestrictions[*]'
+            value: {
+              ipAddress: '0.0.0.0/0'
+              action: 'Deny'
+              tag: 'Default'
+              priority: 599999999
+              name: 'Deny All'
+              description: 'Deny All'
+            }
           } 
         ]
       }
@@ -46,9 +42,9 @@ resource def 'Microsoft.Authorization/policyDefinitions@2021-06-01'={
 }
 
 resource assign 'Microsoft.Authorization/policyAssignments@2021-06-01'={
-  name: 'default-appsvc-access-assign'
+  name: 'default-appsvc-access'
   properties: {
-    displayName: 'default-appsvc-access-assign'
+    displayName: 'default-appsvc-access'
     policyDefinitionId: def.id
   }
 }

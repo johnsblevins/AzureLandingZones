@@ -17,12 +17,12 @@ resource def 'Microsoft.Authorization/policyDefinitions@2021-06-01'={
             field: 'Microsoft.Web/sites/config/ipSecurityRestrictions'
             value: [
               {
-                ipAddress: '0.0.0.0/0'
-                action: 'Deny'
+                ipAddress: '13.72.26.246/32'
+                action: 'Allowed'
                 tag: 'Default'
-                priority: 599999999
-                name: 'Deny All'
-                description: 'Deny All'
+                priority: 500
+                name: 'Allow Zscaler'
+                description: 'Allow Zscaler'
               }
             ] 
           }
