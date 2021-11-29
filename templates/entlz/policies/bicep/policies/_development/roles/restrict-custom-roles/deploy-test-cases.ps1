@@ -1,0 +1,1 @@
+New-AzResourceGroupDeployment -Name 'deploy-custom-role-test' -resourcegroupname 'policy-testing-rg-restrict-custom-roles-test' -TemplateFile .\test-case-good.bicep

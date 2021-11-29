@@ -1,4 +1,4 @@
-param rgname string = 'rg-disallowed-builtin-roles-test'
+param rgname string = 'rg-deny-kv-public-access'
 param location string = 'usgovvirginia'
 
 targetScope='subscription'
@@ -8,12 +8,12 @@ resource rg 'Microsoft.Resources/resourceGroups@2021-04-01'={
   location: location
 }
 
-module def 'disallowed-builtin-roles-def.bicep' = {
-  name: 'deploy-disallowed-builtin-roles-def'
+module def 'deny-kv-public-access-def.bicep' = {
+  name: 'deploy-deny-kv-public-access-def'
 }
 
-module assign 'disallowed-builtin-roles-assign.bicep' = {
-  name: 'deploy-disallowed-builtin-roles-assign'
+module assign 'deny-kv-public-access-assign.bicep' = {
+  name: 'deploy-deny-kv-public-access-assign'
   scope: rg
   dependsOn: [
     def

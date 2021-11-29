@@ -7,7 +7,7 @@ $allpoliciesrg = 'policy-testing-rg'
 New-AzDeployment -Name 'Deploy-restrict-custom-roles' -Location usgovvirginia -TemplateFile .\restrict-custom-roles-main.bicep -rgname $singlepolicyrg -LocationFromTemplate $location
 
 # Deploy Policy Definition and Assignment - All Policies RG
-New-AzDeployment -Name 'Deploy-restrict-custom-roles' -Location usgovvirginia -TemplateFile .\restrict-custom-roles-main.bicep -rgname $allpoliciesrg -LocationFromTemplate $location
+#New-AzDeployment -Name 'Deploy-restrict-custom-roles' -Location usgovvirginia -TemplateFile .\restrict-custom-roles-main.bicep -rgname $allpoliciesrg -LocationFromTemplate $location
 
 # Start Policy Evaulation Cycle
 #$singlergjob = Start-AzPolicyComplianceScan -ResourceGroupName $singlepolicyrg -asjob

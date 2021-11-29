@@ -3,13 +3,24 @@ targetScope='subscription'
 var mode = 'All'
 
 resource disallowed_builtin_roles 'Microsoft.Authorization/policyDefinitions@2021-06-01'={
-  name: 'restrict-custom-roles-policy'
+  name: 'restrict-custom-roles'
   properties: {
     description: 'Restrict Custom Role Definitions.'
-    displayName: 'restrict-custom-roles-policy'
+    displayName: 'restrict-custom-roles'
     mode: mode
     policyType: 'Custom'
     parameters: {
+      /*disallowedActionsStartsWith: {
+        type: 'Array'
+        defaultValue: [
+          '*'
+          'Microsoft.Authorization'
+          'Microsoft.Network/virtualNetworks'
+          'Microsoft.Network/routeTables'
+          'Microsoft.Blueprints'
+          'Microsoft.Solutions'
+        ]
+      }*/
       effect:{
         type: 'String'
         defaultValue: 'Deny'
@@ -27,46 +38,72 @@ resource disallowed_builtin_roles 'Microsoft.Authorization/policyDefinitions@202
             field: 'type'
             equals: 'Microsoft.Authorization/roleDefinitions'
           }
-          {
+          /*{
             field: 'Microsoft.Authorization/roleDefinitions/type'
             equals: 'CustomRole'
           }
           {
             anyOf: [
               {
-                field: 'Microsoft.Authorization/roleDefinitions/permissions[*].actions[*]'
-                contains: 'Microsoft.Authorization'
-              }              
+                count: {
+                  field: 'Microsoft.Authorization/roleDefinitions/permissions[*].actions[*]'
+                  where: {
+                    count: {
+                      value: '[parameters(\'disallowedActionsStartsWith\')]'
+                      name: 'disallowedActionStartsWith'
+                      where: {
+                        value: '[take(current(\'Microsoft.Authorization/roleDefinitions/permissions[*].actions[*]\'),length(current(\'disallowedActionStartsWith\')))]'
+                        equals: '[current(\'disallowedActionStartsWith\')]'
+                      }                
+                    }
+                    greater: 0
+                  }              
+                }
+                greater: 0
+              }
               {
-                field: 'Microsoft.Authorization/roleDefinitions/permissions.actions[*]'
-                contains: 'Microsoft.Authorization'
-              }     
-              {
-                field: 'Microsoft.Authorization/roleDefinitions/permissions[*].actions[*]'
-                contains: 'Microsoft.Blueprint'
-              }              
-              {
-                field: 'Microsoft.Authorization/roleDefinitions/permissions.actions[*]'
-                contains: 'Microsoft.Blueprint'
-              }    
-              {
-                field: 'Microsoft.Authorization/roleDefinitions/permissions[*].actions[*]'
-                contains: 'Microsoft.Solutions'
-              }              
-              {
-                field: 'Microsoft.Authorization/roleDefinitions/permissions.actions[*]'
-                contains: 'Microsoft.Solutions'
-              }       
-              {
-                field: 'Microsoft.Authorization/roleDefinitions/permissions[*].actions[*]'
-                contains: 'Microsoft.Network'
-              }              
-              {
-                field: 'Microsoft.Authorization/roleDefinitions/permissions.actions[*]'
-                contains: 'Microsoft.Network'
-              }       
+                count: {
+                  field: 'Microsoft.Authorization/roleDefinitions/permissions.actions[*]'
+                  where: {
+                    count: {
+                      value: '[parameters(\'disallowedActionsStartsWith\')]'
+                      name: 'disallowedActionStartsWith'
+                      where: {
+                        value: '[take(current(\'Microsoft.Authorization/roleDefinitions/permissions.actions[*]\'),length(current(\'disallowedActionStartsWith\')))]'
+                        equals: '[current(\'disallowedActionStartsWith\')]'
+                      }                
+                    }
+                    greater: 0
+                  }              
+                }
+                greater: 0
+              }
             ]
-          }          
+          }  */
+          {
+            anyOf: [
+              {
+                count: {
+                  field: 'Microsoft.Authorization/roleDefinitions/permissions.actions[*]'
+                  where: {
+                    value: '[current(Microsoft.Authorization/roleDefinitions/permissions.actions[*])'
+                    like: 'Microsoft.Authorization*'
+                  }              
+                }
+                greater: 0
+              }
+              {
+                count: {
+                  field: 'Microsoft.Authorization/roleDefinitions/permissions[*].actions[*]'
+                  where: {
+                    value: '[current(Microsoft.Authorization/roleDefinitions/permissions[*].actions[*])'
+                    like: 'Microsoft.Authorization*'
+                  }              
+                }
+                greater: 0
+              }
+            ]
+          }        
         ]
       }
       then: {

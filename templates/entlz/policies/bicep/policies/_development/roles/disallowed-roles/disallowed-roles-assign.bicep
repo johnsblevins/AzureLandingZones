@@ -1,5 +1,5 @@
-param assignmentName string = 'disallowed-builtin-roles'
-param disallowedBuiltinRoles array = [
+param assignmentName string = 'disallowed-roles'
+param disallowedRoles array = [
   '8e3af657-a8ff-443c-a75c-2fe8c4bcb635' //Owner
   'b24988ac-6180-42a0-ab88-20f7382dd24c' //Contributor
   '4d97b98b-1d4f-4787-a291-c67834d212e7' //Network Contributor
@@ -16,19 +16,19 @@ resource policyassignment 'Microsoft.Authorization/policyAssignments@2021-06-01'
   name: assignmentName
   location: resourceGroup().location
   properties: {
-    description: 'Disallowed Builtin Roles can\'t be assigned.'
+    description: 'Disallowed Roles can\'t be assigned.'
     displayName: assignmentName
     enforcementMode: 'Default'
     nonComplianceMessages: [
       {
-        message: 'The following Builtin Roles are Disallowed: ${disallowedBuiltinRoles}'
+        message: 'The following  Roles are Disallowed: ${disallowedRoles}'
       }      
     ]
     notScopes: notScopes
     policyDefinitionId: policyDefinitionId
     parameters: {
-      disallowedBuiltinRoles:{
-        value: disallowedBuiltinRoles
+      disallowedRoles:{
+        value: disallowedRoles
       }
       effect:{
         value: effect
