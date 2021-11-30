@@ -5,9 +5,13 @@ var mode = 'All'
 resource disallowed_roles 'Microsoft.Authorization/policyDefinitions@2021-06-01'={
   name: 'disallowed-roles-policy'
   properties: {
-    description: 'Disallowed Roles can\'t be assigned.'
+    description: 'Disallowed Roles cannot be assigned.'
     displayName: 'disallowed-roles-policy'
     mode: mode
+    metadata: {
+      version: '1.0'
+      category: 'General'
+    }
     policyType: 'Custom'
     parameters: {
       disallowedRoles:{
