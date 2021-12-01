@@ -3,10 +3,10 @@ targetScope='subscription'
 var mode = 'All'
 
 resource sa_allowed_iprules 'Microsoft.Authorization/policyDefinitions@2021-06-01'={
-  name: 'sa-allowed-iprules'
+  name: 'kv-allowed-iprules'
   properties: {
     description: 'IP Rules in Storage Account Firewalls are restricted.'
-    displayName: 'sa-allowed-iprules'
+    displayName: 'kv-allowed-iprules'
     mode: mode
     metadata: {
       version: '1.0'

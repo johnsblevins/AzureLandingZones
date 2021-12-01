@@ -3,10 +3,10 @@ targetScope='subscription'
 var mode = 'All'
 
 resource allowed_routes 'Microsoft.Authorization/policyDefinitions@2021-06-01'={
-  name: 'allowed-routes-policy'
+  name: 'allowed-routes'
   properties: {
     description: 'Specified the allowed routes for route tables'
-    displayName: 'allowed-routes-policy'
+    displayName: 'allowed-routes'
     mode: mode
     policyType: 'Custom'
     parameters: {

@@ -3,10 +3,10 @@ targetScope='subscription'
 var mode = 'All'
 
 resource disallowed_roles 'Microsoft.Authorization/policyDefinitions@2021-06-01'={
-  name: 'disallowed-roles-policy'
+  name: 'disallowed-roles'
   properties: {
     description: 'Disallowed Roles cannot be assigned.'
-    displayName: 'disallowed-roles-policy'
+    displayName: 'disallowed-roles'
     mode: mode
     metadata: {
       version: '1.0'
