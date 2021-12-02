@@ -14,6 +14,7 @@ resource nic 'Microsoft.Network/networkInterfaces@2021-03-01' ={
         }        
       }      
     ]
+    enableIPForwarding: true
     networkSecurityGroup: {
       id: nsg.id
     }

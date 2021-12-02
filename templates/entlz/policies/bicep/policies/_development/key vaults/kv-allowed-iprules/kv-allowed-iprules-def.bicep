@@ -5,7 +5,7 @@ var mode = 'All'
 resource sa_allowed_iprules 'Microsoft.Authorization/policyDefinitions@2021-06-01'={
   name: 'kv-allowed-iprules'
   properties: {
-    description: 'IP Rules in Storage Account Firewalls are restricted.'
+    description: 'IP Rules in Key Vault Firewalls are restricted.'
     displayName: 'kv-allowed-iprules'
     mode: mode
     metadata: {
