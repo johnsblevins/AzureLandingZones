@@ -7,12 +7,12 @@ resource deny_disk_export 'Microsoft.Authorization/policyDefinitions@2021-06-01'
   properties: {
     description: 'Managed Disks cannot be exported.'
     displayName: 'deny-disk-export'
+    mode: mode
+    policyType: 'Custom'
     metadata: {
       version: '1.0.0'
       category: 'Compute'
     }
-    mode: mode
-    policyType: 'Custom'
     parameters: {     
       effect:{
         type: 'String'
