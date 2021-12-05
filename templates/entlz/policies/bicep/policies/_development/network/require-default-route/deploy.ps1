@@ -1,4 +1,4 @@
-$singlepolicyrg = 'policy-testing-rg-require-default-route-test'
+$singlepolicyrg = 'policy-testing-rg-require-default-route'
 $location = 'usgovvirginia'
 
 $allpoliciesrg = 'policy-testing-rg'

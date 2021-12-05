@@ -1,4 +1,4 @@
-$singlepolicyrg = 'policy-testing-rg-disallowed-roles-test'
+$singlepolicyrg = 'policy-testing-rg-disallowed-roles'
 $location = 'usgovvirginia'
 
 $allpoliciesrg = 'policy-testing-rg'

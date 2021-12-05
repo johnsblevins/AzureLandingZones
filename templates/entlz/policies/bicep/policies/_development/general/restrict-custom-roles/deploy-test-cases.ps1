@@ -1,4 +1,4 @@
-$singlepolicyrg = 'policy-testing-rg-restrict-custom-roles-test'
+$singlepolicyrg = 'policy-testing-rg-restrict-custom-roles'
 $location = 'usgovvirginia'
 
 # Deploy Bad Test Case

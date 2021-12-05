@@ -1,3 +1,6 @@
+$singlepolicyrg = 'policy-testing-rg-require-default-route'
+$location = 'usgovvirginia'
+
 # Deploy Good Test Case
 New-AzResourceGroupDeployment -Name 'Deploy-Require-Default-Route-Good-Test-Case' -TemplateFile .\test-case-good.bicep -ResourceGroupName $singlepolicyrg
 

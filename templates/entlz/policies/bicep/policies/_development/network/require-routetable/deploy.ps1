@@ -1,4 +1,4 @@
-$singlepolicyrg = 'policy-testing-rg-require-routetable-test'
+$singlepolicyrg = 'policy-testing-rg-require-routetable'
 $location = 'usgovvirginia'
 
 $allpoliciesrg = 'policy-testing-rg'
@@ -12,10 +12,3 @@ New-AzDeployment -Name 'Deploy-Require-routetable' -Location usgovvirginia -Temp
 # Start Policy Evaulation Cycle
 $singlergjob = Start-AzPolicyComplianceScan -ResourceGroupName $singlepolicyrg -asjob
 $allrgjob = Start-AzPolicyComplianceScan -ResourceGroupName $allpoliciesrg -asjob
-
-# Deploy Good Test Case
-New-AzResourceGroupDeployment -Name 'Deploy-Require-routetable-Good-Test-Case' -TemplateFile .\test-case-good.bicep -ResourceGroupName $singlepolicyrg
-
-# Deploy Bad Test Case
-New-AzResourceGroupDeployment -Name 'Deploy-Require-routetable-Bad-Test-Case' -TemplateFile .\test-case-bad.bicep -ResourceGroupName $singlepolicyrg
-

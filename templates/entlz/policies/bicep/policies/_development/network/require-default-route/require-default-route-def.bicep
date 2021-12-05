@@ -7,6 +7,10 @@ resource policyDefintion 'Microsoft.Authorization/policyDefinitions@2021-06-01'=
   properties: {
     description: 'A Default Route is required on Route Tables.'
     displayName: 'require-default-route'
+    metadata: {
+      version: '1.0'
+      category: 'Network'
+    }
     mode: mode
     policyType: 'Custom'
     parameters: {      

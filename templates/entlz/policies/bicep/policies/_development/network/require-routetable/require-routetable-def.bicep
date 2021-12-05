@@ -7,6 +7,10 @@ resource policyDefintion 'Microsoft.Authorization/policyDefinitions@2021-06-01'=
   properties: {
     description: 'A Route Table is required on Subnets.'
     displayName: 'require-routetable'
+    metadata: {
+      version: '1.0'
+      category: 'Network'
+    }
     mode: mode
     policyType: 'Custom'
     parameters: {      

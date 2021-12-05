@@ -7,6 +7,10 @@ resource allowed_routes 'Microsoft.Authorization/policyDefinitions@2021-06-01'={
   properties: {
     description: 'Specified the allowed routes for route tables'
     displayName: 'allowed-routes'
+    metadata: {
+      version: '1.0'
+      category: 'Network'
+    }
     mode: mode
     policyType: 'Custom'
     parameters: {
