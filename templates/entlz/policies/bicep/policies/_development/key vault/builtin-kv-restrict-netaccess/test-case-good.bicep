@@ -1,7 +1,7 @@
 targetScope='resourceGroup'
 
 resource kv 'Microsoft.KeyVault/vaults@2021-06-01-preview' ={
-  name: 'badkv123'
+  name: 'goodnetaccesskv123'
   location: resourceGroup().location  
   properties: {
     sku: {
@@ -18,7 +18,7 @@ resource kv 'Microsoft.KeyVault/vaults@2021-06-01-preview' ={
       }
     ]
     networkAcls: {
-      defaultAction: 'Allow'
+      defaultAction: 'Deny'
     }    
   }
 }
