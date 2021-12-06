@@ -10,7 +10,7 @@ resource sa_allowed_iprules 'Microsoft.Authorization/policyDefinitions@2021-06-0
     mode: mode
     metadata: {
       version: '1.0'
-      category: 'Storage'
+      category: 'Key Vault'
     }
     policyType: 'Custom'
     parameters: {
@@ -37,10 +37,10 @@ resource sa_allowed_iprules 'Microsoft.Authorization/policyDefinitions@2021-06-0
         allOf: [
           {
             field: 'type'
-            equals: 'Microsoft.Storage/storageAccounts'
+            equals: 'Microsoft.KeyVault/vaults'
           }
           {
-            field: 'Microsoft.Storage/storageAccounts/networkAcls.ipRules[*].value'
+            field: 'Microsoft.KeyVault/vaults/networkAcls.ipRules[*].value'
             notin: '[parameters(\'allowedAddressRanges\')]' 
           }
         ]

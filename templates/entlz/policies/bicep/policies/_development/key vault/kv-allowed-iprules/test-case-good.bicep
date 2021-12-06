@@ -1,7 +1,7 @@
 targetScope='resourceGroup'
 
 resource kv 'Microsoft.KeyVault/vaults@2021-06-01-preview' ={
-  name: 'badkv123'
+  name: 'goodipruleskv123'
   location: resourceGroup().location  
   properties: {
     sku: {
