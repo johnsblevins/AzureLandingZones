@@ -10,5 +10,6 @@ New-AzDeployment -Name 'Deploy-sa-allowed-iprules' -Location usgovvirginia -Temp
 New-AzDeployment -Name 'Deploy-sa-allowed-iprules' -Location usgovvirginia -TemplateFile .\sa-allowed-iprules-main.bicep -rgname $allpoliciesrg -LocationFromTemplate $location
 
 # Start Policy Evaulation Cycle
-$singlergjob = Start-AzPolicyComplianceScan -ResourceGroupName $singlepolicyrg -asjob
+$singlepolicyrg = 'policy-testing-rg-sa-allowed-iprules'
+$location = 'usgovvirginia'
 $allrgjob = Start-AzPolicyComplianceScan -ResourceGroupName $allpoliciesrg -asjob

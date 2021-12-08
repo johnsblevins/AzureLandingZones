@@ -40,8 +40,14 @@ resource sa_allowed_iprules 'Microsoft.Authorization/policyDefinitions@2021-06-0
             equals: 'Microsoft.Storage/storageAccounts'
           }
           {
-            field: 'Microsoft.Storage/storageAccounts/networkAcls.ipRules[*].value'
-            notin: '[parameters(\'allowedAddressRanges\')]' 
+            count: {
+              field: 'Microsoft.Storage/storageAccounts/networkAcls.ipRules[*]'
+              where:{
+                field: 'Microsoft.Storage/storageAccounts/networkAcls.ipRules[*].value'
+                notin: '[parameters(\'allowedAddressRanges\')]'
+              } 
+            }
+            greater: 0            
           }
         ]
       }

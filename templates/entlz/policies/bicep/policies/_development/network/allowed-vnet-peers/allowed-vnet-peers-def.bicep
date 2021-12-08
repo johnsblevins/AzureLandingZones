@@ -47,10 +47,22 @@ resource allowed_vnet_peers 'Microsoft.Authorization/policyDefinitions@2021-06-0
             ]
           }
           {
-            not: {
-              field: 'Microsoft.Network/virtualNetworks/virtualNetworkPeerings/remoteVirtualNetwork.id'
-              notin: '[parameters(\'allowedVnetPeers\')]'
-            }
+            anyOf: [
+              {
+                count: {
+                  field: 'Microsoft.Network/virtualNetworks/virtualNetworkPeerings[*]'
+                  where:{
+                    field: 'Microsoft.Network/virtualNetworks/virtualNetworkPeerings[*].remoteVirtualNetwork.id'
+                    notin: '[parameters(\'allowedVnetPeers\')]'
+                  } 
+                }
+                greater: 0      
+              }
+              {                  
+                  field: 'Microsoft.Network/virtualNetworks/virtualNetworkPeerings/remoteVirtualNetwork.id'
+                  notin: '[parameters(\'allowedVnetPeers\')]'
+              }
+            ]
           }
         ]
       }
