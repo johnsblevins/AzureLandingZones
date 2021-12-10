@@ -1,0 +1,28 @@
+param assignmentName string = 'require-default-route'
+param notScopes array = []
+param policyDefinitionId string
+param effect string = 'Deny'
+
+targetScope='resourceGroup'
+
+resource policyassignment 'Microsoft.Authorization/policyAssignments@2021-06-01'={
+  name: assignmentName
+  location: resourceGroup().location
+  properties: {
+    description: 'A Default Route is required on Route Tables.'
+    displayName: assignmentName
+    enforcementMode: 'Default'
+    nonComplianceMessages: [
+      {
+        message: 'A Default Route is required on Route Tables.'
+      }      
+    ]
+    notScopes: notScopes
+    policyDefinitionId: policyDefinitionId
+    parameters: {
+      effect:{
+        value: effect
+      }
+    }
+  }
+}
