@@ -155,7 +155,7 @@ resource "azurerm_virtual_machine_extension" "terraform_demoextension" {
   settings = <<SETTINGS
   {
     "AutoTelemetrySettings": {
-      "Region": "West Europe"
+      "Region": "usgovvirginia"
     },
     "AutoPatchingSettings": {
       "PatchCategory": "WindowsMandatoryUpdates",

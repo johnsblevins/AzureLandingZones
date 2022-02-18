@@ -1,0 +1,1 @@
+New-AzResourceGroupDeployment -Name 'aks-dns-vnet-deploy-001' -ResourceGroupName aks-dns-vnet -TemplateFile .\prereqs.bicep             
