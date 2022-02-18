@@ -1,0 +1,120 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+      "aksClusterAdminUsername": {
+        "value": "azureadmin"
+      },
+      "aksClusterName": {
+        "value": "aks-private-01"
+      },     
+      "aksClusterDnsPrefix": {
+        "value": "aksClusterName"
+      },            
+      "aksClusterTags": {
+        "value": {
+          "resourceType": "AKS Cluster",
+          "createdBy": "ARM Template"
+        }
+      },
+      "aksClusterNetworkPlugin": {
+        "value": "azure"
+      },
+      "aksClusterNetworkPolicy": {
+        "value": "azure"
+      },
+      "aksClusterPodCidr": {
+        "value": "10.2.0.0/24"
+      },
+      "aksClusterServiceCidr": {
+        "value": "10.128.0.0/16"
+      },
+      "aksClusterDnsServiceIP": {
+        "value": "10.128.0.10"
+      },
+      "aksClusterDockerBridgeCidr": {
+        "value": "172.17.0.1/16"
+      },
+      "aksClusterLoadBalancerSku": {
+        "value": "standard"
+      },
+      "aksClusterSkuTier": {
+        "value": "Paid"
+      },
+      "aksClusterKubernetesVersion": {
+        "value": "1.22.4"
+      },      
+      "aadEnabled": {
+        "value": false
+      },
+      "aadProfileTenantId": {
+        "value": ""
+      },
+      "aadProfileAdminGroupObjectIDs": {
+        "value": []
+      },
+      "aksClusterEnablePrivateCluster": {
+        "value": true
+      },
+      "aadProfileManaged": {
+        "value": false
+      },
+      "aadProfileEnableAzureRBAC": {
+        "value": false
+      },
+      "nodePoolName": {
+        "value": "nodepool1"
+      },
+      "nodePoolVmSize": {
+        "value": "Standard_DS3_v2"
+      },
+      "nodePoolOsDiskSizeGB": {
+        "value": 100
+      },
+      "nodePoolCount": {
+        "value": 3
+      },
+      "nodePoolOsType": {
+        "value": "Linux"
+      },
+      "nodePoolMaxPods": {
+        "value": 11
+      },
+      "nodePoolMaxCount": {
+        "value": 5
+      },
+      "nodePoolMinCount": {
+        "value": 3
+      },
+      "nodePoolEnableAutoScaling": {
+        "value": true
+      },
+      "nodePoolScaleSetPriority": {
+        "value": "Regular"
+      },
+      "nodePoolNodeLabels": {
+        "value": {}
+      },
+      "nodePoolNodeTaints": {
+        "value": []
+      },
+      "nodePoolMode": {
+        "value": "System"
+      },      
+      "nodePoolType": {
+        "value": "VirtualMachineScaleSets"
+      },
+      "nodePoolAvailabilityZones": {
+        "value": []
+      },
+      "virtualNetworkId": {
+        "value": "/subscriptions/f86eed1f-a251-4b29-a8b3-98089b46ce6c/resourceGroups/private-endpoint-test-environment/providers/Microsoft.Network/virtualNetworks/cloudspokevnet"
+      },
+      "aksSubnetName": {
+        "value": "default"
+      },
+      "logAnalyticsWorkspaceId": {
+        "value": "/subscriptions/f86eed1f-a251-4b29-a8b3-98089b46ce6c/resourcegroups/private-endpoint-test-environment/providers/microsoft.operationalinsights/workspaces/hublogaworkspace"
+      } 
+    }
+  }
