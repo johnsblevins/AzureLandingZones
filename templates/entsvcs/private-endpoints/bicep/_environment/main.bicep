@@ -6,6 +6,15 @@ param deploymentId string
 targetScope='resourceGroup'
 
 
+// User Assigned Identities
+module aksidentity 'userassignedidentity.bicep' ={
+  name: 'aksidentity_deploy_${deploymentId}'
+  params: {
+    location: location
+    userassignedidentityname: 'userassignedidentity_aks'
+  }
+}
+
 // Route Tables
 module spokert 'routetable.bicep' = {
   name: 'spokert-deploy-${deploymentId}'
@@ -93,7 +102,7 @@ resource cloudhubvnet 'Microsoft.Network/virtualNetworks@2020-11-01'={
     }
     dhcpOptions: {
       dnsServers: [
-        '10.0.0.4'
+        '10.1.0.254'
       ]
     }
     subnets: [
@@ -127,7 +136,7 @@ resource cloudspokevnet 'Microsoft.Network/virtualNetworks@2020-11-01'={
     }
     dhcpOptions: {
       dnsServers: [
-        '10.0.0.4'
+        '10.1.0.254'
       ]
     }
     subnets: [
@@ -141,6 +150,15 @@ resource cloudspokevnet 'Microsoft.Network/virtualNetworks@2020-11-01'={
         }        
       }
     ]    
+  }
+}
+
+resource roleassignment_cloudspokevnet 'Microsoft.Authorization/roleAssignments@2020-04-01-preview'={
+  name: guid(cloudspokevnet.id, aksidentity.name, '4d97b98b-1d4f-4787-a291-c67834d212e7')
+  scope: cloudspokevnet
+  properties: {
+    roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions','4d97b98b-1d4f-4787-a291-c67834d212e7') //Network Contributor
+    principalId: aksidentity.outputs.principalId    
   }
 }
 
@@ -237,9 +255,6 @@ resource cloudhubvnetgw 'Microsoft.Network/virtualNetworkGateways@2020-11-01'={
   location: location    
   properties: {
     gatewayType: 'Vpn'
-    gatewayDefaultSite: {
-      id: onpremlocalnetworkgateway.id
-    }
     sku: {
       name: 'VpnGw1'
       tier: 'VpnGw1'
@@ -265,7 +280,7 @@ resource cloudhubvnetgw 'Microsoft.Network/virtualNetworkGateways@2020-11-01'={
 resource onpremlocalnetworkgateway 'Microsoft.Network/localNetworkGateways@2021-02-01'= {
   name: 'onpremlocalnetworkgateway'
   location: location
-  dependsOn: [
+  dependsOn: [    
     onpremvnetgw
   ]
   properties:{
@@ -327,26 +342,83 @@ resource hubvpntoonpremconn 'Microsoft.Network/connections@2020-11-01' = {
 
 
 // DNS Zones
-//// Private DNS Zones
-resource privatednsakscloudhub 'Microsoft.Network/privateDnsZones@2018-09-01'={
+
+/// Private DNS Zones for AKS
+
+  ////  Zone
+resource privatednszone_usgovvirginia_aks 'Microsoft.Network/privateDnsZones@2018-09-01'={
   name: 'cloudhub.privatelink.usgovvirginia.cx.aks.containerservice.azure.us'
   location: 'global'
 }
- 
-//// Private DNS Zone VNET Links
-resource privatednsakscloudhubvnetlink 'Microsoft.Network/privateDnsZones/virtualNetworkLinks@2018-09-01'={
-  name: 'privatednsakscloudhubvnetlink'
-  location: 'global'
-  parent: privatednsakscloudhub
+  //// Role Assignment
+resource roleassignment_privatednszone_usgovvirginia_aks 'Microsoft.Authorization/roleAssignments@2020-04-01-preview'={
+  name: guid(privatednszone_usgovvirginia_aks.id, aksidentity.name, 'b12aa53e-6015-4669-85d0-8515ebb3ae7f')
+  scope: privatednszone_usgovvirginia_aks
   properties: {
-    registrationEnabled: true
+    roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions','b12aa53e-6015-4669-85d0-8515ebb3ae7f') //Private DNS Contributor
+    principalId: aksidentity.outputs.principalId    
+  }
+}
+   //// VNET Links
+resource privatedns_usgovvirginia_aks_cloudhub_vnetlink 'Microsoft.Network/privateDnsZones/virtualNetworkLinks@2018-09-01'={
+  name: 'privatedns_usgovvirginia_aks_cloudhub_vnetlink'
+  location: 'global'
+  parent: privatednszone_usgovvirginia_aks
+  properties: {
+    registrationEnabled: false
      virtualNetwork: {
        id: cloudhubvnet.id
      }
   }
 }
 
+/// Private DNS Zone for KeyVault
+  /// Zone
+resource privatednszone_keyvault 'Microsoft.Network/privateDnsZones@2018-09-01' = {
+  name: 'privatelink.vaultcore.usgovcloudapi.net'
+  location: 'global'
+  properties: {
+    maxNumberOfRecordSets: 25000
+    maxNumberOfVirtualNetworkLinks: 1000
+    maxNumberOfVirtualNetworkLinksWithRegistration: 100
+  }
+}
+  //// VNET Links
+resource privatednszone_keyvault_cloudhub_vnetlink 'Microsoft.Network/privateDnsZones/virtualNetworkLinks@2018-09-01'={
+  name: 'privatednszone_keyvault_cloudhub_vnetlink'
+  location: 'global'
+  parent: privatednszone_keyvault
+  properties: {
+    registrationEnabled: false
+     virtualNetwork: {
+       id: cloudhubvnet.id
+     }
+  }
+}
 
+/// Private DNS Zone for Stroage Account
+  /// Zone
+  resource privatednszone_storageaccount_blob 'Microsoft.Network/privateDnsZones@2018-09-01' = {
+    name: 'privatelink.blob.core.usgovcloudapi.net'
+    location: 'global'
+    properties: {
+      maxNumberOfRecordSets: 25000
+      maxNumberOfVirtualNetworkLinks: 1000
+      maxNumberOfVirtualNetworkLinksWithRegistration: 100
+    }
+  }
+    //// VNET Links
+  resource privatednszone_storageaccount_blob_cloudhub_vnetlink 'Microsoft.Network/privateDnsZones/virtualNetworkLinks@2018-09-01'={
+    name: 'privatednszone_storageaccount_blob_cloudhub_vnetlink'
+    location: 'global'
+    parent: privatednszone_storageaccount_blob
+    properties: {
+      registrationEnabled: false
+       virtualNetwork: {
+         id: cloudhubvnet.id
+       }
+    }
+  }
 
 // Onprem DNS Server
 //// PIP
@@ -366,12 +438,6 @@ resource onpremdnsnic 'Microsoft.Network/networkInterfaces@2020-11-01'={
   name: 'onpremdnsnic'
   location: location
   properties: {
-    dnsSettings: {
-      dnsServers: [
-        '10.0.0.4'
-        '168.63.129.16'
-      ]
-    }
     ipConfigurations: [
       {
         name: 'ipconfig'
@@ -393,7 +459,7 @@ resource onpremdnsnic 'Microsoft.Network/networkInterfaces@2020-11-01'={
 
 //// VM
 resource onpremdns 'Microsoft.Compute/virtualMachines@2021-03-01'={
-  name: 'onpremdns01'
+  name: 'onpremdns'
   location: location
   dependsOn: [
     hubvpntoonpremconn
@@ -413,7 +479,7 @@ resource onpremdns 'Microsoft.Compute/virtualMachines@2021-03-01'={
     osProfile: {
       adminUsername: adminUsername
       adminPassword: adminPassword
-      computerName: 'onpremdns01'
+      computerName: 'onpremdns'
       windowsConfiguration: {
         enableAutomaticUpdates: true
         provisionVMAgent: true
@@ -460,8 +526,8 @@ resource onpremdnscse 'Microsoft.Compute/virtualMachines/extensions@2021-07-01' 
 }
 
 // Cloud Hub DNS Proxy Server
-resource cloudhubdnsnic 'Microsoft.Network/networkInterfaces@2020-11-01'={
-  name: 'cloudhubdnsnic'
+resource clouddnsnic 'Microsoft.Network/networkInterfaces@2020-11-01'={
+  name: 'clouddnsnic'
   location: location
   properties: {
     ipConfigurations: [
@@ -480,8 +546,8 @@ resource cloudhubdnsnic 'Microsoft.Network/networkInterfaces@2020-11-01'={
   }
 }
 
-resource cloudhubdns 'Microsoft.Compute/virtualMachines@2021-07-01'={
-  name: 'cloudhubdns01'
+resource clouddns 'Microsoft.Compute/virtualMachines@2021-07-01'={
+  name: 'clouddns'
   location: location
   dependsOn: [
     hubvpntoonpremconn
@@ -495,7 +561,7 @@ resource cloudhubdns 'Microsoft.Compute/virtualMachines@2021-07-01'={
     networkProfile:{
       networkInterfaces:[
         {
-          id: cloudhubdnsnic.id
+          id: clouddnsnic.id
         }
       ]
     }
@@ -531,8 +597,8 @@ resource cloudhubdns 'Microsoft.Compute/virtualMachines@2021-07-01'={
 }
 
 resource cloudhubdnscse 'Microsoft.Compute/virtualMachines/extensions@2021-07-01' ={
-  name: 'cloudhubdnscse'
-  parent: cloudhubdns
+  name: 'clouddnscse'
+  parent: clouddns
   location: location
   properties:{
     autoUpgradeMinorVersion: true
@@ -547,8 +613,8 @@ resource cloudhubdnscse 'Microsoft.Compute/virtualMachines/extensions@2021-07-01
 
 // Cloud Spoke Bastion Server
 
-resource bastionnic 'Microsoft.Network/networkInterfaces@2020-11-01'={
-  name: 'bastionnic'
+resource cloudbastionnic 'Microsoft.Network/networkInterfaces@2020-11-01'={
+  name: 'cloudbastionnic'
   location: location
   properties: {
     ipConfigurations: [
@@ -567,8 +633,8 @@ resource bastionnic 'Microsoft.Network/networkInterfaces@2020-11-01'={
   }
 }
 
-resource bastion 'Microsoft.Compute/virtualMachines@2021-07-01'={
-  name: 'bastion01'
+resource cloudbastion 'Microsoft.Compute/virtualMachines@2021-07-01'={
+  name: 'cloudbastion'
   location: location
   dependsOn: [
     hubvpntoonpremconn
@@ -582,14 +648,14 @@ resource bastion 'Microsoft.Compute/virtualMachines@2021-07-01'={
     networkProfile:{
       networkInterfaces:[
         {
-          id: bastionnic.id
+          id: cloudbastionnic.id
         }
       ]
     }
     osProfile: {
       adminUsername: adminUsername
       adminPassword: adminPassword
-      computerName: 'bastion01'
+      computerName: 'cloudbastion'
       windowsConfiguration: {
         enableAutomaticUpdates: true
         provisionVMAgent: true

@@ -2,7 +2,7 @@ param(
     [STRING] $environment = "AzureUSGovernment",
     [Parameter(Mandatory=$true)]
     [STRING] $subscriptionid,
-    [STRING] $rgname = "private-endpoint-test-environment",
+    [STRING] $rgname = "private-endpoint-environment",
     [STRING] $location = "usgovvirginia"
 )
 

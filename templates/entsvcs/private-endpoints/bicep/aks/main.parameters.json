@@ -108,13 +108,19 @@
         "value": []
       },
       "virtualNetworkId": {
-        "value": "/subscriptions/f86eed1f-a251-4b29-a8b3-98089b46ce6c/resourceGroups/private-endpoint-test-environment/providers/Microsoft.Network/virtualNetworks/cloudspokevnet"
+        "value": "/subscriptions/f86eed1f-a251-4b29-a8b3-98089b46ce6c/resourceGroups/private-endpoint-environment/providers/Microsoft.Network/virtualNetworks/cloudspokevnet"
       },
       "aksSubnetName": {
         "value": "default"
       },
       "logAnalyticsWorkspaceId": {
-        "value": "/subscriptions/f86eed1f-a251-4b29-a8b3-98089b46ce6c/resourcegroups/private-endpoint-test-environment/providers/microsoft.operationalinsights/workspaces/hublogaworkspace"
-      } 
+        "value": "/subscriptions/f86eed1f-a251-4b29-a8b3-98089b46ce6c/resourcegroups/private-endpoint-environment/providers/microsoft.operationalinsights/workspaces/hublogaworkspace"
+      },
+      "privateDNSZoneId": {
+        "value": "/subscriptions/f86eed1f-a251-4b29-a8b3-98089b46ce6c/resourceGroups/private-endpoint-environment/providers/Microsoft.Network/privateDnsZones/cloudhub.privatelink.usgovvirginia.cx.aks.containerservice.azure.us"
+      },
+      "userAssignedIdentityId": {
+        "value": "/subscriptions/f86eed1f-a251-4b29-a8b3-98089b46ce6c/resourceGroups/private-endpoint-environment/providers/Microsoft.ManagedIdentity/userAssignedIdentities/userassignedidentity_aks"
+      }
     }
   }

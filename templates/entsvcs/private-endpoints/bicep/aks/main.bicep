@@ -150,6 +150,12 @@ param aksSubnetName string = 'AksSubnet'
 @description('Specifies the name of the Log Analytics Workspace.')
 param logAnalyticsWorkspaceId string
 
+@description('Specifies the Private DNS Zone Id.')
+param privateDNSZoneId string
+
+@description('Specifies the id of the user assigned identity.')
+param userAssignedIdentityId string
+
 var aadProfileConfiguration = {
   managed: aadProfileManaged
   enableAzureRBAC: aadProfileEnableAzureRBAC
@@ -161,6 +167,10 @@ var virtualNetworkName = last(split(virtualNetworkId, '/'))
 var virtualNetworkSubId = split(virtualNetworkId, '/')[2]
 var virtualNetworkRGName = split(virtualNetworkId, '/')[4]
 
+var userAssignedIdentityName = last(split(userAssignedIdentityId, '/'))
+var userAssignedIdentitySubId = split(userAssignedIdentityId, '/')[2]
+var userAssignedIdentityRGName = split(userAssignedIdentityId, '/')[4]
+
 resource virtualNetwork 'Microsoft.Network/virtualNetworks@2020-08-01' existing = {
   name: virtualNetworkName
   scope: resourceGroup(virtualNetworkSubId, virtualNetworkRGName)
@@ -171,11 +181,19 @@ resource aksSubnet 'Microsoft.Network/virtualNetworks/subnets@2020-08-01' existi
   name: aksSubnetName
 }
 
+resource userAssignedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2018-11-30' existing = {
+  name: userAssignedIdentityName
+  scope: resourceGroup(userAssignedIdentitySubId, userAssignedIdentityRGName)
+}
+
 resource aksCluster 'Microsoft.ContainerService/managedClusters@2021-02-01' = {
   name: aksClusterName
   location: location
   identity: {
-    type: 'SystemAssigned'
+    type: 'UserAssigned'
+    userAssignedIdentities: {
+      '${userAssignedIdentityId}': {}
+    }    
   }
   tags: aksClusterTags
   sku: {
@@ -237,6 +255,7 @@ resource aksCluster 'Microsoft.ContainerService/managedClusters@2021-02-01' = {
     aadProfile: (aadEnabled ? aadProfileConfiguration : null)
     apiServerAccessProfile: {
       enablePrivateCluster: aksClusterEnablePrivateCluster
+      privateDNSZone: privateDNSZoneId
     }
   }
 }
