@@ -1,52 +1,52 @@
 {
-    "properties": {
-      "displayName": "Deny Network Access to Disks",
-      "policyType": "Custom",
-      "mode": "All",
-      "description": "Deny Network Access to Disks",
-      "metadata": {
-        "category": "Storage"
-      },
-      "parameters": {
-        "effect": {
-          "type": "String",
-          "metadata": {
-            "displayName": "Effect",
-            "description": "Enable or disable the execution of the policy"
-          },
-          "allowedValues": [
-            "Modify",
-            "Disabled"
-          ],
-          "defaultValue": "Modify"
-        }
-      },
-      "policyRule": {
-        "if": {
-          "allOf": [
-            {
-              "field": "type",
-              "equals": "Microsoft.Compute/disks"
-            }
-          ]
+  "properties": {
+    "displayName": "Deny Network Access to Disks",
+    "policyType": "Custom",
+    "mode": "All",
+    "description": "Deny Network Access to Disks",
+    "metadata": {
+      "category": "Storage"
+    },
+    "parameters": {
+      "effect": {
+        "type": "String",
+        "metadata": {
+          "displayName": "Effect",
+          "description": "Enable or disable the execution of the policy"
         },
-        "then": {
-          "effect": "[parameters('effect')]",
-          "details": {
-            "roleDefinitionIds": [
-              "/providers/Microsoft.Authorization/roleDefinitions/b24988ac-6180-42a0-ab88-20f7382dd24c"
-            ],
-            "operations": [
-              {
-                "operation": "addOrReplace",
-                "field": "Microsoft.Compute/disks/networkAccessPolicy",
-                "value": "DenyAll"
-              }
-            ]
-          }
-        }
+        "allowedValues": [
+          "Modify",
+          "Disabled"
+        ],
+        "defaultValue": "Modify"
       }
     },
-    "type": "Microsoft.Authorization/policyDefinitions",
-    "name": "Deny-Net-Access-Disks"
-  }
+    "policyRule": {
+      "if": {
+        "allOf": [
+          {
+            "field": "type",
+            "equals": "Microsoft.Compute/disks"
+          }
+        ]
+      },
+      "then": {
+        "effect": "[parameters('effect')]",
+        "details": {
+          "roleDefinitionIds": [
+            "/providers/Microsoft.Authorization/roleDefinitions/b24988ac-6180-42a0-ab88-20f7382dd24c"
+          ],
+          "operations": [
+            {
+              "operation": "addOrReplace",
+              "field": "Microsoft.Compute/disks/networkAccessPolicy",
+              "value": "DenyAll"
+            }
+          ]
+        }
+      }
+    }
+  },
+  "type": "Microsoft.Authorization/policyDefinitions",
+  "name": "Deny-Net-Access-Disks"
+}

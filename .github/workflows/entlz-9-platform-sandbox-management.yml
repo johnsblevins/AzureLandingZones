@@ -1,0 +1,137 @@
+name: entlz-9-platform-sandbox-management
+
+# Controls when the action will run. 
+on:
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+    inputs:
+      entlzprefix: 
+        description: 'entlzprefix'
+        required: true
+        default: ''
+      environment: 
+        description: 'environment'
+        required: true
+        default: 'azureusgovernment'
+      location: 
+        description: 'location'
+        required: true
+        default: 'usgovvirginia'
+      githubsecret:
+        description: 'Github Secret Name with Azure Credentials'
+        required: true
+        default: 'AZGOV_CREDS'
+      sandboxmanagementsubid:
+        description: ''
+        required: true
+        default: ''
+  
+  repository_dispatch:
+    types: [entlz-9-platform-sandbox-management]    
+
+#  push:
+#    branches:
+#      - dev
+#    paths:
+#      - 'templates/entlz/workbooks/**'
+#      - '.github/workflows/entlz-9-platform-sandbox-management.yml'
+
+jobs:
+    build-and-deploy:
+        runs-on: ubuntu-latest        
+        steps:
+        - name: Set Variables
+          id: setvariables         
+          run: |
+            shopt -s nocasematch
+            echo ${GITHUB_EVENT_NAME} 
+            if [ ${GITHUB_EVENT_NAME} == 'workflow_dispatch' ];
+            then
+              echo "::set-output name=ref::${GITHUB_REF##*/}"
+              echo "::set-output name=entlzprefix::${{ github.event.inputs.entlzprefix }}"
+              echo "::set-output name=environment::${{ github.event.inputs.environment }}"
+              echo "::set-output name=location::${{ github.event.inputs.location }}"
+              echo "::set-output name=githubsecret::${{ github.event.inputs.githubsecret }}"
+              echo "::set-output name=sandboxmanagementsubid::${{ github.event.inputs.sandboxmanagementsubid }}"
+            elif [ ${GITHUB_EVENT_NAME} == 'repository_dispatch' ];
+            then
+              echo "::set-output name=ref::${{ github.event.client_payload.ref }}"
+              echo "::set-output name=entlzprefix::${{ github.event.client_payload.entlzprefix }}"
+              echo "::set-output name=environment::${{ github.event.client_payload.environment }}"
+              echo "::set-output name=location::${{ github.event.client_payload.location }}"
+              echo "::set-output name=githubsecret::${{ github.event.client_payload.githubsecret }}"
+              echo "::set-output name=sandboxmanagementsubid::${{ github.event.client_payload.sandboxmanagementsubid }}"
+            else
+              echo "Invalid Event Trigger ${GITHUB_EVENT_NAME} unable to set variables."
+            fi;            
+          
+        - name: Echo Variables
+          run: |
+            echo ref: ${{ steps.setvariables.outputs.ref }}
+            echo entlzprefix: ${{ steps.setvariables.outputs.entlzprefix }}
+            echo environment: ${{ steps.setvariables.outputs.environment }}
+            echo location: ${{ steps.setvariables.outputs.location }}
+            echo githubsecret: ${{ steps.setvariables.outputs.githubsecret }}
+            echo sandboxmanagementsubid: ${{ steps.setvariables.outputs.sandboxmanagementsubid }}
+
+        - uses: actions/checkout@v2
+          with:
+            ref: ${{ steps.setvariables.outputs.ref }}
+        
+        - name: Log in with Azure
+          uses: azure/login@v1
+          with:
+            creds: ${{ secrets[steps.setvariables.outputs.githubsecret] }}
+            environment: ${{ steps.setvariables.outputs.environment }}
+            enable-AzPSSession: false
+        
+        - name: Deploy Sandbox Management Subscription
+          uses: azure/CLI@v1
+          with:
+            azcliversion: 2.21.0
+            inlineScript: |
+              echo Deploy Sandbox Management Subscription
+              echo sandboxmanagementsubid: ${{ env.sandboxmanagementsubid }}
+              managementuri=$(az cloud show --query endpoints.resourceManager --output tsv)
+              echo managementuri: $managementuri
+              if [[ -z "${{ steps.setvariables.outputs.sandboxmanagementsubid }}" ]];
+              then
+                az config set extension.use_dynamic_install=yes_without_prompt
+                subownergroupid=$(az ad group list --display-name ${{ steps.setvariables.outputs.subownergroup }}  --query [].objectId -o tsv)
+                echo subownergroupid: $subownergroupid
+                # Check if Sub already exists
+                if [[ -z `az account list --query "[?name=='${{ env.managementsubname }}'].name" --output tsv` ]];
+                then
+                  echo "Creating Sandbox Management Subscription..."
+                  # REST Call to Create Subscription
+                  az rest --method post \
+                  --url "${managementuri}providers/Microsoft.Billing/enrollmentAccounts/${{ steps.setvariables.outputs.enracctname }}/providers/Microsoft.Subscription/createSubscription?api-version=2019-10-01-preview" \
+                  --headers "{\"content-type\":\"application/json\"}" \
+                  --body "{\"displayName\": \"${{ env.managementsubname }}\", \"offerType\": \"${{ steps.setvariables.outputs.offertype }}\", \"owners\": [{\"objectId\": \"${subownergroupid}\"}]}"
+                  sleep 60
+
+                  echo "Assigning default tags..."
+                  # Assign Default Tags to Subscription
+                  NOW=$(date +"%m/%d/%Y_%I:%M:%S_%p")
+                  subId=$(az account subscription list --query "[?displayName=='${{ env.managementsubname }}'].subscriptionId" --output tsv)
+                  az tag create --resource-id /subscriptions/$subId --tags createdOn="$NOW" programType="int" programEnv="prod" programName="${{ steps.setvariables.outputs.entlzprefix }}"
+                else
+                  echo "Management subscription already exists...skipping"
+                fi;
+              else                
+                echo "Management subscription specified as input...renaming"
+                az rest --method post \
+                --url "${managementuri}subscriptions/${{ steps.setvariables.outputs.sandboxmanagementsubid }}/providers/Microsoft.Subscription/rename?api-version=2019-10-01-preview" \
+                --headers "{\"content-type\":\"application/json\"}" \
+                --body "{   \"subscriptionName\": \"$managementsubname\"}"
+                echo "Management subscription renamed...tagging"
+                az tag create --resource-id /subscriptions/${{ steps.setvariables.outputs.sandboxmanagementsubid }} --tags programType="int" programEnv="prod" programName="${{ steps.setvariables.outputs.entlzprefix }}"
+              fi;
+
+
+        - name: Deploy Sandbox Management Components
+          uses: azure/CLI@v1
+          with:
+            azcliversion: 2.21.0
+            inlineScript: |
+              echo Deploy Sandbox Management Components
